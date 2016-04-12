@@ -4,19 +4,22 @@
  */
 package br.com.prolink.view.tarefas;
 
-import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.JFormattedTextField;
+import javax.swing.text.MaskFormatter;
 
 /**
  *
  * @author Tiago
  */
 public class TarefasCabecalho extends javax.swing.JInternalFrame {
-
+    
+    MaskFormatter formatoData1, formatoData2;
     /**
      * Creates new form Tarefas
      */
     public TarefasCabecalho() {
         initComponents();
+        jPData.setVisible(false);
     }
 
     /**
@@ -30,15 +33,29 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
 
         bt_filtro_cabeçalho = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btTarefa = new javax.swing.JButton();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
+        jRDefinir = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jDFiltroData = new javax.swing.JDesktopPane();
+        jPData = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        try{
+            formatoData1 = new MaskFormatter("##/##/####");
+        }catch(Exception e){
+        }
+        txData1 = new JFormattedTextField(formatoData1);
+        try{
+            formatoData2 = new MaskFormatter("##/##/####");
+        }catch(Exception e){
+
+        }
+        txData2 = new JFormattedTextField(formatoData2);
+        jLabel5 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -47,11 +64,13 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         jCheckBox4 = new javax.swing.JCheckBox();
         jCheckBox5 = new javax.swing.JCheckBox();
 
+        setBackground(new java.awt.Color(250, 250, 250));
         setBorder(null);
+        setPreferredSize(new java.awt.Dimension(953, 115));
 
         jPanel1.setBackground(new java.awt.Color(250, 250, 250));
 
-        jButton1.setText("Criar Tarefa");
+        btTarefa.setText("Criar Tarefa");
 
         jRadioButton1.setBackground(new java.awt.Color(250, 250, 250));
         bt_filtro_cabeçalho.add(jRadioButton1);
@@ -65,44 +84,90 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         jRadioButton2.setBackground(new java.awt.Color(250, 250, 250));
         bt_filtro_cabeçalho.add(jRadioButton2);
         jRadioButton2.setText("Essa Semana");
+        jRadioButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton2ActionPerformed(evt);
+            }
+        });
 
         jRadioButton3.setBackground(new java.awt.Color(250, 250, 250));
         bt_filtro_cabeçalho.add(jRadioButton3);
         jRadioButton3.setText("Hoje");
-
-        jRadioButton4.setBackground(new java.awt.Color(250, 250, 250));
-        bt_filtro_cabeçalho.add(jRadioButton4);
-        jRadioButton4.setText("Definir");
-        jRadioButton4.addActionListener(new java.awt.event.ActionListener() {
+        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton4ActionPerformed(evt);
+                jRadioButton3ActionPerformed(evt);
+            }
+        });
+
+        jRDefinir.setBackground(new java.awt.Color(250, 250, 250));
+        bt_filtro_cabeçalho.add(jRDefinir);
+        jRDefinir.setText("Definir");
+        jRDefinir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRDefinirActionPerformed(evt);
             }
         });
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("Nenhuma Tarefa");
+        jLabel1.setText("{#### Tarefas}");
 
         jLabel2.setText("para:");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.setBackground(new java.awt.Color(250, 250, 250));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
             }
         });
 
-        jDFiltroData.setBackground(new java.awt.Color(250, 250, 250));
-        jDFiltroData.setPreferredSize(new java.awt.Dimension(300, 0));
+        jPData.setBackground(new java.awt.Color(250, 250, 250));
 
-        javax.swing.GroupLayout jDFiltroDataLayout = new javax.swing.GroupLayout(jDFiltroData);
-        jDFiltroData.setLayout(jDFiltroDataLayout);
-        jDFiltroDataLayout.setHorizontalGroup(
-            jDFiltroDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+        jLabel4.setText("de:");
+
+        txData1.setBackground(new java.awt.Color(250, 250, 250));
+        txData1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txData1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txData1.setText("12/02/2015");
+
+        txData2.setBackground(new java.awt.Color(250, 250, 250));
+        txData2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txData2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txData2.setText("12/02/2016");
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("até");
+
+        jButton1.setText("OK");
+
+        javax.swing.GroupLayout jPDataLayout = new javax.swing.GroupLayout(jPData);
+        jPData.setLayout(jPDataLayout);
+        jPDataLayout.setHorizontalGroup(
+            jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPDataLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txData1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txData2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(25, Short.MAX_VALUE))
         );
-        jDFiltroDataLayout.setVerticalGroup(
-            jDFiltroDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
+
+        jPDataLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txData1, txData2});
+
+        jPDataLayout.setVerticalGroup(
+            jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txData2)
+                .addComponent(txData1)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -110,20 +175,19 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
+                .addComponent(btTarefa)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 22, Short.MAX_VALUE)
                 .addComponent(jRadioButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jDFiltroData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jRDefinir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 30, Short.MAX_VALUE)
+                .addComponent(jPData, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -132,24 +196,28 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jRadioButton1)
-                        .addComponent(jRadioButton2)
-                        .addComponent(jRadioButton3)
-                        .addComponent(jRadioButton4))
-                    .addComponent(jDFiltroData, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jComboBox1)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jRadioButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btTarefa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jRadioButton3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPData, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jRadioButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jComboBox1)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jRDefinir, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap())
         );
 
         jPanel2.setBackground(new java.awt.Color(250, 250, 250));
+        jPanel2.setPreferredSize(new java.awt.Dimension(1028, 41));
 
         jLabel3.setText("Filtro:");
 
@@ -173,7 +241,6 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
@@ -185,12 +252,12 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
                 .addComponent(jCheckBox4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox5)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jCheckBox1)
@@ -198,7 +265,7 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
                     .addComponent(jCheckBox3)
                     .addComponent(jCheckBox4)
                     .addComponent(jCheckBox5))
-                .addContainerGap())
+                .addContainerGap(11, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -213,32 +280,36 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
-        setBounds(0, 0, 1028, 125);
+        setBounds(0, 0, 1028, 115);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
-        jDFiltroData.removeAll();
-        if(filtroData==null){
-            filtroData = new FiltroData();
-            ((BasicInternalFrameUI)filtroData.getUI()).setNorthPane(null);
-        }
-        jDFiltroData.add(filtroData);
-        filtroData.setVisible(true);
-    }//GEN-LAST:event_jRadioButton4ActionPerformed
+    private void jRDefinirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRDefinirActionPerformed
+        jPData.setVisible(true);       
+    }//GEN-LAST:event_jRDefinirActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        jDFiltroData.removeAll();
+        jPData.setVisible(false);   
     }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
+    private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
+        jPData.setVisible(false);   
+    }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+        jPData.setVisible(false);   
+    }//GEN-LAST:event_jRadioButton3ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btTarefa;
     private javax.swing.ButtonGroup bt_filtro_cabeçalho;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
@@ -247,16 +318,19 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JCheckBox jCheckBox5;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JDesktopPane jDFiltroData;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPData;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JRadioButton jRDefinir;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
+    private javax.swing.JFormattedTextField txData1;
+    private javax.swing.JFormattedTextField txData2;
     // End of variables declaration//GEN-END:variables
-FiltroData filtroData;
 }
