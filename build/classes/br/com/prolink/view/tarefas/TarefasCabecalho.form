@@ -66,7 +66,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Component id="btTarefa" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" pref="22" max="32767" attributes="0"/>
+                  <EmptySpace type="unrelated" pref="23" max="32767" attributes="0"/>
                   <Component id="jRadioButton1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jRadioButton3" min="-2" max="-2" attributes="0"/>
@@ -223,12 +223,12 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="txData1" linkSize="1" min="-2" pref="81" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel5" min="-2" pref="25" max="-2" attributes="0"/>
+                      <Component id="datePicker1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                      <Component id="jLabel5" min="-2" pref="22" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txData2" linkSize="1" min="-2" pref="80" max="-2" attributes="0"/>
+                      <Component id="datePicker2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="25" max="32767" attributes="0"/>
@@ -237,12 +237,19 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="jLabel5" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" max="32767" attributes="0"/>
-                      <Component id="txData2" alignment="3" max="32767" attributes="0"/>
-                      <Component id="txData1" alignment="3" max="32767" attributes="0"/>
-                      <Component id="jLabel4" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jLabel5" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                              <Component id="jLabel4" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="jButton1" alignment="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="datePicker1" alignment="0" max="32767" attributes="0"/>
+                              <Component id="datePicker2" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -252,42 +259,6 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="de:"/>
               </Properties>
-            </Component>
-            <Component class="javax.swing.JFormattedTextField" name="txData1">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="fa" green="fa" red="fa" type="rgb"/>
-                </Property>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-                    <BevelBorder/>
-                  </Border>
-                </Property>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="12/02/2015"/>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JFormattedTextField(formatoData1)"/>
-                <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="try{&#xa;    formatoData1 = new MaskFormatter(&quot;##/##/####&quot;);&#xa;}catch(Exception e){&#xa;}"/>
-              </AuxValues>
-            </Component>
-            <Component class="javax.swing.JFormattedTextField" name="txData2">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="fa" green="fa" red="fa" type="rgb"/>
-                </Property>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
-                    <BevelBorder/>
-                  </Border>
-                </Property>
-                <Property name="horizontalAlignment" type="int" value="0"/>
-                <Property name="text" type="java.lang.String" value="12/02/2016"/>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JFormattedTextField(formatoData2)"/>
-                <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="try{&#xa;    formatoData2 = new MaskFormatter(&quot;##/##/####&quot;);&#xa;}catch(Exception e){&#xa;&#xa;}"/>
-              </AuxValues>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel5">
               <Properties>
@@ -299,6 +270,10 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="OK"/>
               </Properties>
+            </Component>
+            <Component class="com.michaelbaranov.microba.calendar.DatePicker" name="datePicker1">
+            </Component>
+            <Component class="com.michaelbaranov.microba.calendar.DatePicker" name="datePicker2">
             </Component>
           </SubComponents>
         </Container>
@@ -318,7 +293,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel3" min="-2" pref="40" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>

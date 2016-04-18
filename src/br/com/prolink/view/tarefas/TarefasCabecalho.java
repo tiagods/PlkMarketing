@@ -4,7 +4,6 @@
  */
 package br.com.prolink.view.tarefas;
 
-import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
 
 /**
@@ -43,19 +42,10 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         jPData = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        try{
-            formatoData1 = new MaskFormatter("##/##/####");
-        }catch(Exception e){
-        }
-        txData1 = new JFormattedTextField(formatoData1);
-        try{
-            formatoData2 = new MaskFormatter("##/##/####");
-        }catch(Exception e){
-
-        }
-        txData2 = new JFormattedTextField(formatoData2);
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        datePicker1 = new com.michaelbaranov.microba.calendar.DatePicker();
+        datePicker2 = new com.michaelbaranov.microba.calendar.DatePicker();
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -125,16 +115,6 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
 
         jLabel4.setText("de:");
 
-        txData1.setBackground(new java.awt.Color(250, 250, 250));
-        txData1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        txData1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txData1.setText("12/02/2015");
-
-        txData2.setBackground(new java.awt.Color(250, 250, 250));
-        txData2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        txData2.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txData2.setText("12/02/2016");
-
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("até");
 
@@ -147,27 +127,28 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
             .addGroup(jPDataLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(txData1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(datePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txData2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(datePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
-
-        jPDataLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txData1, txData2});
-
         jPDataLayout.setVerticalGroup(
             jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txData2)
-                .addComponent(txData1)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPDataLayout.createSequentialGroup()
+                .addGroup(jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(datePicker1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(datePicker2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -176,7 +157,7 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(btTarefa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 22, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 23, Short.MAX_VALUE)
                 .addComponent(jRadioButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton3)
@@ -241,7 +222,7 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jLabel3)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -311,6 +292,8 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btTarefa;
     private javax.swing.ButtonGroup bt_filtro_cabeçalho;
+    private com.michaelbaranov.microba.calendar.DatePicker datePicker1;
+    private com.michaelbaranov.microba.calendar.DatePicker datePicker2;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
@@ -330,7 +313,5 @@ public class TarefasCabecalho extends javax.swing.JInternalFrame {
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JFormattedTextField txData1;
-    private javax.swing.JFormattedTextField txData2;
     // End of variables declaration//GEN-END:variables
 }
