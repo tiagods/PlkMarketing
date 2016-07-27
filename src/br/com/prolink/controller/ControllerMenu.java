@@ -6,13 +6,10 @@
 package br.com.prolink.controller;
 
 import static br.com.prolink.view.Menu.*;
-import br.com.prolink.view.empresas.CorpoEmpresas;
-import br.com.prolink.view.empresas.EmpresasCabecalho;
-import br.com.prolink.view.inicio.CorpoInicio;
-import br.com.prolink.view.inicio.InicioCabecalhoBranco;
-import br.com.prolink.view.tarefas.CorpoTarefas;
-import br.com.prolink.view.tarefas.CorpoTarefasSave;
-import br.com.prolink.view.tarefas.TarefasCabecalho;
+import br.com.prolink.view.empresas.EmpresasView;
+import br.com.prolink.view.inicio.InicioView;
+import br.com.prolink.view.tarefas.TarefasSaveView;
+import br.com.prolink.view.tarefas.TarefasView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,49 +22,36 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
  * @author User
  */
 public class ControllerMenu implements ActionListener, MouseListener{
-    CorpoInicio corpoInicio;
-    CorpoEmpresas corpoEmpresas;
-    CorpoTarefas corpoTarefas;
-    CorpoTarefasSave corpoTarefasSave;
-    
-    TarefasCabecalho tarefasCabecalho;
-    InicioCabecalhoBranco inicioCabecalho;
-    EmpresasCabecalho empresasCabecalho;
+    InicioView inicio;
+    EmpresasView empresas;
+    TarefasSaveView tarefasSave;
+    TarefasView tarefas;
     
     public void Inicia(){
-        corpoInicio = new CorpoInicio();
-        abrirCorpo(corpoInicio);
-        inicioCabecalho = new InicioCabecalhoBranco();
-        abrirCabecalho(inicioCabecalho);
     }
-    
     @Override
     public void actionPerformed(ActionEvent e) {
         switch(e.getActionCommand()){
             case "Inicio":
-                corpoInicio = new CorpoInicio();
-                abrirCorpo(corpoInicio);
-                inicioCabecalho = new InicioCabecalhoBranco();
-                abrirCabecalho(inicioCabecalho);
-                break;
-            case "Tarefas":
-                corpoTarefas = new CorpoTarefas();
-                abrirCorpo(corpoTarefas);
-                tarefasCabecalho = new TarefasCabecalho();
-                abrirCabecalho(tarefasCabecalho);
+                inicio = new InicioView();
+                abrirCorpo(inicio);
                 break;
             case "Empresas":
-                corpoEmpresas = new CorpoEmpresas();
-                abrirCorpo(corpoEmpresas);
-                empresasCabecalho = new EmpresasCabecalho();
-                abrirCabecalho(empresasCabecalho);
+                empresas = new EmpresasView();
+                abrirCorpo(empresas);
                 break;
-            case "Pessoas":
+            case "Tarefas":
+                tarefas = new TarefasView();
+                abrirCorpo(tarefas);
+                break;
+            /*case "Pessoas":
                 break;
             case "Relatorios":
+                break;*/            /*case "Pessoas":
                 break;
-            default:
-                break;
+            case "Relatorios":
+                break;*/
+            
         }
     }
     @Override
@@ -84,12 +68,6 @@ public class ControllerMenu implements ActionListener, MouseListener{
         jDBody.removeAll();
         ((BasicInternalFrameUI)jframe.getUI()).setNorthPane(null);
         jDBody.add(jframe);
-        jframe.setVisible(true);
-    }
-    public void abrirCabecalho(JInternalFrame jframe){
-        jDCabecalho.removeAll();
-        ((BasicInternalFrameUI)jframe.getUI()).setNorthPane(null);
-        jDCabecalho.add(jframe);
         jframe.setVisible(true);
     }
 

@@ -8,12 +8,12 @@ package br.com.prolink.view.tarefas;
  *
  * @author Tiago
  */
-public class CorpoTarefasSave extends javax.swing.JInternalFrame {
+public class TarefasSaveView extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Corpo
      */
-    public CorpoTarefasSave() {
+    public TarefasSaveView() {
         initComponents();
     }
 
@@ -123,7 +123,7 @@ public class CorpoTarefasSave extends javax.swing.JInternalFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(70, 70, 70)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRadioButton3)
                     .addComponent(jRadioButton4)
@@ -141,7 +141,7 @@ public class CorpoTarefasSave extends javax.swing.JInternalFrame {
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2)))
-                .addContainerGap(250, Short.MAX_VALUE))
+                .addContainerGap(334, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -155,7 +155,7 @@ public class CorpoTarefasSave extends javax.swing.JInternalFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        setBounds(0, 0, 920, 500);
+        setBounds(0, 0, 920, 620);
     }// </editor-fold>//GEN-END:initComponents
 
 

@@ -35,7 +35,6 @@ public class Menu extends javax.swing.JFrame {
         btnRelatorios = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jDBody = new javax.swing.JDesktopPane();
-        jDCabecalho = new javax.swing.JDesktopPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,33 +44,18 @@ public class Menu extends javax.swing.JFrame {
         jPanel2.setPreferredSize(new java.awt.Dimension(136, 430));
 
         btInicio.setText("Inicio");
-        btInicio.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btInicioActionPerformed(evt);
-            }
-        });
         btInicio.setActionCommand("Inicio");
         btInicio.addActionListener(controller);
 
         btnTarefas.setText("Tarefas");
-        btnTarefas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnTarefasActionPerformed(evt);
-            }
-        });
         btnTarefas.setActionCommand("Tarefas");
-        btInicio.addActionListener(controller);
+        btnTarefas.addActionListener(controller);
 
         btnNegocio.setText("Negócios");
         btnNegocio.setActionCommand("Negocios");
         btInicio.addActionListener(controller);
 
         btnEmpresas.setText("Empresas");
-        btnEmpresas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEmpresasActionPerformed(evt);
-            }
-        });
         btnEmpresas.setActionCommand("Empresas");
         btnEmpresas.addActionListener(controller);
 
@@ -132,21 +116,7 @@ public class Menu extends javax.swing.JFrame {
         );
         jDBodyLayout.setVerticalGroup(
             jDBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jDCabecalho.setBackground(new java.awt.Color(250, 250, 250));
-        jDCabecalho.setPreferredSize(new java.awt.Dimension(1028, 115));
-
-        javax.swing.GroupLayout jDCabecalhoLayout = new javax.swing.GroupLayout(jDCabecalho);
-        jDCabecalho.setLayout(jDCabecalhoLayout);
-        jDCabecalhoLayout.setHorizontalGroup(
-            jDCabecalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jDCabecalhoLayout.setVerticalGroup(
-            jDCabecalhoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 115, Short.MAX_VALUE)
+            .addGap(0, 620, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -158,18 +128,18 @@ public class Menu extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(jDBody, javax.swing.GroupLayout.DEFAULT_SIZE, 925, Short.MAX_VALUE))
             .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1028, Short.MAX_VALUE)
-            .addComponent(jDCabecalho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jDCabecalho, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
-                    .addComponent(jDBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(137, 137, 137)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jDBody, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -186,18 +156,6 @@ public class Menu extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(1044, 718));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnTarefasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTarefasActionPerformed
-        
-    }//GEN-LAST:event_btnTarefasActionPerformed
-
-    private void btInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInicioActionPerformed
-        
-    }//GEN-LAST:event_btInicioActionPerformed
-
-    private void btnEmpresasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpresasActionPerformed
-        
-    }//GEN-LAST:event_btnEmpresasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -242,7 +200,6 @@ public class Menu extends javax.swing.JFrame {
     private javax.swing.JButton btnRelatorios;
     private javax.swing.JButton btnTarefas;
     public static javax.swing.JDesktopPane jDBody;
-    public static javax.swing.JDesktopPane jDCabecalho;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
