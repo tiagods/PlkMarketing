@@ -570,6 +570,6 @@ public class NegociosView extends JInternalFrame {
         jPanel1.add(textField_3);
         textField_3.setColumns(10);
 
-        setBounds(0, 0, 1080, 620);
+        setBounds(0, 0, 1250, 660);
     }
 }

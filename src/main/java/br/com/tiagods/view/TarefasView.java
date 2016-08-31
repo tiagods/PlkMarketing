@@ -326,7 +326,7 @@ public class TarefasView extends JInternalFrame {
         jPanel1.add(jRDefinir);
         jPanel1.add(jPData);
 
-        setBounds(0, 0, 1080, 620);
+        setBounds(0, 0, 1250, 660);
     }
 
 }
