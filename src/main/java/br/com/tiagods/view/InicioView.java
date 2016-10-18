@@ -1,20 +1,22 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
-import javax.swing.JInternalFrame;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import com.toedter.calendar.JDateChooser;
 
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
+import br.com.tiagods.utilitarios.DefaultUtilities;
 
-public class InicioView extends JInternalFrame {
+public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -23,6 +25,11 @@ public class InicioView extends JInternalFrame {
     private JDateChooser jData1;
 	private JDateChooser jData2;
 	private JLabel lblAte;
+	
+	@Override
+	public Color getColor() {
+		return DefaultUtilities.super.getColor();		
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -43,6 +50,7 @@ public class InicioView extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public InicioView() {
+		getColor();
 		initComponents();
 	}
 	private void initComponents() {
@@ -57,7 +65,7 @@ public class InicioView extends JInternalFrame {
 
         setBorder(null);
 
-        jPanel1.setBackground(new java.awt.Color(250, 250, 250));
+        jPanel1.setBackground(getColor());
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         jLabel1.setText("Você tem");

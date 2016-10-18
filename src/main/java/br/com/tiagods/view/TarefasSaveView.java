@@ -20,12 +20,19 @@ import com.toedter.calendar.JDateChooser;
 /*
  */
 
-public class TarefasSaveView extends JInternalFrame {
+import br.com.tiagods.utilitarios.DefaultUtilities;
+
+public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JDateChooser dateChooser;
 
+	@Override
+	public Color getColor() {
+		// TODO Auto-generated method stub
+		return DefaultUtilities.super.getColor();
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -51,7 +58,7 @@ public class TarefasSaveView extends JInternalFrame {
         setBorder(null);
         JPanel panel = new JPanel();
         getContentPane().add(panel, BorderLayout.CENTER);
-        panel.setBackground(new Color(250,250,250,250));
+        panel.setBackground(getColor());
         panel.setLayout(null);
         
         JPanel panel_1 = new JPanel();

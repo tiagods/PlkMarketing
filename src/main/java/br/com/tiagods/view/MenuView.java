@@ -1,26 +1,29 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-
-import br.com.tiagods.controller.ControllerMenu;
-import java.awt.Dimension;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JMenuBar;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
-import java.awt.Color;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-public class MenuView extends JFrame {
+import br.com.tiagods.controller.ControllerMenu;
+import br.com.tiagods.utilitarios.DefaultUtilities;
+
+public class MenuView extends JFrame implements DefaultUtilities{
 	ControllerMenu controller = new ControllerMenu();
     public static javax.swing.JDesktopPane jDBody;
     private javax.swing.JPanel jPanel1;
+    
+    @Override
+    public Color getColor() {
+    	// TODO Auto-generated method stub
+    	return DefaultUtilities.super.getColor();
+    }
 	/**
 	 * Launch the application.
 	 */
@@ -53,9 +56,9 @@ public class MenuView extends JFrame {
         jDBody = new javax.swing.JDesktopPane();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(250, 250, 250));
+        jPanel1.setBackground(getColor());
 
-        jDBody.setBackground(new java.awt.Color(250, 250, 250));
+        jDBody.setBackground(getColor());
         jDBody.setBounds(10, 0, 100, 100);
         
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -85,7 +88,7 @@ public class MenuView extends JFrame {
         setLocationRelativeTo(null);
         
         JMenuBar menuBar = new JMenuBar();
-        menuBar.setBackground(new Color(250,250,250));
+        menuBar.setBackground(getColor());
         setJMenuBar(menuBar);
         
         JMenu mnInicio = new JMenu("Inicio");
@@ -129,7 +132,5 @@ public class MenuView extends JFrame {
         
         JMenu mnExtra = new JMenu("Extra");
         menuBar.add(mnExtra);
-
-        
 	}
 }

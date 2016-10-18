@@ -1,16 +1,19 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
-import javax.swing.JInternalFrame;
-import com.toedter.calendar.*;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JButton;;
 
-public class TarefasView extends JInternalFrame {
+import com.toedter.calendar.JDateChooser;
+
+import br.com.tiagods.utilitarios.DefaultUtilities;;
+
+public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	private JDateChooser jData1;
 	private JDateChooser jData2;
 	private javax.swing.JButton btTarefa;
@@ -49,6 +52,11 @@ public class TarefasView extends JInternalFrame {
     private javax.swing.ButtonGroup group;
     private JButton btnNewButton;
     
+    @Override
+    public Color getColor() {
+    	// TODO Auto-generated method stub
+    	return DefaultUtilities.super.getColor();
+    }
 	/**
 	 * Launch the application.
 	 */
@@ -139,9 +147,9 @@ public class TarefasView extends JInternalFrame {
         
         setBorder(null);
 
-        jPanel1.setBackground(new java.awt.Color(250, 250, 250));
+        jPanel1.setBackground(getColor());
 
-        jPanel4.setBackground(new java.awt.Color(250, 250, 250));
+        jPanel4.setBackground(getColor());
 
         jTable3.setModel(new DefaultTableModel(
         	new Object[][] {
@@ -157,10 +165,10 @@ public class TarefasView extends JInternalFrame {
         		return columnEditables[column];
         	}
         });
-        jTable3.setGridColor(new java.awt.Color(250, 250, 250));
+        jTable3.setGridColor(getColor());
         jScrollPane3.setViewportView(jTable3);
 
-        jCheckBox12.setBackground(new java.awt.Color(250, 250, 250));
+        jCheckBox12.setBackground(getColor());
         jCheckBox12.setText("Finalizar");
 
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -177,25 +185,25 @@ public class TarefasView extends JInternalFrame {
 
         jButton3.setText("Abrir Tarefa");
 
-        jRadioButton1.setBackground(new java.awt.Color(250, 250, 250));
+        jRadioButton1.setBackground(getColor());
         jRadioButton1.setText("Pendentes");
 
-        jRadioButton2.setBackground(new java.awt.Color(250, 250, 250));
+        jRadioButton2.setBackground(getColor());
         jRadioButton2.setText("Finalizadas");
 
         btTarefa.setText("Criar Tarefa");
         btTarefa.setActionCommand("Criar Tarefa");
 
-        jRadioButton3.setBackground(new java.awt.Color(250, 250, 250));
+        jRadioButton3.setBackground(getColor());
         jRadioButton3.setText("Tudo");
         
-        jRadioButton4.setBackground(new java.awt.Color(250, 250, 250));
+        jRadioButton4.setBackground(getColor());
         jRadioButton4.setText("Essa Semana");
         
-        jRadioButton5.setBackground(new java.awt.Color(250, 250, 250));
+        jRadioButton5.setBackground(getColor());
         jRadioButton5.setText("Hoje");
         
-        jRDefinir.setBackground(new java.awt.Color(250, 250, 250));
+        jRDefinir.setBackground(getColor());
         jRDefinir.setText("Definir");
         
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -203,10 +211,10 @@ public class TarefasView extends JInternalFrame {
 
         jLabel2.setText("para:");
 
-        jComboBox1.setBackground(new java.awt.Color(250, 250, 250));
+        jComboBox1.setBackground(getColor());
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos" }));
         
-        jPData.setBackground(new java.awt.Color(250, 250, 250));
+        jPData.setBackground(getColor());
 
         jLabel4.setText("de:");
 
@@ -243,21 +251,21 @@ public class TarefasView extends JInternalFrame {
         );
         jPData.setLayout(jPDataLayout);
 
-        jCheckBox5.setBackground(new java.awt.Color(250, 250, 250));
+        jCheckBox5.setBackground(getColor());
         jCheckBox5.setText("E-mail");
 
         jLabel3.setText("Filtro:");
 
-        jCheckBox1.setBackground(new java.awt.Color(250, 250, 250));
+        jCheckBox1.setBackground(getColor());
         jCheckBox1.setText("Visita");
 
-        jCheckBox2.setBackground(new java.awt.Color(250, 250, 250));
+        jCheckBox2.setBackground(getColor());
         jCheckBox2.setText("Reunião");
 
-        jCheckBox3.setBackground(new java.awt.Color(250, 250, 250));
+        jCheckBox3.setBackground(getColor());
         jCheckBox3.setText("Proposta");
 
-        jCheckBox4.setBackground(new java.awt.Color(250, 250, 250));
+        jCheckBox4.setBackground(getColor());
         jCheckBox4.setText("Telefone");
         jPanel4.setLayout(null);
         jPanel4.add(jLabel37);
