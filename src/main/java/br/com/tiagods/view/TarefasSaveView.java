@@ -24,7 +24,7 @@ import br.com.tiagods.utilitarios.DefaultUtilities;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtPassarComoParametro;
 	private JTextField textField_2;
 	private JDateChooser dateChooser;
 
@@ -62,7 +62,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         panel.setLayout(null);
         
         JPanel panel_1 = new JPanel();
-        panel_1.setBounds(10, 11, 132, 96);
+        panel_1.setBounds(10, 11, 132, 69);
         panel.add(panel_1);
         
         JLabel lblCod = new JLabel("Cod");
@@ -75,9 +75,10 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         JLabel lblClasse = new JLabel("Classe");
         panel_1.add(lblClasse);
         
-        textField_1 = new JTextField();
-        panel_1.add(textField_1);
-        textField_1.setColumns(10);
+        txtPassarComoParametro = new JTextField();
+        txtPassarComoParametro.setText("passar como parametro e nao como string");
+        panel_1.add(txtPassarComoParametro);
+        txtPassarComoParametro.setColumns(10);
         
         dateChooser = new JDateChooser();
         
@@ -143,6 +144,10 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         
         JButton btnSalvar = new JButton("Salvar");
         panel_3.add(btnSalvar);
+        
+        JLabel lblNewLabel = new JLabel("quando na\u00F5 for passado parametro de classe  e invocar um jcomponents solitando Negocio, Empresa ou pessoa para salvar");
+        lblNewLabel.setBounds(174, 124, 846, 14);
+        panel.add(lblNewLabel);
 
 	}
 }

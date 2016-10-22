@@ -1,40 +1,38 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
 
-import javax.swing.JInternalFrame;
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.GroupLayout.Alignment;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import javax.swing.JScrollPane;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
+import br.com.tiagods.utilitarios.DefaultUtilities;
+import javax.swing.JRadioButton;
+import javax.swing.JTable;
 
-public class EmpresasView extends JInternalFrame {
+public class EmpresasView extends JInternalFrame implements DefaultUtilities{
 	private javax.swing.ButtonGroup group_situacao;
     private javax.swing.JButton button;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
@@ -61,15 +59,8 @@ public class EmpresasView extends JInternalFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JScrollPane jScrollPanePrincipal;
-    private javax.swing.JScrollPane scrollPane;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jtableAux;;
+    private javax.swing.JPanel jPanel4;;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
@@ -78,19 +69,12 @@ public class EmpresasView extends JInternalFrame {
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
-    private JLabel lblPessoas;
-    private JTextField textField_1;
-    private JButton btnNovo;
-    private JButton btnAlterar;
     private JButton btnExcluir;
     private JButton btnNovo_1;
     private JTextField textField;
     private JLabel lblEmail;
     private JTextField textField_2;
     private JLabel lblWebsite;
-    private JButton btnEsconder;
-    private JLabel lblBuscar;
-    private JTextField textField_3;
 	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
@@ -102,7 +86,29 @@ public class EmpresasView extends JInternalFrame {
 	private JLabel lblAtendente;
 	private JComboBox<String> comboBox_2;
 	private JLabel lblCep;
+	private JTextField textField_3;
+	private JPanel panel_2;
+	private JScrollPane scrollPane;
+	private JTextField textField_1;
+	private JLabel label_3;
+	private JButton button_2;
+	private JButton button_3;
+	private JButton button_4;
+	private JScrollPane scrollPane_1;
+	private JTextArea textArea;
+	private JTable table;
+	private JTable table_1;
 
+	@Override
+	public Color getColor() {
+		// TODO Auto-generated method stub
+		return DefaultUtilities.super.getColor();
+	}
+	@Override
+	public Color getComponentColor() {
+		// TODO Auto-generated method stub
+		return DefaultUtilities.super.getComponentColor();
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -128,23 +134,14 @@ public class EmpresasView extends JInternalFrame {
     private void initComponents() {
     	group_situacao = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jScrollPanePrincipal = new javax.swing.JScrollPane();
-        jScrollPanePrincipal.setBounds(10, 452, 760, 142);
-        jTable2 = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox1.setBounds(780, 452, 110, 20);
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton1.setBounds(780, 479, 110, 23);
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton2.setBounds(780, 509, 110, 23);
         jPanel3 = new javax.swing.JPanel();
-        jPanel3.setBounds(0, 0, 1064, 69);
+        jPanel3.setBounds(0, 0, 1240, 69);
         jComboBox4 = new javax.swing.JComboBox<>();
         jComboBox7 = new javax.swing.JComboBox<>();
         jComboBox8 = new javax.swing.JComboBox<>();
         jComboBox9 = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
-        jPanel4.setBounds(10, 80, 760, 334);
+        jPanel4.setBounds(10, 289, 760, 334);
         jTextField1 = new javax.swing.JTextField();
         jTextField1.setBounds(107, 11, 87, 20);
         jLabel17 = new javax.swing.JLabel();
@@ -203,86 +200,32 @@ public class EmpresasView extends JInternalFrame {
         jTextField6.setBounds(107, 247, 107, 20);
         jLabel8 = new javax.swing.JLabel();
         jLabel8.setBounds(10, 249, 56, 17);
-        jPanel2 = new javax.swing.JPanel();
-        jPanel2.setBounds(780, 80, 284, 334);
-        jPanel2.setBackground(new java.awt.Color(250, 250, 250));
-        scrollPane = new JScrollPane();
-        jtableAux = new javax.swing.JTable();
         setBorder(null);
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
 
         jPanel1.setBackground(new java.awt.Color(250, 250, 250));
-        
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
 
-            },
-            new String [] {
-                "Codigo", "Nome", "Nivel"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
+        jPanel3.setBackground(getColor());
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPanePrincipal.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0) {
-            jTable2.getColumnModel().getColumn(0).setPreferredWidth(80);
-            jTable2.getColumnModel().getColumn(0).setMaxWidth(80);
-            jTable2.getColumnModel().getColumn(2).setPreferredWidth(80);
-            jTable2.getColumnModel().getColumn(2).setMaxWidth(80);
-        }
-        
-        jtableAux.setModel(new DefaultTableModel(
-        	new Object[][] {
-        	},
-        	new String[] {
-        		"Codigo", "Detahes", "Data"
-        	}
-        ) {
-        	boolean[] columnEditables = new boolean[] {
-        		false, false, false
-        	};
-        	public boolean isCellEditable(int row, int column) {
-        		return columnEditables[column];
-        	}
-        }
-        		);
-        scrollPane.setViewportView(jtableAux);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Ordem Alfabética", "Data de Cadastro", "Atualização" }));
-
-        jRadioButton1.setBackground(new java.awt.Color(250, 250, 250));
-        jRadioButton1.setText("Crescente");
-
-        jRadioButton2.setBackground(new java.awt.Color(250, 250, 250));
-        jRadioButton2.setText("Decrescente");
-
-        jPanel3.setBackground(new java.awt.Color(250, 250, 250));
-
-        jComboBox4.setBackground(new java.awt.Color(250, 250, 250));
+        jComboBox4.setBackground(getComponentColor());
         jComboBox4.setModel(new DefaultComboBoxModel(new String[] {"Responsavel", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
         
-        jComboBox7.setBackground(new java.awt.Color(250, 250, 250));
+        jComboBox7.setBackground(getComponentColor());
         jComboBox7.setModel(new DefaultComboBoxModel(new String[] {"Status", "Em Andamento", "Ganho", "Perdido"}));
 
-        jComboBox8.setBackground(new java.awt.Color(250, 250, 250));
+        jComboBox8.setBackground(getComponentColor());
         jComboBox8.setModel(new DefaultComboBoxModel(new String[] {"Meio"}));
 
-        jComboBox9.setBackground(new java.awt.Color(250, 250, 250));
+        jComboBox9.setBackground(getComponentColor());
         jComboBox9.setModel(new DefaultComboBoxModel(new String[] {"Empresa", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
         
         JComboBox<String> comboBox = new JComboBox<String>();
         comboBox.setModel(new DefaultComboBoxModel(new String[] {"Pessoa", "Todos"}));
-        comboBox.setBackground(new Color(250, 250, 250));
+        comboBox.setBackground(getComponentColor());
         
         panel = new JPanel();
-        panel.setBackground(new Color(250, 250, 250));
+        panel.setBackground(getColor());
         
         label = new JLabel();
         label.setBounds(10, 37, 22, 20);
@@ -306,7 +249,7 @@ public class EmpresasView extends JInternalFrame {
         
         comboBox_1 = new JComboBox<String>();
         comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Classifica\u00E7\u00E3o"}));
-        comboBox_1.setBackground(new Color(250, 250, 250));
+        comboBox_1.setBackground(getComponentColor());
         
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3Layout.setHorizontalGroup(
@@ -352,7 +295,7 @@ public class EmpresasView extends JInternalFrame {
         panel.add(button_1);
         jPanel3.setLayout(jPanel3Layout);
 
-        jPanel4.setBackground(new java.awt.Color(250, 250, 250));
+        jPanel4.setBackground(getComponentColor());
 
         jLabel17.setText("{Usuario}");
 
@@ -400,11 +343,11 @@ public class EmpresasView extends JInternalFrame {
         jButton3 = new javax.swing.JButton();
         jButton3.setBounds(203, 278, 90, 23);
         
-                jButton3.setText("Editar");
+        jButton3.setText("Editar");
         jButton4 = new javax.swing.JButton();
         jButton4.setBounds(299, 278, 90, 23);
         
-                jButton4.setText("Salvar");
+        jButton4.setText("Salvar");
         
         btnExcluir = new JButton();
         btnExcluir.setBounds(395, 278, 90, 23);
@@ -413,86 +356,19 @@ public class EmpresasView extends JInternalFrame {
         btnNovo_1 = new JButton();
         btnNovo_1.setBounds(107, 278, 90, 23);
         btnNovo_1.setText("Novo");
-        
-        lblPessoas = new JLabel("Historico");
-        
-        textField_1 = new JTextField();
-        textField_1.setColumns(10);
-        
-        btnNovo = new JButton("Novo");
-        
-        btnAlterar = new JButton("Alterar");
-        
-        JScrollPane scrollPane_1 = new JScrollPane();
-        
-        btnEsconder = new JButton("Esconder");
-        
-        
-        
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2Layout.setHorizontalGroup(
-        	jPanel2Layout.createParallelGroup(Alignment.TRAILING)
-        		.addGroup(jPanel2Layout.createSequentialGroup()
-        			.addGroup(jPanel2Layout.createParallelGroup(Alignment.TRAILING)
-        				.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-        					.addGroup(jPanel2Layout.createParallelGroup(Alignment.LEADING)
-        						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(lblPessoas, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
-        					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-        					.addComponent(btnEsconder))
-        				.addGroup(Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-        					.addContainerGap(138, Short.MAX_VALUE)
-        					.addComponent(btnNovo, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(btnAlterar))
-        				.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
-        			.addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-        	jPanel2Layout.createParallelGroup(Alignment.TRAILING)
-        		.addGroup(jPanel2Layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(lblPessoas)
-        				.addComponent(btnEsconder))
-        			.addGap(4)
-        			.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(7)
-        			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-        			.addGap(13)
-        			.addGroup(jPanel2Layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(btnNovo)
-        				.addComponent(btnAlterar))
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 182, GroupLayout.PREFERRED_SIZE))
-        );
-        
-        JTextArea textArea = new JTextArea();
-        scrollPane_1.setViewportView(textArea);
-        jPanel2.setLayout(jPanel2Layout);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         layout.setHorizontalGroup(
-        	layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        			.addContainerGap())
+        	layout.createParallelGroup(Alignment.TRAILING)
+        		.addComponent(jPanel1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1250, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-        	layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addComponent(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        	layout.createParallelGroup(Alignment.TRAILING)
+        		.addComponent(jPanel1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
         );
         getContentPane().setLayout(layout);
         jPanel1.setLayout(null);
         jPanel1.add(jPanel3);
-        jPanel1.add(jScrollPanePrincipal);
-        jPanel1.add(jRadioButton1);
-        jPanel1.add(jRadioButton2);
-        jPanel1.add(jComboBox1);
         jPanel1.add(jPanel4);
         jPanel4.setLayout(null);
         jPanel4.add(jLabel10);
@@ -557,7 +433,7 @@ public class EmpresasView extends JInternalFrame {
         jPanel4.add(comboBox_2);
         
         JPanel panel_1 = new JPanel();
-        panel_1.setBackground(Color.WHITE);
+        panel_1.setBackground(getColor());
         panel_1.setBounds(601, 0, 159, 334);
         jPanel4.add(panel_1);
         
@@ -565,13 +441,13 @@ public class EmpresasView extends JInternalFrame {
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         JCheckBox chckbxTodos = new JCheckBox("Todos");
-        chckbxTodos.setBackground(Color.WHITE);
+        chckbxTodos.setBackground(getComponentColor());
         
         JCheckBox chckbxEu = new JCheckBox("Eu");
-        chckbxEu.setBackground(Color.WHITE);
+        chckbxEu.setBackground(getComponentColor());
         
         JCheckBox chckbxOutros = new JCheckBox("Outros");
-        chckbxOutros.setBackground(Color.WHITE);
+        chckbxOutros.setBackground(getComponentColor());
         GroupLayout gl_panel_1 = new GroupLayout(panel_1);
         gl_panel_1.setHorizontalGroup(
         	gl_panel_1.createParallelGroup(Alignment.LEADING)
@@ -604,34 +480,125 @@ public class EmpresasView extends JInternalFrame {
         
         button.setText("Historico");
         jButton1 = new javax.swing.JButton();
-        jButton1.setBounds(299, 312, 90, 23);
+        jButton1.setBounds(299, 311, 90, 23);
         jPanel4.add(jButton1);
         jButton1.setText("Neg\u00F3cios");
         jButton2 = new javax.swing.JButton();
-        jButton2.setBounds(396, 312, 87, 23);
+        jButton2.setBounds(396, 311, 87, 23);
         jPanel4.add(jButton2);
+
+        jButton2.setText("Pessoas");
+
+        lblCep = new JLabel();
+        lblCep.setText("CEP:");
+        lblCep.setBounds(10, 218, 35, 20);
+        jPanel4.add(lblCep);
+
+        JFormattedTextField formattedTextField = new JFormattedTextField();
+        formattedTextField.setText("00000-000");
+        formattedTextField.setBounds(107, 216, 78, 20);
+        jPanel4.add(formattedTextField);
         
-                jButton2.setText("Pessoas");
-                
-                lblCep = new JLabel();
-                lblCep.setText("CEP:");
-                lblCep.setBounds(10, 218, 35, 20);
-                jPanel4.add(lblCep);
-                
-                JFormattedTextField formattedTextField = new JFormattedTextField();
-                formattedTextField.setText("00000-000");
-                formattedTextField.setBounds(107, 216, 78, 20);
-                jPanel4.add(formattedTextField);
-        jPanel1.add(jPanel2);
-        
-        lblBuscar = new JLabel("Buscar");
-        lblBuscar.setBounds(10, 428, 53, 14);
-        jPanel1.add(lblBuscar);
+        JLabel label_2 = new JLabel("Buscar");
+        label_2.setBounds(10, 83, 53, 14);
+        jPanel1.add(label_2);
         
         textField_3 = new JTextField();
-        textField_3.setBounds(74, 425, 139, 20);
-        jPanel1.add(textField_3);
         textField_3.setColumns(10);
+        textField_3.setBounds(74, 80, 139, 20);
+        jPanel1.add(textField_3);
+        
+        JScrollPane scrollPane_2 = new JScrollPane();
+        scrollPane_2.setBounds(10, 107, 760, 142);
+        jPanel1.add(scrollPane_2);
+        
+        table_1 = new JTable();
+        scrollPane_2.setViewportView(table_1);
+        
+        JRadioButton radioButton = new JRadioButton();
+        radioButton.setText("Decrescente");
+        radioButton.setBackground(new Color(250, 250, 250));
+        radioButton.setBounds(780, 164, 110, 23);
+        jPanel1.add(radioButton);
+        
+        JRadioButton radioButton_1 = new JRadioButton();
+        radioButton_1.setText("Crescente");
+        radioButton_1.setBackground(new Color(250, 250, 250));
+        radioButton_1.setBounds(780, 134, 110, 23);
+        jPanel1.add(radioButton_1);
+        
+        JComboBox<String> comboBox_3 = new JComboBox<String>();
+        comboBox_3.setModel(new DefaultComboBoxModel(new String[] {"Ordem Alfab\u00E9tica", "Data de Cadastro", "Atualiza\u00E7\u00E3o"}));
+        comboBox_3.setBounds(780, 107, 110, 20);
+        jPanel1.add(comboBox_3);
+        
+        panel_2 = new JPanel();
+        panel_2.setBackground(new Color(250, 250, 250));
+        panel_2.setBounds(780, 289, 460, 334);
+        jPanel1.add(panel_2);
+        
+        scrollPane = new JScrollPane();
+        
+        textField_1 = new JTextField();
+        textField_1.setColumns(10);
+        
+        label_3 = new JLabel("Historico");
+        
+        button_2 = new JButton("Esconder");
+        
+        button_3 = new JButton("Novo");
+        
+        button_4 = new JButton("Alterar");
+        
+        scrollPane_1 = new JScrollPane();
+        GroupLayout gl_panel_2 = new GroupLayout(panel_2);
+        gl_panel_2.setHorizontalGroup(
+        	gl_panel_2.createParallelGroup(Alignment.TRAILING)
+        		.addGap(0, 460, Short.MAX_VALUE)
+        		.addGroup(gl_panel_2.createSequentialGroup()
+        			.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+        				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+        				.addGroup(gl_panel_2.createSequentialGroup()
+        					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+        						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
+        					.addPreferredGap(ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
+        					.addComponent(button_2))
+        				.addGroup(gl_panel_2.createSequentialGroup()
+        					.addContainerGap(314, Short.MAX_VALUE)
+        					.addComponent(button_3, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(button_4))
+        				.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE))
+        			.addContainerGap())
+        );
+        gl_panel_2.setVerticalGroup(
+        	gl_panel_2.createParallelGroup(Alignment.TRAILING)
+        		.addGap(0, 334, Short.MAX_VALUE)
+        		.addGroup(gl_panel_2.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(label_3)
+        				.addComponent(button_2))
+        			.addGap(4)
+        			.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addGap(7)
+        			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+        			.addGap(13)
+        			.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(button_3)
+        				.addComponent(button_4))
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
+        );
+        
+        table = new JTable();
+        scrollPane.setViewportView(table);
+        
+        textArea = new JTextArea();
+        scrollPane_1.setViewportView(textArea);
+        panel_2.setLayout(gl_panel_2);
 
         setBounds(0, 0, 1250, 660);
     }// </editor-fold>//GEN-END:initComponents

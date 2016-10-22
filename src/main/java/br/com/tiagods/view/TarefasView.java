@@ -122,7 +122,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel1 = new javax.swing.JLabel();
         jLabel1.setBounds(669, 10, 90, 23);
         jLabel2 = new javax.swing.JLabel();
-        jLabel2.setBounds(782, 10, 46, 23);
+        jLabel2.setBounds(782, 10, 30, 23);
         jComboBox1 = new javax.swing.JComboBox<>();
         jComboBox1.setBounds(822, 11, 105, 20);
         jPData = new javax.swing.JPanel();
@@ -209,7 +209,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("{#### Tarefas}");
 
-        jLabel2.setText("para:");
+        jLabel2.setText("de:");
 
         jComboBox1.setBackground(getColor());
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos" }));
