@@ -8,11 +8,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static br.com.tiagods.view.TarefasSaveView.*;
+
 /*
 * @author Tiago
 */
 public class ControllerTarefas implements ActionListener, MouseListener {
-    public void mouseClicked(MouseEvent e) {}
+    public void iniciar(){
+    }
+	public void mouseClicked(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}

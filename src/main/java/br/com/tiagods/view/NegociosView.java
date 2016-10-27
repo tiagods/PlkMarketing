@@ -471,7 +471,7 @@ public class NegociosView extends JInternalFrame {
         
         JButton btnAdc = new JButton();
         btnAdc.setText("ADC");
-        btnAdc.setBounds(531, 95, 36, 23);
+        btnAdc.setBounds(555, 95, 36, 23);
         panel_2.add(btnAdc);
         
         lblValorServio = new JLabel();
@@ -484,8 +484,18 @@ public class NegociosView extends JInternalFrame {
         panel_2.add(formattedTextField_1);
         
         JComboBox comboBox_2 = new JComboBox();
-        comboBox_2.setBounds(385, 96, 136, 20);
+        comboBox_2.setBounds(385, 96, 160, 20);
         panel_2.add(comboBox_2);
+        
+        JLabel lblStatus = new JLabel();
+        lblStatus.setText("Status:");
+        lblStatus.setBounds(385, 125, 87, 20);
+        panel_2.add(lblStatus);
+        
+        JComboBox<String> comboBox_4 = new JComboBox<String>();
+        comboBox_4.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
+        comboBox_4.setBounds(476, 125, 115, 20);
+        panel_2.add(comboBox_4);
         
         JComboBox<String> comboBox_3 = new JComboBox<String>();
         comboBox_3.setModel(new DefaultComboBoxModel(new String[] {"Status", "Etapa", "Alfabetica", "Data Cadastro", "Data Atualiza\u00E7\u00E3o", "Data Conclus\u00E3o", "Valor"}));

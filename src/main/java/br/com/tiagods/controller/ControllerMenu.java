@@ -34,6 +34,15 @@ public class ControllerMenu implements ActionListener, MouseListener{
     TarefasView tarefas;
     NegociosView negocios;
     
+    static ControllerMenu instance;
+    
+    public static ControllerMenu getInstance(){
+    	if(instance==null){
+    		instance = new ControllerMenu();
+    	}
+    	return instance;
+    }
+    
     public void Inicia(){
         inicio = new InicioView();
         abrirCorpo(inicio);
@@ -91,7 +100,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
     @Override
     public void mouseExited(MouseEvent e) {}
     
-    public void abrirCorpo(JInternalFrame jframe){
+    public static void abrirCorpo(JInternalFrame jframe){
         jDBody.removeAll();
         ((BasicInternalFrameUI)jframe.getUI()).setNorthPane(null);
         jDBody.add(jframe);

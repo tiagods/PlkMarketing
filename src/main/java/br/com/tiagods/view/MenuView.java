@@ -12,10 +12,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import br.com.tiagods.controller.ControllerMenu;
-import br.com.tiagods.utilitarios.DefaultUtilities;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class MenuView extends JFrame implements DefaultUtilities{
-	ControllerMenu controller = new ControllerMenu();
+	ControllerMenu controller = ControllerMenu.getInstance();
+	
     public static javax.swing.JDesktopPane jDBody;
     private javax.swing.JPanel jPanel1;
     
@@ -49,6 +50,7 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	}
 	public void initComponents(){
 		setAlwaysOnTop(true);
+		getContentPane().setBackground(getColor());
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setBounds(100, 100, 450, 300);
 
@@ -84,7 +86,7 @@ public class MenuView extends JFrame implements DefaultUtilities{
         );
         jPanel1.setLayout(gl_jPanel1);
 
-        setSize(new Dimension(1280, 718));
+        setSize(new Dimension(1280, 723));
         setLocationRelativeTo(null);
         
         JMenuBar menuBar = new JMenuBar();
@@ -105,10 +107,10 @@ public class MenuView extends JFrame implements DefaultUtilities{
         itemNovaTarefa.addActionListener(controller);
         mnTarefas.add(itemNovaTarefa);
         
-        JMenuItem itemListarTarefas = new JMenuItem("Listar Tarefas");
-        itemListarTarefas.setActionCommand("Tarefas");
-        itemListarTarefas.addActionListener(controller);
-        mnTarefas.add(itemListarTarefas);
+        JMenuItem itemListarTarefa = new JMenuItem("Listar Tarefas");
+        itemListarTarefa.setActionCommand("Tarefas");
+        itemListarTarefa.addActionListener(controller);
+        mnTarefas.add(itemListarTarefa);
         
         JMenu mnEmpresas = new JMenu("Empresas");
         mnEmpresas.setName("Empresas");

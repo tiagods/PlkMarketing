@@ -1,4 +1,4 @@
-package br.com.tiagods.utilitarios;
+package br.com.tiagods.view.interfaces;
 
 import java.awt.Color;
 

@@ -11,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import br.com.tiagods.utilitarios.DefaultUtilities;;
+import br.com.tiagods.view.interfaces.DefaultUtilities;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	private JDateChooser jData1;

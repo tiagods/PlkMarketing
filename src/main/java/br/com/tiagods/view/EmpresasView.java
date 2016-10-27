@@ -22,7 +22,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import br.com.tiagods.utilitarios.DefaultUtilities;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
+
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 

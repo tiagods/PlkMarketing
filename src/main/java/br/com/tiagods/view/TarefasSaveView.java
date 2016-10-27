@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +14,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
@@ -20,14 +22,19 @@ import com.toedter.calendar.JDateChooser;
 /*
  */
 
-import br.com.tiagods.utilitarios.DefaultUtilities;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
+import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
+import javax.swing.JTextArea;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	private JTextField textField;
 	private JTextField txtPassarComoParametro;
-	private JTextField textField_2;
-	private JDateChooser dateChooser;
-
+	
+	public static JDateChooser txData;
+	public static JComboBox cbTipo, cbAtendente;
+	public static JTextArea txDetalhes;
+	public static JFormattedTextField txHora;
+	
 	@Override
 	public Color getColor() {
 		// TODO Auto-generated method stub
@@ -53,15 +60,15 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	 * Create the frame.
 	 */
 	public TarefasSaveView() {
-
-        setBounds(0, 0, 1250, 660);
+		JPanel panel = new JPanel();
+		JPanel panel_1 = new JPanel();
+        
+		setBounds(0, 0, 1250, 660);
         setBorder(null);
-        JPanel panel = new JPanel();
         getContentPane().add(panel, BorderLayout.CENTER);
         panel.setBackground(getColor());
         panel.setLayout(null);
         
-        JPanel panel_1 = new JPanel();
         panel_1.setBounds(10, 11, 132, 69);
         panel.add(panel_1);
         
@@ -80,70 +87,78 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         panel_1.add(txtPassarComoParametro);
         txtPassarComoParametro.setColumns(10);
         
-        dateChooser = new JDateChooser();
+        txData = new JDateChooser();
         
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(174, 192, 846, 118);
         panel.add(scrollPane);
         
-        JPanel panel_2 = new JPanel();
-        panel_2.setBounds(174, 148, 846, 33);
-        panel.add(panel_2);
+        txDetalhes = new JTextArea();
+        scrollPane.setViewportView(txDetalhes);
         
-        JRadioButton rdbtnVisita = new JRadioButton("Visita");
-        panel_2.add(rdbtnVisita);
+        JPanel panItem = new JPanel();
+        panItem.setBounds(174, 148, 846, 33);
+        panel.add(panItem);
         
-        JRadioButton rdbtnReunio = new JRadioButton("Reuni\u00E3o");
-        panel_2.add(rdbtnReunio);
-        
-        JRadioButton rdbtnProposta = new JRadioButton("Proposta");
-        panel_2.add(rdbtnProposta);
-        
-        JRadioButton rdbtnTelefone = new JRadioButton("Telefone");
-        panel_2.add(rdbtnTelefone);
+        ButtonGroup group = new ButtonGroup();
         
         JRadioButton rdbtnEmail = new JRadioButton("E-mail");
-        panel_2.add(rdbtnEmail);
+        group.add(rdbtnEmail);
+        panItem.add(rdbtnEmail);
         
-        JPanel panel_3 = new JPanel();
-        FlowLayout flowLayout = (FlowLayout) panel_3.getLayout();
-        panel_3.setBounds(174, 332, 846, 33);
-        panel.add(panel_3);
+        JRadioButton rdbtnProposta = new JRadioButton("Proposta");
+        group.add(rdbtnProposta);
+        panItem.add(rdbtnProposta);
+        
+        JRadioButton rdbtnReuniao = new JRadioButton("Reuni\u00E3o");
+        group.add(rdbtnReuniao);
+        panItem.add(rdbtnReuniao);
+        
+        JRadioButton rdbtnTelefone = new JRadioButton("Telefone");
+        group.add(rdbtnTelefone);
+        panItem.add(rdbtnTelefone);
+        
+        JRadioButton rdbtnVisita = new JRadioButton("Visita");
+        group.add(rdbtnVisita);
+        panItem.add(rdbtnVisita);
+        
+        JPanel panEscolha = new JPanel();
+        FlowLayout fl_panEscolha = (FlowLayout) panEscolha.getLayout();
+        panEscolha.setBounds(174, 332, 846, 33);
+        panel.add(panEscolha);
         
         JLabel lblTipo = new JLabel("Tipo:");
-        panel_3.add(lblTipo);
+        panEscolha.add(lblTipo);
         
-        textField_2 = new JTextField();
-        panel_3.add(textField_2);
-        textField_2.setColumns(5);
+        cbTipo = new JComboBox();
+        panEscolha.add(cbTipo);
         
         JLabel lblResponsavel = new JLabel("Responsavel:");
-        panel_3.add(lblResponsavel);
+        panEscolha.add(lblResponsavel);
         
-        JComboBox comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"Antonio"}));
-        panel_3.add(comboBox);
+        cbAtendente = new JComboBox();
+        panEscolha.add(cbAtendente);
         
         JLabel lblData = new JLabel("Data:");
-        panel_3.add(lblData);
+        panEscolha.add(lblData);
         
-        panel_3.add(dateChooser);
+        panEscolha.add(txData);
         
         JLabel lblHora = new JLabel("Hora:");
-        panel_3.add(lblHora);
+        panEscolha.add(lblHora);
         
-        JFormattedTextField formattedTextField = new JFormattedTextField();
-        formattedTextField.setColumns(5);
-        panel_3.add(formattedTextField);
+        txHora = new JFormattedTextField();
+        txHora.setColumns(5);
+        panEscolha.add(txHora);
         
         JButton btnEditar = new JButton("Editar");
-        panel_3.add(btnEditar);
+        panEscolha.add(btnEditar);
         
         JButton btnCancelar = new JButton("Cancelar");
-        panel_3.add(btnCancelar);
+        panEscolha.add(btnCancelar);
         
         JButton btnSalvar = new JButton("Salvar");
-        panel_3.add(btnSalvar);
+        panEscolha.add(btnSalvar);
         
         JLabel lblNewLabel = new JLabel("quando na\u00F5 for passado parametro de classe  e invocar um jcomponents solitando Negocio, Empresa ou pessoa para salvar");
         lblNewLabel.setBounds(174, 124, 846, 14);

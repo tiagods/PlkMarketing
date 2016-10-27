@@ -1,7 +1,10 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -10,29 +13,31 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.toedter.calendar.JDateChooser;
 
-import br.com.tiagods.utilitarios.DefaultUtilities;
+import br.com.tiagods.controller.ControllerInicio;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
-	private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private JPanel panel;
-    private JDateChooser jData1;
-	private JDateChooser jData2;
-	private JLabel lblAte;
+	private JLabel lbInfoTarefas;
+    private JPanel jPanel1;
+    private JLabel lblAte;
+	
+    public static JPanel pnStatus;
+    public static JDateChooser jData1;
+	public static JDateChooser jData2;
+	public static JComboBox cbAtendentes;
+	
+	ControllerInicio controller = new ControllerInicio();
 	
 	@Override
 	public Color getColor() {
 		return DefaultUtilities.super.getColor();		
 	}
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -50,82 +55,81 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
 	 * Create the frame.
 	 */
 	public InicioView() {
-		getColor();
 		initComponents();
+		controller.iniciar();
 	}
 	private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+		
+		jPanel1 = new javax.swing.JPanel();
         jData1 = new JDateChooser();
+        jData1.setPreferredSize(new Dimension(100, 20));
         jData2 = new JDateChooser();
         
-
+        jData2.setPreferredSize(new Dimension(100, 20));
+        setBounds(0, 0, 1250, 660);
         setBorder(null);
 
+        JLabel lblCriadoPor = new JLabel("Criado por:");
         jPanel1.setBackground(getColor());
-
-        jLabel1.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel1.setText("Você tem");
-
-        jLabel2.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        jLabel2.setText("tarefas hoje");
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        jLabel3.setText("{###}");
         
-        panel = new JPanel();
-
+        pnStatus = new JPanel();
+        
+        pnStatus.setBackground(getColor());
+        
+        JPanel pnDetalhes = new JPanel();
+        
+        pnDetalhes.setBackground(getColor());
+        
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1Layout.setHorizontalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
         				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addGap(314)
-        					.addComponent(jLabel1)
-        					.addGap(18)
-        					.addComponent(jLabel3)
-        					.addGap(18)
-        					.addComponent(jLabel2))
+        					.addContainerGap()
+        					.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 1230, Short.MAX_VALUE))
         				.addGroup(jPanel1Layout.createSequentialGroup()
         					.addGap(43)
-        					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 473, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(371, Short.MAX_VALUE))
+        					.addComponent(pnStatus, GroupLayout.PREFERRED_SIZE, 525, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
         	jPanel1Layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addGap(23)
-        			.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(208)
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(jLabel3)
-        				.addComponent(jLabel1)
-        				.addComponent(jLabel2))
-        			.addContainerGap(271, Short.MAX_VALUE))
+        			.addComponent(pnStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addGap(198)
+        			.addComponent(pnDetalhes, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(306, Short.MAX_VALUE))
         );
+        lbInfoTarefas = new JLabel();
+        lbInfoTarefas.setHorizontalAlignment(SwingConstants.CENTER);
+        pnDetalhes.add(lbInfoTarefas);
         
-        JLabel lblCriadoPor = new JLabel("Criado por:");
-        panel.add(lblCriadoPor);
+        lbInfoTarefas.setFont(new Font("Dialog", Font.BOLD, 26)); // NOI18N
+        lbInfoTarefas.setText("Voc\u00EA tem ### tarefas hoje");
         
-        JComboBox comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"Emanuel", "Rafael", "Antonio"}));
-        panel.add(comboBox);
+        pnStatus.add(lblCriadoPor);
+        
+        cbAtendentes = new JComboBox();
+        cbAtendentes.setModel(new DefaultComboBoxModel(new String[] {"mim", "Atendente 1", "Atendente 2"}));
+        cbAtendentes.setActionCommand("Default");
+        cbAtendentes.addActionListener(controller);
+        pnStatus.add(cbAtendentes);
         
         JLabel lblDe = new JLabel("de:");
-        panel.add(lblDe);
+        pnStatus.add(lblDe);
         
-        panel.add(jData1);
+        pnStatus.add(jData1);
         
         lblAte = new JLabel("at\u00E9:");
-        panel.add(lblAte);
-        panel.add(jData2);
+        pnStatus.add(lblAte);
+        pnStatus.add(jData2);
         
         JButton btnOk = new JButton("OK");
-        panel.add(btnOk);
+        btnOk.setActionCommand("Filtrar");
+        btnOk.addActionListener(controller);
+        pnStatus.add(btnOk);
         
         jPanel1.setLayout(jPanel1Layout);
         
@@ -139,7 +143,5 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-
-        setBounds(0, 0, 1080, 620);
     }
 }

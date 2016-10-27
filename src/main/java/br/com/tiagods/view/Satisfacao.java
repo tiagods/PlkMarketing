@@ -54,18 +54,18 @@ public class Satisfacao extends JFrame {
 		JButton btnNewButton = new JButton("Salvar");
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
-					.addContainerGap(325, Short.MAX_VALUE)
+			gl_panel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap(351, Short.MAX_VALUE)
 					.addComponent(btnNewButton)
 					.addContainerGap())
 		);
 		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
-					.addContainerGap(190, Short.MAX_VALUE)
+			gl_panel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap(218, Short.MAX_VALUE)
 					.addComponent(btnNewButton)
-					.addGap(39))
+					.addContainerGap())
 		);
 		panel.setLayout(gl_panel);
 		contentPane.setLayout(gl_contentPane);
