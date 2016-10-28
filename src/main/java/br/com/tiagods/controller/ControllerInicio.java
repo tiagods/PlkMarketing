@@ -1,25 +1,36 @@
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.InicioView.cbAtendentes;
 import static br.com.tiagods.view.InicioView.jData1;
 import static br.com.tiagods.view.InicioView.jData2;
+import static br.com.tiagods.view.InicioView.lbInfoTarefas;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-public class ControllerInicio implements ActionListener{
+import br.com.tiagods.model.Funcionario;
+import br.com.tiagods.model.FuncionarioDao;
+import br.com.tiagods.model.TarefaDao;
 
+public class ControllerInicio implements ActionListener,MouseListener{
+
+	boolean liberar = false;
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){
 		case "Filtrar":
-			if(validate())
+			if(validarDatas())
+				abrirTarefasView();
 			break;
 		default:
-			JOptionPane.showMessageDialog(null, "heelo");
+			
 			break;
 		}
 	}
@@ -29,37 +40,88 @@ public class ControllerInicio implements ActionListener{
 		carregarAtendentes();
 		carregarTarefasHoje();
 	}
-
+	//carregar tarefas pendentes
 	private void carregarTarefasHoje() {
 		//verificar permissão e carregar tarefas do's usuarios
+		TarefaDao tDao = new TarefaDao();
+		int quant = tDao.getQuantidade();
+		switch(quant){
+		case 0:
+			String v1 = "Você não tem tarefas pendentes para hoje!";
+			lbInfoTarefas.setText(v1);
+			break;
+		case 1:
+			String v2 = "Você tem 1 tarefa pendente para hoje!Clique aqui...";
+			lbInfoTarefas.setText(v2);
+			break;
+		case 3:
+			String v3 = "Você tem "+quant+" tarefas pendentes para hoje!Clique aqui...";
+			lbInfoTarefas.setText(v3);
+			break;
+		}
 	}
-
+	//carregar lista de atendentes
 	private void carregarAtendentes() {
-		//
+		FuncionarioDao funcDao = new FuncionarioDao();
+		Set<Funcionario> lista = funcDao.getLista();
+		cbAtendentes.addItem("mim");
+		lista.forEach(c->{
+			cbAtendentes.addItem(c.getNome());
+		});
+		cbAtendentes.setSelectedItem("mim");
 	}
-
+	//enviar data atual
 	private void carregarDataAgora() {
 		jData1.setDate(new Date());
 		jData2.setDate(new Date());
         
 	}
-	private boolean validate(){
+	//validar datas
+	private boolean validarDatas(){
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendar2 = Calendar.getInstance();
 		try{
 			calendar.setTime(jData1.getDate());
 			calendar2.setTime(jData2.getDate());
-
-			JOptionPane.showMessageDialog(null, "Data valida");
-			if(calendar.before(calendar2)){
-				//JOptionPane.showMessageDialog(null, "Data informada é superior ao 2 periodo");
+			if(calendar.after(calendar2) && !calendar.equals(calendar2)){
+				JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
+						"O intervalo entre as datas está incorreto\n"
+						+ "A data 1 deve ser igual ou menor que a data 2!",
+						"Intervalo de busca incorreto!", 
+						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
 			return true;
 		}catch(NullPointerException e){
-			//JOptionPane.showMessageDialog(null, "Data informada está incorreta,\n Tente novamente!");
+			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
+					"Data incorreta\nPor favor verifique a(s) data(s) informada(s)!",
+					"Entrada incorreta!", 
+					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
 	}
-
+	//abrir nova tela
+	private void abrirTarefasView(){
+		
+	}
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		abrirTarefasView();
+	}
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
 }

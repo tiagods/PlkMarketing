@@ -23,10 +23,10 @@ import br.com.tiagods.controller.ControllerInicio;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
-	private JLabel lbInfoTarefas;
-    private JPanel jPanel1;
+	private JPanel jPanel1;
     private JLabel lblAte;
 	
+    public static JLabel lbInfoTarefas;
     public static JPanel pnStatus;
     public static JDateChooser jData1;
 	public static JDateChooser jData2;
@@ -104,6 +104,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         );
         lbInfoTarefas = new JLabel();
         lbInfoTarefas.setHorizontalAlignment(SwingConstants.CENTER);
+        lbInfoTarefas.addMouseListener(controller);
         pnDetalhes.add(lbInfoTarefas);
         
         lbInfoTarefas.setFont(new Font("Dialog", Font.BOLD, 26)); // NOI18N
@@ -112,9 +113,6 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         pnStatus.add(lblCriadoPor);
         
         cbAtendentes = new JComboBox();
-        cbAtendentes.setModel(new DefaultComboBoxModel(new String[] {"mim", "Atendente 1", "Atendente 2"}));
-        cbAtendentes.setActionCommand("Default");
-        cbAtendentes.addActionListener(controller);
         pnStatus.add(cbAtendentes);
         
         JLabel lblDe = new JLabel("de:");
