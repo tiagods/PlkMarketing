@@ -15,8 +15,8 @@ import java.util.Set;
 
 import javax.swing.JOptionPane;
 
-import br.com.tiagods.model.Funcionario;
-import br.com.tiagods.model.FuncionarioDao;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioDao;
 import br.com.tiagods.model.TarefaDao;
 
 public class ControllerInicio implements ActionListener,MouseListener{
@@ -38,13 +38,13 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	public void iniciar(){
 		carregarDataAgora();
 		carregarAtendentes();
-		carregarTarefasHoje();
+		//carregarTarefasHoje();
 	}
 	//carregar tarefas pendentes
-	private void carregarTarefasHoje() {
+	private void carregarTarefasHoje(Usuario sessao) {
 		//verificar permissão e carregar tarefas do's usuarios
 		TarefaDao tDao = new TarefaDao();
-		int quant = tDao.getQuantidade();
+		int quant = tDao.getQuantidade(sessao);
 		switch(quant){
 		case 0:
 			String v1 = "Você não tem tarefas pendentes para hoje!";
@@ -62,8 +62,8 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	}
 	//carregar lista de atendentes
 	private void carregarAtendentes() {
-		FuncionarioDao funcDao = new FuncionarioDao();
-		Set<Funcionario> lista = funcDao.getLista();
+		UsuarioDao funcDao = new UsuarioDao();
+		Set<Usuario> lista = funcDao.getLista();
 		cbAtendentes.addItem("mim");
 		lista.forEach(c->{
 			cbAtendentes.addItem(c.getNome());

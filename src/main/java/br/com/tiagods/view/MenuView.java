@@ -49,7 +49,6 @@ public class MenuView extends JFrame implements DefaultUtilities{
 		controller.Inicia();
 	}
 	public void initComponents(){
-		setAlwaysOnTop(true);
 		getContentPane().setBackground(getColor());
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setBounds(100, 100, 450, 300);

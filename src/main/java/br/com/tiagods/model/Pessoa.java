@@ -1,5 +1,25 @@
 package br.com.tiagods.model;
 
-public class Pessoa {
+import java.io.Serializable;
 
+public class Pessoa extends PfPj implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String cpf;
+
+	/**
+	 * @return the cpf
+	 */
+	public String getCpf() {
+		return cpf;
+	}
+
+	/**
+	 * @param cpf the cpf to set
+	 */
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 }

@@ -15,7 +15,7 @@ public class TarefaDao {
 		factory.closeSession(session);
 		return list;
 	}
-	public int getQuantidade(Funcionario funcionario){
+	public int getQuantidade(Usuario usuario){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
 		String hql = "FROM Tarefa as c where c.DATA_INICIO "
@@ -23,7 +23,7 @@ public class TarefaDao {
 				+ "and c.DATA_FIM = :dayNow "
 				+"and c.ATENDENTE = :atendente";
 		int quant = session.createQuery(hql)
-				.setParameter("dayNow", new Date()).setParameter("atendente", funcionario.getId()).getMaxResults();
+				.setParameter("dayNow", new Date()).setParameter("atendente", usuario.getId()).getMaxResults();
 		factory.closeSession(session);
 		return quant;
 	}

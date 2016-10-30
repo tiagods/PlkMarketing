@@ -6,12 +6,12 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 
-public class FuncionarioDao {
+public class UsuarioDao {
 	
-	public Set<Funcionario> getLista(){
+	public Set<Usuario> getLista(){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
-		Set<Funcionario> list = (Set<Funcionario>)session.createQuery("from Funcionario").getResultList();
+		Set<Usuario> list = (Set<Usuario>)session.createQuery("from Usuario").getResultList();
 		factory.closeSession(session);
 		return list;
 	}
