@@ -1,59 +1,63 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Font;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JComboBox;
-import java.awt.Color;
-import javax.swing.SwingConstants;
-import com.toedter.calendar.JDateChooser;
-import javax.swing.JTextArea;
-import javax.swing.JFormattedTextField;
-import javax.swing.JCheckBox;
-import javax.swing.JTable;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
+import com.toedter.calendar.JDateChooser;
+
+import br.com.tiagods.view.interfaces.DefaultModelComboBox.Logradouro;
+import br.com.tiagods.view.interfaces.DefaultModelComboBox.Estados;
 
 public class PessoasView extends JInternalFrame {
 	private javax.swing.ButtonGroup group_situacao;
-    private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox7;
-    private javax.swing.JComboBox<String> jComboBox8;
-    private javax.swing.JComboBox<String> jComboBox9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
+    public static javax.swing.JComboBox<String> cbAtendente;
+    public static javax.swing.JComboBox<String> cbCategoria;
+    public static javax.swing.JComboBox<String> cbMeio;
+    public static javax.swing.JComboBox<String> cbEmpresa;
+    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JPanel pnCabecalho;
+    public static javax.swing.JPanel pnAuxiliar;
+    public static javax.swing.JPanel pnPrivacidade;
 	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
-	private JDateChooser dateChooser;
+	public static JDateChooser dateChooser;
 	private JLabel label_1;
 	private JDateChooser dateChooser_1;
 	private JButton button_1;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
+	private JTextField txLogradouro;
+	private JTextField txComplemento;
+	private JTextField txCodigo;
+	private JTextField txNome;
+	private JTextField txNum;
 	private JTextField textField_7;
-	private JTextField textField_8;
-	private JTextField textField_9;
-	private JTextField textField_10;
+	private JTextField txCpf;
+	private JTextField txEmail;
+	private JTextField txSite;
 	private JTextField textField_11;
-	private JTable jTableAux;
-	private JTextField textField_3;
-	private JTable table;
+	private JTable tbAuxiliar;
+	private JTextField txBuscar;
+	private JTable tbPrincipal;
 
 	/**
 	 * Launch the application.
@@ -76,40 +80,42 @@ public class PessoasView extends JInternalFrame {
 	 */
 	public PessoasView() {
 		initComponents();
+		pnAuxiliar.setVisible(false);
+		pnPrivacidade.setVisible(false);
 	}
 	private void initComponents() {
 
         group_situacao = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel3.setBounds(0, 0, 1240, 69);
-        jComboBox4 = new javax.swing.JComboBox<>();
-        jComboBox7 = new javax.swing.JComboBox<>();
-        jComboBox8 = new javax.swing.JComboBox<>();
-        jComboBox9 = new javax.swing.JComboBox<>();
+        pnCabecalho = new javax.swing.JPanel();
+        pnCabecalho.setBounds(0, 0, 1240, 69);
+        cbAtendente = new javax.swing.JComboBox<>();
+        cbCategoria = new javax.swing.JComboBox<>();
+        cbMeio = new javax.swing.JComboBox<>();
+        cbEmpresa = new javax.swing.JComboBox<>();
         setBorder(null);
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
 
         jPanel1.setBackground(new java.awt.Color(250, 250, 250));
         
-        jPanel3.setBackground(new java.awt.Color(250, 250, 250));
+        pnCabecalho.setBackground(new java.awt.Color(250, 250, 250));
 
-        jComboBox4.setBackground(new java.awt.Color(250, 250, 250));
-        jComboBox4.setModel(new DefaultComboBoxModel(new String[] {"Responsavel", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
+        cbAtendente.setBackground(new java.awt.Color(250, 250, 250));
+        cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Responsavel", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
         
-        jComboBox7.setBackground(new java.awt.Color(250, 250, 250));
-        jComboBox7.setModel(new DefaultComboBoxModel(new String[] {"Status", "Em Andamento", "Ganho", "Perdido"}));
+        cbCategoria.setBackground(new java.awt.Color(250, 250, 250));
+        cbCategoria.setModel(new DefaultComboBoxModel(new String[] {"Categoria"}));
 
-        jComboBox8.setBackground(new java.awt.Color(250, 250, 250));
-        jComboBox8.setModel(new DefaultComboBoxModel(new String[] {"Meio"}));
+        cbMeio.setBackground(new java.awt.Color(250, 250, 250));
+        cbMeio.setModel(new DefaultComboBoxModel(new String[] {"Meio"}));
 
-        jComboBox9.setBackground(new java.awt.Color(250, 250, 250));
-        jComboBox9.setModel(new DefaultComboBoxModel(new String[] {"Empresa", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
+        cbEmpresa.setBackground(new java.awt.Color(250, 250, 250));
+        cbEmpresa.setModel(new DefaultComboBoxModel(new String[] {"Empresa", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
         
-        JComboBox<String> comboBox = new JComboBox<String>();
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"Pessoa", "Todos"}));
-        comboBox.setBackground(new Color(250, 250, 250));
+        JComboBox<String> cbProdServicos = new JComboBox<String>();
+        cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Pessoa", "Todos"}));
+        cbProdServicos.setBackground(new Color(250, 250, 250));
         
         panel = new JPanel();
         panel.setBackground(new Color(250, 250, 250));
@@ -134,37 +140,37 @@ public class PessoasView extends JInternalFrame {
         button_1.setBounds(142, 37, 51, 20);
         button_1.setText("OK");
         
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3Layout.setHorizontalGroup(
-        	jPanel3Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout gl_pnCabecalho = new javax.swing.GroupLayout(pnCabecalho);
+        gl_pnCabecalho.setHorizontalGroup(
+        	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnCabecalho.createSequentialGroup()
         			.addContainerGap()
-        			.addComponent(jComboBox7, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(jComboBox8, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(cbMeio, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(jComboBox9, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(jComboBox4, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addGap(148)
         			.addComponent(panel, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap(138, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-        	jPanel3Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel3Layout.createSequentialGroup()
-        			.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+        gl_pnCabecalho.setVerticalGroup(
+        	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnCabecalho.createSequentialGroup()
+        			.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
         				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        				.addGroup(jPanel3Layout.createSequentialGroup()
+        				.addGroup(gl_pnCabecalho.createSequentialGroup()
         					.addGap(23)
-        					.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
-        						.addComponent(jComboBox7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(jComboBox8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(jComboBox9, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(jComboBox4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+        					.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.BASELINE)
+        						.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbMeio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
         			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel.setLayout(null);
@@ -173,7 +179,7 @@ public class PessoasView extends JInternalFrame {
         panel.add(dateChooser);
         panel.add(dateChooser_1);
         panel.add(button_1);
-        jPanel3.setLayout(jPanel3Layout);
+        pnCabecalho.setLayout(gl_pnCabecalho);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -186,199 +192,197 @@ public class PessoasView extends JInternalFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1.setLayout(null);
-        jPanel1.add(jPanel3);
+        jPanel1.add(pnCabecalho);
         
-        JPanel panel_1 = new JPanel();
-        panel_1.setLayout(null);
-        panel_1.setBackground((Color) null);
-        panel_1.setBounds(10, 260, 760, 363);
-        jPanel1.add(panel_1);
+        JPanel pnPrincipal = new JPanel();
+        pnPrincipal.setLayout(null);
+        pnPrincipal.setBackground((Color) null);
+        pnPrincipal.setBounds(10, 260, 760, 363);
+        jPanel1.add(pnPrincipal);
         
-        JLabel label_2 = new JLabel();
-        label_2.setText("{COD###}");
-        label_2.setBounds(10, 14, 56, 14);
-        panel_1.add(label_2);
+        JLabel lbCodigo = new JLabel();
+        lbCodigo.setText("{COD###}");
+        lbCodigo.setBounds(10, 14, 56, 14);
+        pnPrincipal.add(lbCodigo);
         
         JLabel label_3 = new JLabel();
         label_3.setText("Cidade:");
         label_3.setBounds(10, 278, 56, 17);
-        panel_1.add(label_3);
+        pnPrincipal.add(label_3);
         
-        JLabel label_4 = new JLabel();
-        label_4.setText("Nivel:");
-        label_4.setBounds(10, 96, 56, 18);
-        panel_1.add(label_4);
+        JLabel lbNivel = new JLabel();
+        lbNivel.setText("Nivel:");
+        lbNivel.setBounds(10, 96, 56, 18);
+        pnPrincipal.add(lbNivel);
         
-        JLabel label_5 = new JLabel();
-        label_5.setText("Telefone:");
-        label_5.setBounds(10, 154, 56, 20);
-        panel_1.add(label_5);
+        JLabel lbTelefone = new JLabel();
+        lbTelefone.setText("Telefone:");
+        lbTelefone.setBounds(10, 154, 56, 20);
+        pnPrincipal.add(lbTelefone);
         
-        JComboBox<String> comboBox_1 = new JComboBox<String>();
-        comboBox_1.setBounds(10, 214, 56, 20);
-        panel_1.add(comboBox_1);
+        JComboBox<String> cbLogradouro = new JComboBox<String>();
+        cbLogradouro.setModel(new DefaultComboBoxModel(Logradouro.values()));
+        cbLogradouro.setBounds(10, 214, 87, 20);
+        pnPrincipal.add(cbLogradouro);
         
-        JLabel label_6 = new JLabel();
-        label_6.setText("Nome:");
-        label_6.setBounds(10, 40, 56, 17);
-        panel_1.add(label_6);
+        JLabel lbNome = new JLabel();
+        lbNome.setText("Nome:");
+        lbNome.setBounds(10, 40, 56, 17);
+        pnPrincipal.add(lbNome);
         
-        JLabel lblCpf = new JLabel();
-        lblCpf.setText("CPF:");
-        lblCpf.setBounds(10, 71, 56, 14);
-        panel_1.add(lblCpf);
+        JLabel lbCpf = new JLabel();
+        lbCpf.setText("CPF:");
+        lbCpf.setBounds(10, 71, 56, 14);
+        pnPrincipal.add(lbCpf);
         
-        JLabel label_8 = new JLabel();
-        label_8.setText("Compl:");
-        label_8.setBounds(203, 245, 43, 20);
-        panel_1.add(label_8);
+        JLabel lbComplemento = new JLabel();
+        lbComplemento.setText("Compl:");
+        lbComplemento.setBounds(203, 245, 43, 20);
+        pnPrincipal.add(lbComplemento);
         
-        JComboBox<String> comboBox_2 = new JComboBox<String>();
-        comboBox_2.setBounds(107, 96, 87, 20);
-        panel_1.add(comboBox_2);
+        JComboBox<String> cbNivelCad = new JComboBox<String>();
+        cbNivelCad.setBounds(107, 96, 87, 20);
+        pnPrincipal.add(cbNivelCad);
         
-        JLabel lblMeio = new JLabel();
-        lblMeio.setText("Meio:");
-        lblMeio.setBounds(385, 98, 35, 14);
-        panel_1.add(lblMeio);
+        JLabel lbMeio = new JLabel();
+        lbMeio.setText("Meio:");
+        lbMeio.setBounds(385, 96, 35, 18);
+        pnPrincipal.add(lbMeio);
         
-        JComboBox<String> comboBox_3 = new JComboBox<String>();
-        comboBox_3.setBounds(438, 95, 92, 20);
-        panel_1.add(comboBox_3);
+        JComboBox<String> cbMeioCad = new JComboBox<String>();
+        cbMeioCad.setBounds(438, 96, 92, 20);
+        pnPrincipal.add(cbMeioCad);
         
-        textField = new JTextField();
-        textField.setBounds(107, 214, 201, 20);
-        panel_1.add(textField);
+        txLogradouro = new JTextField();
+        txLogradouro.setBounds(107, 214, 201, 20);
+        pnPrincipal.add(txLogradouro);
         
-        textField_1 = new JTextField();
-        textField_1.setBounds(107, 276, 107, 20);
-        panel_1.add(textField_1);
+        txComplemento = new JTextField();
+        txComplemento.setBounds(252, 245, 56, 20);
+        pnPrincipal.add(txComplemento);
         
-        textField_2 = new JTextField();
-        textField_2.setBounds(252, 245, 56, 20);
-        panel_1.add(textField_2);
+        txCodigo = new JTextField();
+        txCodigo.setBounds(107, 11, 87, 20);
+        pnPrincipal.add(txCodigo);
         
-        textField_4 = new JTextField();
-        textField_4.setBounds(107, 11, 87, 20);
-        panel_1.add(textField_4);
+        txNome = new JTextField();
+        txNome.setBounds(107, 39, 201, 20);
+        pnPrincipal.add(txNome);
         
-        textField_5 = new JTextField();
-        textField_5.setBounds(107, 39, 201, 20);
-        panel_1.add(textField_5);
+        JFormattedTextField txTelefone = new JFormattedTextField();
+        txTelefone.setText("(99)3204-0000");
+        txTelefone.setBounds(107, 154, 87, 20);
+        pnPrincipal.add(txTelefone);
         
-        JFormattedTextField formattedTextField = new JFormattedTextField();
-        formattedTextField.setText("(99)3204-0000");
-        formattedTextField.setBounds(107, 154, 87, 20);
-        panel_1.add(formattedTextField);
+        JLabel lbEstado = new JLabel();
+        lbEstado.setText("Estado:");
+        lbEstado.setBounds(384, 275, 52, 19);
+        pnPrincipal.add(lbEstado);
         
-        JLabel label_10 = new JLabel();
-        label_10.setText("Estado:");
-        label_10.setBounds(384, 275, 52, 19);
-        panel_1.add(label_10);
+        JComboBox<String> cbEstado = new JComboBox<String>();
+        cbEstado.setModel(new DefaultComboBoxModel(Estados.values()));
+        cbEstado.setBounds(440, 275, 52, 20);
+        pnPrincipal.add(cbEstado);
         
-        JComboBox<String> comboBox_4 = new JComboBox<String>();
-        comboBox_4.setBounds(440, 275, 52, 20);
-        panel_1.add(comboBox_4);
+        JLabel lbNum = new JLabel();
+        lbNum.setText("N\u00BA:");
+        lbNum.setBounds(385, 213, 51, 20);
+        pnPrincipal.add(lbNum);
         
-        JLabel label_11 = new JLabel();
-        label_11.setText("N\u00BA:");
-        label_11.setBounds(385, 213, 51, 20);
-        panel_1.add(label_11);
-        
-        JLabel label_12 = new JLabel();
-        label_12.setText("Celular");
-        label_12.setBounds(385, 153, 51, 20);
-        panel_1.add(label_12);
+        JLabel lbCelular = new JLabel();
+        lbCelular.setText("Celular");
+        lbCelular.setBounds(385, 154, 51, 19);
+        pnPrincipal.add(lbCelular);
         
         JLabel label_13 = new JLabel();
         label_13.setText("Bairro:");
         label_13.setBounds(385, 244, 43, 20);
-        panel_1.add(label_13);
+        pnPrincipal.add(label_13);
         
-        JFormattedTextField formattedTextField_1 = new JFormattedTextField();
-        formattedTextField_1.setText("(00)99999-0000");
-        formattedTextField_1.setBounds(440, 153, 90, 20);
-        panel_1.add(formattedTextField_1);
+        JFormattedTextField txCelular = new JFormattedTextField();
+        txCelular.setText("(00)99999-0000");
+        txCelular.setBounds(440, 154, 90, 20);
+        pnPrincipal.add(txCelular);
         
-        textField_6 = new JTextField();
-        textField_6.setBounds(440, 213, 35, 20);
-        panel_1.add(textField_6);
+        txNum = new JTextField();
+        txNum.setBounds(440, 213, 35, 20);
+        pnPrincipal.add(txNum);
         
         textField_7 = new JTextField();
         textField_7.setBounds(440, 244, 90, 20);
-        panel_1.add(textField_7);
+        pnPrincipal.add(textField_7);
         
-        JLabel label_14 = new JLabel();
-        label_14.setText("{Usuario}");
-        label_14.setBounds(546, 14, 56, 14);
-        panel_1.add(label_14);
+        JLabel txCadastradoPor = new JLabel();
+        txCadastradoPor.setText("{Usuario}");
+        txCadastradoPor.setBounds(546, 14, 56, 14);
+        pnPrincipal.add(txCadastradoPor);
         
         JLabel lblCadastro = new JLabel();
-        lblCadastro.setText("Cadastro:");
-        lblCadastro.setBounds(385, 14, 56, 14);
-        panel_1.add(lblCadastro);
+        lblCadastro.setText("Cadastro em:");
+        lblCadastro.setBounds(385, 14, 73, 14);
+        pnPrincipal.add(lblCadastro);
         
-        JLabel label_16 = new JLabel();
-        label_16.setText("{Date###}");
-        label_16.setBounds(438, 14, 73, 14);
-        panel_1.add(label_16);
+        JLabel lbDataCadastro = new JLabel();
+        lbDataCadastro.setText("{Date###}");
+        lbDataCadastro.setBounds(463, 14, 73, 14);
+        pnPrincipal.add(lbDataCadastro);
         
-        textField_8 = new JTextField();
-        textField_8.setText("000.000.000-00");
-        textField_8.setBounds(107, 68, 109, 20);
-        panel_1.add(textField_8);
+        txCpf = new JTextField();
+        txCpf.setText("000.000.000-00");
+        txCpf.setBounds(107, 68, 109, 20);
+        pnPrincipal.add(txCpf);
         
         JButton button = new JButton();
         button.setText("Novo");
         button.setBounds(107, 307, 90, 23);
-        panel_1.add(button);
+        pnPrincipal.add(button);
         
         JButton button_2 = new JButton();
         button_2.setText("Editar");
         button_2.setBounds(203, 307, 90, 23);
-        panel_1.add(button_2);
+        pnPrincipal.add(button_2);
         
         JButton button_3 = new JButton();
         button_3.setText("Salvar");
         button_3.setBounds(299, 307, 90, 23);
-        panel_1.add(button_3);
+        pnPrincipal.add(button_3);
         
         JButton button_4 = new JButton();
         button_4.setText("Excluir");
         button_4.setBounds(395, 307, 90, 23);
-        panel_1.add(button_4);
+        pnPrincipal.add(button_4);
         
-        textField_9 = new JTextField();
-        textField_9.setBounds(107, 183, 201, 20);
-        panel_1.add(textField_9);
+        txEmail = new JTextField();
+        txEmail.setBounds(107, 183, 201, 20);
+        pnPrincipal.add(txEmail);
         
-        JLabel label_17 = new JLabel();
-        label_17.setText("E-mail");
-        label_17.setBounds(10, 183, 56, 20);
-        panel_1.add(label_17);
+        JLabel lbEmail1 = new JLabel();
+        lbEmail1.setText("E-mail");
+        lbEmail1.setBounds(10, 183, 56, 20);
+        pnPrincipal.add(lbEmail1);
         
-        textField_10 = new JTextField();
-        textField_10.setBounds(440, 184, 126, 20);
-        panel_1.add(textField_10);
+        txSite = new JTextField();
+        txSite.setBounds(440, 184, 126, 20);
+        pnPrincipal.add(txSite);
         
-        JLabel label_18 = new JLabel();
-        label_18.setText("Site");
-        label_18.setBounds(385, 184, 43, 20);
-        panel_1.add(label_18);
+        JLabel lbSite = new JLabel();
+        lbSite.setText("Site");
+        lbSite.setBounds(385, 184, 43, 20);
+        pnPrincipal.add(lbSite);
         
-        JLabel label_19 = new JLabel();
-        label_19.setText("Atendente:");
-        label_19.setBounds(385, 42, 87, 17);
-        panel_1.add(label_19);
+        JLabel lbAtendente = new JLabel();
+        lbAtendente.setText("Atendente:");
+        lbAtendente.setBounds(385, 42, 87, 17);
+        pnPrincipal.add(lbAtendente);
         
-        JComboBox<String> comboBox_5 = new JComboBox<String>();
-        comboBox_5.setBounds(476, 40, 92, 20);
-        panel_1.add(comboBox_5);
+        JComboBox<String> cbAtendenteCad = new JComboBox<String>();
+        cbAtendenteCad.setBounds(476, 40, 92, 20);
+        pnPrincipal.add(cbAtendenteCad);
         
-        JPanel panel_2 = new JPanel();
-        panel_2.setBackground((Color) null);
-        panel_2.setBounds(601, 0, 159, 363);
-        panel_1.add(panel_2);
+        pnPrivacidade = new JPanel();
+        pnPrivacidade.setBackground((Color) null);
+        pnPrivacidade.setBounds(601, 0, 159, 363);
+        pnPrincipal.add(pnPrivacidade);
         
         JCheckBox checkBox = new JCheckBox("Outros");
         checkBox.setBackground((Color) null);
@@ -391,23 +395,23 @@ public class PessoasView extends JInternalFrame {
         
         JLabel label_20 = new JLabel("Privacidade:");
         label_20.setHorizontalAlignment(SwingConstants.CENTER);
-        GroupLayout gl_panel_2 = new GroupLayout(panel_2);
-        gl_panel_2.setHorizontalGroup(
-        	gl_panel_2.createParallelGroup(Alignment.LEADING)
+        GroupLayout gl_pnPrivacidade = new GroupLayout(pnPrivacidade);
+        gl_pnPrivacidade.setHorizontalGroup(
+        	gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)
         		.addGap(0, 159, Short.MAX_VALUE)
-        		.addGroup(gl_panel_2.createSequentialGroup()
+        		.addGroup(gl_pnPrivacidade.createSequentialGroup()
         			.addContainerGap()
-        			.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+        			.addGroup(gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)
         				.addComponent(checkBox, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
         				.addComponent(checkBox_1, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
         				.addComponent(checkBox_2, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
         				.addComponent(label_20, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
         			.addContainerGap())
         );
-        gl_panel_2.setVerticalGroup(
-        	gl_panel_2.createParallelGroup(Alignment.LEADING)
+        gl_pnPrivacidade.setVerticalGroup(
+        	gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)
         		.addGap(0, 334, Short.MAX_VALUE)
-        		.addGroup(gl_panel_2.createSequentialGroup()
+        		.addGroup(gl_pnPrivacidade.createSequentialGroup()
         			.addGap(43)
         			.addComponent(label_20)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -418,108 +422,112 @@ public class PessoasView extends JInternalFrame {
         			.addComponent(checkBox)
         			.addContainerGap(195, Short.MAX_VALUE))
         );
-        panel_2.setLayout(gl_panel_2);
+        pnPrivacidade.setLayout(gl_pnPrivacidade);
         
         JButton button_5 = new JButton();
         button_5.setText("Historico");
         button_5.setBounds(203, 340, 90, 23);
-        panel_1.add(button_5);
+        pnPrincipal.add(button_5);
         
         JButton button_6 = new JButton();
         button_6.setText("Neg\u00F3cios");
         button_6.setBounds(299, 340, 90, 23);
-        panel_1.add(button_6);
+        pnPrincipal.add(button_6);
         
-        JLabel label_21 = new JLabel();
-        label_21.setText("CEP:");
-        label_21.setBounds(10, 247, 35, 20);
-        panel_1.add(label_21);
+        JLabel lbCep = new JLabel();
+        lbCep.setText("CEP:");
+        lbCep.setBounds(10, 247, 35, 20);
+        pnPrincipal.add(lbCep);
         
-        JFormattedTextField formattedTextField_2 = new JFormattedTextField();
-        formattedTextField_2.setText("00000-000");
-        formattedTextField_2.setBounds(107, 245, 78, 20);
-        panel_1.add(formattedTextField_2);
+        JFormattedTextField txCep = new JFormattedTextField();
+        txCep.setText("00000-000");
+        txCep.setBounds(107, 245, 78, 20);
+        pnPrincipal.add(txCep);
         
-        JLabel lblNasc = new JLabel();
-        lblNasc.setText("Nasc:");
-        lblNasc.setBounds(385, 71, 35, 14);
-        panel_1.add(lblNasc);
+        JLabel lbNascimento = new JLabel();
+        lbNascimento.setText("Nasc:");
+        lbNascimento.setBounds(385, 71, 35, 14);
+        pnPrincipal.add(lbNascimento);
         
-        JDateChooser dateChooser_2 = new JDateChooser();
-        dateChooser_2.setBounds(438, 68, 100, 20);
-        panel_1.add(dateChooser_2);
+        JDateChooser txDataNascimento = new JDateChooser();
+        txDataNascimento.setBounds(438, 68, 100, 20);
+        pnPrincipal.add(txDataNascimento);
         
-        JButton button_11 = new JButton();
-        button_11.setText("ADC");
-        button_11.setBounds(540, 94, 36, 23);
-        panel_1.add(button_11);
+        JButton btMeioCad = new JButton();
+        btMeioCad.setText("ADC");
+        btMeioCad.setBounds(540, 94, 36, 23);
+        pnPrincipal.add(btMeioCad);
         
-        JButton button_12 = new JButton();
-        button_12.setText("ADC");
-        button_12.setBounds(203, 94, 36, 23);
-        panel_1.add(button_12);
+        JButton btnNivelCad = new JButton();
+        btnNivelCad.setText("ADC");
+        btnNivelCad.setBounds(203, 94, 36, 23);
+        pnPrincipal.add(btnNivelCad);
         
-        JLabel lblCategoria = new JLabel();
-        lblCategoria.setText("Categoria:");
-        lblCategoria.setBounds(10, 123, 56, 18);
-        panel_1.add(lblCategoria);
+        JButton btAddProdServicos = new JButton();
+        btAddProdServicos.setText("ADC");
+        btAddProdServicos.setBounds(564, 123, 36, 23);
+        pnPrincipal.add(btAddProdServicos);
         
-        JComboBox<String> comboBox_7 = new JComboBox<String>();
-        comboBox_7.setBounds(107, 123, 87, 20);
-        panel_1.add(comboBox_7);
+        JComboBox cbProdServicosCad = new JComboBox();
+        cbProdServicosCad.setBounds(438, 126, 116, 20);
+        pnPrincipal.add(cbProdServicosCad);
         
-        JButton button_7 = new JButton();
-        button_7.setText("ADC");
-        button_7.setBounds(203, 121, 36, 23);
-        panel_1.add(button_7);
-        
-        JComboBox comboBox_8 = new JComboBox();
-        comboBox_8.setBounds(438, 124, 116, 20);
-        panel_1.add(comboBox_8);
+        JLabel lbProdServicosCad = new JLabel();
+        lbProdServicosCad.setText("Produtos/Servi\u00E7os:");
+        lbProdServicosCad.setBounds(317, 126, 109, 17);
+        pnPrincipal.add(lbProdServicosCad);
         
         JButton button_13 = new JButton();
         button_13.setText("ADC");
-        button_13.setBounds(564, 123, 36, 23);
-        panel_1.add(button_13);
+        button_13.setBounds(203, 123, 36, 23);
+        pnPrincipal.add(button_13);
         
-        JLabel lblProdutosservios = new JLabel();
-        lblProdutosservios.setText("Produtos/Servi\u00E7os:");
-        lblProdutosservios.setBounds(317, 126, 107, 17);
-        panel_1.add(lblProdutosservios);
+        JComboBox<String> cbCategoriaCad = new JComboBox<String>();
+        cbCategoriaCad.setBounds(107, 126, 87, 20);
+        pnPrincipal.add(cbCategoriaCad);
         
-        JPanel panel_3 = new JPanel();
-        panel_3.setBackground(new Color(250, 250, 250));
-        panel_3.setBounds(780, 260, 460, 363);
-        jPanel1.add(panel_3);
+        JLabel lbCategoria = new JLabel();
+        lbCategoria.setText("Categoria:");
+        lbCategoria.setBounds(10, 126, 87, 18);
+        pnPrincipal.add(lbCategoria);
         
-        JScrollPane scrollPane = new JScrollPane();
+        JComboBox<String> cbCidade = new JComboBox<String>();
+        cbCidade.setBounds(107, 276, 87, 20);
+        pnPrincipal.add(cbCidade);
+        
+        pnAuxiliar = new JPanel();
+        pnAuxiliar.setBackground(new Color(250, 250, 250));
+        pnAuxiliar.setBounds(780, 260, 460, 363);
+        jPanel1.add(pnAuxiliar);
+        
+        JScrollPane scrolAuxiliar = new JScrollPane();
         
         textField_11 = new JTextField();
         textField_11.setColumns(10);
         
         JLabel label_7 = new JLabel("Historico");
         
-        JButton button_8 = new JButton("Esconder");
+        JButton btEsconder = new JButton("Esconder");
         
         JButton button_9 = new JButton("Novo");
         
         JButton button_10 = new JButton("Alterar");
         
         JScrollPane scrollPane_1 = new JScrollPane();
-        GroupLayout gl_panel_3 = new GroupLayout(panel_3);
-        gl_panel_3.setHorizontalGroup(
-        	gl_panel_3.createParallelGroup(Alignment.TRAILING)
+        GroupLayout gl_pnAuxiliar = new GroupLayout(pnAuxiliar);
+        gl_pnAuxiliar.setHorizontalGroup(
+        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
         		.addGap(0, 284, Short.MAX_VALUE)
-        		.addGroup(gl_panel_3.createSequentialGroup()
-        			.addGroup(gl_panel_3.createParallelGroup(Alignment.TRAILING)
-        				.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, gl_panel_3.createSequentialGroup()
-        					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
+        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
+        				.addComponent(scrolAuxiliar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
+        					.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
         						.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
         						.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
         					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-        					.addComponent(button_8))
-        				.addGroup(Alignment.LEADING, gl_panel_3.createSequentialGroup()
+        					.addComponent(btEsconder))
+        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
         					.addContainerGap(138, Short.MAX_VALUE)
         					.addComponent(button_9, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
         					.addPreferredGap(ComponentPlacement.RELATED)
@@ -527,29 +535,29 @@ public class PessoasView extends JInternalFrame {
         				.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
         			.addContainerGap())
         );
-        gl_panel_3.setVerticalGroup(
-        	gl_panel_3.createParallelGroup(Alignment.TRAILING)
+        gl_pnAuxiliar.setVerticalGroup(
+        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
         		.addGap(0, 334, Short.MAX_VALUE)
-        		.addGroup(gl_panel_3.createSequentialGroup()
+        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
         			.addContainerGap()
-        			.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
+        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
         				.addComponent(label_7)
-        				.addComponent(button_8))
+        				.addComponent(btEsconder))
         			.addGap(4)
         			.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         			.addGap(7)
         			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
         			.addGap(13)
-        			.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
+        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
         				.addComponent(button_9)
         				.addComponent(button_10))
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(scrolAuxiliar, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
         );
         
-        jTableAux = new JTable();
-        jTableAux.setModel(new DefaultTableModel(
+        tbAuxiliar = new JTable();
+        tbAuxiliar.setModel(new DefaultTableModel(
             	new Object[][] {
             	},
             	new String[] {
@@ -564,44 +572,48 @@ public class PessoasView extends JInternalFrame {
             	}
             }
             		);
-        scrollPane.setViewportView(jTableAux);
+        scrolAuxiliar.setViewportView(tbAuxiliar);
         
         JTextArea textArea = new JTextArea();
         scrollPane_1.setViewportView(textArea);
-        panel_3.setLayout(gl_panel_3);
+        pnAuxiliar.setLayout(gl_pnAuxiliar);
         
-        JComboBox<String> comboBox_6 = new JComboBox<String>();
-        comboBox_6.setModel(new DefaultComboBoxModel(new String[] {"Ordem Alfab\u00E9tica", "Data de Cadastro", "Atualiza\u00E7\u00E3o"}));
-        comboBox_6.setBounds(780, 107, 110, 20);
-        jPanel1.add(comboBox_6);
+        JComboBox<String> cbOrdenar = new JComboBox<String>();
+        cbOrdenar.setModel(new DefaultComboBoxModel(new String[] {"Ordem Alfab\u00E9tica", "Data de Cadastro", "Atualiza\u00E7\u00E3o"}));
+        cbOrdenar.setBounds(780, 107, 110, 20);
+        jPanel1.add(cbOrdenar);
         
-        JRadioButton radioButton = new JRadioButton();
-        radioButton.setText("Crescente");
-        radioButton.setBackground(new Color(250, 250, 250));
-        radioButton.setBounds(780, 134, 110, 23);
-        jPanel1.add(radioButton);
+        JRadioButton btCrescente = new JRadioButton();
+        btCrescente.setText("Crescente");
+        btCrescente.setBackground(new Color(250, 250, 250));
+        btCrescente.setBounds(780, 134, 110, 23);
+        jPanel1.add(btCrescente);
         
-        JRadioButton radioButton_1 = new JRadioButton();
-        radioButton_1.setText("Decrescente");
-        radioButton_1.setBackground(new Color(250, 250, 250));
-        radioButton_1.setBounds(780, 164, 110, 23);
-        jPanel1.add(radioButton_1);
+        JRadioButton btDecrescente = new JRadioButton();
+        btDecrescente.setText("Decrescente");
+        btDecrescente.setBackground(new Color(250, 250, 250));
+        btDecrescente.setBounds(780, 164, 110, 23);
+        jPanel1.add(btDecrescente);
+        ButtonGroup group = new ButtonGroup();
+        group.add(btCrescente);
+        group.add(btDecrescente);
         
-        JScrollPane scrollPane_2 = new JScrollPane();
-        scrollPane_2.setBounds(10, 107, 760, 142);
-        jPanel1.add(scrollPane_2);
         
-        table = new JTable();
-        scrollPane_2.setViewportView(table);
+        JScrollPane scrollPrincipal = new JScrollPane();
+        scrollPrincipal.setBounds(10, 107, 760, 142);
+        jPanel1.add(scrollPrincipal);
         
-        textField_3 = new JTextField();
-        textField_3.setColumns(10);
-        textField_3.setBounds(74, 80, 139, 20);
-        jPanel1.add(textField_3);
+        tbPrincipal = new JTable();
+        scrollPrincipal.setViewportView(tbPrincipal);
         
-        JLabel label_15 = new JLabel("Buscar");
-        label_15.setBounds(10, 83, 53, 14);
-        jPanel1.add(label_15);
+        txBuscar = new JTextField();
+        txBuscar.setColumns(10);
+        txBuscar.setBounds(74, 80, 139, 20);
+        jPanel1.add(txBuscar);
+        
+        JLabel lbBuscar = new JLabel("Buscar");
+        lbBuscar.setBounds(10, 83, 53, 14);
+        jPanel1.add(lbBuscar);
 
         setBounds(0, 0, 1250, 660);
     }

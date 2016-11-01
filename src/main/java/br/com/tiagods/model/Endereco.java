@@ -12,7 +12,8 @@ public class Endereco implements Serializable{
 	private String numero;
 	private String bairro;
 	private String cep;
-	private String cidade;
+	private Cidade cidade;
+	
 	/**
 	 * @return the rua
 	 */
@@ -76,13 +77,13 @@ public class Endereco implements Serializable{
 	/**
 	 * @return the cidade
 	 */
-	public String getCidade() {
+	public Cidade getCidade() {
 		return cidade;
 	}
 	/**
 	 * @param cidade the cidade to set
 	 */
-	public void setCidade(String cidade) {
+	public void setCidade(Cidade cidade) {
 		this.cidade = cidade;
 	}
 

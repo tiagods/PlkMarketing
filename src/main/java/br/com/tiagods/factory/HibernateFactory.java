@@ -10,6 +10,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateFactory {
+/*
 	//recebendo a sessao
 		public Session getSession(){
 			final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
@@ -50,4 +51,6 @@ public class HibernateFactory {
 			session.getTransaction().commit();
 			session.close();
 	}
+		*/
 }
+

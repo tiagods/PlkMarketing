@@ -2,6 +2,7 @@ package br.com.tiagods.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ public class PfPj extends Endereco implements Serializable{
 	private int celular;
 	private String email;
 	private String site;
-	private LocalDateTime criadoEm;
+	private Date criadoEm;
 	private Usuario criadoPor;
 	private Origem origem;
 	private Nivel nivel;
@@ -26,6 +27,7 @@ public class PfPj extends Endereco implements Serializable{
 	private Servico servico;
 	private ServicoAgregado servicoAgregado;
 	private Categoria categoria;
+
 	/**
 	 * @return the id
 	 */
@@ -101,13 +103,13 @@ public class PfPj extends Endereco implements Serializable{
 	/**
 	 * @return the criadoEm
 	 */
-	public LocalDateTime getCriadoEm() {
+	public Date getCriadoEm() {
 		return criadoEm;
 	}
 	/**
 	 * @param criadoEm the criadoEm to set
 	 */
-	public void setCriadoEm(LocalDateTime criadoEm) {
+	public void setCriadoEm(Date criadoEm) {
 		this.criadoEm = criadoEm;
 	}
 	/**

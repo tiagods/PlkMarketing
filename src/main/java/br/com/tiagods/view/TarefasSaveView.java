@@ -23,6 +23,7 @@ import com.toedter.calendar.JDateChooser;
  */
 
 import br.com.tiagods.view.interfaces.DefaultUtilities;
+import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
 import javax.swing.JTextArea;
 
@@ -131,7 +132,17 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         panEscolha.add(lblTipo);
         
         cbTipo = new JComboBox();
+        cbTipo.setModel(new DefaultComboBoxModel(Modelos.values()));
         panEscolha.add(cbTipo);
+        
+        JButton button = new JButton("+");
+        panEscolha.add(button);
+        
+        JLabel lblNewLabel_1 = new JLabel("{Cod***}");
+        panEscolha.add(lblNewLabel_1);
+        
+        JLabel lblNewLabel_2 = new JLabel("{Name***}");
+        panEscolha.add(lblNewLabel_2);
         
         JLabel lblResponsavel = new JLabel("Responsavel:");
         panEscolha.add(lblResponsavel);

@@ -37,7 +37,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	
 	public void iniciar(){
 		carregarDataAgora();
-		carregarAtendentes();
+		//carregarAtendentes();
 		//carregarTarefasHoje();
 	}
 	//carregar tarefas pendentes
@@ -45,29 +45,30 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		//verificar permissão e carregar tarefas do's usuarios
 		TarefaDao tDao = new TarefaDao();
 		int quant = tDao.getQuantidade(sessao);
+		String[] nome = sessao.getNome().split(" ");
 		switch(quant){
 		case 0:
-			String v1 = "Você não tem tarefas pendentes para hoje!";
+			String v1 = "Bom dia "+nome[0]+", você não tem tarefas pendentes para hoje!";
 			lbInfoTarefas.setText(v1);
 			break;
 		case 1:
-			String v2 = "Você tem 1 tarefa pendente para hoje!Clique aqui...";
+			String v2 = "Bom dia "+nome[0]+",  você tem 1 tarefa pendente para hoje!Clique aqui...";
 			lbInfoTarefas.setText(v2);
 			break;
 		case 3:
-			String v3 = "Você tem "+quant+" tarefas pendentes para hoje!Clique aqui...";
+			String v3 = "Bom dia "+nome[0]+", você tem "+quant+" tarefas pendentes para hoje!Clique aqui...";
 			lbInfoTarefas.setText(v3);
 			break;
 		}
 	}
 	//carregar lista de atendentes
 	private void carregarAtendentes() {
-		UsuarioDao funcDao = new UsuarioDao();
-		Set<Usuario> lista = funcDao.getLista();
-		cbAtendentes.addItem("mim");
-		lista.forEach(c->{
-			cbAtendentes.addItem(c.getNome());
-		});
+//		UsuarioDao funcDao = new UsuarioDao();
+//		Set<Usuario> lista = funcDao.getLista();
+//		cbAtendentes.addItem("mim");
+//		lista.forEach(c->{
+//			cbAtendentes.addItem(c.getNome());
+//		});
 		cbAtendentes.setSelectedItem("mim");
 	}
 	//enviar data atual
@@ -87,7 +88,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 				JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
 						"O intervalo entre as datas está incorreto\n"
 						+ "A data 1 deve ser igual ou menor que a data 2!",
-						"Intervalo de busca incorreto!", 
+						"Intervalo entre datas incorreto!", 
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}

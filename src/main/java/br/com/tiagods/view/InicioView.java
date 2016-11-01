@@ -113,6 +113,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         pnStatus.add(lblCriadoPor);
         
         cbAtendentes = new JComboBox();
+        cbAtendentes.setModel(new DefaultComboBoxModel(new String[] {"mim", "Operador1", "Operador2", "Operador3"}));
         pnStatus.add(cbAtendentes);
         
         JLabel lblDe = new JLabel("de:");
