@@ -1,8 +1,7 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -13,18 +12,22 @@ public class Negocio implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String nome;
-	private LocalDate dataInicio;
-	private LocalDate dataFim;
+	private Date dataInicio;
+	private Date dataFim;
 	private double honorario;
-	private double servicoAgregado;
 	private String classe;
-	private LocalDateTime criadoEm;
+	private Date criadoEm;
 	private Usuario criadoPor;
 	private Status status;
 	private Usuario atendente;
+	private Date contato;
+	private Date envioProposta;
+	private Date followUp;
+	private Date fechamento;
 	private Set<Tarefa> tarefas = new LinkedHashSet<Tarefa>();
 	private Set<Empresa> empresas = new LinkedHashSet<Empresa>();
 	private Set<Pessoa> pessoas = new LinkedHashSet<Pessoa>();
+	private Set<ServicoAgregado> servicosAgregados = new LinkedHashSet<ServicoAgregado>();
 	/**
 	 * @return the id
 	 */
@@ -52,25 +55,25 @@ public class Negocio implements Serializable{
 	/**
 	 * @return the dataInicio
 	 */
-	public LocalDate getDataInicio() {
+	public Date getDataInicio() {
 		return dataInicio;
 	}
 	/**
 	 * @param dataInicio the dataInicio to set
 	 */
-	public void setDataInicio(LocalDate dataInicio) {
+	public void setDataInicio(Date dataInicio) {
 		this.dataInicio = dataInicio;
 	}
 	/**
 	 * @return the dataFim
 	 */
-	public LocalDate getDataFim() {
+	public Date getDataFim() {
 		return dataFim;
 	}
 	/**
 	 * @param dataFim the dataFim to set
 	 */
-	public void setDataFim(LocalDate dataFim) {
+	public void setDataFim(Date dataFim) {
 		this.dataFim = dataFim;
 	}
 	/**
@@ -84,18 +87,6 @@ public class Negocio implements Serializable{
 	 */
 	public void setHonorario(double honorario) {
 		this.honorario = honorario;
-	}
-	/**
-	 * @return the servicoAgregado
-	 */
-	public double getServicoAgregado() {
-		return servicoAgregado;
-	}
-	/**
-	 * @param servicoAgregado the servicoAgregado to set
-	 */
-	public void setServicoAgregado(double servicoAgregado) {
-		this.servicoAgregado = servicoAgregado;
 	}
 	/**
 	 * @return the classe
@@ -112,13 +103,13 @@ public class Negocio implements Serializable{
 	/**
 	 * @return the criadoEm
 	 */
-	public LocalDateTime getCriadoEm() {
+	public Date getCriadoEm() {
 		return criadoEm;
 	}
 	/**
 	 * @param criadoEm the criadoEm to set
 	 */
-	public void setCriadoEm(LocalDateTime criadoEm) {
+	public void setCriadoEm(Date criadoEm) {
 		this.criadoEm = criadoEm;
 	}
 	/**
@@ -158,6 +149,54 @@ public class Negocio implements Serializable{
 		this.atendente = atendente;
 	}
 	/**
+	 * @return the contato
+	 */
+	public Date getContato() {
+		return contato;
+	}
+	/**
+	 * @param contato the contato to set
+	 */
+	public void setContato(Date contato) {
+		this.contato = contato;
+	}
+	/**
+	 * @return the envioProposta
+	 */
+	public Date getEnvioProposta() {
+		return envioProposta;
+	}
+	/**
+	 * @param envioProposta the envioProposta to set
+	 */
+	public void setEnvioProposta(Date envioProposta) {
+		this.envioProposta = envioProposta;
+	}
+	/**
+	 * @return the followUp
+	 */
+	public Date getFollowUp() {
+		return followUp;
+	}
+	/**
+	 * @param followUp the followUp to set
+	 */
+	public void setFollowUp(Date followUp) {
+		this.followUp = followUp;
+	}
+	/**
+	 * @return the fechamento
+	 */
+	public Date getFechamento() {
+		return fechamento;
+	}
+	/**
+	 * @param fechamento the fechamento to set
+	 */
+	public void setFechamento(Date fechamento) {
+		this.fechamento = fechamento;
+	}
+	/**
 	 * @return the tarefas
 	 */
 	public Set<Tarefa> getTarefas() {
@@ -192,6 +231,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setPessoas(Set<Pessoa> pessoas) {
 		this.pessoas = pessoas;
+	}
+	/**
+	 * @return the servicoAgregado
+	 */
+	public Set<ServicoAgregado> getServicoAgregado() {
+		return servicosAgregados;
+	}
+	/**
+	 * @param servicoAgregado the servicoAgregado to set
+	 */
+	public void setServicoAgregado(Set<ServicoAgregado> servicoAgregado) {
+		this.servicosAgregados = servicoAgregado;
 	}	
 		
 }

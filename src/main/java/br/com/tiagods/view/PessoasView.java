@@ -191,7 +191,7 @@ public class PessoasView extends JInternalFrame {
         JPanel panel_1 = new JPanel();
         panel_1.setLayout(null);
         panel_1.setBackground((Color) null);
-        panel_1.setBounds(10, 289, 760, 334);
+        panel_1.setBounds(10, 260, 760, 363);
         jPanel1.add(panel_1);
         
         JLabel label_2 = new JLabel();
@@ -201,7 +201,7 @@ public class PessoasView extends JInternalFrame {
         
         JLabel label_3 = new JLabel();
         label_3.setText("Cidade:");
-        label_3.setBounds(10, 249, 56, 17);
+        label_3.setBounds(10, 278, 56, 17);
         panel_1.add(label_3);
         
         JLabel label_4 = new JLabel();
@@ -211,11 +211,11 @@ public class PessoasView extends JInternalFrame {
         
         JLabel label_5 = new JLabel();
         label_5.setText("Telefone:");
-        label_5.setBounds(10, 125, 56, 20);
+        label_5.setBounds(10, 154, 56, 20);
         panel_1.add(label_5);
         
         JComboBox<String> comboBox_1 = new JComboBox<String>();
-        comboBox_1.setBounds(10, 185, 56, 20);
+        comboBox_1.setBounds(10, 214, 56, 20);
         panel_1.add(comboBox_1);
         
         JLabel label_6 = new JLabel();
@@ -230,32 +230,32 @@ public class PessoasView extends JInternalFrame {
         
         JLabel label_8 = new JLabel();
         label_8.setText("Compl:");
-        label_8.setBounds(203, 216, 43, 20);
+        label_8.setBounds(203, 245, 43, 20);
         panel_1.add(label_8);
         
         JComboBox<String> comboBox_2 = new JComboBox<String>();
         comboBox_2.setBounds(107, 96, 87, 20);
         panel_1.add(comboBox_2);
         
-        JLabel label_9 = new JLabel();
-        label_9.setText("Meio");
-        label_9.setBounds(385, 98, 35, 14);
-        panel_1.add(label_9);
+        JLabel lblMeio = new JLabel();
+        lblMeio.setText("Meio:");
+        lblMeio.setBounds(385, 98, 35, 14);
+        panel_1.add(lblMeio);
         
         JComboBox<String> comboBox_3 = new JComboBox<String>();
         comboBox_3.setBounds(438, 95, 92, 20);
         panel_1.add(comboBox_3);
         
         textField = new JTextField();
-        textField.setBounds(107, 185, 201, 20);
+        textField.setBounds(107, 214, 201, 20);
         panel_1.add(textField);
         
         textField_1 = new JTextField();
-        textField_1.setBounds(107, 247, 107, 20);
+        textField_1.setBounds(107, 276, 107, 20);
         panel_1.add(textField_1);
         
         textField_2 = new JTextField();
-        textField_2.setBounds(252, 216, 56, 20);
+        textField_2.setBounds(252, 245, 56, 20);
         panel_1.add(textField_2);
         
         textField_4 = new JTextField();
@@ -268,44 +268,44 @@ public class PessoasView extends JInternalFrame {
         
         JFormattedTextField formattedTextField = new JFormattedTextField();
         formattedTextField.setText("(99)3204-0000");
-        formattedTextField.setBounds(107, 125, 87, 20);
+        formattedTextField.setBounds(107, 154, 87, 20);
         panel_1.add(formattedTextField);
         
         JLabel label_10 = new JLabel();
         label_10.setText("Estado:");
-        label_10.setBounds(384, 246, 52, 19);
+        label_10.setBounds(384, 275, 52, 19);
         panel_1.add(label_10);
         
         JComboBox<String> comboBox_4 = new JComboBox<String>();
-        comboBox_4.setBounds(440, 246, 52, 20);
+        comboBox_4.setBounds(440, 275, 52, 20);
         panel_1.add(comboBox_4);
         
         JLabel label_11 = new JLabel();
         label_11.setText("N\u00BA:");
-        label_11.setBounds(385, 184, 51, 20);
+        label_11.setBounds(385, 213, 51, 20);
         panel_1.add(label_11);
         
         JLabel label_12 = new JLabel();
         label_12.setText("Celular");
-        label_12.setBounds(385, 124, 51, 20);
+        label_12.setBounds(385, 153, 51, 20);
         panel_1.add(label_12);
         
         JLabel label_13 = new JLabel();
         label_13.setText("Bairro:");
-        label_13.setBounds(385, 215, 43, 20);
+        label_13.setBounds(385, 244, 43, 20);
         panel_1.add(label_13);
         
         JFormattedTextField formattedTextField_1 = new JFormattedTextField();
         formattedTextField_1.setText("(00)99999-0000");
-        formattedTextField_1.setBounds(440, 124, 90, 20);
+        formattedTextField_1.setBounds(440, 153, 90, 20);
         panel_1.add(formattedTextField_1);
         
         textField_6 = new JTextField();
-        textField_6.setBounds(440, 184, 35, 20);
+        textField_6.setBounds(440, 213, 35, 20);
         panel_1.add(textField_6);
         
         textField_7 = new JTextField();
-        textField_7.setBounds(440, 215, 90, 20);
+        textField_7.setBounds(440, 244, 90, 20);
         panel_1.add(textField_7);
         
         JLabel label_14 = new JLabel();
@@ -330,40 +330,40 @@ public class PessoasView extends JInternalFrame {
         
         JButton button = new JButton();
         button.setText("Novo");
-        button.setBounds(107, 278, 90, 23);
+        button.setBounds(107, 307, 90, 23);
         panel_1.add(button);
         
         JButton button_2 = new JButton();
         button_2.setText("Editar");
-        button_2.setBounds(203, 278, 90, 23);
+        button_2.setBounds(203, 307, 90, 23);
         panel_1.add(button_2);
         
         JButton button_3 = new JButton();
         button_3.setText("Salvar");
-        button_3.setBounds(299, 278, 90, 23);
+        button_3.setBounds(299, 307, 90, 23);
         panel_1.add(button_3);
         
         JButton button_4 = new JButton();
         button_4.setText("Excluir");
-        button_4.setBounds(395, 278, 90, 23);
+        button_4.setBounds(395, 307, 90, 23);
         panel_1.add(button_4);
         
         textField_9 = new JTextField();
-        textField_9.setBounds(107, 154, 201, 20);
+        textField_9.setBounds(107, 183, 201, 20);
         panel_1.add(textField_9);
         
         JLabel label_17 = new JLabel();
         label_17.setText("E-mail");
-        label_17.setBounds(10, 154, 56, 20);
+        label_17.setBounds(10, 183, 56, 20);
         panel_1.add(label_17);
         
         textField_10 = new JTextField();
-        textField_10.setBounds(440, 155, 126, 20);
+        textField_10.setBounds(440, 184, 126, 20);
         panel_1.add(textField_10);
         
         JLabel label_18 = new JLabel();
         label_18.setText("Site");
-        label_18.setBounds(385, 155, 43, 20);
+        label_18.setBounds(385, 184, 43, 20);
         panel_1.add(label_18);
         
         JLabel label_19 = new JLabel();
@@ -377,7 +377,7 @@ public class PessoasView extends JInternalFrame {
         
         JPanel panel_2 = new JPanel();
         panel_2.setBackground((Color) null);
-        panel_2.setBounds(601, 0, 159, 334);
+        panel_2.setBounds(601, 0, 159, 363);
         panel_1.add(panel_2);
         
         JCheckBox checkBox = new JCheckBox("Outros");
@@ -422,27 +422,74 @@ public class PessoasView extends JInternalFrame {
         
         JButton button_5 = new JButton();
         button_5.setText("Historico");
-        button_5.setBounds(203, 311, 90, 23);
+        button_5.setBounds(203, 340, 90, 23);
         panel_1.add(button_5);
         
         JButton button_6 = new JButton();
         button_6.setText("Neg\u00F3cios");
-        button_6.setBounds(299, 311, 90, 23);
+        button_6.setBounds(299, 340, 90, 23);
         panel_1.add(button_6);
         
         JLabel label_21 = new JLabel();
         label_21.setText("CEP:");
-        label_21.setBounds(10, 218, 35, 20);
+        label_21.setBounds(10, 247, 35, 20);
         panel_1.add(label_21);
         
         JFormattedTextField formattedTextField_2 = new JFormattedTextField();
         formattedTextField_2.setText("00000-000");
-        formattedTextField_2.setBounds(107, 216, 78, 20);
+        formattedTextField_2.setBounds(107, 245, 78, 20);
         panel_1.add(formattedTextField_2);
+        
+        JLabel lblNasc = new JLabel();
+        lblNasc.setText("Nasc:");
+        lblNasc.setBounds(385, 71, 35, 14);
+        panel_1.add(lblNasc);
+        
+        JDateChooser dateChooser_2 = new JDateChooser();
+        dateChooser_2.setBounds(438, 68, 100, 20);
+        panel_1.add(dateChooser_2);
+        
+        JButton button_11 = new JButton();
+        button_11.setText("ADC");
+        button_11.setBounds(540, 94, 36, 23);
+        panel_1.add(button_11);
+        
+        JButton button_12 = new JButton();
+        button_12.setText("ADC");
+        button_12.setBounds(203, 94, 36, 23);
+        panel_1.add(button_12);
+        
+        JLabel lblCategoria = new JLabel();
+        lblCategoria.setText("Categoria:");
+        lblCategoria.setBounds(10, 123, 56, 18);
+        panel_1.add(lblCategoria);
+        
+        JComboBox<String> comboBox_7 = new JComboBox<String>();
+        comboBox_7.setBounds(107, 123, 87, 20);
+        panel_1.add(comboBox_7);
+        
+        JButton button_7 = new JButton();
+        button_7.setText("ADC");
+        button_7.setBounds(203, 121, 36, 23);
+        panel_1.add(button_7);
+        
+        JComboBox comboBox_8 = new JComboBox();
+        comboBox_8.setBounds(438, 124, 116, 20);
+        panel_1.add(comboBox_8);
+        
+        JButton button_13 = new JButton();
+        button_13.setText("ADC");
+        button_13.setBounds(564, 123, 36, 23);
+        panel_1.add(button_13);
+        
+        JLabel lblProdutosservios = new JLabel();
+        lblProdutosservios.setText("Produtos/Servi\u00E7os:");
+        lblProdutosservios.setBounds(317, 126, 107, 17);
+        panel_1.add(lblProdutosservios);
         
         JPanel panel_3 = new JPanel();
         panel_3.setBackground(new Color(250, 250, 250));
-        panel_3.setBounds(780, 289, 460, 334);
+        panel_3.setBounds(780, 260, 460, 363);
         jPanel1.add(panel_3);
         
         JScrollPane scrollPane = new JScrollPane();

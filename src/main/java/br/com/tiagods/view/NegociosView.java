@@ -24,6 +24,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 import javax.swing.JRadioButton;
+import java.awt.FlowLayout;
+import javax.swing.ScrollPaneConstants;
 
 public class NegociosView extends JInternalFrame {
 	private javax.swing.ButtonGroup group_situacao;
@@ -70,14 +72,14 @@ public class NegociosView extends JInternalFrame {
 	private JCheckBox checkBox_2;
 	private JLabel label_21;
 	private JButton button_8;
-	private JTextField textField_1;
 	private JLabel lblNewLabel;
 	private JTextArea textArea_1;
 	private JTable table;
-	private JLabel lblValorServio;
-	private JFormattedTextField formattedTextField_1;
 	private JTextField textField_2;
 	private JTable table_1;
+	private JButton button_9;
+	private JPanel panel_5;
+	private JLabel lblValorTotalDe;
 
 	/**
 	 * Launch the application.
@@ -305,7 +307,7 @@ public class NegociosView extends JInternalFrame {
         
         lblDescrio = new JLabel();
         lblDescrio.setText("Descri\u00E7\u00E3o:");
-        lblDescrio.setBounds(10, 187, 56, 14);
+        lblDescrio.setBounds(10, 193, 56, 14);
         panel_2.add(lblDescrio);
         
         textField_5 = new JTextField();
@@ -353,11 +355,11 @@ public class NegociosView extends JInternalFrame {
         
         label_20 = new JLabel();
         label_20.setText("Atendente:");
-        label_20.setBounds(385, 42, 87, 17);
+        label_20.setBounds(385, 42, 78, 17);
         panel_2.add(label_20);
         
         comboBox_6 = new JComboBox<String>();
-        comboBox_6.setBounds(476, 40, 92, 20);
+        comboBox_6.setBounds(476, 40, 115, 20);
         panel_2.add(comboBox_6);
         
         panel_3 = new JPanel();
@@ -435,11 +437,6 @@ public class NegociosView extends JInternalFrame {
         button_11.setBounds(107, 65, 33, 23);
         panel_2.add(button_11);
         
-        textField_1 = new JTextField();
-        textField_1.setBounds(221, 66, 87, 20);
-        panel_2.add(textField_1);
-        textField_1.setColumns(10);
-        
         lblNewLabel = new JLabel("{COD}");
         lblNewLabel.setBounds(161, 68, 36, 17);
         panel_2.add(lblNewLabel);
@@ -466,36 +463,63 @@ public class NegociosView extends JInternalFrame {
         
         JLabel lblProdutosserviosRelacionados = new JLabel();
         lblProdutosserviosRelacionados.setText("Produtos/Servi\u00E7os Relacionados:");
-        lblProdutosserviosRelacionados.setBounds(385, 65, 183, 17);
+        lblProdutosserviosRelacionados.setBounds(385, 96, 193, 17);
         panel_2.add(lblProdutosserviosRelacionados);
         
         JButton btnAdc = new JButton();
         btnAdc.setText("ADC");
-        btnAdc.setBounds(555, 95, 36, 23);
+        btnAdc.setBounds(555, 123, 36, 23);
         panel_2.add(btnAdc);
         
-        lblValorServio = new JLabel();
-        lblValorServio.setText("Valor Servi\u00E7o:");
-        lblValorServio.setBounds(203, 158, 78, 17);
-        panel_2.add(lblValorServio);
-        
-        formattedTextField_1 = new JFormattedTextField();
-        formattedTextField_1.setBounds(285, 156, 90, 20);
-        panel_2.add(formattedTextField_1);
-        
         JComboBox comboBox_2 = new JComboBox();
-        comboBox_2.setBounds(385, 96, 160, 20);
+        comboBox_2.setBounds(385, 124, 160, 20);
         panel_2.add(comboBox_2);
         
-        JLabel lblStatus = new JLabel();
-        lblStatus.setText("Status:");
-        lblStatus.setBounds(385, 125, 87, 20);
-        panel_2.add(lblStatus);
+        JLabel lblIncluirValores = new JLabel();
+        lblIncluirValores.setText("Incluir Valores:");
+        lblIncluirValores.setBounds(243, 159, 87, 17);
+        panel_2.add(lblIncluirValores);
         
-        JComboBox<String> comboBox_4 = new JComboBox<String>();
-        comboBox_4.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
-        comboBox_4.setBounds(476, 125, 115, 20);
-        panel_2.add(comboBox_4);
+        button_9 = new JButton();
+        button_9.setText("ADC");
+        button_9.setBounds(340, 155, 36, 23);
+        panel_2.add(button_9);
+        
+        JPanel panel_6 = new JPanel();
+        panel_6.setBounds(385, 156, 206, 111);
+        panel_2.add(panel_6);
+        
+        JScrollPane scrollPane_4 = new JScrollPane();
+        scrollPane_4.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane_4.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        GroupLayout gl_panel_6 = new GroupLayout(panel_6);
+        gl_panel_6.setHorizontalGroup(
+        	gl_panel_6.createParallelGroup(Alignment.LEADING)
+        		.addComponent(scrollPane_4, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+        );
+        gl_panel_6.setVerticalGroup(
+        	gl_panel_6.createParallelGroup(Alignment.LEADING)
+        		.addComponent(scrollPane_4, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+        );
+        panel_6.setLayout(gl_panel_6);
+        
+        JLabel lblNivel = new JLabel();
+        lblNivel.setText("Nivel:");
+        lblNivel.setBounds(385, 68, 78, 17);
+        panel_2.add(lblNivel);
+        
+        JComboBox<String> comboBox_5 = new JComboBox<String>();
+        comboBox_5.setBounds(476, 66, 73, 20);
+        panel_2.add(comboBox_5);
+        
+        JButton button_10 = new JButton();
+        button_10.setText("ADC");
+        button_10.setBounds(555, 65, 36, 23);
+        panel_2.add(button_10);
+        
+        JLabel label_5 = new JLabel();
+        label_5.setBounds(203, 68, 105, 17);
+        panel_2.add(label_5);
         
         JComboBox<String> comboBox_3 = new JComboBox<String>();
         comboBox_3.setModel(new DefaultComboBoxModel(new String[] {"Status", "Etapa", "Alfabetica", "Data Cadastro", "Data Atualiza\u00E7\u00E3o", "Data Conclus\u00E3o", "Valor"}));
@@ -529,6 +553,66 @@ public class NegociosView extends JInternalFrame {
         radioButton_1.setBackground(new Color(250, 250, 250));
         radioButton_1.setBounds(780, 164, 110, 23);
         jPanel1.add(radioButton_1);
+        
+        JPanel panel_4 = new JPanel();
+        panel_4.setBounds(11, 253, 600, 30);
+        jPanel1.add(panel_4);
+        
+        JRadioButton rdbtnNewRadioButton = new JRadioButton("Contato");
+        panel_4.add(rdbtnNewRadioButton);
+        
+        JRadioButton rdbtnEnvioDeProposta = new JRadioButton("Envio de Proposta");
+        panel_4.add(rdbtnEnvioDeProposta);
+        
+        JRadioButton rdbtnFollow = new JRadioButton("Follow-up");
+        panel_4.add(rdbtnFollow);
+        
+        JRadioButton rdbtnFechamento = new JRadioButton("Fechamento");
+        panel_4.add(rdbtnFechamento);
+        
+        JLabel lblStatus = new JLabel();
+        panel_4.add(lblStatus);
+        lblStatus.setText("Status:");
+        
+        JComboBox<String> comboBox_4 = new JComboBox<String>();
+        panel_4.add(comboBox_4);
+        comboBox_4.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
+        
+        panel_5 = new JPanel();
+        panel_5.setBounds(980, 107, 260, 142);
+        jPanel1.add(panel_5);
+        
+        lblValorTotalDe = new JLabel("Valor total dos seus neg\u00F3cios");
+        lblValorTotalDe.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JLabel lblR = new JLabel("R$1.000,00");
+        lblR.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JLabel lblNegcios = new JLabel("[#] Neg\u00F3cios");
+        lblNegcios.setHorizontalAlignment(SwingConstants.CENTER);
+        GroupLayout gl_panel_5 = new GroupLayout(panel_5);
+        gl_panel_5.setHorizontalGroup(
+        	gl_panel_5.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_panel_5.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(gl_panel_5.createParallelGroup(Alignment.LEADING)
+        				.addComponent(lblR, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblValorTotalDe, GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
+        				.addComponent(lblNegcios, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE))
+        			.addContainerGap())
+        );
+        gl_panel_5.setVerticalGroup(
+        	gl_panel_5.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_panel_5.createSequentialGroup()
+        			.addGap(8)
+        			.addComponent(lblValorTotalDe, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+        			.addGap(18)
+        			.addComponent(lblR, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+        			.addGap(18)
+        			.addComponent(lblNegcios, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panel_5.setLayout(gl_panel_5);
 
         setBounds(0, 0, 1250, 660);
     }

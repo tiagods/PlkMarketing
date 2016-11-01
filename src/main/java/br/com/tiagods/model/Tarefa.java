@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Date;
 
 public class Tarefa implements Serializable{
 	 /**
@@ -11,12 +12,11 @@ public class Tarefa implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
-	 private String nome;
 	 private String descricao;
-	 private LocalDate dataEvento;
-	 private LocalTime horaEvento;
+	 private Date dataEvento;
+	 private Date horaEvento;
 	 private String classe;
-	 private LocalDateTime criadoEm;
+	 private Date criadoEm;
 	 private Usuario criadoPor;
 	 private TipoTarefa tipoTarefa;
 	 private Usuario atendente;
@@ -36,18 +36,6 @@ public class Tarefa implements Serializable{
 		this.id = id;
 	}
 	/**
-	 * @return the nome
-	 */
-	public String getNome() {
-		return nome;
-	}
-	/**
-	 * @param nome the nome to set
-	 */
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	/**
 	 * @return the descricao
 	 */
 	public String getDescricao() {
@@ -62,25 +50,25 @@ public class Tarefa implements Serializable{
 	/**
 	 * @return the dataEvento
 	 */
-	public LocalDate getDataEvento() {
+	public Date getDataEvento() {
 		return dataEvento;
 	}
 	/**
 	 * @param dataEvento the dataEvento to set
 	 */
-	public void setDataEvento(LocalDate dataEvento) {
+	public void setDataEvento(Date dataEvento) {
 		this.dataEvento = dataEvento;
 	}
 	/**
 	 * @return the horaEvento
 	 */
-	public LocalTime getHoraEvento() {
+	public Date getHoraEvento() {
 		return horaEvento;
 	}
 	/**
 	 * @param horaEvento the horaEvento to set
 	 */
-	public void setHoraEvento(LocalTime horaEvento) {
+	public void setHoraEvento(Date horaEvento) {
 		this.horaEvento = horaEvento;
 	}
 	/**
@@ -98,13 +86,13 @@ public class Tarefa implements Serializable{
 	/**
 	 * @return the criadoEm
 	 */
-	public LocalDateTime getCriadoEm() {
+	public Date getCriadoEm() {
 		return criadoEm;
 	}
 	/**
 	 * @param criadoEm the criadoEm to set
 	 */
-	public void setCriadoEm(LocalDateTime criadoEm) {
+	public void setCriadoEm(Date criadoEm) {
 		this.criadoEm = criadoEm;
 	}
 	/**

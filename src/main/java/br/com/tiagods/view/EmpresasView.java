@@ -99,6 +99,14 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
 	private JTextArea textArea;
 	private JTable table;
 	private JTable table_1;
+	private JButton button_6;
+	private JButton button_7;
+	private JLabel label_4;
+	private JComboBox<String> comboBox_4;
+	private JButton button_5;
+	private JLabel label_5;
+	private JComboBox comboBox_5;
+	private JButton button_8;
 
 	@Override
 	public Color getColor() {
@@ -142,7 +150,7 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         jComboBox8 = new javax.swing.JComboBox<>();
         jComboBox9 = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
-        jPanel4.setBounds(10, 289, 760, 334);
+        jPanel4.setBounds(10, 260, 760, 363);
         jTextField1 = new javax.swing.JTextField();
         jTextField1.setBounds(107, 11, 87, 20);
         jLabel17 = new javax.swing.JLabel();
@@ -170,37 +178,37 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         jLabel4 = new javax.swing.JLabel();
         jLabel4.setBounds(385, 98, 35, 14);
         jFormattedTextField1 = new javax.swing.JFormattedTextField();
-        jFormattedTextField1.setBounds(107, 125, 87, 20);
+        jFormattedTextField1.setBounds(107, 154, 87, 20);
         jLabel5 = new javax.swing.JLabel();
-        jLabel5.setBounds(10, 125, 56, 20);
+        jLabel5.setBounds(10, 154, 56, 20);
         jFormattedTextField2 = new javax.swing.JFormattedTextField();
-        jFormattedTextField2.setBounds(440, 124, 90, 20);
+        jFormattedTextField2.setBounds(440, 153, 90, 20);
         jLabel7 = new javax.swing.JLabel();
-        jLabel7.setBounds(385, 124, 51, 20);
+        jLabel7.setBounds(385, 153, 51, 20);
         jTextField5 = new javax.swing.JTextField();
-        jTextField5.setBounds(107, 185, 201, 20);
+        jTextField5.setBounds(107, 214, 201, 20);
         jComboBox5 = new javax.swing.JComboBox<>();
-        jComboBox5.setBounds(10, 185, 56, 20);
+        jComboBox5.setBounds(10, 214, 56, 20);
         jTextField8 = new javax.swing.JTextField();
-        jTextField8.setBounds(440, 184, 35, 20);
+        jTextField8.setBounds(440, 213, 35, 20);
         jLabel11 = new javax.swing.JLabel();
-        jLabel11.setBounds(385, 184, 51, 20);
+        jLabel11.setBounds(385, 213, 51, 20);
         jTextField7 = new javax.swing.JTextField();
-        jTextField7.setBounds(252, 216, 56, 20);
+        jTextField7.setBounds(252, 245, 56, 20);
         jLabel12 = new javax.swing.JLabel();
-        jLabel12.setBounds(203, 216, 43, 20);
+        jLabel12.setBounds(203, 245, 43, 20);
         jTextField4 = new javax.swing.JTextField();
-        jTextField4.setBounds(440, 215, 90, 20);
+        jTextField4.setBounds(440, 244, 90, 20);
         jLabel13 = new javax.swing.JLabel();
-        jLabel13.setBounds(385, 215, 43, 20);
+        jLabel13.setBounds(385, 244, 43, 20);
         jComboBox6 = new javax.swing.JComboBox<>();
-        jComboBox6.setBounds(440, 246, 52, 20);
+        jComboBox6.setBounds(440, 275, 52, 20);
         jLabel9 = new javax.swing.JLabel();
-        jLabel9.setBounds(384, 246, 52, 19);
+        jLabel9.setBounds(384, 275, 52, 19);
         jTextField6 = new javax.swing.JTextField();
-        jTextField6.setBounds(107, 247, 107, 20);
+        jTextField6.setBounds(107, 276, 107, 20);
         jLabel8 = new javax.swing.JLabel();
-        jLabel8.setBounds(10, 249, 56, 17);
+        jLabel8.setBounds(10, 278, 56, 17);
         setBorder(null);
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
@@ -342,20 +350,20 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
 
         jLabel8.setText("Cidade:");
         jButton3 = new javax.swing.JButton();
-        jButton3.setBounds(203, 278, 90, 23);
+        jButton3.setBounds(203, 307, 90, 23);
         
         jButton3.setText("Editar");
         jButton4 = new javax.swing.JButton();
-        jButton4.setBounds(299, 278, 90, 23);
+        jButton4.setBounds(299, 307, 90, 23);
         
         jButton4.setText("Salvar");
         
         btnExcluir = new JButton();
-        btnExcluir.setBounds(395, 278, 90, 23);
+        btnExcluir.setBounds(395, 307, 90, 23);
         btnExcluir.setText("Excluir");
         
         btnNovo_1 = new JButton();
-        btnNovo_1.setBounds(107, 278, 90, 23);
+        btnNovo_1.setBounds(107, 307, 90, 23);
         btnNovo_1.setText("Novo");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -407,21 +415,21 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         jPanel4.add(btnExcluir);
         
         textField = new JTextField();
-        textField.setBounds(107, 154, 201, 20);
+        textField.setBounds(107, 183, 201, 20);
         jPanel4.add(textField);
         
         lblEmail = new JLabel();
         lblEmail.setText("E-mail");
-        lblEmail.setBounds(10, 154, 56, 20);
+        lblEmail.setBounds(10, 183, 56, 20);
         jPanel4.add(lblEmail);
         
         textField_2 = new JTextField();
-        textField_2.setBounds(440, 155, 126, 20);
+        textField_2.setBounds(440, 184, 126, 20);
         jPanel4.add(textField_2);
         
         lblWebsite = new JLabel();
         lblWebsite.setText("Site");
-        lblWebsite.setBounds(385, 155, 43, 20);
+        lblWebsite.setBounds(385, 184, 43, 20);
         jPanel4.add(lblWebsite);
         
         lblAtendente = new JLabel();
@@ -435,7 +443,7 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         
         JPanel panel_1 = new JPanel();
         panel_1.setBackground(getColor());
-        panel_1.setBounds(601, 0, 159, 334);
+        panel_1.setBounds(601, 0, 159, 363);
         jPanel4.add(panel_1);
         
         JLabel lblNewLabel = new JLabel("Privacidade:");
@@ -476,29 +484,67 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         );
         panel_1.setLayout(gl_panel_1);
         button = new JButton();
-        button.setBounds(203, 311, 90, 23);
+        button.setBounds(203, 340, 90, 23);
         jPanel4.add(button);
         
         button.setText("Historico");
         jButton1 = new javax.swing.JButton();
-        jButton1.setBounds(299, 311, 90, 23);
+        jButton1.setBounds(299, 340, 90, 23);
         jPanel4.add(jButton1);
         jButton1.setText("Neg\u00F3cios");
         jButton2 = new javax.swing.JButton();
-        jButton2.setBounds(396, 311, 87, 23);
+        jButton2.setBounds(396, 340, 87, 23);
         jPanel4.add(jButton2);
 
         jButton2.setText("Pessoas");
 
         lblCep = new JLabel();
         lblCep.setText("CEP:");
-        lblCep.setBounds(10, 218, 35, 20);
+        lblCep.setBounds(10, 247, 35, 20);
         jPanel4.add(lblCep);
 
         JFormattedTextField formattedTextField = new JFormattedTextField();
         formattedTextField.setText("00000-000");
-        formattedTextField.setBounds(107, 216, 78, 20);
+        formattedTextField.setBounds(107, 245, 78, 20);
         jPanel4.add(formattedTextField);
+        
+        button_6 = new JButton();
+        button_6.setText("ADC");
+        button_6.setBounds(540, 94, 36, 23);
+        jPanel4.add(button_6);
+        
+        button_7 = new JButton();
+        button_7.setText("ADC");
+        button_7.setBounds(203, 94, 36, 23);
+        jPanel4.add(button_7);
+        
+        label_4 = new JLabel();
+        label_4.setText("Categoria:");
+        label_4.setBounds(10, 125, 56, 18);
+        jPanel4.add(label_4);
+        
+        comboBox_4 = new JComboBox<String>();
+        comboBox_4.setBounds(107, 125, 87, 20);
+        jPanel4.add(comboBox_4);
+        
+        button_5 = new JButton();
+        button_5.setText("ADC");
+        button_5.setBounds(203, 123, 36, 23);
+        jPanel4.add(button_5);
+        
+        label_5 = new JLabel();
+        label_5.setText("Produtos/Servi\u00E7os:");
+        label_5.setBounds(317, 128, 107, 17);
+        jPanel4.add(label_5);
+        
+        comboBox_5 = new JComboBox();
+        comboBox_5.setBounds(438, 126, 116, 20);
+        jPanel4.add(comboBox_5);
+        
+        button_8 = new JButton();
+        button_8.setText("ADC");
+        button_8.setBounds(564, 125, 36, 23);
+        jPanel4.add(button_8);
         
         JLabel label_2 = new JLabel("Buscar");
         label_2.setBounds(10, 83, 53, 14);
@@ -535,7 +581,7 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         
         panel_2 = new JPanel();
         panel_2.setBackground(new Color(250, 250, 250));
-        panel_2.setBounds(780, 289, 460, 334);
+        panel_2.setBounds(780, 260, 460, 363);
         jPanel1.add(panel_2);
         
         scrollPane = new JScrollPane();
