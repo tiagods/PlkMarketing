@@ -3,6 +3,7 @@ package br.com.tiagods.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 public class Usuario implements Serializable{
 
@@ -10,15 +11,14 @@ public class Usuario implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	private int id;
 	private String login;
 	private String nome;
 	private String senha;
 	private String email;
-	private LocalDateTime criadoEm;
+	private Date criadoEm;
 	private Usuario criadoPor;
-	private LocalDateTime ultimoAcesso;
+	private Date ultimoAcesso;
 	private int totalTarefas=0;
 	private int totalTarefasPendentes=0;
 	private int totalEmpresas=0;
@@ -86,13 +86,13 @@ public class Usuario implements Serializable{
 	/**
 	 * @return the criadoEm
 	 */
-	public LocalDateTime getCriadoEm() {
+	public Date getCriadoEm() {
 		return criadoEm;
 	}
 	/**
 	 * @param criadoEm the criadoEm to set
 	 */
-	public void setCriadoEm(LocalDateTime criadoEm) {
+	public void setCriadoEm(Date criadoEm) {
 		this.criadoEm = criadoEm;
 	}
 	/**
@@ -110,13 +110,13 @@ public class Usuario implements Serializable{
 	/**
 	 * @return the ultimoAcesso
 	 */
-	public LocalDateTime getUltimoAcesso() {
+	public Date getUltimoAcesso() {
 		return ultimoAcesso;
 	}
 	/**
 	 * @param ultimoAcesso the ultimoAcesso to set
 	 */
-	public void setUltimoAcesso(LocalDateTime ultimoAcesso) {
+	public void setUltimoAcesso(Date ultimoAcesso) {
 		this.ultimoAcesso = ultimoAcesso;
 	}
 	/**

@@ -9,8 +9,9 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import br.com.tiagods.model.Categoria;
+
 public class HibernateFactory {
-/*
 	//recebendo a sessao
 		public Session getSession(){
 			final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
@@ -51,6 +52,5 @@ public class HibernateFactory {
 			session.getTransaction().commit();
 			session.close();
 	}
-		*/
 }
 

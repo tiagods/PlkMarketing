@@ -301,7 +301,7 @@ public class PessoasView extends JInternalFrame {
         
         JFormattedTextField txCelular = new JFormattedTextField();
         txCelular.setText("(00)99999-0000");
-        txCelular.setBounds(440, 154, 90, 20);
+        txCelular.setBounds(440, 154, 95, 20);
         pnPrincipal.add(txCelular);
         
         txNum = new JTextField();

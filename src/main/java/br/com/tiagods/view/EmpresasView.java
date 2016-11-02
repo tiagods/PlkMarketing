@@ -185,13 +185,13 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         lbTelefone = new javax.swing.JLabel();
         lbTelefone.setBounds(10, 154, 56, 20);
         txCelular = new javax.swing.JFormattedTextField();
-        txCelular.setBounds(440, 154, 90, 20);
+        txCelular.setBounds(440, 154, 95, 20);
         lbCelular = new javax.swing.JLabel();
         lbCelular.setBounds(385, 154, 51, 19);
         txLogradouro = new javax.swing.JTextField();
         txLogradouro.setBounds(107, 214, 201, 20);
         cbLogradouro = new javax.swing.JComboBox<>();
-        cbLogradouro.setBounds(10, 214, 56, 20);
+        cbLogradouro.setBounds(10, 214, 92, 20);
         txNum = new javax.swing.JTextField();
         txNum.setBounds(440, 213, 35, 20);
         lnNum = new javax.swing.JLabel();

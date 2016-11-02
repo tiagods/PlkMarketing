@@ -6,9 +6,6 @@ public interface DefaultModelComboBox {
 	public enum Modelos{
 		Empresas, Negocios, Pessoas
 	}
-	public enum Status{
-		
-	}
 	//classe empresas, pessoas
 	public enum Logradouro{
 		Aeroporto, Alameda, Área, Avenida, Campo, Chácara, Colônia, Condomínio, Conjunto, Distrito, 

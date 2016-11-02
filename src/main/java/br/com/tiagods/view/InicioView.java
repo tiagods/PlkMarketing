@@ -21,6 +21,9 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerInicio;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private JPanel jPanel1;

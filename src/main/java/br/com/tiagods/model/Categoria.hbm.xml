@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Categoria" table="CATEGORIA">
+	<id name="id" column="CAT_COD" type="int">
+	<generator class="sequence">
+		<param name="sequence">CAT_COD_SEQUENCE</param>
+	</generator>
+	</id>
+	<property name="nome" column="CAT_NOME" length="100"/>
+	</class>
+</hibernate-mapping>
+
