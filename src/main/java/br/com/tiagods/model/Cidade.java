@@ -4,6 +4,7 @@ public class Cidade {
 	private int id;
 	private String nome;
 	private String estado;
+	private int idExtra;
 	/**
 	 * @return the id
 	 */
@@ -39,6 +40,18 @@ public class Cidade {
 	 */
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+	/**
+	 * @return the codExtra
+	 */
+	public int getCodExtra() {
+		return idExtra;
+	}
+	/**
+	 * @param codExtra the codExtra to set
+	 */
+	public void setCodExtra(int idExtra) {
+		this.idExtra = idExtra;
 	}
 	
 }

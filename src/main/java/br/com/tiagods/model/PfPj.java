@@ -6,13 +6,11 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class PfPj extends Endereco implements Serializable{
+public class PfPj implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int id;
-	private String nome;
 	private int telefone;
 	private int celular;
 	private String email;
@@ -25,33 +23,8 @@ public class PfPj extends Endereco implements Serializable{
 	private Set<Negocio> negocios = new LinkedHashSet<Negocio>();
 	private Set<Tarefa> tarefas = new LinkedHashSet<Tarefa>();
 	private Servico servico;
-	private ServicoAgregado servicoAgregado;
 	private Categoria categoria;
 
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-	/**
-	 * @param id the id to set
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-	/**
-	 * @return the nome
-	 */
-	public String getNome() {
-		return nome;
-	}
-	/**
-	 * @param nome the nome to set
-	 */
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
 	/**
 	 * @return the telefone
 	 */
@@ -195,18 +168,6 @@ public class PfPj extends Endereco implements Serializable{
 	 */
 	public void setServico(Servico servico) {
 		this.servico = servico;
-	}
-	/**
-	 * @return the servicoAgregado
-	 */
-	public ServicoAgregado getServicoAgregado() {
-		return servicoAgregado;
-	}
-	/**
-	 * @param servicoAgregado the servicoAgregado to set
-	 */
-	public void setServicoAgregado(ServicoAgregado servicoAgregado) {
-		this.servicoAgregado = servicoAgregado;
 	}
 	/**
 	 * @return the categoria

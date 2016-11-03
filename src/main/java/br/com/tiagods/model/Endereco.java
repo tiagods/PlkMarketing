@@ -9,7 +9,7 @@ public class Endereco implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private String rua;
 	private String complemento;
-	private String numero;
+	private int numero;
 	private String bairro;
 	private String cep;
 	private Cidade cidade;
@@ -41,13 +41,13 @@ public class Endereco implements Serializable{
 	/**
 	 * @return the numero
 	 */
-	public String getNumero() {
+	public int getNumero() {
 		return numero;
 	}
 	/**
 	 * @param numero the numero to set
 	 */
-	public void setNumero(String numero) {
+	public void setNumero(int numero) {
 		this.numero = numero;
 	}
 	/**

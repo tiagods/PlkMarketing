@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Pessoa" table="PESSOA">
+	<id name="id" column="PES_COD" type="int">
+	<generator class="sequence">
+		<param name="sequence">PES_PESSOA_COD_SEQUENCE</param>
+	</generator>
+	</id>
+	<property name="nome" column="PES_NOME" length="200"/>
+	<property name="cpf" column="PES_CPF" length="10"/>
+	<property name="dataNascimento" column="PES_NASC" type="date"/>
+	
+	<component name="endereco">
+      <property name="rua" column="PES_RUA" length="200"/>
+      <property name="complemento" column="PES_COMPLEMENTO"/>
+      <property name="numero" column="PES_NUMERO" type="int"/>
+      <property name="bairro" column="PES_BAIRRO" length="150"/>
+      <property name="cep" column="PES_CEP" length="9"/>
+      <many-to-one name="cidade" column="PES_CIDADE"/>
+      <set name="cidade" inverse="true">
+	      <key column="PES_CIDADE_ID" />
+	      <one-to-many class="Endereco" />
+      </set>
+    </component>
+	<component name="pessoaJuridica">
+		<property name="telefone" column="PES_TELEFONE" type="int"/>
+		<property name="celular" column="PES_CELULAR" type="int"/>
+		<property name="email" column="PES_EMAIL" length="200"/>
+		<property name="site" column="PES_SITE" length="200"/>
+		<property name="criadoEm" column="PES_CRIADOEM" type="timestamp"/>
+      	<many-to-one name="criadoPor" column="PES_CRIADOPOR" />
+		<many-to-one name="origem" column="PES_ORIGEM" />
+		<many-to-one name="nivel" column="PES_NIVEL" />
+		<many-to-one name="atendente" column="PES_ATENDENTE" />
+		
+		<set name="negocios" inverse="true" cascade="delete-orphan">
+			<key column="PES_NEG_COD" />
+			<one-to-many class="Negocio" />
+		</set>
+		<set name="tarefas" inverse="true" cascade="delete-orphan">
+			<key column="PES_TAR_COD" />
+			<one-to-many class="Tarefas" />
+		</set>
+      	<many-to-one name="servico" column="PES_SERVICO" />
+		<many-to-one name="categoria" column="PES_CATEGORIA" />
+	</component>
+	
+	</class>
+</hibernate-mapping>
+

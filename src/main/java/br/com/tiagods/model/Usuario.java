@@ -1,8 +1,7 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Usuario implements Serializable{
@@ -19,10 +18,15 @@ public class Usuario implements Serializable{
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Date ultimoAcesso;
-	private int totalTarefas=0;
-	private int totalTarefasPendentes=0;
-	private int totalEmpresas=0;
-	private int totalPessoas=0;
+	private int totalTarefas;
+	private int totalTarefasPendentes;
+	private int totalEmpresas;
+	private int totalPessoas;
+	private int totalNegocios;
+	private Departamento departamento;
+	private Funcao funcao;
+	private BigDecimal totalVendas;
+	
 	/**
 	 * @return the id
 	 */
@@ -203,8 +207,29 @@ public class Usuario implements Serializable{
 	public void setFuncao(Funcao funcao) {
 		this.funcao = funcao;
 	}
-	private int totalNegocios=0;
-	private Departamento departamento;
-	private Funcao funcao;
+	/**
+	 * @return the totalNegocio
+	 */
+	public int getTotalNegocio() {
+		return totalNegocios;
+	}
+	/**
+	 * @param totalNegocio the totalNegocio to set
+	 */
+	public void setTotalNegocio(int totalNegocio) {
+		this.totalNegocios = totalNegocio;
+	}
+	/**
+	 * @return the vendas
+	 */
+	public BigDecimal getVendas() {
+		return totalVendas;
+	}
+	/**
+	 * @param vendas the vendas to set
+	 */
+	public void setVendas(BigDecimal vendas) {
+		this.totalVendas = vendas;
+	}
 		
 }

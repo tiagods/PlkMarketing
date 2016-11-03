@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="ServicoAgregado" table="SERVICO_AGREGADO">
+	<id name="id" column="SER_AGR_COD" type="int">
+	<generator class="sequence">
+		<param name="sequence">SERVICO_AGREGADO_SER_AGR_COD_SEQUENCE</param>
+	</generator>
+	</id>
+	<property name="nome" column="SER_AGR_NOME" length="100"/>
+	<set name="negocios">
+		<key column="SER_AGR_COD" />
+		<many-to-many column="NEG_SER_COD" class="Negocio" />
+	</set>
+	</class>
+</hibernate-mapping>
+

@@ -12,17 +12,17 @@ public class Tarefa implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
-	 private String descricao;
-	 private Date dataEvento;
-	 private Date horaEvento;
-	 private String classe;
-	 private Date criadoEm;
-	 private Usuario criadoPor;
-	 private TipoTarefa tipoTarefa;
-	 private Usuario atendente;
-	 private Pessoa pessoa;
-	 private Empresa empresa;
-	 private Negocio negocio;
+	private String descricao;
+	private Date dataEvento;
+	private Date horaEvento;
+	private String classe;
+	private Date criadoEm;
+	private Usuario criadoPor;
+	private TipoTarefa tipoTarefa;
+	private Usuario atendente;
+	private Pessoa pessoa;
+	private Empresa empresa;
+	private Negocio negocio;
 	/**
 	 * @return the id
 	 */

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Empresa" table="EMPRESA">
+	<id name="id" column="EMP_COD" type="int">
+	<generator class="sequence">
+		<param name="sequence">EMP_EMPRESA_COD_SEQUENCE</param>
+	</generator>
+	</id>
+	<property name="cnpj" column="EMP_CNPJ" length="100"/>
+	
+	<component name="endereco">
+      <property name="rua" column="EMP_RUA" length="200"/>
+      <property name="complemento" column="EMP_COMPLEMENTO"/>
+      <property name="numero" column="EMP_NUMERO" type="int"/>
+      <property name="bairro" column="EMP_BAIRRO" length="150"/>
+      <property name="cep" column="EMP_CEP" length="9"/>
+      <many-to-one name="cidade" column="EMP_CIDADE"/>
+      <set name="cidade" inverse="true">
+	      <key column="EMP_CIDADE_ID" />
+	      <one-to-many class="Endereco" />
+      </set>
+    </component>
+	<component name="pessoaJuridica">
+		<property name="telefone" column="EMP_TELEFONE" type="int"/>
+		<property name="celular" column="EMP_CELULAR" type="int"/>
+		<property name="email" column="EMP_EMAIL" length="200"/>
+		<property name="site" column="EMP_SITE" length="200"/>
+		<property name="criadoEm" column="EMP_CRIADOEM" type="timestamp"/>
+      	<many-to-one name="criadoPor" column="EMP_CRIADOPOR" />
+		<many-to-one name="origem" column="EMP_ORIGEM" />
+		<many-to-one name="nivel" column="EMP_NIVEL" />
+		<many-to-one name="atendente" column="EMP_ATENDENTE" />
+		
+		<set name="negocios" inverse="true" cascade="delete-orphan">
+			<key column="EMP_NEG_COD" />
+			<one-to-many class="Negocio" />
+		</set>
+		<set name="tarefas" inverse="true" cascade="delete-orphan">
+			<key column="EMP_TAR_COD" />
+			<one-to-many class="Tarefas" />
+		</set>
+      	<many-to-one name="servico" column="EMP_SERVICO" />
+		<many-to-one name="categoria" column="EMP_CATEGORIA" />
+	</component>
+	
+	</class>
+</hibernate-mapping>
+

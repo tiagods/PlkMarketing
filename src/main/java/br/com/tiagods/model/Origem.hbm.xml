@@ -4,13 +4,13 @@
 <!-- Tiago Dias
 -->
 <hibernate-mapping package="br.com.tiagods.model">
-	<class name="Categoria" table="CATEGORIA">
-	<id name="id" column="CAT_COD" type="int">
+	<class name="Origem" table="ORIGEM">
+	<id name="id" column="ORI_COD" type="int">
 	<generator class="sequence">
-		<param name="sequence">CATEGORIA_CAT_COD_SEQUENCE</param>
+		<param name="sequence">ORIGEM_ORI_COD_SEQUENCE</param>
 	</generator>
 	</id>
-	<property name="nome" column="CAT_NOME" length="100"/>
+	<property name="nome" column="ORI_NOME" length="100"/>
 	</class>
 </hibernate-mapping>
 

@@ -5,13 +5,30 @@
 -->
 <hibernate-mapping package="br.com.model">
 	<class name="Usuario" table="USUARIO">
-	<id name="id" column="usu_id" type="int">
+	<id name="id" column="USU_ID" type="int">
 	<generator class="sequence">
-		<param name="sequence">usuario_id_usuario_seq</param>
+		<param name="sequence">USUARIO_ID_USU_SEQUENCE</param>
 	</generator>
 	</id>
-	<property name="login" length="100"/>
-	<property name="nome" column="nome"></property>
+	<property name="login" column="USU_LOGIN" length="100"/>
+	<property name="nome" column="USU_NOME"/>
+	<property name="senha" column="USU_SENHA"/>
+	<property name="email" column="USU_EMAIL" length="200"/>
+	<property name="criadoEm" column="USU_CRIADOEM" type="timestamp"/>
+	
+	<many-to-one name="criadoPor" column="USU_CRIADOPOR"/>
+	
+	<property name="ultimoAcesso" column="USU_ULTIMOACESSO" type="timestamp"/>
+	<property name="totalTarefas" column="USU_TOTALTAREFAS" type="int"/>
+	<property name="totalTarefasPendentes" column="USU_TOTALTAREFASPENDENTES" type="int"/>
+	<property name="totalEmpresas" column="USU_TOTALEMPRESAS" type="int"/>
+	<property name="totalNegocios" column="USU_TOTALNEGOCIOS" type="int"/>
+	
+	<many-to-one name="departamento" column="USU_DEPARTAMENTO"/>
+	<many-to-one name="funcao" column="USU_FUNCAO"/>
+	
+	<property name="totalVendas" column="USU_TOTALVENDAS" type="big_decimal"/>
+	
 	</class>
 </hibernate-mapping>
 

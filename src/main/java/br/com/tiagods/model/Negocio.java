@@ -1,6 +1,7 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -14,20 +15,22 @@ public class Negocio implements Serializable{
 	private String nome;
 	private Date dataInicio;
 	private Date dataFim;
-	private double honorario;
 	private String classe;
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Status status;
 	private Usuario atendente;
+	private String andamento;
 	private Date contato;
 	private Date envioProposta;
 	private Date followUp;
 	private Date fechamento;
 	private Set<Tarefa> tarefas = new LinkedHashSet<Tarefa>();
-	private Set<Empresa> empresas = new LinkedHashSet<Empresa>();
-	private Set<Pessoa> pessoas = new LinkedHashSet<Pessoa>();
-	private Set<ServicoAgregado> servicosAgregados = new LinkedHashSet<ServicoAgregado>();
+	private Empresa empresa;
+	private Pessoa pessoa;
+	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<ServicoContratado>();
+	private BigDecimal honorario;
+	
 	/**
 	 * @return the id
 	 */
@@ -79,13 +82,13 @@ public class Negocio implements Serializable{
 	/**
 	 * @return the honorario
 	 */
-	public double getHonorario() {
+	public BigDecimal getHonorario() {
 		return honorario;
 	}
 	/**
 	 * @param honorario the honorario to set
 	 */
-	public void setHonorario(double honorario) {
+	public void setHonorario(BigDecimal honorario) {
 		this.honorario = honorario;
 	}
 	/**
@@ -148,6 +151,21 @@ public class Negocio implements Serializable{
 	public void setAtendente(Usuario atendente) {
 		this.atendente = atendente;
 	}
+	public enum Andamento{
+		Contato, EnvioProposta, FollowUp,Fechamento;
+	}
+	/**
+	 * @return the andamento
+	 */
+	public String getAndamento() {
+		return andamento;
+	}
+	/**
+	 * @param andamento the andamento to set
+	 */
+	public void setAndamento(String andamento) {
+		this.andamento = andamento;
+	}
 	/**
 	 * @return the contato
 	 */
@@ -209,40 +227,40 @@ public class Negocio implements Serializable{
 		this.tarefas = tarefas;
 	}
 	/**
-	 * @return the empresas
+	 * @return the empresa
 	 */
-	public Set<Empresa> getEmpresas() {
-		return empresas;
+	public Empresa getEmpresa() {
+		return empresa;
 	}
 	/**
-	 * @param empresas the empresas to set
+	 * @param empresa the empresa to set
 	 */
-	public void setEmpresas(Set<Empresa> empresas) {
-		this.empresas = empresas;
+	public void setEmpresa(Empresa empresa) {
+		this.empresa = empresa;
 	}
 	/**
-	 * @return the pessoas
+	 * @return the pessoa
 	 */
-	public Set<Pessoa> getPessoas() {
-		return pessoas;
+	public Pessoa getPessoa() {
+		return pessoa;
 	}
 	/**
-	 * @param pessoas the pessoas to set
+	 * @param pessoa the pessoa to set
 	 */
-	public void setPessoas(Set<Pessoa> pessoas) {
-		this.pessoas = pessoas;
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
 	}
 	/**
-	 * @return the servicoAgregado
+	 * @return the servicosContratados
 	 */
-	public Set<ServicoAgregado> getServicoAgregado() {
-		return servicosAgregados;
+	public Set<ServicoContratado> getServicosContratados() {
+		return servicosContratados;
 	}
 	/**
-	 * @param servicoAgregado the servicoAgregado to set
+	 * @param servicosContratados the servicosContratados to set
 	 */
-	public void setServicoAgregado(Set<ServicoAgregado> servicoAgregado) {
-		this.servicosAgregados = servicoAgregado;
-	}	
+	public void setServicosContratados(Set<ServicoContratado> servicosContratados) {
+		this.servicosContratados = servicosContratados;
+	}
 		
 }

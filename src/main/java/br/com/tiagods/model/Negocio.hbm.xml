@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Negocio" table="NEGOCIO">
+	<id name="id" column="NEG_COD" type="int">
+	<generator class="sequence">
+		<param name="sequence">NEGOCIO_NEG_COD_SEQUENCE</param>
+	</generator>
+	</id>
+	<property name="nome" column="NEG_NOME" length="200"/>
+	<property name="dataInicio" column="NEG_DATAINICIO" type="date"/>
+	<property name="dataFim" column="NEG_DATAFIM" type="date"/>
+	<property name="classe" column="NEG_CLASSE"/>
+	<property name="criadoEm" column="NEG_CRIADOEM" type="timestamp"/>
+	
+	<many-to-one name="criadoPor" column="NEG_CRIADOPOR" />
+	
+	<many-to-one name="status" column="NEG_STATUS" />
+	<many-to-one name="atendente" column="NEG_ATENDENTE" />
+	<many-to-one name="andamento" column="NEG_ANDAMENTO" />
+	
+	<property name="contato" column="NEG_ANDCONTATO" type="timestamp"/>
+	<property name="envioProposta" column="NEG_ANDENVIOPROPOSTA" type="timestamp"/>
+	<property name="followUp" column="NEG_ANDFOLLOWUP" type="timestamp"/>
+	<property name="fechamento" column="NEG_ANDFECHAMENTO" type="timestamp"/>
+	
+	<set name="tarefas" inverse="true">
+		<key column="NEG_TAREFA_COD" />
+		<one-to-many class="Tarefa" />
+	</set>
+	<many-to-one name="empresa" column="NEG_EMPRESA" />
+	<many-to-one name="pessoa" column="NEG_PESSOA" />
+	
+    <set name="servicosContratados">
+		<key column="NEG_SER_COD" />
+		<many-to-many column="SER_AGR_COD" class="ServicoAgregado" />
+	</set>
+    
+    <property name="honorario" column="NEG_HONORARIO" type="bigdecimal"></property>
+	</class>
+</hibernate-mapping>
+
