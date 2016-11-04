@@ -16,30 +16,29 @@
 	<property name="classe" column="NEG_CLASSE"/>
 	<property name="criadoEm" column="NEG_CRIADOEM" type="timestamp"/>
 	
-	<many-to-one name="criadoPor" column="NEG_CRIADOPOR" />
+	<many-to-one name="criadoPor" column="NEG_CRIADOPOR_COD" foreign-key="FK_NEG_CRIADOPOR_COD"/>
+	<many-to-one name="status" column="NEG_STATUS_COD"  foreign-key="FK_NEG_STATUS_COD"/>
+	<many-to-one name="atendente" column="NEG_ATENDENTE_COD" />
 	
-	<many-to-one name="status" column="NEG_STATUS" />
-	<many-to-one name="atendente" column="NEG_ATENDENTE" />
-	<many-to-one name="andamento" column="NEG_ANDAMENTO" />
-	
+	<property name="andamento" column="NEG_ANDAMENTO"/>
 	<property name="contato" column="NEG_ANDCONTATO" type="timestamp"/>
 	<property name="envioProposta" column="NEG_ANDENVIOPROPOSTA" type="timestamp"/>
 	<property name="followUp" column="NEG_ANDFOLLOWUP" type="timestamp"/>
 	<property name="fechamento" column="NEG_ANDFECHAMENTO" type="timestamp"/>
 	
-	<set name="tarefas" inverse="true">
+	<set name="tarefas" inverse="true" cascade="save-update, delete">
 		<key column="NEG_TAREFA_COD" />
 		<one-to-many class="Tarefa" />
 	</set>
-	<many-to-one name="empresa" column="NEG_EMPRESA" />
-	<many-to-one name="pessoa" column="NEG_PESSOA" />
 	
-    <set name="servicosContratados">
+	<many-to-one name="empresa" column="NEG_EMPRESA_COD" foreign-key="FK_NEG_EMPRESA_COD"/>
+	<many-to-one name="pessoa" column="NEG_PESSOA_COD" foreign-key="FK_NEG_PESSOA_COD"/>
+	
+    <set name="servicosContratados" inverse="true" cascade="save-update, delete">
 		<key column="NEG_SER_COD" />
-		<many-to-many column="SER_AGR_COD" class="ServicoAgregado" />
+		<one-to-many class="ServicoContratado"/>
 	</set>
-    
-    <property name="honorario" column="NEG_HONORARIO" type="bigdecimal"></property>
+    <property name="honorario" column="NEG_HONORARIO" type="big_decimal"></property>
 	</class>
 </hibernate-mapping>
 

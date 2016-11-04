@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
 -->
 <hibernate-mapping package="br.com.tiagods.model">
-	<class name="Status" table="_NEGOCIO_STATUS">
+	<class name="Status" table="NEGOCIO_STATUS">
 	<id name="id" column="NEG_STA_COD" type="int">
 	<generator class="sequence">
 		<param name="sequence">NEGOCIO_STATUS_NEG_STA_COD_SEQUENCE</param>

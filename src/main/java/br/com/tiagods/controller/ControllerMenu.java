@@ -5,16 +5,18 @@ package br.com.tiagods.controller;
 
 import static br.com.tiagods.view.MenuView.jDBody;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
+import br.com.tiagods.factory.HibernateFactory;
+import br.com.tiagods.model.CriarAdmin;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.InicioView;
 import br.com.tiagods.view.NegociosView;
@@ -33,8 +35,13 @@ public class ControllerMenu implements ActionListener, MouseListener{
     TarefasSaveView tarefasSave;
     TarefasView tarefas;
     NegociosView negocios;
+    Usuario usuario;
     
     static ControllerMenu instance;
+    
+    public Usuario getUsuario(){
+    	return usuario;
+    }
     
     public static ControllerMenu getInstance(){
     	if(instance==null){
@@ -44,7 +51,9 @@ public class ControllerMenu implements ActionListener, MouseListener{
     }
     
     public void Inicia(){
-        inicio = new InicioView();
+    	CriarAdmin admin = new CriarAdmin();
+    	this.usuario = admin.getUsuario();
+    	inicio = new InicioView();
         abrirCorpo(inicio);
     }
     @Override
@@ -87,8 +96,9 @@ public class ControllerMenu implements ActionListener, MouseListener{
             pessoas = new PessoasView();
             abrirCorpo(pessoas);
         	break;
-        /*case "Relatorios":
-            break;*/  
+        case "Relatorios":
+        	JOptionPane.showMessageDialog(jDBody, "Esse modulo esta em fase de desenvolvimento, aguarde...!","Modulo em Desenvolvimento!",JOptionPane.OK_OPTION);
+            break;  
     	}
     }
     @Override

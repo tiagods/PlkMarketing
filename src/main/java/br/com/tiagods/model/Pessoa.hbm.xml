@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
 -->
 <hibernate-mapping package="br.com.tiagods.model">
@@ -20,33 +20,29 @@
       <property name="numero" column="PES_NUMERO" type="int"/>
       <property name="bairro" column="PES_BAIRRO" length="150"/>
       <property name="cep" column="PES_CEP" length="9"/>
-      <many-to-one name="cidade" column="PES_CIDADE"/>
-      <set name="cidade" inverse="true">
-	      <key column="PES_CIDADE_ID" />
-	      <one-to-many class="Endereco" />
-      </set>
+      <many-to-one name="cidade" column="PES_CIDADE_COD" foreign-key="FK_PES_CIDADE_COD"/>
     </component>
-	<component name="pessoaJuridica">
+	<component name="pessoaFisica">
 		<property name="telefone" column="PES_TELEFONE" type="int"/>
 		<property name="celular" column="PES_CELULAR" type="int"/>
 		<property name="email" column="PES_EMAIL" length="200"/>
 		<property name="site" column="PES_SITE" length="200"/>
 		<property name="criadoEm" column="PES_CRIADOEM" type="timestamp"/>
-      	<many-to-one name="criadoPor" column="PES_CRIADOPOR" />
-		<many-to-one name="origem" column="PES_ORIGEM" />
-		<many-to-one name="nivel" column="PES_NIVEL" />
-		<many-to-one name="atendente" column="PES_ATENDENTE" />
+      	<many-to-one name="criadoPor" column="PES_CRIADOPOR_COD" foreign-key="FK_PES_CRIADOPOR_COD"/>
+		<many-to-one name="origem" column="PES_ORIGEM_COD" foreign-key="FK_PES_ORIGEM_COD"/>
+		<many-to-one name="nivel" column="PES_NIVEL_COD" foreign-key="FK_PES_NIVEL_COD"/>
+		<many-to-one name="atendente" column="PES_ATENDENTE_COD" foreign-key="FK_PES_ATENDENTE_COD"/>
 		
-		<set name="negocios" inverse="true" cascade="delete-orphan">
+		<set name="negocios" inverse="true" cascade="save-update, delete">
 			<key column="PES_NEG_COD" />
 			<one-to-many class="Negocio" />
 		</set>
-		<set name="tarefas" inverse="true" cascade="delete-orphan">
+		<set name="tarefas" inverse="true" cascade="save-update, delete">
 			<key column="PES_TAR_COD" />
-			<one-to-many class="Tarefas" />
+			<one-to-many class="Tarefa" />
 		</set>
-      	<many-to-one name="servico" column="PES_SERVICO" />
-		<many-to-one name="categoria" column="PES_CATEGORIA" />
+      	<many-to-one name="servico" column="PES_SERVICO_COD" foreign-key="FK_PES_SERVICO_COD"/>
+		<many-to-one name="categoria" column="PES_CATEGORIA_COD" foreign-key="FK_PES_CATEGORIA_COD"/>
 	</component>
 	
 	</class>

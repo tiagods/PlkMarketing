@@ -18,11 +18,11 @@ public class Usuario implements Serializable{
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Date ultimoAcesso;
-	private int totalTarefas;
-	private int totalTarefasPendentes;
-	private int totalEmpresas;
-	private int totalPessoas;
-	private int totalNegocios;
+	private int totalTarefas=0;
+	private int totalTarefasPendentes=0;
+	private int totalEmpresas=0;
+	private int totalPessoas=0;
+	private int totalNegocios=0;
 	private Departamento departamento;
 	private Funcao funcao;
 	private BigDecimal totalVendas;
@@ -222,14 +222,14 @@ public class Usuario implements Serializable{
 	/**
 	 * @return the vendas
 	 */
-	public BigDecimal getVendas() {
+	public BigDecimal getTotalVendas() {
 		return totalVendas;
 	}
 	/**
 	 * @param vendas the vendas to set
 	 */
-	public void setVendas(BigDecimal vendas) {
-		this.totalVendas = vendas;
+	public void setTotalVendas(BigDecimal totalVendas) {
+		this.totalVendas = totalVendas;
 	}
 		
 }

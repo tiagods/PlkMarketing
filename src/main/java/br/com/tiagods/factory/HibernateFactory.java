@@ -1,15 +1,19 @@
 package br.com.tiagods.factory;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
-import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.Departamento;
+import br.com.tiagods.model.Funcao;
+import br.com.tiagods.model.Usuario;
 
 public class HibernateFactory {
 	//recebendo a sessao
@@ -31,9 +35,6 @@ public class HibernateFactory {
 		public List<Object> getList(Session session, Object object){
 			return session.createQuery("from "+object).getResultList();
 		}
-		public Set<Object> getSetList(Session session, Object object){
-			return (Set<Object>) session.createQuery("from "+object).getResultList();
-		}
 		//retornando apenas 1 objeto
 		public Object getObject(Session session, Object object){
 			return session.createQuery("from "+object).getFirstResult();
@@ -52,5 +53,6 @@ public class HibernateFactory {
 			session.getTransaction().commit();
 			session.close();
 	}
+		
 }
 

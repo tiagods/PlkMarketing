@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
 -->
 <hibernate-mapping package="br.com.tiagods.model">
-	<class name="ServicoAgregado" table="SERVICO_AGREGADO">
+	<class name="ServicoContratado" table="SERVICO_CONTRATADO">
 	<id name="id" column="SER_CON_COD" type="int">
-	<generator class="assigned">
-		<param name="a"/>
+	<generator class="sequence">
+		<param name="sequence">SERVICO_CONTRATADO_SERV_AGR_SEQUENCE</param>
 	</generator>
 	</id>
-	<property name="nome" column="SER_CON_NOME" length="100"/>
-	
-	</class>
+	<property name="valor" column="SER_CON_VALOR" type="big_decimal"/>
+	<many-to-one name="servicosAgregados" column="SER_AGR_COD" foreign-key="FK_SER_AGR_COD"/>
+   	</class>
 </hibernate-mapping>
 

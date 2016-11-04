@@ -42,15 +42,15 @@ public class Cidade {
 		this.estado = estado;
 	}
 	/**
-	 * @return the codExtra
+	 * @return the idExtra
 	 */
-	public int getCodExtra() {
+	public int getIdExtra() {
 		return idExtra;
 	}
 	/**
-	 * @param codExtra the codExtra to set
+	 * @param idExtra the idExtra to set
 	 */
-	public void setCodExtra(int idExtra) {
+	public void setIdExtra(int idExtra) {
 		this.idExtra = idExtra;
 	}
 	

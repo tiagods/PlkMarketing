@@ -15,16 +15,21 @@ public class TarefaDao {
 		factory.closeSession(session);
 		return list;
 	}
-	public int getQuantidade(Usuario usuario){
+	public int getQuantidade(Usuario usuario, Date dataInicio, Date dataFinal){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
-		String hql = "FROM Tarefa as c where c.DATA_INICIO "
-				+ "= :dayNow "
-				+ "and c.DATA_FIM = :dayNow "
-				+"and c.ATENDENTE = :atendente";
+		String hql = "FROM Tarefa as t where t.dataEvento between "
+				+ ":dataInicial "
+				+ "and :dataFim "
+				+ "and t.atendente = :atendente";
 		int quant = session.createQuery(hql)
-				.setParameter("dayNow", new Date()).setParameter("atendente", usuario.getId()).getMaxResults();
+				.setParameter("dataInicial", dataInicio)
+				.setParameter("dataFim", dataFinal)
+				.setParameter("atendente", usuario.getId()).getMaxResults();
 		factory.closeSession(session);
 		return quant;
+	}
+	public void cadastrarTarefa(Usuario usuario){
+		
 	}
 }

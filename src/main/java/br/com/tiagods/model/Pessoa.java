@@ -1,6 +1,8 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class Pessoa extends PfPj implements Serializable{
 	/**
@@ -11,7 +13,9 @@ public class Pessoa extends PfPj implements Serializable{
 	private String nome;
 	private String cpf;
 	private String dataNascimento;
+	private PfPj pessoaFisica;
 	private Endereco endereco;
+	
 	/**
 	 * @return the id
 	 */
@@ -66,6 +70,20 @@ public class Pessoa extends PfPj implements Serializable{
 	 */
 	public void setDataNascimento(String dataNascimento) {
 		this.dataNascimento = dataNascimento;
+	}
+
+	/**
+	 * @return the pessoaFisica
+	 */
+	public PfPj getPessoaFisica() {
+		return pessoaFisica;
+	}
+
+	/**
+	 * @param pessoaFisica the pessoaFisica to set
+	 */
+	public void setPessoaFisica(PfPj pessoaFisica) {
+		this.pessoaFisica = pessoaFisica;
 	}
 
 	/**

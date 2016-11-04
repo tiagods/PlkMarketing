@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
 -->
 <hibernate-mapping package="br.com.tiagods.model">
@@ -11,9 +11,10 @@
 	</generator>
 	</id>
 	<property name="nome" column="SER_AGR_NOME" length="100"/>
-	<set name="negocios">
+	
+	<set name="servicosContratados" inverse="true" cascade="save-update, delete">
 		<key column="SER_AGR_COD" />
-		<many-to-many column="NEG_SER_COD" class="Negocio" />
+		<one-to-many class="ServicoContratado"/>
 	</set>
 	</class>
 </hibernate-mapping>

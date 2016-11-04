@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
 -->
-<hibernate-mapping package="br.com.model">
+<hibernate-mapping package="br.com.tiagods.model">
 	<class name="Usuario" table="USUARIO">
 	<id name="id" column="USU_ID" type="int">
 	<generator class="sequence">
@@ -16,7 +16,7 @@
 	<property name="email" column="USU_EMAIL" length="200"/>
 	<property name="criadoEm" column="USU_CRIADOEM" type="timestamp"/>
 	
-	<many-to-one name="criadoPor" column="USU_CRIADOPOR"/>
+	<many-to-one name="criadoPor" column="USU_CRIADOPOR_COD" foreign-key="FK_USU_CRIADOPOR_COD"/>
 	
 	<property name="ultimoAcesso" column="USU_ULTIMOACESSO" type="timestamp"/>
 	<property name="totalTarefas" column="USU_TOTALTAREFAS" type="int"/>
@@ -24,8 +24,8 @@
 	<property name="totalEmpresas" column="USU_TOTALEMPRESAS" type="int"/>
 	<property name="totalNegocios" column="USU_TOTALNEGOCIOS" type="int"/>
 	
-	<many-to-one name="departamento" column="USU_DEPARTAMENTO"/>
-	<many-to-one name="funcao" column="USU_FUNCAO"/>
+	<many-to-one name="departamento" column="USU_DEPARTAMENTO_COD" foreign-key="FK_USU_DEPARTAMENTO_COD"/>
+	<many-to-one name="funcao" column="USU_FUNCAO_COD" foreign-key="FK_USU_FUNCAO_COD"/>
 	
 	<property name="totalVendas" column="USU_TOTALVENDAS" type="big_decimal"/>
 	

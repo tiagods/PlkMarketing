@@ -20,7 +20,9 @@ import br.com.tiagods.model.UsuarioDao;
 import br.com.tiagods.model.TarefaDao;
 
 public class ControllerInicio implements ActionListener,MouseListener{
-
+	
+	ControllerMenu menu = ControllerMenu.getInstance();
+	
 	boolean liberar = false;
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -37,14 +39,14 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	
 	public void iniciar(){
 		carregarDataAgora();
-		//carregarAtendentes();
-		//carregarTarefasHoje();
+		carregarAtendentes();
+		//carregarTarefasHoje(menu.getUsuario());
 	}
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario sessao) {
 		//verificar permissão e carregar tarefas do's usuarios
 		TarefaDao tDao = new TarefaDao();
-		int quant = tDao.getQuantidade(sessao);
+		int quant = tDao.getQuantidade(sessao, new Date(), new Date());
 		String[] nome = sessao.getNome().split(" ");
 		switch(quant){
 		case 0:
