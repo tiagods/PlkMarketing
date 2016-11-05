@@ -6,9 +6,7 @@
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="Tarefa" table="TAREFA">
 	<id name="id" column="TAR_COD" type="int">
-	<generator class="sequence">
-		<param name="sequence">TAREFA_TAR_COD_SEQUENCE</param>
-	</generator>
+	<generator class="identity" />
 	</id>
 	<property name="descricao" column="TAR_NOME" type="text"/>
 	<property name="dataEvento" column="TAR_DATAEVENTO" type="date"/>
@@ -17,11 +15,12 @@
 	<property name="criadoEm" column="TAR_CRIADOEM" type="timestamp"/>
 	
 	<many-to-one name="criadoPor" column="TAR_CRIADOPOR_COD" foreign-key="FK_TAR_CRIADOPOR_COD"/>
-	<many-to-one name="tipoTarefa" column="TAR_TIPOTAREFA_COD" foreign-key="FK_TAR_TIPOTAREFA_COD" />
+	<many-to-one name="tipoTarefa" column="TAR_TIP_TAR_COD" foreign-key="FK_TAR_TIP_TAR_COD" />
 	<many-to-one name="atendente" column="TAR_ATENDENTE_COD" foreign-key="FK_TAR_ATENDENTE_COD"/>
 	<many-to-one name="pessoa" column="TAR_PESSOA_COD" foreign-key="FK_TAR_PESSOA_COD"/>
 	<many-to-one name="empresa" column="TAR_EMPRESA_COD" foreign-key="FK_TAR_EMPRESA_COD"/>
 	<many-to-one name="negocio" column="TAR_NEGOCIO_COD" foreign-key="FK_TAR_NEGOCIO_COD"/>
+	
 	</class>
 </hibernate-mapping>
 

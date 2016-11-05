@@ -6,9 +6,7 @@
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="Status" table="NEGOCIO_STATUS">
 	<id name="id" column="NEG_STA_COD" type="int">
-	<generator class="sequence">
-		<param name="sequence">STATUS_STA_COD_SEQUENCE</param>
-	</generator>
+	<generator class="identity" />
 	</id>
 	<property name="nome" column="NEG_STA_NOME" length="100"/>
 	</class>

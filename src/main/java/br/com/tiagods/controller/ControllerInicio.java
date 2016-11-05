@@ -11,13 +11,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import br.com.tiagods.model.TarefaDao;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioDao;
-import br.com.tiagods.model.TarefaDao;
 
 public class ControllerInicio implements ActionListener,MouseListener{
 	
@@ -65,12 +65,15 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	}
 	//carregar lista de atendentes
 	private void carregarAtendentes() {
-//		UsuarioDao funcDao = new UsuarioDao();
-//		Set<Usuario> lista = funcDao.getLista();
-//		cbAtendentes.addItem("mim");
-//		lista.forEach(c->{
-//			cbAtendentes.addItem(c.getNome());
-//		});
+		UsuarioDao funcDao = new UsuarioDao();
+		Usuario usuarioSessao = ControllerMenu.getInstance().getUsuario();
+		List<Usuario> lista = funcDao.getLista();
+		cbAtendentes.removeAllItems();
+		cbAtendentes.addItem("mim");
+		lista.forEach(c->{
+			if(c.getId() != usuarioSessao.getId())
+				cbAtendentes.addItem(c.getNome());
+		});
 		cbAtendentes.setSelectedItem("mim");
 	}
 	//enviar data atual

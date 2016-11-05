@@ -6,9 +6,7 @@
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="TipoTarefa" table="TIPO_TAREFA">
 	<id name="id" column="TIP_TAR_COD" type="int">
-	<generator class="sequence">
-		<param name="sequence">TIPO_TAREFA_TIP_TAR_SEQUENCE</param>
-	</generator>
+	<generator class="identity" />
 	</id>
 	<property name="nome" column="TIP_TAR_NOME" length="100"/>
 	</class>

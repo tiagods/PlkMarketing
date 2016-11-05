@@ -6,9 +6,7 @@
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="Empresa" table="EMPRESA">
 	<id name="id" column="EMP_COD" type="int">
-	<generator class="sequence">
-		<param name="sequence">EMPRESA_EMP_COD_SEQUENCE</param>
-	</generator>
+	<generator class="identity" />
 	</id>
 	<property name="cnpj" column="EMP_CNPJ" length="100"/>
 	<component name="endereco">
@@ -30,14 +28,14 @@
 		<many-to-one name="nivel" column="EMP_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
 		<many-to-one name="atendente" column="EMP_ATENDENTE_COD" foreign-key="FK_EMP_ATENDENTE_COD"/>
 		<set name="negocios" inverse="true" cascade="save-update, delete">
-			<key column="NEG_EMPRESA_COD" foreign-key="FK_NEG_EMPRESA_COD" />
+			<key column="NEG_EMPRESA_COD"/>
 			<one-to-many class="Negocio" />
 		</set>
 		<set name="tarefas" inverse="true" cascade="save-update, delete">
-			<key column="TAR_EMPRESA_COD" foreign-key="FK_TAR_EMPRESA_COD"/>
+			<key column="TAR_EMPRESA_COD"/>
 			<one-to-many class="Tarefa" />
 		</set>		
-	  	<many-to-one name="servico" column="EMP_SERVICO_COD" foreign-key="FK_EMP_SERVICO_COD"/>
+	  	<many-to-one name="servico" column="EMP_SERVICO_COD" foreign-key="FK_SER_EMPRESA_COD"/>
 		<many-to-one name="categoria" column="EMP_CATEGORIA_COD" foreign-key="FK_EMP_CATEGORIA_COD"/>
 	</component>
 	</class>

@@ -11,6 +11,7 @@ public class ServicoContratado implements Serializable{
 	private int id;
 	private BigDecimal valor;
 	private ServicoAgregado servicosAgregados;
+	private Negocio negocios;
 	
 	/**
 	 * @return the servicoAgregado
@@ -47,6 +48,18 @@ public class ServicoContratado implements Serializable{
 	 */
 	public void setServicosAgregados(ServicoAgregado servicosAgregados) {
 		this.servicosAgregados = servicosAgregados;
+	}
+	/**
+	 * @return the negocios
+	 */
+	public Negocio getNegocios() {
+		return negocios;
+	}
+	/**
+	 * @param negocios the negocios to set
+	 */
+	public void setNegocios(Negocio negocios) {
+		this.negocios = negocios;
 	}
 	
 }

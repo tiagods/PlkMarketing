@@ -26,6 +26,8 @@ public class CriarAdmin {
 			usuario = session.find(Usuario.class, 1);
 			session.getTransaction().commit();
 		}
+		usuario = session.find(Usuario.class, 1);
+		session.getTransaction().commit();
 		session.close();
 	}
 	public void criarUsuario(){
@@ -51,7 +53,7 @@ public class CriarAdmin {
 	}
 	public void criarDepartamento(){
 		Session session = new HibernateFactory().getSession();
-		Departamento departamento = new Departamento();
+		departamento = new Departamento();
 		departamento.setNome("Tecnologia");
 		try{
 			session.save(departamento);
@@ -65,7 +67,7 @@ public class CriarAdmin {
 	}
 	public void criarFuncao(){
 		Session session = new HibernateFactory().getSession();
-		Funcao funcao = new Funcao();
+		funcao = new Funcao();
 		funcao.setNome("Analista");
 		try{
 		session.save(funcao);

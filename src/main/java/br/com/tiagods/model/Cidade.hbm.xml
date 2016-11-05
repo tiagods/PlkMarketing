@@ -6,9 +6,7 @@
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="Cidade" table="CIDADE">
 	<id name="id" column="CID_COD" type="int">
-	<generator class="sequence">
-		<param name="sequence">CIDADE_CID_SEQUENCE</param>
-	</generator>
+	<generator class="identity" />
 	</id>
 	<property name="nome" column="CID_NOME" length="150"/>
 	<property name="estado" column="CID_ESTADO" length="2"/>

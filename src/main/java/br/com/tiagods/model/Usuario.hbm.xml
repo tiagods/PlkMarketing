@@ -6,9 +6,7 @@
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="Usuario" table="USUARIO">
 	<id name="id" column="USU_COD" type="int">
-	<generator class="sequence">
-		<param name="sequence">USUARIO_USU_COD_SEQUENCE</param>
-	</generator>
+	<generator class="identity" />
 	</id>
 	<property name="login" column="USU_LOGIN" length="100"/>
 	<property name="nome" column="USU_NOME"/>
