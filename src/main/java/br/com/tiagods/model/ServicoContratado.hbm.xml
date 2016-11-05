@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
@@ -7,7 +7,7 @@
 	<class name="ServicoContratado" table="SERVICO_CONTRATADO">
 	<id name="id" column="SER_CON_COD" type="int">
 	<generator class="sequence">
-		<param name="sequence">SERVICO_CONTRATADO_SERV_AGR_SEQUENCE</param>
+		<param name="sequence">SERVICO_CONTRATADO_SER_CON_SEQUENCE</param>
 	</generator>
 	</id>
 	<property name="valor" column="SER_CON_VALOR" type="big_decimal"/>

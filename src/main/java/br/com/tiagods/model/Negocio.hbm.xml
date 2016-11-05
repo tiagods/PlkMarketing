@@ -18,7 +18,7 @@
 	
 	<many-to-one name="criadoPor" column="NEG_CRIADOPOR_COD" foreign-key="FK_NEG_CRIADOPOR_COD"/>
 	<many-to-one name="status" column="NEG_STATUS_COD"  foreign-key="FK_NEG_STATUS_COD"/>
-	<many-to-one name="atendente" column="NEG_ATENDENTE_COD" />
+	<many-to-one name="atendente" column="NEG_ATENDENTE_COD" foreign-key="FK_NEG_ATENDENTE_COD"/>
 	
 	<property name="andamento" column="NEG_ANDAMENTO"/>
 	<property name="contato" column="NEG_ANDCONTATO" type="timestamp"/>
@@ -27,15 +27,15 @@
 	<property name="fechamento" column="NEG_ANDFECHAMENTO" type="timestamp"/>
 	
 	<set name="tarefas" inverse="true" cascade="save-update, delete">
-		<key column="NEG_TAREFA_COD" />
+		<key column="TAR_NEGOCIO_COD" foreign-key="FK_TAR_NEGOCIO_COD" />
 		<one-to-many class="Tarefa" />
 	</set>
 	
 	<many-to-one name="empresa" column="NEG_EMPRESA_COD" foreign-key="FK_NEG_EMPRESA_COD"/>
 	<many-to-one name="pessoa" column="NEG_PESSOA_COD" foreign-key="FK_NEG_PESSOA_COD"/>
 	
-    <set name="servicosContratados" inverse="true" cascade="save-update, delete">
-		<key column="NEG_SER_COD" />
+    <set name="servicosContratados" inverse="true" cascade="save-update, delete" >
+		<key column="SER_NEGOCIO_COD" foreign-key="FK_NEGOCIO_COD"/>
 		<one-to-many class="ServicoContratado"/>
 	</set>
     <property name="honorario" column="NEG_HONORARIO" type="big_decimal"></property>

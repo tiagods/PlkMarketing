@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
@@ -7,7 +7,7 @@
 	<class name="TipoTarefa" table="TIPO_TAREFA">
 	<id name="id" column="TIP_TAR_COD" type="int">
 	<generator class="sequence">
-		<param name="sequence">TIPO_TAREFA_TIP_TAR_COD_SEQUENCE</param>
+		<param name="sequence">TIPO_TAREFA_TIP_TAR_SEQUENCE</param>
 	</generator>
 	</id>
 	<property name="nome" column="TIP_TAR_NOME" length="100"/>

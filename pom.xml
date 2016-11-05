@@ -14,11 +14,12 @@
 	<artifactId>hibernate-core</artifactId>
 	<version>5.2.2.Final</version>
 	</dependency>
-	<!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
+	<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 	<dependency>
-		<groupId>postgresql</groupId>
-		<artifactId>postgresql</artifactId>
-		<version>9.1-901.jdbc3</version>
+    <groupId>org.postgresql</groupId>
+    <artifactId>postgresql</artifactId>
+    <version>9.4.1211</version>
 	</dependency>
+
   </dependencies>
 </project>

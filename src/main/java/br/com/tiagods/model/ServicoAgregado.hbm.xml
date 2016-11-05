@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
@@ -13,7 +13,7 @@
 	<property name="nome" column="SER_AGR_NOME" length="100"/>
 	
 	<set name="servicosContratados" inverse="true" cascade="save-update, delete">
-		<key column="SER_AGR_COD" />
+		<key column="SER_AGR_COD" foreign-key="FK_SER_AGR_COD"/>
 		<one-to-many class="ServicoContratado"/>
 	</set>
 	</class>

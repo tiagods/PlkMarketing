@@ -1,13 +1,13 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <!-- Tiago Dias
 -->
 <hibernate-mapping package="br.com.tiagods.model">
 	<class name="Usuario" table="USUARIO">
-	<id name="id" column="USU_ID" type="int">
+	<id name="id" column="USU_COD" type="int">
 	<generator class="sequence">
-		<param name="sequence">USUARIO_ID_USU_SEQUENCE</param>
+		<param name="sequence">USUARIO_USU_COD_SEQUENCE</param>
 	</generator>
 	</id>
 	<property name="login" column="USU_LOGIN" length="100"/>
