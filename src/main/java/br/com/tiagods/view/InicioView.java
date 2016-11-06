@@ -24,6 +24,7 @@ import br.com.tiagods.view.interfaces.DefaultUtilities;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import java.awt.FlowLayout;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private JPanel jPanel1;
@@ -89,11 +90,11 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
         				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addContainerGap()
-        					.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 1230, Short.MAX_VALUE))
-        				.addGroup(jPanel1Layout.createSequentialGroup()
         					.addGap(43)
-        					.addComponent(pnStatus, GroupLayout.PREFERRED_SIZE, 525, GroupLayout.PREFERRED_SIZE)))
+        					.addComponent(pnStatus, GroupLayout.PREFERRED_SIZE, 525, GroupLayout.PREFERRED_SIZE))
+        				.addGroup(jPanel1Layout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 1230, Short.MAX_VALUE)))
         			.addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -101,13 +102,15 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         		.addGroup(jPanel1Layout.createSequentialGroup()
         			.addGap(23)
         			.addComponent(pnStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(198)
-        			.addComponent(pnDetalhes, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(306, Short.MAX_VALUE))
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+        			.addContainerGap())
         );
         lbInfoTarefas = new JLabel();
+        lbInfoTarefas.setBounds(0, 5, 1230, 549);
         lbInfoTarefas.setHorizontalAlignment(SwingConstants.CENTER);
         lbInfoTarefas.addMouseListener(controller);
+        pnDetalhes.setLayout(null);
         pnDetalhes.add(lbInfoTarefas);
         
         lbInfoTarefas.setFont(new Font("Dialog", Font.BOLD, 26)); // NOI18N
@@ -116,7 +119,6 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         pnStatus.add(lblCriadoPor);
         
         cbAtendentes = new JComboBox();
-        cbAtendentes.setModel(new DefaultComboBoxModel(new String[] {"mim", "Operador1", "Operador2", "Operador3"}));
         pnStatus.add(cbAtendentes);
         
         JLabel lblDe = new JLabel("de:");
@@ -130,6 +132,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         
         JButton btnOk = new JButton("OK");
         btnOk.setActionCommand("Filtrar");
+        btnOk.setName("OK");
         btnOk.addActionListener(controller);
         pnStatus.add(btnOk);
         

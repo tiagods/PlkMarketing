@@ -2,6 +2,7 @@ package br.com.tiagods.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -14,20 +15,28 @@ public class CriarAdmin {
 	Departamento departamento;
 	Funcao funcao;
 	
+	static CriarAdmin instance;
+	public static CriarAdmin getInstance(){
+		if(instance==null){
+			instance = new CriarAdmin();
+		}
+		return instance;
+	}
+	public Usuario getUsuario(){
+		return usuario;
+	}
+	
 	public CriarAdmin(){
 		Session session = new HibernateFactory().getSession();
-		int users = session.createQuery("from Usuario").getFirstResult();
-		if(users==0){
+		List users = session.createQuery("from Usuario").getResultList();
+		if(users.isEmpty()){
 			criarDepartamento();
 			criarFuncao();
 			criarUsuario();
 		}
 		else{
-			usuario = session.find(Usuario.class, 1);
-			session.getTransaction().commit();
+			usuario = (Usuario)users.get(0);
 		}
-		usuario = session.find(Usuario.class, 1);
-		session.getTransaction().commit();
 		session.close();
 	}
 	public void criarUsuario(){
@@ -78,10 +87,5 @@ public class CriarAdmin {
 		}
 		session.close();
 	}
-	public Usuario getUsuario(){
-		Session session = new HibernateFactory().getSession();
-		usuario = session.find(Usuario.class, 1);
-		session.close();
-		return usuario;
-	}
+	
 }

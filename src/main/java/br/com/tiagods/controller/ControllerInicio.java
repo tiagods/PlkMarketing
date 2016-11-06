@@ -15,14 +15,14 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import br.com.tiagods.model.CriarAdmin;
 import br.com.tiagods.model.TarefaDao;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioDao;
+import br.com.tiagods.view.TarefasView;
 
 public class ControllerInicio implements ActionListener,MouseListener{
-	
-	ControllerMenu menu = ControllerMenu.getInstance();
-	
+		
 	boolean liberar = false;
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -40,7 +40,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	public void iniciar(){
 		carregarDataAgora();
 		carregarAtendentes();
-		//carregarTarefasHoje(menu.getUsuario());
+		carregarTarefasHoje(CriarAdmin.getInstance().getUsuario());
 	}
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario sessao) {
@@ -66,12 +66,11 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	//carregar lista de atendentes
 	private void carregarAtendentes() {
 		UsuarioDao funcDao = new UsuarioDao();
-		Usuario usuarioSessao = ControllerMenu.getInstance().getUsuario();
 		List<Usuario> lista = funcDao.getLista();
 		cbAtendentes.removeAllItems();
 		cbAtendentes.addItem("mim");
 		lista.forEach(c->{
-			if(c.getId() != usuarioSessao.getId())
+			if(c.getId() != CriarAdmin.getInstance().getUsuario().getId())
 				cbAtendentes.addItem(c.getNome());
 		});
 		cbAtendentes.setSelectedItem("mim");
@@ -80,7 +79,6 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	private void carregarDataAgora() {
 		jData1.setDate(new Date());
 		jData2.setDate(new Date());
-        
 	}
 	//validar datas
 	private boolean validarDatas(){
@@ -108,11 +106,18 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	}
 	//abrir nova tela
 	private void abrirTarefasView(){
-		
+		 ControllerMenu menu = ControllerMenu.getInstance();
+		 TarefasView tView = new TarefasView(new Date(), new Date(),CriarAdmin.getInstance().getUsuario());
+		 menu.abrirCorpo(tView);
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		abrirTarefasView();
+		switch(e.getComponent().getName()){
+		case "OK":
+		if(validarDatas())
+			abrirTarefasView();
+		break;
+		}
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {

@@ -9,12 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.CriarAdmin;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.EmpresasView;
@@ -35,13 +35,8 @@ public class ControllerMenu implements ActionListener, MouseListener{
     TarefasSaveView tarefasSave;
     TarefasView tarefas;
     NegociosView negocios;
-    Usuario usuario;
-    
+        
     static ControllerMenu instance;
-    
-    public Usuario getUsuario(){
-    	return usuario;
-    }
     
     public static ControllerMenu getInstance(){
     	if(instance==null){
@@ -51,8 +46,6 @@ public class ControllerMenu implements ActionListener, MouseListener{
     }
     
     public void Inicia(){
-    	CriarAdmin admin = new CriarAdmin();
-    	this.usuario = admin.getUsuario();
     	inicio = new InicioView();
         abrirCorpo(inicio);
     }
@@ -60,7 +53,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent e) {
     	switch(e.getActionCommand()){
     	 case "Tarefas":
-             tarefas = new TarefasView();
+             tarefas = new TarefasView(new Date(), new Date(), CriarAdmin.getInstance().getUsuario());
              abrirCorpo(tarefas);
              break;
          case "TarefasSave":
@@ -81,7 +74,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
             abrirCorpo(empresas);
             break;
         case "Tarefas":
-            tarefas = new TarefasView();
+            tarefas = new TarefasView(new Date(), new Date(), CriarAdmin.getInstance().getUsuario());
             abrirCorpo(tarefas);
             break;
         case "TarefasSave":

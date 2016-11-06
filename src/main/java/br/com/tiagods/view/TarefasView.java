@@ -1,7 +1,7 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.awt.EventQueue;
+import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -11,6 +11,8 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
+import br.com.tiagods.controller.ControllerTarefas;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.interfaces.DefaultUtilities;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
@@ -52,6 +54,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     private javax.swing.ButtonGroup group;
     private JButton btnNewButton;
     
+    ControllerTarefas controller = new ControllerTarefas();
+    
     @Override
     public Color getColor() {
     	// TODO Auto-generated method stub
@@ -60,20 +64,20 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TarefasView frame = new TarefasView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					TarefasView frame = new TarefasView();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
-    public TarefasView() {
+    public TarefasView(Date data1, Date data2, Usuario sessao) {
         initComponents();
     }
 

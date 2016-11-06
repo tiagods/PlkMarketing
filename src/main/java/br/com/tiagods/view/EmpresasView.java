@@ -115,9 +115,9 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
 		return DefaultUtilities.super.getColor();
 	}
 	@Override
-	public Color getComponentColor() {
+	public Color getPanelColor() {
 		// TODO Auto-generated method stub
-		return DefaultUtilities.super.getComponentColor();
+		return DefaultUtilities.super.getPanelColor();
 	}
 	/**
 	 * Launch the application.
@@ -218,21 +218,21 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
 
         jPanel3.setBackground(getColor());
 
-        cbAtendente.setBackground(getComponentColor());
+        cbAtendente.setBackground(getPanelColor());
         cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Atendente", "Todos"}));
         
-        cbCategoria.setBackground(getComponentColor());
+        cbCategoria.setBackground(getPanelColor());
         cbCategoria.setModel(new DefaultComboBoxModel(new String[] {"Categoria"}));
 
-        cbMeio.setBackground(getComponentColor());
+        cbMeio.setBackground(getPanelColor());
         cbMeio.setModel(new DefaultComboBoxModel(new String[] {"Meio"}));
 
-        cbProdServicos.setBackground(getComponentColor());
+        cbProdServicos.setBackground(getPanelColor());
         cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Produto/Servi\u00E7os"}));
         
         JComboBox<String> cbPessoas = new JComboBox<String>();
         cbPessoas.setModel(new DefaultComboBoxModel(new String[] {"Pessoa", "Todos"}));
-        cbPessoas.setBackground(getComponentColor());
+        cbPessoas.setBackground(getPanelColor());
         
         panel = new JPanel();
         panel.setBackground(getColor());
@@ -259,7 +259,7 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         
         cbNivel = new JComboBox<String>();
         cbNivel.setModel(new DefaultComboBoxModel(new String[] {"Nivel"}));
-        cbNivel.setBackground(getComponentColor());
+        cbNivel.setBackground(getPanelColor());
         
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3Layout.setHorizontalGroup(
@@ -305,7 +305,7 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         panel.add(button_1);
         jPanel3.setLayout(jPanel3Layout);
 
-        jPanel4.setBackground(getComponentColor());
+        jPanel4.setBackground(getPanelColor());
 
         txQuemCadastrou.setText("{Usuario}");
 
@@ -450,13 +450,13 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         JCheckBox chckbxTodos = new JCheckBox("Todos");
-        chckbxTodos.setBackground(getComponentColor());
+        chckbxTodos.setBackground(getPanelColor());
         
         JCheckBox chckbxEu = new JCheckBox("Eu");
-        chckbxEu.setBackground(getComponentColor());
+        chckbxEu.setBackground(getPanelColor());
         
         JCheckBox chckbxOutros = new JCheckBox("Outros");
-        chckbxOutros.setBackground(getComponentColor());
+        chckbxOutros.setBackground(getPanelColor());
         GroupLayout gl_pnPrivacidade = new GroupLayout(pnPrivacidade);
         gl_pnPrivacidade.setHorizontalGroup(
         	gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)

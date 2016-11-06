@@ -15,6 +15,7 @@ import static br.com.tiagods.view.TarefasSaveView.*;
 */
 public class ControllerTarefas implements ActionListener, MouseListener {
     public void iniciar(){
+    
     }
 	public void mouseClicked(MouseEvent e) {}
     public void mousePressed(MouseEvent e) {}
