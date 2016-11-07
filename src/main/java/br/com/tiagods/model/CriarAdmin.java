@@ -108,7 +108,7 @@ public class CriarAdmin {
 		Session session = new HibernateFactory().getSession();
 		endereco.setCidade(c1);
 		endereco.setBairro("jd paulista");
-		endereco.setNumero(14);
+		endereco.setNumero("14");
 		endereco.setCep("00000000");
 		
 		Empresa empresa = new Empresa();

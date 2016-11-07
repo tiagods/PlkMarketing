@@ -45,7 +45,6 @@ public class SelecaoObjeto extends JDialog {
 			if(object instanceof Empresa){
 				EmpresaDao eDao = new EmpresaDao();
 				List<Empresa> lista = eDao.getLista();
-				
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				
@@ -53,7 +52,7 @@ public class SelecaoObjeto extends JDialog {
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
-				//tbRelacao.setModel(new DefaultTableModel(linhas,colunas,));
+				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
 			}
 			else if(object instanceof Negocio){
 				

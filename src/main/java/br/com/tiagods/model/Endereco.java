@@ -10,7 +10,7 @@ public class Endereco implements Serializable{
 	private String logradouro;
 	private String nome;
 	private String complemento;
-	private int numero;
+	private String numero;
 	private String bairro;
 	private String cep;
 	private Cidade cidade;
@@ -54,13 +54,13 @@ public class Endereco implements Serializable{
 	/**
 	 * @return the numero
 	 */
-	public int getNumero() {
+	public String getNumero() {
 		return numero;
 	}
 	/**
 	 * @param numero the numero to set
 	 */
-	public void setNumero(int numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 	/**

@@ -11,19 +11,18 @@
 	<property name="nome" column="PES_NOME" length="200"/>
 	<property name="cpf" column="PES_CPF" length="10"/>
 	<property name="dataNascimento" column="PES_NASC" type="date"/>
-	
 	<component name="endereco">
 	  <property name="logradouro" column="PES_LOGRADOURO" length="200"/>
       <property name="nome" column="PES_END_NOME" length="200"/>
       <property name="complemento" column="PES_END_COMPLEMENTO"/>
-      <property name="numero" column="PES_END_NUMERO" type="int"/>
+      <property name="numero" column="PES_END_NUMERO" />
       <property name="bairro" column="PES_END_BAIRRO" length="150"/>
       <property name="cep" column="PES_END_CEP" length="9"/>
       <many-to-one name="cidade" column="PES_CIDADE_COD" foreign-key="FK_PES_CIDADE_COD"/>
     </component>
 	<component name="pessoaFisica">
-		<property name="telefone" column="PES_TELEFONE" type="int"/>
-		<property name="celular" column="PES_CELULAR" type="int"/>
+		<property name="telefone" column="PES_TELEFONE"/>
+		<property name="celular" column="PES_CELULAR"/>
 		<property name="email" column="PES_EMAIL" length="200"/>
 		<property name="site" column="PES_SITE" length="200"/>
 		<property name="criadoEm" column="PES_CRIADOEM" type="timestamp"/>

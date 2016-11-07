@@ -13,14 +13,14 @@
       <property name="logradouro" column="EMP_END_LOGRADOURO" length="200"/>
       <property name="nome" column="EMP_END_NOME" length="200"/>
       <property name="complemento" column="EMP_END_COMPLEMENTO"/>
-      <property name="numero" column="EMP_END_NUMERO" type="int"/>
+      <property name="numero" column="EMP_END_NUMERO" />
       <property name="bairro" column="EMP_END_BAIRRO" length="150"/>
       <property name="cep" column="EMP_END_CEP" length="9"/>
       <many-to-one name="cidade" column="EMP_CIDADE_COD" foreign-key="FK_EMP_CIDADE_COD"/>
     </component>
 	<component name="pessoaJuridica">
-		<property name="telefone" column="EMP_TELEFONE" type="int"/>
-		<property name="celular" column="EMP_CELULAR" type="int"/>
+		<property name="telefone" column="EMP_TELEFONE" />
+		<property name="celular" column="EMP_CELULAR" />
 		<property name="email" column="EMP_EMAIL" length="200"/>
 		<property name="site" column="EMP_SITE" length="200"/>
 		<property name="criadoEm" column="EMP_CRIADOEM" type="timestamp"/>

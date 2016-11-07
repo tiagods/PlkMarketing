@@ -11,8 +11,8 @@ public class PfPj implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int telefone;
-	private int celular;
+	private String telefone;
+	private String celular;
 	private String email;
 	private String site;
 	private Date criadoEm;
@@ -28,25 +28,25 @@ public class PfPj implements Serializable{
 	/**
 	 * @return the telefone
 	 */
-	public int getTelefone() {
+	public String getTelefone() {
 		return telefone;
 	}
 	/**
 	 * @param telefone the telefone to set
 	 */
-	public void setTelefone(int telefone) {
+	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
 	/**
 	 * @return the celular
 	 */
-	public int getCelular() {
+	public String getCelular() {
 		return celular;
 	}
 	/**
 	 * @param celular the celular to set
 	 */
-	public void setCelular(int celular) {
+	public void setCelular(String celular) {
 		this.celular = celular;
 	}
 	/**
