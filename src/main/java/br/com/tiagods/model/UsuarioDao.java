@@ -15,6 +15,14 @@ public class UsuarioDao {
 		factory.closeSession(session);
 		return list;
 	}
+	public Usuario getUsuario(String acesso){
+		HibernateFactory factory = new HibernateFactory();
+		Session session = factory.getSession();
+		Usuario usuario = (Usuario)session.createQuery("from Usuario u where u.login=:loginName").setParameter("loginName", acesso).getSingleResult();
+		factory.closeSession(session);
+		return usuario;
+		
+	}
 	
 	
 }

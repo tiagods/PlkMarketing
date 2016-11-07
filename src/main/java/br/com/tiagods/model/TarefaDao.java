@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
@@ -30,7 +31,19 @@ public class TarefaDao {
 		factory.closeSession(session);
 		return quant;
 	}
-	public void cadastrarTarefa(Usuario usuario){
-		
+	public boolean salvarTarefa(Usuario usuario, Tarefa tarefa){
+		HibernateFactory factory = new HibernateFactory();
+		Session session = factory.getSession();
+		try{
+			session.saveOrUpdate(tarefa);
+			session.getTransaction().commit();
+		return true;
+		}catch(HibernateException e){
+			e.printStackTrace();
+			session.getTransaction().rollback();
+			return false;
+		}finally{
+			session.close();
+		}
 	}
 }

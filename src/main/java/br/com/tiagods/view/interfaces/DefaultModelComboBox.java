@@ -32,4 +32,7 @@ public interface DefaultModelComboBox {
 		}
 		return object;
 	}
+	default String getName(String valor){
+		return valor;
+	}
 }

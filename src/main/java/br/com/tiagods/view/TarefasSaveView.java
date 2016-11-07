@@ -2,7 +2,6 @@ package br.com.tiagods.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
@@ -14,27 +13,29 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 
 import com.toedter.calendar.JDateChooser;
 /*
  */
 
-import br.com.tiagods.view.interfaces.DefaultUtilities;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.controller.ControllerTarefasSave;
+import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
-import javax.swing.JTextArea;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
-	private JTextField textField;
-	private JTextField txtPassarComoParametro;
 	
+	public static JPanel panItem, panel;
 	public static JDateChooser txData;
-	public static JComboBox cbTipo, cbAtendente;
+	public static JComboBox cbObject, cbAtendente;
 	public static JTextArea txDetalhes;
+	public static JLabel txCodigo, txNome;
 	public static JFormattedTextField txHora;
+	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar;
+	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
+	ControllerTarefasSave controller  = new ControllerTarefasSave();
 	
 	@Override
 	public Color getColor() {
@@ -44,25 +45,29 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TarefasSaveView frame = new TarefasSaveView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					TarefasSaveView frame = new TarefasSaveView();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public TarefasSaveView() {
-		JPanel panel = new JPanel();
-		JPanel panel_1 = new JPanel();
+	public TarefasSaveView(Tarefa tarefa) {
+		initComponents();
+		controller.iniciar(tarefa);
+	
+	}
+	private void initComponents(){
+		panel = new JPanel();
         
 		setBounds(0, 0, 1250, 660);
         setBorder(null);
@@ -70,79 +75,73 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         panel.setBackground(getColor());
         panel.setLayout(null);
         
-        panel_1.setBounds(10, 11, 132, 69);
-        panel.add(panel_1);
-        
-        JLabel lblCod = new JLabel("Cod");
-        panel_1.add(lblCod);
-        
-        textField = new JTextField();
-        panel_1.add(textField);
-        textField.setColumns(10);
-        
-        JLabel lblClasse = new JLabel("Classe");
-        panel_1.add(lblClasse);
-        
-        txtPassarComoParametro = new JTextField();
-        txtPassarComoParametro.setText("passar como parametro e nao como string");
-        panel_1.add(txtPassarComoParametro);
-        txtPassarComoParametro.setColumns(10);
-        
         txData = new JDateChooser();
         
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(174, 192, 846, 118);
+        scrollPane.setBounds(94, 192, 1037, 118);
         panel.add(scrollPane);
         
         txDetalhes = new JTextArea();
         scrollPane.setViewportView(txDetalhes);
         
-        JPanel panItem = new JPanel();
-        panItem.setBounds(174, 148, 846, 33);
+        panItem = new JPanel();
+        panItem.setBounds(94, 148, 1037, 33);
         panel.add(panItem);
         
         ButtonGroup group = new ButtonGroup();
         
-        JRadioButton rdbtnEmail = new JRadioButton("E-mail");
+        rdbtnEmail = new JRadioButton("E-mail");
+        rdbtnEmail.setActionCommand("Email");
+        rdbtnEmail.addActionListener(controller);
         group.add(rdbtnEmail);
         panItem.add(rdbtnEmail);
         
-        JRadioButton rdbtnProposta = new JRadioButton("Proposta");
+        rdbtnProposta = new JRadioButton("Proposta");
+        rdbtnProposta.setActionCommand("Proposta");
+        rdbtnProposta.addActionListener(controller);
         group.add(rdbtnProposta);
         panItem.add(rdbtnProposta);
         
-        JRadioButton rdbtnReuniao = new JRadioButton("Reuni\u00E3o");
+        rdbtnReuniao = new JRadioButton("Reuni\u00E3o");
+        rdbtnReuniao.setActionCommand("Reuniao");
+        rdbtnReuniao.addActionListener(controller);
         group.add(rdbtnReuniao);
         panItem.add(rdbtnReuniao);
         
-        JRadioButton rdbtnTelefone = new JRadioButton("Telefone");
+        rdbtnTelefone = new JRadioButton("Telefone");
+        rdbtnTelefone.setActionCommand("Telefone");
+        rdbtnTelefone.addActionListener(controller);
         group.add(rdbtnTelefone);
         panItem.add(rdbtnTelefone);
         
-        JRadioButton rdbtnVisita = new JRadioButton("Visita");
+        rdbtnVisita = new JRadioButton("Visita");
+        rdbtnVisita.setActionCommand("Visita");
+        rdbtnVisita.addActionListener(controller);
         group.add(rdbtnVisita);
         panItem.add(rdbtnVisita);
         
         JPanel panEscolha = new JPanel();
         FlowLayout fl_panEscolha = (FlowLayout) panEscolha.getLayout();
-        panEscolha.setBounds(174, 332, 846, 33);
+        panEscolha.setBounds(94, 332, 1037, 33);
         panel.add(panEscolha);
         
         JLabel lblTipo = new JLabel("Tipo:");
         panEscolha.add(lblTipo);
         
-        cbTipo = new JComboBox();
-        cbTipo.setModel(new DefaultComboBoxModel(Modelos.values()));
-        panEscolha.add(cbTipo);
+        cbObject = new JComboBox();
+        cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
+        panEscolha.add(cbObject);
         
         JButton button = new JButton("+");
+        button.setActionCommand("+");
+        button.addActionListener(controller);
         panEscolha.add(button);
         
-        JLabel lblNewLabel_1 = new JLabel("{Cod***}");
-        panEscolha.add(lblNewLabel_1);
+        txCodigo = new JLabel("{Cod***}");
+        panEscolha.add(txCodigo);
         
-        JLabel lblNewLabel_2 = new JLabel("{Name***}");
-        panEscolha.add(lblNewLabel_2);
+        txNome = new JLabel("{Name***}");
+        panEscolha.add(txNome);
         
         JLabel lblResponsavel = new JLabel("Responsavel:");
         panEscolha.add(lblResponsavel);
@@ -162,14 +161,24 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         txHora.setColumns(5);
         panEscolha.add(txHora);
         
-        JButton btnEditar = new JButton("Editar");
+        btnEditar = new JButton("Editar");
+        btnEditar.setActionCommand("Editar");
+        btnEditar.addActionListener(controller);
+        
+        btnNovo = new JButton("Novo");
+        btnNovo.setActionCommand("Novo");
+        panEscolha.add(btnNovo);
         panEscolha.add(btnEditar);
         
-        JButton btnCancelar = new JButton("Cancelar");
-        panEscolha.add(btnCancelar);
-        
-        JButton btnSalvar = new JButton("Salvar");
+        btnSalvar = new JButton("Salvar");
+        btnSalvar.setActionCommand("Salvar");
+        btnSalvar.addActionListener(controller);
         panEscolha.add(btnSalvar);
+        
+        btnCancelar = new JButton("Cancelar");
+        btnCancelar.setActionCommand("Cancelar");
+        btnCancelar.addActionListener(controller);
+        panEscolha.add(btnCancelar);
         
         JLabel lblNewLabel = new JLabel("quando na\u00F5 for passado parametro de classe  e invocar um jcomponents solitando Negocio, Empresa ou pessoa para salvar");
         lblNewLabel.setBounds(174, 124, 846, 14);

@@ -57,7 +57,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
              abrirCorpo(tarefas);
              break;
          case "TarefasSave":
-         	tarefasSave = new TarefasSaveView();
+         	tarefasSave = new TarefasSaveView(null);
          	abrirCorpo(tarefasSave);
          	break;
     	}
@@ -78,7 +78,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
             abrirCorpo(tarefas);
             break;
         case "TarefasSave":
-        	tarefasSave = new TarefasSaveView();
+        	tarefasSave = new TarefasSaveView(null);
         	abrirCorpo(tarefasSave);
         	break;
         case "Negocios":
