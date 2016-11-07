@@ -6,19 +6,19 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 
-public class EmpresaDao {
-	public Empresa getById(int cod){
+public class OrigemDao {
+	public Origem getById(int cod){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
-		Empresa empresa = session.find(Empresa.class, cod);
+		Origem origem = session.find(Origem.class, cod);
 		session.getTransaction().commit();
 		session.close();
-		return empresa;
+		return origem;
 	}
-	public List<Empresa> getLista(){
+	public List<Origem> getLista(){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
-		List<Empresa> lista = (List<Empresa>)session.createQuery("from Empresa").getResultList();
+		List<Origem> lista = (List<Origem>)session.createQuery("from Origem").getResultList();
 		session.getTransaction().commit();
 		session.close();
 		return lista;

@@ -1,5 +1,7 @@
 package br.com.tiagods.model;
 
+import java.util.List;
+
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
@@ -12,5 +14,13 @@ public class PessoaDao {
 		session.getTransaction().commit();
 		session.close();
 		return pessoa;
+	}
+	public List<Pessoa> getLista(){
+		HibernateFactory factory = new HibernateFactory();
+		Session session = factory.getSession();
+		List<Pessoa> lista = (List<Pessoa>)session.createQuery("from Pessoa").getResultList();
+		session.getTransaction().commit();
+		session.close();
+		return lista;
 	}
 }

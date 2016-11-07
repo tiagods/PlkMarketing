@@ -10,11 +10,12 @@
 	</id>
 	<property name="cnpj" column="EMP_CNPJ" length="100"/>
 	<component name="endereco">
-      <property name="rua" column="EMP_RUA" length="200"/>
-      <property name="complemento" column="EMP_COMPLEMENTO"/>
-      <property name="numero" column="EMP_NUMERO" type="int"/>
-      <property name="bairro" column="EMP_BAIRRO" length="150"/>
-      <property name="cep" column="EMP_CEP" length="9"/>
+      <property name="logradouro" column="EMP_END_LOGRADOURO" length="200"/>
+      <property name="nome" column="EMP_END_NOME" length="200"/>
+      <property name="complemento" column="EMP_END_COMPLEMENTO"/>
+      <property name="numero" column="EMP_END_NUMERO" type="int"/>
+      <property name="bairro" column="EMP_END_BAIRRO" length="150"/>
+      <property name="cep" column="EMP_END_CEP" length="9"/>
       <many-to-one name="cidade" column="EMP_CIDADE_COD" foreign-key="FK_EMP_CIDADE_COD"/>
     </component>
 	<component name="pessoaJuridica">

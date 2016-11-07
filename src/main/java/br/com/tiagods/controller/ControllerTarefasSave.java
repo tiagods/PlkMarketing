@@ -6,11 +6,16 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -31,9 +36,10 @@ import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.TipoTarefaDao;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioDao;
+import static br.com.tiagods.view.MenuView.jDBody;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
-public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener{
+public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener, ItemListener{
 	
 	Tarefa tarefa = null;
 	Tarefa tarefaBackup;
@@ -51,7 +57,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			novoEditar();
 			break;
 		case "Salvar":
-			boolean salvou =false;
+			boolean continuar = true;
 			StringBuilder builder = new StringBuilder();
 			TarefaDao tdao = new TarefaDao();
 			if(tarefa==null){
@@ -65,29 +71,76 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			tarefa.setAtendente(atendente);
 			
 			tarefa.setClasse((String)cbObject.getSelectedItem());
-			
-			tarefa.setDataEvento(dataEvento);//validar data
+			try{
+				
+				Date data = txData.getDate();
+				tarefa.setDataEvento(data);//validar data
+				continuar=true;
+			}catch(Exception e){
+				continuar=false;
+				builder.append("Data incorreta");
+				builder.append("\n");
+			}
 			tarefa.setDescricao(txDetalhes.getText());
-			tarefa.setHoraEvento(horaEvento);//validar hora
-			
-			TipoTarefaDao tipoDao = new TipoTarefaDao();
-			TipoTarefa tipoTarefa = tipoDao.getTipoTarefa(item);
-			tarefa.setTipoTarefa(tipoTarefa);
-			Object object = getObject((String)cbObject.getSelectedItem());
-			if(object instanceof Empresa){
-				object = new EmpresaDao().getById(Integer.parseInt(txCodigo.getText()));
-				tarefa.setEmpresa((Empresa)object);
+			if(continuar){
+				String hora = txHora.getText();
+				if(hora.length()==5){
+					String horas = hora.substring(0, 2);
+					String minutos = hora.substring(3);
+					try{
+						if(Integer.parseInt(horas)>0 && Integer.parseInt(minutos)<24){
+							if(Integer.parseInt(horas)>0 && Integer.parseInt(minutos)<60){
+								continuar=true;
+								Calendar calendar = Calendar.getInstance();
+								calendar.set(1900, 01, 01, Integer.parseInt(horas), Integer.parseInt(minutos));
+								tarefa.setHoraEvento(calendar.getTime());
+							}else{
+								builder.append("Hora incorreta");
+								builder.append("\n");
+								continuar=false;
+							}
+						}else{
+							builder.append("Hora incorreta");
+							builder.append("\n");
+							continuar=false;
+						}
+					}catch (Exception e) {
+						builder.append("Hora incorreta");
+						builder.append("\n");
+						continuar=false;
+					}	
+				}
+				TipoTarefaDao tipoDao = new TipoTarefaDao();
+				TipoTarefa tipoTarefa = tipoDao.getTipoTarefa(item);
+				tarefa.setTipoTarefa(tipoTarefa);
+				if(txCodigo.getText().equals("")){
+					continuar=false;
+					builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
+					builder.append("\n");
+				}
+				else{
+					Object object = getObject((String)cbObject.getSelectedItem());
+					if(object instanceof Empresa){
+						object = new EmpresaDao().getById(Integer.parseInt(txCodigo.getText()));
+						tarefa.setEmpresa((Empresa)object);
+					}
+					else if(object instanceof Negocio){
+						object = new NegocioDao().getById(Integer.parseInt(txCodigo.getText()));
+						tarefa.setNegocio((Negocio)object);
+					}
+					else if(object instanceof Pessoa){
+						object = new PessoaDao().getById(Integer.parseInt(txCodigo.getText()));
+						tarefa.setPessoa((Pessoa)object);
+					}
+				}
+				if(continuar){
+					boolean salvou = tdao.salvarTarefa(CriarAdmin.getInstance().getUsuario(), tarefa);
+					if(salvou)
+						salvarCancelar();
+				}else{
+					JOptionPane.showConfirmDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
+				}
 			}
-			else if(object instanceof Negocio){
-				object = new NegocioDao().getById(Integer.parseInt(txCodigo.getText()));
-				tarefa.setNegocio((Negocio)object);
-			}
-			else if(object instanceof Pessoa){
-				object = new PessoaDao().getById(Integer.parseInt(txCodigo.getText()));
-				tarefa.setPessoa((Pessoa)object);
-			}
-			if(salvou)
-				salvarCancelar();
 			break;
 		case "Cancelar":
 			if(tarefaBackup!=null){
@@ -117,14 +170,30 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	//se for null o formulario nao sera preenchido
 	public void iniciar(Tarefa tarefa){
 		this.tarefa = tarefa;
+		carregarAtendentes();
 		if(tarefa==null){
 			limparCampos(panel);
 			novoEditar();
+			cbAtendente.setSelectedItem(CriarAdmin.getInstance().getUsuario().getLogin());
+			rdbtnEmail.setSelected(true);
+			Date data = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+			txData.setDate(data);
+			txHora.setText(sdf.format(data));
 		}
 		else{
 			preencherFormulario(tarefa);
 			novoEditar();
 		}
+	}
+	private void carregarAtendentes() {
+		UsuarioDao funcDao = new UsuarioDao();
+		List<Usuario> lista = funcDao.getLista();
+		cbAtendente.removeAllItems();
+		lista.forEach(c->{
+			cbAtendente.addItem(c.getNome());
+		});		
+		cbAtendente.setSelectedItem(CriarAdmin.getInstance().getUsuario().getLogin());
 	}
 	
 	private void preencherFormulario(Tarefa tarefa){
@@ -235,5 +304,11 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 		}else if(rdbtnVisita.isSelected()){
 			item = "Visita";
 		}
+	}
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+		txCodigo.setText("");
+		txNome.setText("");
 	}
 }

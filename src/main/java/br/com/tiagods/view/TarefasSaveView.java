@@ -2,7 +2,12 @@ package br.com.tiagods.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Date;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -15,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.MaskFormatter;
 
 import com.toedter.calendar.JDateChooser;
 /*
@@ -22,8 +28,12 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerTarefasSave;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioDao;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	
@@ -64,7 +74,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	public TarefasSaveView(Tarefa tarefa) {
 		initComponents();
 		controller.iniciar(tarefa);
-	
+		
 	}
 	private void initComponents(){
 		panel = new JPanel();
@@ -76,6 +86,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         panel.setLayout(null);
         
         txData = new JDateChooser();
+        txData.setPreferredSize(new Dimension(100, 20));
         
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(94, 192, 1037, 118);
@@ -130,6 +141,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         
         cbObject = new JComboBox();
         cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
+        cbObject.addItemListener(controller);
         panEscolha.add(cbObject);
         
         JButton button = new JButton("+");
@@ -147,6 +159,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         panEscolha.add(lblResponsavel);
         
         cbAtendente = new JComboBox();
+        cbAtendente.setPreferredSize(new Dimension(100,20));
         panEscolha.add(cbAtendente);
         
         JLabel lblData = new JLabel("Data:");
@@ -157,7 +170,13 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         JLabel lblHora = new JLabel("Hora:");
         panEscolha.add(lblHora);
         
-        txHora = new JFormattedTextField();
+        MaskFormatter hora=null;
+        try{
+        	hora = new MaskFormatter("##:##");
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
+        txHora = new JFormattedTextField(hora);
         txHora.setColumns(5);
         panEscolha.add(txHora);
         

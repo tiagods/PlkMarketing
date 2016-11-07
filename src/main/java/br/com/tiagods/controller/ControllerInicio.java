@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -68,12 +70,10 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		UsuarioDao funcDao = new UsuarioDao();
 		List<Usuario> lista = funcDao.getLista();
 		cbAtendentes.removeAllItems();
-		cbAtendentes.addItem("mim");
 		lista.forEach(c->{
-			if(c.getId() != CriarAdmin.getInstance().getUsuario().getId())
-				cbAtendentes.addItem(c.getNome());
+			cbAtendentes.addItem(c.getNome());
 		});
-		cbAtendentes.setSelectedItem("mim");
+		cbAtendentes.setSelectedItem(CriarAdmin.getInstance().getUsuario().getLogin());
 	}
 	//enviar data atual
 	private void carregarDataAgora() {
@@ -135,4 +135,5 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 	}
+
 }

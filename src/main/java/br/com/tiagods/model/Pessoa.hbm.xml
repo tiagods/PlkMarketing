@@ -13,11 +13,12 @@
 	<property name="dataNascimento" column="PES_NASC" type="date"/>
 	
 	<component name="endereco">
-      <property name="rua" column="PES_RUA" length="200"/>
-      <property name="complemento" column="PES_COMPLEMENTO"/>
-      <property name="numero" column="PES_NUMERO" type="int"/>
-      <property name="bairro" column="PES_BAIRRO" length="150"/>
-      <property name="cep" column="PES_CEP" length="9"/>
+	  <property name="logradouro" column="PES_LOGRADOURO" length="200"/>
+      <property name="nome" column="PES_END_NOME" length="200"/>
+      <property name="complemento" column="PES_END_COMPLEMENTO"/>
+      <property name="numero" column="PES_END_NUMERO" type="int"/>
+      <property name="bairro" column="PES_END_BAIRRO" length="150"/>
+      <property name="cep" column="PES_END_CEP" length="9"/>
       <many-to-one name="cidade" column="PES_CIDADE_COD" foreign-key="FK_PES_CIDADE_COD"/>
     </component>
 	<component name="pessoaFisica">

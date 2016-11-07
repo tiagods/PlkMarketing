@@ -16,6 +16,7 @@
 	
 	<many-to-one name="criadoPor" column="NEG_CRIADOPOR_COD" foreign-key="FK_NEG_CRIADOPOR_COD"/>
 	<many-to-one name="status" column="NEG_STA_COD"  foreign-key="FK_NEG_STATUS_COD"/>
+	<many-to-one name="etapa" column="NEG_ETA_COD"  foreign-key="FK_NEG_ETAPA_COD"/>
 	<many-to-one name="atendente" column="NEG_ATENDENTE_COD" foreign-key="FK_NEG_ATENDENTE_COD"/>
 	
 	<property name="andamento" column="NEG_ANDAMENTO"/>

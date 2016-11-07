@@ -4,27 +4,25 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.util.Date;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+import javax.swing.text.MaskFormatter;
 
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerInicio;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import java.awt.FlowLayout;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private JPanel jPanel1;
@@ -67,8 +65,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
 		jPanel1 = new javax.swing.JPanel();
         jData1 = new JDateChooser();
         jData1.setPreferredSize(new Dimension(100, 20));
-        jData2 = new JDateChooser();
-        
+        jData2 = new JDateChooser();        
         jData2.setPreferredSize(new Dimension(100, 20));
         setBounds(0, 0, 1250, 660);
         setBorder(null);

@@ -7,7 +7,8 @@ public class Endereco implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String rua;
+	private String logradouro;
+	private String nome;
 	private String complemento;
 	private int numero;
 	private String bairro;
@@ -15,16 +16,28 @@ public class Endereco implements Serializable{
 	private Cidade cidade;
 	
 	/**
-	 * @return the rua
+	 * @return the logradouro
 	 */
-	public String getRua() {
-		return rua;
+	public String getLogradouro() {
+		return logradouro;
 	}
 	/**
-	 * @param rua the rua to set
+	 * @param logradouro the logradouro to set
 	 */
-	public void setRua(String rua) {
-		this.rua = rua;
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+	/**
+	 * @return the nome
+	 */
+	public String getNome() {
+		return nome;
+	}
+	/**
+	 * @param nome the nome to set
+	 */
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 	/**
 	 * @return the complemento

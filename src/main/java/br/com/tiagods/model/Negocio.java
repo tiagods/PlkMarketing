@@ -19,6 +19,7 @@ public class Negocio implements Serializable{
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Status status;
+	private Etapa etapa;
 	private Usuario atendente;
 	private String andamento;
 	private Date contato;
@@ -138,6 +139,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+	/**
+	 * @return the etapa
+	 */
+	public Etapa getEtapa() {
+		return etapa;
+	}
+	/**
+	 * @param etapa the etapa to set
+	 */
+	public void setEtapa(Etapa etapa) {
+		this.etapa = etapa;
 	}
 	/**
 	 * @return the atendente
