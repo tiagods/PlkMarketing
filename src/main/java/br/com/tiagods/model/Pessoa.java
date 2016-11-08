@@ -1,8 +1,6 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class Pessoa extends PfPj implements Serializable{
 	/**

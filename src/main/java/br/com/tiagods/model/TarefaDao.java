@@ -2,7 +2,6 @@ package br.com.tiagods.model;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -10,14 +9,23 @@ import org.hibernate.Session;
 import br.com.tiagods.factory.HibernateFactory;
 
 public class TarefaDao {
+	//listar todas as tarefas
 	@SuppressWarnings("unchecked")
 	public List<Tarefa> getList(){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
-		List<Tarefa> list = (List<Tarefa>) session.createQuery("from Tarefa").getResultList();
-		factory.closeSession(session);
+		List<Tarefa> list = (List<Tarefa>) session.createQuery("from Tarefa")
+				.getResultList();
+		try{
+			session.getTransaction().commit();
+		}catch(HibernateException e){
+			session.getTransaction().rollback();
+		}finally{
+			session.close();
+		}
 		return list;
 	}
+	//Quantidade de tarefas de acordo com o usuario
 	public int getQuantidade(Usuario usuario, Date dataInicio, Date dataFinal){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();
@@ -28,9 +36,16 @@ public class TarefaDao {
 				.setParameter("dataInicial", dataInicio)
 				.setParameter("dataFim", dataFinal)
 				.setParameter("atendente", usuario).getResultList().size();
-		factory.closeSession(session);
+		try{
+			session.getTransaction().commit();
+		}catch(HibernateException e){
+			session.getTransaction().rollback();
+		}finally{
+			session.close();
+		}
 		return quant;
 	}
+	//salvar tarefa
 	public boolean salvarTarefa(Usuario usuario, Tarefa tarefa){
 		HibernateFactory factory = new HibernateFactory();
 		Session session = factory.getSession();

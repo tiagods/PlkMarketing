@@ -17,11 +17,18 @@ import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.EmpresaDao;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
+import javax.swing.JLabel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JTextField;
 
 public class SelecaoObjeto extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable tbRelacao;
+	private JLabel lblNewLabel;
+	private JScrollPane scrollPane;
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -64,13 +71,12 @@ public class SelecaoObjeto extends JDialog {
 	}
 	public void initComponents(){
 		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setLayout(null);
+		contentPanel.setBounds(0, 38, 434, 191);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new CardLayout(0, 0));
+		getContentPane().add(contentPanel);
 		{
-			JScrollPane scrollPane = new JScrollPane();
-			contentPanel.add(scrollPane, "name_49072879791600");
+			scrollPane = new JScrollPane();
 			{
 				tbRelacao = new JTable();
 				tbRelacao.setModel(new DefaultTableModel(
@@ -92,10 +98,21 @@ public class SelecaoObjeto extends JDialog {
 				scrollPane.setViewportView(tbRelacao);
 			}
 		}
+		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
+		gl_contentPanel.setHorizontalGroup(
+			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+		);
+		gl_contentPanel.setVerticalGroup(
+			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+		);
+		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
+			buttonPane.setBounds(0, 229, 434, 33);
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			getContentPane().add(buttonPane);
 			{
 				JButton okButton = new JButton("OK");
 				okButton.setActionCommand("OK");
@@ -108,7 +125,16 @@ public class SelecaoObjeto extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		{
+			lblNewLabel = new JLabel("Buscar:");
+			lblNewLabel.setBounds(10, 7, 48, 20);
+			getContentPane().add(lblNewLabel);
+		}
+		
+		textField = new JTextField();
+		textField.setBounds(68, 7, 86, 20);
+		getContentPane().add(textField);
+		textField.setColumns(10);
 		setLocationRelativeTo(null);
 	}
-
 }

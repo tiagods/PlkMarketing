@@ -2,7 +2,6 @@ package br.com.tiagods.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -256,15 +255,13 @@ public class CriarAdmin {
 		session.close();
 	}
 	private void criarOrigem() {
-		OrigemDao cD = new OrigemDao();
-		List<Origem> origens = new ArrayList();
+		List<Origem> origens = new ArrayList<Origem>();
 		origem = new Origem();
 		origem.setNome("Site");
 		Origem o2 = new Origem();
 		o2.setNome("Feira");
 		Origem o3 = new Origem();
 		o3.setNome("Seminario");
-		
 		Session session = new HibernateFactory().getSession();
 		origens.forEach(c->{
 			session.save(c);

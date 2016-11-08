@@ -8,6 +8,7 @@
 	<id name="id" column="EMP_COD" type="int">
 	<generator class="identity" />
 	</id>
+	<property name="nome" column="EMP_NOME" length="200"/>
 	<property name="cnpj" column="EMP_CNPJ" length="100"/>
 	<component name="endereco">
       <property name="logradouro" column="EMP_END_LOGRADOURO" length="200"/>
