@@ -15,7 +15,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-import br.com.tiagods.model.CriarAdmin;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.InicioView;
 import br.com.tiagods.view.NegociosView;
@@ -52,7 +51,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent e) {
     	switch(e.getActionCommand()){
     	 case "Tarefas":
-             tarefas = new TarefasView(new Date(), new Date(), CriarAdmin.getInstance().getUsuario());
+             tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
              abrirCorpo(tarefas);
              break;
          case "TarefasSave":
@@ -73,7 +72,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
             abrirCorpo(empresas);
             break;
         case "Tarefas":
-            tarefas = new TarefasView(new Date(), new Date(), CriarAdmin.getInstance().getUsuario());
+            tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
             abrirCorpo(tarefas);
             break;
         case "TarefasSave":

@@ -15,14 +15,18 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-import br.com.tiagods.model.CriarAdmin;
+import org.hibernate.Session;
+
+import br.com.tiagods.factory.HibernateFactory;
+import br.com.tiagods.model.MyDao;
 import br.com.tiagods.model.TarefaDao;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.model.UsuarioDao;
 import br.com.tiagods.view.TarefasView;
 
 public class ControllerInicio implements ActionListener,MouseListener{
 		
+	Session session = null;
+	
 	boolean liberar = false;
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -36,22 +40,22 @@ public class ControllerInicio implements ActionListener,MouseListener{
 			break;
 		}
 	}
-	
 	public void iniciar(){
+		session = HibernateFactory.getSession();
+		session.beginTransaction();
 		long inicio = System.currentTimeMillis();
 		carregarDataAgora();
 		carregarAtendentes();
-		carregarTarefasHoje(CriarAdmin.getInstance().getUsuario());
+		carregarTarefasHoje(UsuarioLogado.getInstance().getUsuario());
 		long fim = System.currentTimeMillis();
-		
 		System.out.println("Tempo de execucao: "+(fim-inicio));
+		session.close();
 	}
 	//carregar tarefas pendentes
-	private void carregarTarefasHoje(Usuario sessao) {
+	private void carregarTarefasHoje(Usuario usuario) {
 		//verificar permissão e carregar tarefas do's usuarios
-		TarefaDao tDao = new TarefaDao();
-		int quant = tDao.getQuantidade(sessao, new Date(), new Date());
-		String[] nome = sessao.getNome().split(" ");
+		int quant = new TarefaDao().getQuantidade(usuario, new Date(), new Date(),session);
+		String[] nome = usuario.getNome().split(" ");
 		switch(quant){
 		case 0:
 			String v1 = "Bom dia "+nome[0]+", você não tem tarefas pendentes para hoje!";
@@ -70,13 +74,12 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	//carregar lista de atendentes
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
-		UsuarioDao funcDao = new UsuarioDao();
-		List<Usuario> lista = funcDao.getLista();
+		List<Usuario> lista = new MyDao().listar("Usuario", session);
 		cbAtendentes.removeAllItems();
 		lista.forEach(c->{
-			cbAtendentes.addItem(c.getNome());
+			cbAtendentes.addItem(c.getLogin());
 		});
-		cbAtendentes.setSelectedItem(CriarAdmin.getInstance().getUsuario().getLogin());
+		cbAtendentes.setSelectedItem(UsuarioLogado.getInstance().usuario.getLogin());
 	}
 	//enviar data atual
 	private void carregarDataAgora() {
@@ -111,7 +114,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	@SuppressWarnings("static-access")
 	private void abrirTarefasView(){
 		 ControllerMenu menu = ControllerMenu.getInstance();
-		 TarefasView tView = new TarefasView(new Date(), new Date(),CriarAdmin.getInstance().getUsuario());
+		 TarefasView tView = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
 		 menu.abrirCorpo(tView);
 	}
 	@Override

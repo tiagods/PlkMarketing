@@ -7,8 +7,6 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-import br.com.tiagods.factory.HibernateFactory;
-
 public class CriarAdmin {
 	
 	Usuario usuario;
@@ -21,9 +19,10 @@ public class CriarAdmin {
 	Origem origem;
 	Servico servico;
 	
-	
+	Session session = null;
 	
 	static CriarAdmin instance;
+	
 	public static CriarAdmin getInstance(){
 		if(instance==null){
 			instance = new CriarAdmin();
@@ -33,43 +32,31 @@ public class CriarAdmin {
 	public Usuario getUsuario(){
 		return usuario;
 	}
-	
-	@SuppressWarnings("rawtypes")
-	public CriarAdmin(){
-		Session session = new HibernateFactory().getSession();
-		List users = session.createQuery("from Usuario").getResultList();
-		if(users.isEmpty()){
-			criarDepartamento();
-			criarFuncao();
-			criarUsuario();
-			
-			criarTipoTarefa();
-			criarCidade();
-			//criarEndereco();
-			
-			criarNivel();
-			criarOrigem();
-			criarCategoria();
-			criarEtapa();
-			
-			criarServico();
-			
-		//	criarTarefa();
-			criarEmpresa();
-			criarPessoa();
+	public void gerarDefault(Session session){
+		this.session=session;
+		criarDepartamento();
+		criarFuncao();
+		criarUsuario();
 
-			criarStatus();
-			//criarNegocio();
-			
-			//criarServicoContratado();
-			
-			
-		}
-		else{
-			usuario = (Usuario)users.get(0);
-			
-		}
-		session.close();
+		criarTipoTarefa();
+		criarCidade();
+		//criarEndereco();
+
+		criarNivel();
+		criarOrigem();
+		criarCategoria();
+		criarEtapa();
+
+		criarServico();
+
+		//	criarTarefa();
+		criarEmpresa();
+		criarPessoa();
+
+		criarStatus();
+		//criarNegocio();
+
+		//criarServicoContratado();
 	}
 	private void criarPessoa() {
 		PfPj pj = new PfPj();
@@ -80,16 +67,14 @@ public class CriarAdmin {
 		pj.setOrigem(origem);
 		pj.setServico(servico);
 		
-		Session session = new HibernateFactory().getSession();
-		
 		Pessoa pessoa = new Pessoa();
 		pessoa.setCpf("1111111111");
 		pessoa.setEndereco(endereco);
 		pessoa.setNome("Fabiano Alves Ferreira");
 		
+		session.beginTransaction();
 		session.save(pessoa);
 		session.getTransaction().commit();
-		session.close();
 		
 	}
 	private void criarEmpresa() {
@@ -105,7 +90,6 @@ public class CriarAdmin {
 		pj.setOrigem(origem);
 		pj.setServico(servico);
 		
-		Session session = new HibernateFactory().getSession();
 		endereco.setCidade(c1);
 		endereco.setBairro("jd paulista");
 		endereco.setNumero("14");
@@ -116,22 +100,19 @@ public class CriarAdmin {
 		empresa.setEndereco(endereco);
 		empresa.setNome("Castelao");
 		
+		session.beginTransaction();
 		session.save(empresa);
 		session.getTransaction().commit();
-		session.close();
 	}
 	private void criarServico() {
 		servico = new Servico();
 		servico.setNome("Consultoria");
 		
-		Session session = new HibernateFactory().getSession();
+		session.beginTransaction();
 		session.save(servico);
 		session.getTransaction().commit();
-		session.close();
 	}
 	private void criarEtapa() {
-		Session session = new HibernateFactory().getSession();
-
 		List<Etapa> lStatus = new ArrayList<Etapa>();
 		Etapa n1= new Etapa();
 		n1.setNome("Contato");
@@ -150,6 +131,7 @@ public class CriarAdmin {
 		lStatus.add(n3);
 		lStatus.add(n4);
 
+		session.beginTransaction();
 		lStatus.forEach(c->{
 			try{
 				session.save(c);
@@ -157,14 +139,9 @@ public class CriarAdmin {
 				session.getTransaction().rollback();
 			}
 		});
-
 		session.getTransaction().commit();
-		session.close();
-		
 	}
 	private void criarStatus() {
-		Session session = new HibernateFactory().getSession();
-
 		List<Status> lStatus = new ArrayList<Status>();
 		Status n1 = new Status();
 		n1.setNome("Em Andamento");
@@ -179,6 +156,7 @@ public class CriarAdmin {
 		lStatus.add(n2);
 		lStatus.add(n3);
 
+		session.beginTransaction();
 		lStatus.forEach(c->{
 			try{
 				session.save(c);
@@ -187,12 +165,9 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
-		session.close();
 		
 	}
 	private void criarCategoria() {
-		Session session = new HibernateFactory().getSession();
-		
 		List<Categoria> lista = new ArrayList<Categoria>();
 		categoria = new Categoria();
 		categoria.setNome("Indefinida");
@@ -219,6 +194,7 @@ public class CriarAdmin {
 		lista.add(n5);
 		lista.add(n6);
 		
+		session.beginTransaction();
 		lista.forEach(c->{
 			try{
 				session.save(c);
@@ -226,12 +202,8 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
-		session.close();
-		
 	}
 	private void criarNivel() {
-		Session session = new HibernateFactory().getSession();
-		
 		List<Nivel> niveis = new ArrayList<Nivel>();
 		nivel = new Nivel();
 		nivel.setNome("Ouro");
@@ -246,6 +218,7 @@ public class CriarAdmin {
 		niveis.add(n2);
 		niveis.add(n3);
 		
+		session.beginTransaction();
 		niveis.forEach(c->{
 			try{
 				session.save(c);
@@ -253,7 +226,6 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
-		session.close();
 	}
 	private void criarOrigem() {
 		List<Origem> origens = new ArrayList<Origem>();
@@ -263,14 +235,14 @@ public class CriarAdmin {
 		o2.setNome("Feira");
 		Origem o3 = new Origem();
 		o3.setNome("Seminario");
-		Session session = new HibernateFactory().getSession();
+		
+		session.beginTransaction();
 		origens.forEach(c->{
 			session.save(c);
 		});
-		session.getTransaction().commit();
-		session.close();
-		
-	}private void criarCidade() {
+		session.getTransaction().commit();	
+	}
+	private void criarCidade() {
 		List <Cidade> cidades = new ArrayList<Cidade>();
 		c1 = new Cidade();
 		c1.setNome("São Paulo");
@@ -288,14 +260,11 @@ public class CriarAdmin {
 		cidades.add(c2);
 		cidades.add(c3);
 		
-		
-		Session session = new HibernateFactory().getSession();
+		session.beginTransaction();
 		cidades.forEach(c->{
 			session.save(c);
 		});
 		session.getTransaction().commit();
-		session.close();
-		
 	}
 	private void criarTipoTarefa() {
 		List <String> tipoTarefa = new ArrayList<String>();
@@ -305,19 +274,15 @@ public class CriarAdmin {
 		tipoTarefa.add("Ligacao");
 		tipoTarefa.add("Email");
 		
-		Session session = new HibernateFactory().getSession();
-		
+		session.beginTransaction();
 		tipoTarefa.forEach(c->{
 			TipoTarefa tT = new TipoTarefa();
 			tT.setNome(c);
 			session.save(tT);
 		});
 		session.getTransaction().commit();
-		session.close();
 	}
 	public void criarUsuario(){
-		Session session = new HibernateFactory().getSession();
-		
 		List<Usuario> lista = new ArrayList<>();
 		usuario = new Usuario();
 		usuario.setLogin("admin");
@@ -347,6 +312,8 @@ public class CriarAdmin {
 		usuario3.setFuncao(funcao);
 		usuario3.setTotalVendas(new BigDecimal("0.00"));
 		lista.add(usuario3);
+	
+		session.beginTransaction();
 		lista.forEach(c->{
 			try{
 				session.save(c);
@@ -354,35 +321,30 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
-		session.close();
 	}
 	
 	public void criarDepartamento(){
-		Session session = new HibernateFactory().getSession();
 		departamento = new Departamento();
 		departamento.setNome("Tecnologia");
 		try{
+			session.beginTransaction();
 			session.save(departamento);
 			session.getTransaction().commit();
 		}catch (HibernateException e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			session.getTransaction().rollback();
 		}
-		session.close();
 	}
 	public void criarFuncao(){
-		Session session = new HibernateFactory().getSession();
 		funcao = new Funcao();
 		funcao.setNome("Analista");
 		try{
-		session.save(funcao);
+			session.beginTransaction();
+			session.save(funcao);
 		session.getTransaction().commit();
 		}catch (HibernateException e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
 		}
-		session.close();
-	}
-	
+	}	
 }

@@ -1,26 +1,27 @@
 package br.com.tiagods.view;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.FlowLayout;
 import java.util.List;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.hibernate.Session;
+
+import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.EmpresaDao;
+import br.com.tiagods.model.MyDao;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
-import javax.swing.JLabel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JTextField;
 
 public class SelecaoObjeto extends JDialog {
 
@@ -50,8 +51,9 @@ public class SelecaoObjeto extends JDialog {
 		initComponents();
 		if(object != null){
 			if(object instanceof Empresa){
-				EmpresaDao eDao = new EmpresaDao();
-				List<Empresa> lista = eDao.getLista();
+				Session session = HibernateFactory.getSession();
+				session.beginTransaction();
+				List<Empresa> lista = new MyDao().listar("Empresa", session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				

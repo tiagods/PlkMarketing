@@ -1,6 +1,23 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.TarefasSaveView.*;
+import static br.com.tiagods.view.MenuView.jDBody;
+import static br.com.tiagods.view.TarefasSaveView.btnCancelar;
+import static br.com.tiagods.view.TarefasSaveView.btnEditar;
+import static br.com.tiagods.view.TarefasSaveView.btnNovo;
+import static br.com.tiagods.view.TarefasSaveView.btnSalvar;
+import static br.com.tiagods.view.TarefasSaveView.cbAtendente;
+import static br.com.tiagods.view.TarefasSaveView.cbObject;
+import static br.com.tiagods.view.TarefasSaveView.panel;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnEmail;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnProposta;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnReuniao;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnTelefone;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnVisita;
+import static br.com.tiagods.view.TarefasSaveView.txCodigo;
+import static br.com.tiagods.view.TarefasSaveView.txData;
+import static br.com.tiagods.view.TarefasSaveView.txDetalhes;
+import static br.com.tiagods.view.TarefasSaveView.txHora;
+import static br.com.tiagods.view.TarefasSaveView.txNome;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -23,20 +40,18 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 
-import br.com.tiagods.model.CriarAdmin;
+import org.hibernate.Session;
+
+import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.EmpresaDao;
+import br.com.tiagods.model.MyDao;
 import br.com.tiagods.model.Negocio;
-import br.com.tiagods.model.NegocioDao;
 import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.model.PessoaDao;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TarefaDao;
 import br.com.tiagods.model.TipoTarefa;
-import br.com.tiagods.model.TipoTarefaDao;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioDao;
-import static br.com.tiagods.view.MenuView.jDBody;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener, ItemListener{
@@ -46,6 +61,29 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	String item = "";
 	Object minhaClasse;
 	
+	Session session = null;
+	//se for null o formulario nao sera preenchido
+		public void iniciar(Tarefa tarefa){
+			this.tarefa = tarefa;
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+			carregarAtendentes();
+			if(tarefa==null){
+				limparCampos(panel);
+				novoEditar();
+				cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
+				rdbtnEmail.setSelected(true);
+				Date data = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+				txData.setDate(data);
+				txHora.setText(sdf.format(data));
+			}
+			else{
+				preencherFormulario(tarefa);
+				novoEditar();
+			}
+			session.close();
+		}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){
@@ -63,13 +101,10 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			if(tarefa==null){
 				tarefa = new Tarefa();
 				tarefa.setCriadoEm(new Date());
-				tarefa.setCriadoPor(CriarAdmin.getInstance().getUsuario());
+				tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			}
-			UsuarioDao usu = new UsuarioDao();
-			Usuario atendente = usu.getUsuario((String)cbAtendente.getSelectedItem());
-			
+			Usuario atendente = new UsuarioDao().getUsuario((String)cbAtendente.getSelectedItem(),session);
 			tarefa.setAtendente(atendente);
-			
 			tarefa.setClasse((String)cbObject.getSelectedItem());
 			try{
 				
@@ -110,8 +145,10 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 						continuar=false;
 					}	
 				}
-				TipoTarefaDao tipoDao = new TipoTarefaDao();
-				TipoTarefa tipoTarefa = tipoDao.getTipoTarefa(item);
+				TipoTarefa tipoTarefa = (TipoTarefa)session.createQuery("from TipoTarefa t where t.nome=:tarefaNome")
+						.setParameter("tarefaNome", item)
+						.getSingleResult();
+				
 				tarefa.setTipoTarefa(tipoTarefa);
 				if(txCodigo.getText().equals("")){
 					continuar=false;
@@ -121,22 +158,23 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				else{
 					Object object = getObject((String)cbObject.getSelectedItem());
 					if(object instanceof Empresa){
-						object = new EmpresaDao().getById(Integer.parseInt(txCodigo.getText()));
+						object = new MyDao().receberObjeto("Empresa",Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setEmpresa((Empresa)object);
 					}
 					else if(object instanceof Negocio){
-						object = new NegocioDao().getById(Integer.parseInt(txCodigo.getText()));
+						object = new MyDao().receberObjeto("Negocio",Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setNegocio((Negocio)object);
 					}
 					else if(object instanceof Pessoa){
-						object = new PessoaDao().getById(Integer.parseInt(txCodigo.getText()));
+						object = new MyDao().receberObjeto("Pessoa",Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setPessoa((Pessoa)object);
 					}
 				}
 				if(continuar){
-					boolean salvou = tdao.salvarTarefa(CriarAdmin.getInstance().getUsuario(), tarefa);
-					if(salvou)
-						salvarCancelar();
+					
+//					boolean salvou = new MyDao().salvar(tarefa,session);
+//					if(salvou)
+//						salvarCancelar();
 				}else{
 					JOptionPane.showConfirmDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
 				}
@@ -164,39 +202,17 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			setarSelecao();
 			break;
 		}
-		
-		
 	}
-	//se for null o formulario nao sera preenchido
-	public void iniciar(Tarefa tarefa){
-		this.tarefa = tarefa;
-		carregarAtendentes();
-		if(tarefa==null){
-			limparCampos(panel);
-			novoEditar();
-			cbAtendente.setSelectedItem(CriarAdmin.getInstance().getUsuario().getLogin());
-			rdbtnEmail.setSelected(true);
-			Date data = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-			txData.setDate(data);
-			txHora.setText(sdf.format(data));
-		}
-		else{
-			preencherFormulario(tarefa);
-			novoEditar();
-		}
-	}
+	
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
-		UsuarioDao funcDao = new UsuarioDao();
-		List<Usuario> lista = funcDao.getLista();
+		List<Usuario> lista = new MyDao().listar("Usuario", session);
 		cbAtendente.removeAllItems();
 		lista.forEach(c->{
 			cbAtendente.addItem(c.getNome());
 		});		
-		cbAtendente.setSelectedItem(CriarAdmin.getInstance().getUsuario().getLogin());
+		cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());	
 	}
-	
 	private void preencherFormulario(Tarefa tarefa){
 		if(tarefa!=null){
 			JRadioButton radio = recuperaRadio(tarefa.getTipoTarefa().getNome());
@@ -218,8 +234,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				break;
 			}
 			enviarDados(radio, tarefa.getDescricao(), tarefa.getClasse(), id, nome[0], tarefa.getAtendente().getLogin(), tarefa.getDataEvento(), tarefa.getHoraEvento());
-			
-		}
+			}
 	}
 	
 	private JRadioButton recuperaRadio(String item){
