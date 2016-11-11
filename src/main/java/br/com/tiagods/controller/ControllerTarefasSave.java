@@ -186,6 +186,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			novoEditar();
 		}
 	}
+	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
 		UsuarioDao funcDao = new UsuarioDao();
 		List<Usuario> lista = funcDao.getLista();
@@ -256,6 +257,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
 	}
+	@SuppressWarnings("rawtypes")
 	private void limparCampos(Object painel){
 		Container container = null;
         if (painel instanceof JPanel) {
@@ -298,7 +300,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 		}else if(rdbtnProposta.isSelected()){
 			item = "Proposta";
 		}else if(rdbtnReuniao.isSelected()){
-			item = "Reunicao";
+			item = "Reuniao";
 		}else if(rdbtnTelefone.isSelected()){
 			item = "Telefone";
 		}else if(rdbtnVisita.isSelected()){

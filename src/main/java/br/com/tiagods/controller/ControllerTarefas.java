@@ -8,8 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import static br.com.tiagods.view.TarefasSaveView.*;
-
 /*
 * @author Tiago
 */

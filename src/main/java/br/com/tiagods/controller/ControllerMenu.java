@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import br.com.tiagods.model.CriarAdmin;
-import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.InicioView;
 import br.com.tiagods.view.NegociosView;

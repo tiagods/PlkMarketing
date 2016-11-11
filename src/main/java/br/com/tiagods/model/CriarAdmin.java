@@ -34,6 +34,7 @@ public class CriarAdmin {
 		return usuario;
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public CriarAdmin(){
 		Session session = new HibernateFactory().getSession();
 		List users = session.createQuery("from Usuario").getResultList();

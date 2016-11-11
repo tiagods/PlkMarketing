@@ -9,8 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,9 +38,13 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	}
 	
 	public void iniciar(){
+		long inicio = System.currentTimeMillis();
 		carregarDataAgora();
 		carregarAtendentes();
 		carregarTarefasHoje(CriarAdmin.getInstance().getUsuario());
+		long fim = System.currentTimeMillis();
+		
+		System.out.println("Tempo de execucao: "+(fim-inicio));
 	}
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario sessao) {
@@ -66,6 +68,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		}
 	}
 	//carregar lista de atendentes
+	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
 		UsuarioDao funcDao = new UsuarioDao();
 		List<Usuario> lista = funcDao.getLista();
@@ -105,6 +108,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		}
 	}
 	//abrir nova tela
+	@SuppressWarnings("static-access")
 	private void abrirTarefasView(){
 		 ControllerMenu menu = ControllerMenu.getInstance();
 		 TarefasView tView = new TarefasView(new Date(), new Date(),CriarAdmin.getInstance().getUsuario());

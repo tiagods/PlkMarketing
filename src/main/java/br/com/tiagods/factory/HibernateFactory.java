@@ -7,6 +7,8 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 public class HibernateFactory {
+	
+	
 	//recebendo a sessao
 		public Session getSession(){
 			final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
@@ -21,11 +23,6 @@ public class HibernateFactory {
 			session.beginTransaction();
 			return session;
 		}
-		//fechando a sessao
-//		public void closeSession(Session session){
-//			session.getTransaction().commit();
-//			session.close();
-//		}
 		
 }
 
