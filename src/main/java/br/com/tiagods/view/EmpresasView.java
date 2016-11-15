@@ -147,7 +147,7 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
     	group_situacao = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        jPanel3.setBounds(0, 0, 1240, 69);
+        jPanel3.setBounds(10, 11, 1240, 69);
         cbAtendente = new javax.swing.JComboBox<>();
         cbCategoria = new javax.swing.JComboBox<>();
         cbMeio = new javax.swing.JComboBox<>();

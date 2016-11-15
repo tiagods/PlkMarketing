@@ -9,8 +9,8 @@
 	<generator class="identity" />
 	</id>
 	<property name="nome" column="PES_NOME" length="200"/>
-	<property name="cpf" column="PES_CPF" length="10"/>
-	<property name="dataNascimento" column="PES_NASC" type="date"/>
+	<property name="cpf" column="PES_CPF" length="11"/>
+	<property name="dataNascimento" column="PES_NASC" length="10"/>
 	<component name="endereco">
 	  <property name="logradouro" column="PES_LOGRADOURO" length="200"/>
       <property name="nome" column="PES_END_NOME" length="200"/>

@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.modelDAO;
 
 import java.util.Date;
 import java.util.List;
@@ -6,9 +6,10 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
-import br.com.tiagods.view.interfaces.InterfaceDAO;
+import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.Usuario;
 
-public class TarefaDao implements InterfaceDAO{
+public class TarefaDAO implements InterfaceDAO{
 	//Quantidade de tarefas de acordo com o usuario
 	public int getQuantidade(Usuario usuario, Date dataInicio, Date dataFinal, Session session){
 		if(session.getTransaction().getStatus()==TransactionStatus.NOT_ACTIVE)
@@ -38,7 +39,7 @@ public class TarefaDao implements InterfaceDAO{
 		return null;
 	}
 	@Override
-	public Object receberObjeto(String classe, int id, Session session) {
+	public Object receberObjeto(Class classe, int id, Session session) {
 		// TODO Auto-generated method stub
 		return null;
 	}

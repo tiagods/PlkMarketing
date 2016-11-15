@@ -4,7 +4,7 @@ public class Cidade {
 	private int id;
 	private String nome;
 	private String estado;
-	private int idExtra;
+	private String idExtra;
 	/**
 	 * @return the id
 	 */
@@ -44,13 +44,13 @@ public class Cidade {
 	/**
 	 * @return the idExtra
 	 */
-	public int getIdExtra() {
+	public String getIdExtra() {
 		return idExtra;
 	}
 	/**
 	 * @param idExtra the idExtra to set
 	 */
-	public void setIdExtra(int idExtra) {
+	public void setIdExtra(String idExtra) {
 		this.idExtra = idExtra;
 	}
 	

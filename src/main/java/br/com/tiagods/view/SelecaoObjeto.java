@@ -1,11 +1,15 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,36 +23,30 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.MyDao;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.modelDAO.MyDao;
+import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
-public class SelecaoObjeto extends JDialog {
+import javax.swing.ListSelectionModel;
 
+public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
+	
+	@Override
+	public Object getObject(String valor) {
+		// TODO Auto-generated method stub
+		return DefaultModelComboBox.super.getObject(valor);
+	}
 	private final JPanel contentPanel = new JPanel();
 	private JTable tbRelacao;
 	private JLabel lblNewLabel;
 	private JScrollPane scrollPane;
 	private JTextField textField;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			SelecaoObjeto dialog = new SelecaoObjeto(new Empresa());
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
+/**
 	 * Create the dialog.
 	 */
-	public SelecaoObjeto(Object object) {
-		initComponents();
+	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome) {
+		initComponents(labelId, labelNome);
 		if(object != null){
 			if(object instanceof Empresa){
 				Session session = HibernateFactory.getSession();
@@ -62,16 +60,38 @@ public class SelecaoObjeto extends JDialog {
 					linhas[i][1] = lista.get(i).getNome();
 				}
 				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
+				session.close();
 			}
 			else if(object instanceof Negocio){
+				Session session = HibernateFactory.getSession();
+				session.beginTransaction();
+				List<Negocio> lista = new MyDao().listar("Negocio", session);
+				String[] colunas = {"ID", "Nome"};
+				String[][] linhas = new String[lista.size()][colunas.length];
 				
+				for(int i=0;i<lista.size();i++){
+					linhas[i][0] = String.valueOf(lista.get(i).getId());
+					linhas[i][1] = lista.get(i).getNome();
+				}
+				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
+				session.close();
 			}
 			else if (object instanceof Pessoa){
-				
+				Session session = HibernateFactory.getSession();
+				session.beginTransaction();
+				List<Pessoa> lista = new MyDao().listar("Pessoa", session);
+				String[] colunas = {"ID", "Nome"};
+				String[][] linhas = new String[lista.size()][colunas.length];
+				for(int i=0;i<lista.size();i++){
+					linhas[i][0] = String.valueOf(lista.get(i).getId());
+					linhas[i][1] = lista.get(i).getNome();
+				}
+				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
+				session.close();
 			}
 		}
 	}
-	public void initComponents(){
+	public void initComponents(JLabel labelId, JLabel labelNome){
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(null);
 		contentPanel.setBounds(0, 38, 434, 191);
@@ -81,6 +101,9 @@ public class SelecaoObjeto extends JDialog {
 			scrollPane = new JScrollPane();
 			{
 				tbRelacao = new JTable();
+				tbRelacao.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				tbRelacao.setFillsViewportHeight(true);
+				tbRelacao.setSelectionBackground(Color.GREEN);
 				tbRelacao.setModel(new DefaultTableModel(
 						new Object[][] {
 						},
@@ -116,15 +139,34 @@ public class SelecaoObjeto extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane);
 			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				JButton btOkDialog = new JButton("OK");
+				btOkDialog.setActionCommand("OK");
+				btOkDialog.addActionListener(new ActionListener(){
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						if(tbRelacao.getSelectedRow()!=-1){
+							labelId.setText((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 0));
+							labelNome.setText((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 1));
+							dispose();
+						}
+					}});
+				buttonPane.add(btOkDialog);
+				getRootPane().setDefaultButton(btOkDialog);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
+				JButton btCancelDialog = new JButton("Cancel");
+				btCancelDialog.setActionCommand("Cancel");
+				btCancelDialog.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						dispose();
+					}
+				});
+				buttonPane.add(btCancelDialog);
 			}
 		}
 		{

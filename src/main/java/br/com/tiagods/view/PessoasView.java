@@ -1,7 +1,6 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -13,7 +12,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -22,49 +20,49 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
-import static br.com.tiagods.view.MenuView.jDBody;
+import javax.swing.text.MaskFormatter;
+
 import com.toedter.calendar.JDateChooser;
 
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Logradouro;
 import br.com.tiagods.controller.ControllerPessoas;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Estados;
-import java.awt.event.InputMethodListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputMethodEvent;
+import br.com.tiagods.model.Pessoa;
 
 public class PessoasView extends JInternalFrame {
-	private javax.swing.ButtonGroup group_situacao;
-    public static javax.swing.JComboBox<Object> cbAtendente;
-    public static javax.swing.JComboBox<String> cbCategoria;
+	public static javax.swing.JComboBox<Object> cbAtendente;
+    public static javax.swing.JComboBox<String> cbCategoria,cbCategoriaCad;
     public static javax.swing.JComboBox<String> cbOrigem;
     public static javax.swing.JComboBox<String> cbEmpresa;
     public static javax.swing.JComboBox<String> cbProdServicos;
     public static javax.swing.JComboBox<String> cbLogradouro;
-    public static javax.swing.JComboBox<String> cbNivelCad;
-    public static javax.swing.JComboBox<String> cbMeioCad;
-    public static javax.swing.JComboBox<String> cbEstado;    
+    public static javax.swing.JComboBox<String> cbOrigemCad;
+    public static javax.swing.JComboBox cbEstado;   
+    public static javax.swing.JComboBox<String> cbAtendenteCad;
+    public static javax.swing.JComboBox<String> cbProdServicosCad;
+    public static javax.swing.JComboBox<String> cbCidade;
     public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
     public static javax.swing.JPanel pnAuxiliar;
     public static javax.swing.JPanel pnPrivacidade;
+    public static javax.swing.JButton btnNegocios, btnHistorico, btnEmpresas;
+    public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar;
 	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
-	public static JDateChooser dateChooser;
-	public static JLabel label_1;
-	public static JDateChooser dateChooser_1;
+	public static JDateChooser data1,data2;
+	public static JLabel label_1, txCadastradoPor, txDataCadastro;
 	private JButton button_1;
 	public static JTextField txLogradouro;
 	public static JTextField txComplemento;
 	public static JTextField txCodigo;
 	public static JTextField txNome;
 	public static JTextField txNum;
-	public static JTextField textField_7;
-	public static JTextField txCpf;
+	public static JTextField txTelefone;
+	public static JTextField txCelular;
+	public static JTextField txBairro;
+	public static JFormattedTextField txDataNascimento;
+	public static JFormattedTextField txCep;
+	public static JFormattedTextField txCpf;
 	public static JTextField txEmail;
 	public static JTextField txSite;
 	public static JTextField textField_11;
@@ -72,34 +70,18 @@ public class PessoasView extends JInternalFrame {
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
 	ControllerPessoas controller = new ControllerPessoas();
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PessoasView frame = new PessoasView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the frame.
 	 */
-	public PessoasView() {
+	public PessoasView(Pessoa pessoa) {
 		initComponents();
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
-		controller.iniciar();
+		controller.iniciar(pessoa);
 	}
 	private void initComponents() {
-
-        group_situacao = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         pnCabecalho = new javax.swing.JPanel();
         pnCabecalho.setBounds(0, 0, 1240, 69);
@@ -116,18 +98,23 @@ public class PessoasView extends JInternalFrame {
         pnCabecalho.setBackground(new java.awt.Color(250, 250, 250));
 
         cbAtendente.setBackground(new java.awt.Color(250, 250, 250));
-        cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Responsavel", "Todos"}));
+        cbAtendente.setName("Atendente");
+        cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Atendente"}));
         
         cbCategoria.setBackground(new java.awt.Color(250, 250, 250));
+        cbCategoria.setName("Categoria");
         cbCategoria.setModel(new DefaultComboBoxModel(new String[] {"Categoria"}));
 
         cbOrigem.setBackground(new java.awt.Color(250, 250, 250));
+        cbOrigem.setName("Origem");
         cbOrigem.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
 
         cbEmpresa.setBackground(new java.awt.Color(250, 250, 250));
-        cbEmpresa.setModel(new DefaultComboBoxModel(new String[] {"Empresa", "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos"}));
+        cbEmpresa.setName("Empresa");
+        cbEmpresa.setModel(new DefaultComboBoxModel(new String[] {"Empresa"}));
         
         cbProdServicos = new JComboBox<String>();
+        cbProdServicos.setName("Produtos/Serviços");
         cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Produtos/Servicos"}));
         cbProdServicos.setBackground(new Color(250, 250, 250));
         
@@ -139,16 +126,16 @@ public class PessoasView extends JInternalFrame {
         label.setText("at\u00E9");
         label.setHorizontalAlignment(SwingConstants.LEFT);
         
-        dateChooser = new JDateChooser();
-        dateChooser.setBounds(36, 37, 100, 20);
+        data2 = new JDateChooser();
+        data2.setBounds(36, 37, 100, 20);
         
         label_1 = new JLabel();
         label_1.setHorizontalAlignment(SwingConstants.LEFT);
         label_1.setBounds(10, 11, 22, 20);
         label_1.setText("de:");
         
-        dateChooser_1 = new JDateChooser();
-        dateChooser_1.setBounds(36, 11, 100, 20);
+        data1 = new JDateChooser();
+        data1.setBounds(36, 11, 100, 20);
         
         button_1 = new JButton();
         button_1.setBounds(142, 37, 51, 20);
@@ -190,8 +177,8 @@ public class PessoasView extends JInternalFrame {
         panel.setLayout(null);
         panel.add(label_1);
         panel.add(label);
-        panel.add(dateChooser);
-        panel.add(dateChooser_1);
+        panel.add(data2);
+        panel.add(data1);
         panel.add(button_1);
         pnCabecalho.setLayout(gl_pnCabecalho);
 
@@ -208,7 +195,7 @@ public class PessoasView extends JInternalFrame {
         jPanel1.setLayout(null);
         jPanel1.add(pnCabecalho);
         
-        JPanel pnPrincipal = new JPanel();
+        pnPrincipal = new JPanel();
         pnPrincipal.setLayout(null);
         pnPrincipal.setBackground((Color) null);
         pnPrincipal.setBounds(10, 260, 760, 363);
@@ -219,15 +206,10 @@ public class PessoasView extends JInternalFrame {
         lbCodigo.setBounds(10, 14, 56, 14);
         pnPrincipal.add(lbCodigo);
         
-        JLabel label_3 = new JLabel();
-        label_3.setText("Cidade:");
-        label_3.setBounds(10, 278, 56, 17);
-        pnPrincipal.add(label_3);
-        
-        JLabel lbNivel = new JLabel();
-        lbNivel.setText("Nivel:");
-        lbNivel.setBounds(10, 96, 56, 18);
-        pnPrincipal.add(lbNivel);
+        JLabel lblEstados = new JLabel();
+        lblEstados.setText("Estado:");
+        lblEstados.setBounds(10, 278, 56, 17);
+        pnPrincipal.add(lblEstados);
         
         JLabel lbTelefone = new JLabel();
         lbTelefone.setText("Telefone:");
@@ -235,7 +217,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(lbTelefone);
         
         cbLogradouro = new JComboBox<String>();
-        cbLogradouro.setModel(new DefaultComboBoxModel(Logradouro.values()));
+        cbLogradouro.setName("Logradouro");
         cbLogradouro.setBounds(10, 214, 87, 20);
         pnPrincipal.add(cbLogradouro);
         
@@ -254,18 +236,15 @@ public class PessoasView extends JInternalFrame {
         lbComplemento.setBounds(203, 245, 43, 20);
         pnPrincipal.add(lbComplemento);
         
-        cbNivelCad = new JComboBox<String>();
-        cbNivelCad.setBounds(107, 96, 87, 20);
-        pnPrincipal.add(cbNivelCad);
-        
         JLabel lbMeio = new JLabel();
         lbMeio.setText("Origem:");
         lbMeio.setBounds(385, 96, 50, 18);
         pnPrincipal.add(lbMeio);
         
-        cbMeioCad = new JComboBox<String>();
-        cbMeioCad.setBounds(438, 96, 92, 20);
-        pnPrincipal.add(cbMeioCad);
+        cbOrigemCad = new JComboBox<String>();
+        cbOrigemCad.setName("OrigemCad");
+        cbOrigemCad.setBounds(438, 96, 92, 20);
+        pnPrincipal.add(cbOrigemCad);
         
         txLogradouro = new JTextField();
         txLogradouro.setBounds(107, 214, 201, 20);
@@ -283,19 +262,19 @@ public class PessoasView extends JInternalFrame {
         txNome.setBounds(107, 39, 201, 20);
         pnPrincipal.add(txNome);
         
-        JFormattedTextField txTelefone = new JFormattedTextField();
-        txTelefone.setText("(99)3204-0000");
+        txTelefone = new JTextField();
         txTelefone.setBounds(107, 154, 87, 20);
         pnPrincipal.add(txTelefone);
         
         JLabel lbEstado = new JLabel();
-        lbEstado.setText("Estado:");
+        lbEstado.setText("Cidade:");
         lbEstado.setBounds(384, 275, 52, 19);
         pnPrincipal.add(lbEstado);
         
         cbEstado = new JComboBox<String>();
-        cbEstado.setModel(new DefaultComboBoxModel(Estados.values()));
-        cbEstado.setBounds(440, 275, 52, 20);
+        cbEstado.setName("Estado");
+        cbEstado.addItemListener(controller);
+        cbEstado.setBounds(107, 276, 52, 20);
         pnPrincipal.add(cbEstado);
         
         JLabel lbNum = new JLabel();
@@ -313,8 +292,7 @@ public class PessoasView extends JInternalFrame {
         label_13.setBounds(385, 244, 43, 20);
         pnPrincipal.add(label_13);
         
-        JFormattedTextField txCelular = new JFormattedTextField();
-        txCelular.setText("(00)99999-0000");
+        txCelular = new JTextField();
         txCelular.setBounds(440, 154, 95, 20);
         pnPrincipal.add(txCelular);
         
@@ -322,11 +300,11 @@ public class PessoasView extends JInternalFrame {
         txNum.setBounds(440, 213, 35, 20);
         pnPrincipal.add(txNum);
         
-        textField_7 = new JTextField();
-        textField_7.setBounds(440, 244, 90, 20);
-        pnPrincipal.add(textField_7);
+        txBairro = new JTextField();
+        txBairro.setBounds(440, 244, 90, 20);
+        pnPrincipal.add(txBairro);
         
-        JLabel txCadastradoPor = new JLabel();
+        txCadastradoPor = new JLabel();
         txCadastradoPor.setText("{Usuario}");
         txCadastradoPor.setBounds(546, 14, 56, 14);
         pnPrincipal.add(txCadastradoPor);
@@ -336,35 +314,39 @@ public class PessoasView extends JInternalFrame {
         lblCadastro.setBounds(385, 14, 73, 14);
         pnPrincipal.add(lblCadastro);
         
-        JLabel lbDataCadastro = new JLabel();
-        lbDataCadastro.setText("{Date###}");
-        lbDataCadastro.setBounds(463, 14, 73, 14);
-        pnPrincipal.add(lbDataCadastro);
+        txDataCadastro = new JLabel();
+        txDataCadastro.setText("{Date###}");
+        txDataCadastro.setBounds(463, 14, 73, 14);
+        pnPrincipal.add(txDataCadastro);
         
-        txCpf = new JTextField();
-        txCpf.setText("000.000.000-00");
+        MaskFormatter formatterCpf=null;
+        try{
+        	formatterCpf = new MaskFormatter("###.###.###-##");
+        }catch(Exception e){
+        }
+        txCpf = new JFormattedTextField(formatterCpf);
         txCpf.setBounds(107, 68, 109, 20);
         pnPrincipal.add(txCpf);
         
-        JButton button = new JButton();
-        button.setText("Novo");
-        button.setBounds(107, 307, 90, 23);
-        pnPrincipal.add(button);
+        btnNovo = new JButton();
+        btnNovo.setText("Novo");
+        btnNovo.setBounds(57, 306, 90, 23);
+        pnPrincipal.add(btnNovo);
         
-        JButton button_2 = new JButton();
-        button_2.setText("Editar");
-        button_2.setBounds(203, 307, 90, 23);
-        pnPrincipal.add(button_2);
+        btnEditar = new JButton();
+        btnEditar.setText("Editar");
+        btnEditar.setBounds(153, 306, 90, 23);
+        pnPrincipal.add(btnEditar);
         
-        JButton button_3 = new JButton();
-        button_3.setText("Salvar");
-        button_3.setBounds(299, 307, 90, 23);
-        pnPrincipal.add(button_3);
+        btnSalvar = new JButton();
+        btnSalvar.setText("Salvar");
+        btnSalvar.setBounds(249, 306, 90, 23);
+        pnPrincipal.add(btnSalvar);
         
-        JButton button_4 = new JButton();
-        button_4.setText("Excluir");
-        button_4.setBounds(395, 307, 90, 23);
-        pnPrincipal.add(button_4);
+        btnExcluir = new JButton();
+        btnExcluir.setText("Excluir");
+        btnExcluir.setBounds(345, 306, 90, 23);
+        pnPrincipal.add(btnExcluir);
         
         txEmail = new JTextField();
         txEmail.setBounds(107, 183, 201, 20);
@@ -389,7 +371,8 @@ public class PessoasView extends JInternalFrame {
         lbAtendente.setBounds(385, 42, 87, 17);
         pnPrincipal.add(lbAtendente);
         
-        JComboBox<String> cbAtendenteCad = new JComboBox<String>();
+        cbAtendenteCad = new JComboBox<String>();
+        cbAtendenteCad.setName("AtendenteCad");
         cbAtendenteCad.setBounds(476, 40, 92, 20);
         pnPrincipal.add(cbAtendenteCad);
         
@@ -438,23 +421,18 @@ public class PessoasView extends JInternalFrame {
         );
         pnPrivacidade.setLayout(gl_pnPrivacidade);
         
-        JButton button_5 = new JButton();
-        button_5.setText("Historico");
-        button_5.setBounds(203, 340, 90, 23);
-        pnPrincipal.add(button_5);
-        
-        JButton button_6 = new JButton();
-        button_6.setText("Neg\u00F3cios");
-        button_6.setBounds(299, 340, 90, 23);
-        pnPrincipal.add(button_6);
-        
         JLabel lbCep = new JLabel();
         lbCep.setText("CEP:");
         lbCep.setBounds(10, 247, 35, 20);
         pnPrincipal.add(lbCep);
         
-        JFormattedTextField txCep = new JFormattedTextField();
-        txCep.setText("00000-000");
+        MaskFormatter formatterCep=null;
+        try{
+        	formatterCep = new MaskFormatter("######-###");
+        }catch(Exception e){
+        	
+        }
+        txCep = new JFormattedTextField(formatterCep);
         txCep.setBounds(107, 245, 78, 20);
         pnPrincipal.add(txCep);
         
@@ -463,8 +441,14 @@ public class PessoasView extends JInternalFrame {
         lbNascimento.setBounds(385, 71, 35, 14);
         pnPrincipal.add(lbNascimento);
         
-        JDateChooser txDataNascimento = new JDateChooser();
-        txDataNascimento.setBounds(438, 68, 100, 20);
+        MaskFormatter formatterNascimento=null;
+        try{
+        	formatterNascimento = new MaskFormatter("##/##");
+        }catch (Exception e) {
+			// TODO: handle exception
+		}
+        txDataNascimento = new JFormattedTextField(formatterNascimento);
+        txDataNascimento.setBounds(438, 68, 50, 20);
         pnPrincipal.add(txDataNascimento);
         
         JButton btMeioCad = new JButton();
@@ -472,17 +456,13 @@ public class PessoasView extends JInternalFrame {
         btMeioCad.setBounds(540, 94, 36, 23);
         pnPrincipal.add(btMeioCad);
         
-        JButton btnNivelCad = new JButton();
-        btnNivelCad.setText("ADC");
-        btnNivelCad.setBounds(203, 94, 36, 23);
-        pnPrincipal.add(btnNivelCad);
-        
         JButton btAddProdServicos = new JButton();
         btAddProdServicos.setText("ADC");
         btAddProdServicos.setBounds(564, 123, 36, 23);
         pnPrincipal.add(btAddProdServicos);
         
-        JComboBox cbProdServicosCad = new JComboBox();
+        cbProdServicosCad = new JComboBox();
+        cbProdServicosCad.setName("ServicosCad");
         cbProdServicosCad.setBounds(438, 126, 116, 20);
         pnPrincipal.add(cbProdServicosCad);
         
@@ -496,7 +476,8 @@ public class PessoasView extends JInternalFrame {
         button_13.setBounds(203, 123, 36, 23);
         pnPrincipal.add(button_13);
         
-        JComboBox<String> cbCategoriaCad = new JComboBox<String>();
+        cbCategoriaCad = new JComboBox<String>();
+        cbCategoriaCad.setName("CategoriaCad");
         cbCategoriaCad.setBounds(107, 126, 87, 20);
         pnPrincipal.add(cbCategoriaCad);
         
@@ -505,9 +486,30 @@ public class PessoasView extends JInternalFrame {
         lbCategoria.setBounds(10, 126, 87, 18);
         pnPrincipal.add(lbCategoria);
         
-        JComboBox<String> cbCidade = new JComboBox<String>();
-        cbCidade.setBounds(107, 276, 87, 20);
+        cbCidade = new JComboBox<String>();
+        cbCidade.setName("Cidade");
+        cbCidade.setBounds(438, 276, 128, 20);
         pnPrincipal.add(cbCidade);
+        
+        btnEmpresas = new JButton();
+        btnEmpresas.setText("Empresas");
+        btnEmpresas.setBounds(346, 340, 87, 23);
+        pnPrincipal.add(btnEmpresas);
+        
+        btnNegocios = new JButton();
+        btnNegocios.setText("Neg\u00F3cios");
+        btnNegocios.setBounds(249, 340, 90, 23);
+        pnPrincipal.add(btnNegocios);
+        
+        btnHistorico = new JButton();
+        btnHistorico.setText("Historico");
+        btnHistorico.setBounds(153, 340, 90, 23);
+        pnPrincipal.add(btnHistorico);
+        
+        JButton button = new JButton();
+        button.setText("Excluir");
+        button.setBounds(438, 306, 90, 23);
+        pnPrincipal.add(button);
         
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
@@ -571,21 +573,6 @@ public class PessoasView extends JInternalFrame {
         );
         
         tbAuxiliar = new JTable();
-        tbAuxiliar.setModel(new DefaultTableModel(
-            	new Object[][] {
-            	},
-            	new String[] {
-            		"Codigo", "Detahes", "Data"
-            	}
-            ) {
-            	boolean[] columnEditables = new boolean[] {
-            		false, false, false
-            	};
-            	public boolean isCellEditable(int row, int column) {
-            		return columnEditables[column];
-            	}
-            }
-            		);
         scrolAuxiliar.setViewportView(tbAuxiliar);
         
         JTextArea textArea = new JTextArea();

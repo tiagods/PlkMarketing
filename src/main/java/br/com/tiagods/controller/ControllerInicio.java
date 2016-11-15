@@ -18,9 +18,9 @@ import javax.swing.JOptionPane;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.MyDao;
-import br.com.tiagods.model.TarefaDao;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelDAO.MyDao;
+import br.com.tiagods.modelDAO.TarefaDAO;
 import br.com.tiagods.view.TarefasView;
 
 public class ControllerInicio implements ActionListener,MouseListener{
@@ -54,7 +54,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario usuario) {
 		//verificar permissão e carregar tarefas do's usuarios
-		int quant = new TarefaDao().getQuantidade(usuario, new Date(), new Date(),session);
+		int quant = new TarefaDAO().getQuantidade(usuario, new Date(), new Date(),session);
 		String[] nome = usuario.getNome().split(" ");
 		switch(quant){
 		case 0:

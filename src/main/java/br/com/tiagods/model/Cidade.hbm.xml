@@ -8,9 +8,9 @@
 	<id name="id" column="CID_COD" type="int">
 	<generator class="identity" />
 	</id>
-	<property name="nome" column="CID_NOME" length="150"/>
+	<property name="nome" column="CID_NOME" length="150" />
 	<property name="estado" column="CID_ESTADO" length="2"/>
-	<property name="idExtra" column="CID_COD_EXTRA" type="int"/>
+	<property name="idExtra" column="CID_COD_EXTRA" />
 	</class>
 </hibernate-mapping>
 

@@ -2,6 +2,7 @@ package br.com.tiagods.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -68,13 +69,16 @@ public class CriarAdmin {
 		pj.setServico(servico);
 		
 		Pessoa pessoa = new Pessoa();
-		pessoa.setCpf("1111111111");
+		pessoa.setCpf("11111111111");
 		pessoa.setEndereco(endereco);
 		pessoa.setNome("Fabiano Alves Ferreira");
-		
-		session.beginTransaction();
+		pessoa.setPessoaFisica(pj);
+		pessoa.setCriadoEm(new Date());
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		session.save(pessoa);
 		session.getTransaction().commit();
+		session.clear();
 		
 	}
 	private void criarEmpresa() {
@@ -99,18 +103,20 @@ public class CriarAdmin {
 		empresa.setCnpj("00000000000000");
 		empresa.setEndereco(endereco);
 		empresa.setNome("Castelao");
-		
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		session.save(empresa);
 		session.getTransaction().commit();
+		session.clear();
 	}
 	private void criarServico() {
 		servico = new Servico();
 		servico.setNome("Consultoria");
-		
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		session.save(servico);
 		session.getTransaction().commit();
+		session.clear();
 	}
 	private void criarEtapa() {
 		List<Etapa> lStatus = new ArrayList<Etapa>();
@@ -130,8 +136,8 @@ public class CriarAdmin {
 		lStatus.add(n2);
 		lStatus.add(n3);
 		lStatus.add(n4);
-
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		lStatus.forEach(c->{
 			try{
 				session.save(c);
@@ -140,6 +146,7 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
+		session.clear();
 	}
 	private void criarStatus() {
 		List<Status> lStatus = new ArrayList<Status>();
@@ -155,8 +162,8 @@ public class CriarAdmin {
 		lStatus.add(n1);
 		lStatus.add(n2);
 		lStatus.add(n3);
-
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		lStatus.forEach(c->{
 			try{
 				session.save(c);
@@ -165,7 +172,7 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
-		
+		session.clear();
 	}
 	private void criarCategoria() {
 		List<Categoria> lista = new ArrayList<Categoria>();
@@ -193,8 +200,8 @@ public class CriarAdmin {
 		lista.add(n4);
 		lista.add(n5);
 		lista.add(n6);
-		
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		lista.forEach(c->{
 			try{
 				session.save(c);
@@ -202,6 +209,7 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
+		session.clear();
 	}
 	private void criarNivel() {
 		List<Nivel> niveis = new ArrayList<Nivel>();
@@ -226,6 +234,7 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
+		session.clear();
 	}
 	private void criarOrigem() {
 		List<Origem> origens = new ArrayList<Origem>();
@@ -235,36 +244,17 @@ public class CriarAdmin {
 		o2.setNome("Feira");
 		Origem o3 = new Origem();
 		o3.setNome("Seminario");
-		
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		origens.forEach(c->{
 			session.save(c);
 		});
 		session.getTransaction().commit();	
+		session.clear();
 	}
 	private void criarCidade() {
-		List <Cidade> cidades = new ArrayList<Cidade>();
-		c1 = new Cidade();
-		c1.setNome("São Paulo");
-		c1.setEstado("SP");
+		c1=(Cidade)session.createQuery("from Cidade").getSingleResult();
 		
-		Cidade c2 = new Cidade();
-		c2.setNome("Vitoria");
-		c2.setEstado("ES");
-
-		Cidade c3 = new Cidade();
-		c3.setNome("Maceio");
-		c3.setEstado("AL");
-
-		cidades.add(c1);
-		cidades.add(c2);
-		cidades.add(c3);
-		
-		session.beginTransaction();
-		cidades.forEach(c->{
-			session.save(c);
-		});
-		session.getTransaction().commit();
 	}
 	private void criarTipoTarefa() {
 		List <String> tipoTarefa = new ArrayList<String>();
@@ -273,14 +263,15 @@ public class CriarAdmin {
 		tipoTarefa.add("Proposta");
 		tipoTarefa.add("Ligacao");
 		tipoTarefa.add("Email");
-		
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		tipoTarefa.forEach(c->{
 			TipoTarefa tT = new TipoTarefa();
 			tT.setNome(c);
 			session.save(tT);
 		});
 		session.getTransaction().commit();
+		session.clear();
 	}
 	public void criarUsuario(){
 		List<Usuario> lista = new ArrayList<>();
@@ -313,7 +304,8 @@ public class CriarAdmin {
 		usuario3.setTotalVendas(new BigDecimal("0.00"));
 		lista.add(usuario3);
 	
-		session.beginTransaction();
+		if(!session.getTransaction().isActive())
+			session.beginTransaction();
 		lista.forEach(c->{
 			try{
 				session.save(c);
@@ -321,15 +313,18 @@ public class CriarAdmin {
 			}
 		});
 		session.getTransaction().commit();
+		session.clear();
 	}
 	
 	public void criarDepartamento(){
 		departamento = new Departamento();
 		departamento.setNome("Tecnologia");
-		try{
+		if(!session.getTransaction().isActive())
 			session.beginTransaction();
+		try{
 			session.save(departamento);
 			session.getTransaction().commit();
+			session.clear();
 		}catch (HibernateException e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();
@@ -338,9 +333,11 @@ public class CriarAdmin {
 	public void criarFuncao(){
 		funcao = new Funcao();
 		funcao.setNome("Analista");
-		try{
+		if(!session.getTransaction().isActive())
 			session.beginTransaction();
+		try{
 			session.save(funcao);
+			session.clear();
 		session.getTransaction().commit();
 		}catch (HibernateException e) {
 			e.printStackTrace();

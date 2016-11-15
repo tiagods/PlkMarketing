@@ -12,16 +12,16 @@ public class Negocio implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
-	private String nome;
+	private String nome="";
 	private Date dataInicio;
 	private Date dataFim;
-	private String classe;
+	private String classe="";
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Status status;
 	private Etapa etapa;
 	private Usuario atendente;
-	private String andamento;
+	private String andamento="";
 	private Date contato;
 	private Date envioProposta;
 	private Date followUp;

@@ -11,10 +11,10 @@ public class Usuario implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
-	private String login;
-	private String nome;
-	private String senha;
-	private String email;
+	private String login="";
+	private String nome="";
+	private String senha="";
+	private String email="";
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Date ultimoAcesso;

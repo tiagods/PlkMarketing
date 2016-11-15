@@ -21,17 +21,18 @@ public interface DefaultModelComboBox {
 		Object object = null;
 		switch(valor){
 		case "Empresas":
-			Empresa empresa = new Empresa();
-			object = empresa;
+			object = "Empresa";
 		case "Negocios":
-			Negocio negocio = new Negocio();
-			object = negocio;
+			object = "Negocio";
 		case "Pessoas":
-			Pessoa pessoa = new Pessoa();
-			object = pessoa;
+			object = "Pessoa";
 		}
 		return object;
 	}
+	default Enum getEnumModelos(String valor){
+		return Modelos.valueOf(valor);
+	}
+	
 	default String getName(String valor){
 		return valor;
 	}

@@ -1,4 +1,4 @@
-package br.com.tiagods.view.interfaces;
+package br.com.tiagods.modelDAO;
 
 import java.util.List;
 
@@ -8,5 +8,5 @@ public interface InterfaceDAO {
 	public boolean salvar(Object classe,Session session);
 	public boolean excluir(Session session);
 	public List listar(String classe, Session session);
-	public Object receberObjeto(String classe, int id,Session session);
+	public Object receberObjeto(Class classe, int id,Session session);
 }

@@ -7,12 +7,12 @@ public class Endereco implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String logradouro;
-	private String nome;
-	private String complemento;
-	private String numero;
-	private String bairro;
-	private String cep;
+	private String logradouro="";
+	private String nome="";
+	private String complemento="";
+	private String numero="";
+	private String bairro="";
+	private String cep="";
 	private Cidade cidade;
 	
 	/**

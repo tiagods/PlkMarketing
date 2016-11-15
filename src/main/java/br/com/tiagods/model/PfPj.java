@@ -10,10 +10,10 @@ public class PfPj implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String telefone;
-	private String celular;
-	private String email;
-	private String site;
+	private String telefone="";
+	private String celular="";
+	private String email="";
+	private String site="";
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Origem origem;
