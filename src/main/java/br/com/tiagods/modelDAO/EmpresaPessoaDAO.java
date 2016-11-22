@@ -23,7 +23,7 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
-public class Padrao {
+public class EmpresaPessoaDAO {
 	Map <String,Categoria> categorias;
 	Map <String,Nivel> niveis;
 	Map <String,Origem> origens;
@@ -39,25 +39,36 @@ public class Padrao {
 	List<Servico> listarServicos;
 	List<Empresa> listarEmpresas;
 	
-	public void preencherTabela(List list, JTable tbPessoas){
-		if(!list.isEmpty()){
-			if(list.get(0) instanceof Pessoa){
-				List<Pessoa> lista = (List<Pessoa>)list;
-				String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
-				String[][] data = new String[lista.size()][tableHeader.length];
-				for(int i=0;i<lista.size();i++){
-					Pessoa p = lista.get(i);
-					data[i][0] = ""+p.getId(); 
-					data[i][1] = p.getNome();
-					data[i][2] = p.getCategoria()==null?"":p.getCategoria().getNome();
-					data[i][3] = p.getOrigem()==null?"":p.getOrigem().getNome();
-					data[i][4] = ""+p.getCriadoEm()==null?"":""+p.getCriadoEm();
-					data[i][5] = p.getAtendente()==null?"":p.getAtendente().getLogin();
+	public void preencherTabela(List list, JTable tbPessoas, Class object){
+		if(object == Pessoa.class){
+			List<Pessoa> lista = (List<Pessoa>)list;
+			String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+			String[][] data = new String[lista.size()][tableHeader.length];
+			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+				boolean[] canEdit = new boolean[]{
+					false,false,false,false,false,false
+				};
+				@Override
+				public boolean isCellEditable(int row, int column) {
+					// TODO Auto-generated method stub
+					return super.isCellEditable(row, column);
 				}
-				DefaultTableModel model = new DefaultTableModel(data,tableHeader);
-				tbPessoas.setModel(model);
+			};
+			for(int i=0;i<lista.size();i++){
+				Pessoa p = lista.get(i);
+				Object[] linha = new Object[5];
+				linha[0] = ""+p.getId(); 
+				linha[1] = p.getNome();
+				linha[2] = p.getCategoria()==null?"":p.getCategoria().getNome();
+				linha[3] = p.getOrigem()==null?"":p.getOrigem().getNome();
+				linha[4] = ""+p.getCriadoEm()==null?"":""+p.getCriadoEm();
+				linha[5] = p.getAtendente()==null?"":p.getAtendente().getLogin();
+				model.addRow(linha);
 			}
+			
+			tbPessoas.setModel(model);
 		}
+
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -68,7 +79,7 @@ public class Padrao {
     	combo.addItem("Todos");
     	switch(combo.getName()){
     	case "Categoria":
-    		listarCategorias = new MyDao().listar("Categoria", session);
+    		listarCategorias = new MyDAO().listar("Categoria", session);
     		categorias = new HashMap<String,Categoria>();
     		if(!listarCategorias.isEmpty()){
     			listarCategorias.forEach(c->{
@@ -79,7 +90,7 @@ public class Padrao {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Nivel":
-    		listarNiveis =	new MyDao().listar("Nivel", session);
+    		listarNiveis =	new MyDAO().listar("Nivel", session);
     		niveis = new HashMap<String,Nivel>();
     		if(!listarNiveis.isEmpty()){
     			listarNiveis.forEach(c->{
@@ -90,7 +101,7 @@ public class Padrao {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Origem":
-    		listarOrigens =	new MyDao().listar("Origem", session);
+    		listarOrigens =	new MyDAO().listar("Origem", session);
     		origens = new HashMap<String,Origem>();
     		if(!listarOrigens.isEmpty()){
     			listarOrigens.forEach(c->{
@@ -101,7 +112,7 @@ public class Padrao {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Empresa":
-    		listarEmpresas = new MyDao().listar("Empresa", session);
+    		listarEmpresas = new MyDAO().listar("Empresa", session);
     		empresas = new HashMap<String,Empresa>();
     		if(!listarEmpresas.isEmpty()){
     			listarEmpresas.forEach(c->{
@@ -112,7 +123,7 @@ public class Padrao {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Produtos/Serviços":
-    		listarServicos = new MyDao().listar("Servico", session);
+    		listarServicos = new MyDAO().listar("Servico", session);
     		servicos = new HashMap<String,Servico>();
     		if(!listarServicos.isEmpty()){
     			listarServicos.forEach(c->{
@@ -123,7 +134,7 @@ public class Padrao {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Atendente":
-    		listarUsuarios= new MyDao().listar("Usuario", session);
+    		listarUsuarios= new MyDAO().listar("Usuario", session);
     		atendentes = new HashMap<String,Usuario>();
     		if(!listarUsuarios.isEmpty()){
     			listarUsuarios.forEach(c->{
@@ -209,7 +220,7 @@ public class Padrao {
     		if(!comboEstado.getSelectedItem().toString().equals("")){
     			List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
     					.setParameter("nomeEstado", comboEstado.getSelectedItem().toString()).getResultList();
-    					cidades = new HashMap<String,Cidade>();
+    			cidades = new HashMap<String,Cidade>();
     			listarCidades.forEach(c->{
     				cidades.put(c.getNome(), c);
     				combo.addItem(c.getNome());

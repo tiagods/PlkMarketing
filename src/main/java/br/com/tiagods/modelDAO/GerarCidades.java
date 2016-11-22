@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.modelDAO;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,18 +10,19 @@ import java.util.Scanner;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
+import br.com.tiagods.model.Cidade;
 
 public class GerarCidades {
 
 	public static void main(String[] args) throws IOException{
 		// TODO Auto-generated method stub
 		Scanner scanner = new Scanner(new InputStreamReader(
-				new FileInputStream("D:\\Users\\Tiago\\Desktop\\munic.csv"),"UTF-8"))
+				new FileInputStream(System.getProperty("user.home")+"/Desktop/munic.csv"),"UTF-8"))
                 .useDelimiter("\n");
 		List<Cidade> cidades = new ArrayList<Cidade>();
-		
+
 		scanner.nextLine();
-		
+
 		while(scanner.hasNext()){
 			Cidade c = new Cidade();
 			String[] dados = scanner.nextLine().split(";");
@@ -33,11 +34,11 @@ public class GerarCidades {
 		Session session = HibernateFactory.getSession();
 		int i=0;
 		session.beginTransaction();
-		
+
 		do{
 			try{
 				session.save(cidades.get(i));
-				
+
 			}catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();

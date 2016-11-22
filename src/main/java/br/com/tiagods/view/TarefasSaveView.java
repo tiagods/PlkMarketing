@@ -35,7 +35,7 @@ import br.com.tiagods.controller.ControllerTarefasSave;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.UsuarioDao;
+import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;

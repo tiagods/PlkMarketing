@@ -28,7 +28,6 @@
 		<property name="criadoEm" column="PES_CRIADOEM" type="timestamp"/>
       	<many-to-one name="criadoPor" column="PES_CRIADOPOR_COD" foreign-key="FK_PES_CRIADOPOR_COD"/>
 		<many-to-one name="origem" column="PES_ORIGEM_COD" foreign-key="FK_PES_ORIGEM_COD"/>
-		<many-to-one name="nivel" column="PES_NIVEL_COD" foreign-key="FK_PES_NIVEL_COD"/>
 		<many-to-one name="atendente" column="PES_ATENDENTE_COD" foreign-key="FK_PES_ATENDENTE_COD"/>
 		
 		<set name="negocios" inverse="true" cascade="save-update, delete">

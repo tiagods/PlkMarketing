@@ -5,8 +5,8 @@ import java.util.List;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.CriarAdmin;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelDAO.CriarAdmin;
 
 @SuppressWarnings("unchecked")
 public class UsuarioLogado {
@@ -25,7 +25,7 @@ public class UsuarioLogado {
 		session.beginTransaction();
 		List<Usuario> users = session.createQuery("from Usuario").getResultList();
 		if(users.isEmpty()){
-			CriarAdmin.getInstance().gerarDefault(session);
+			CriarAdmin.getInstance().gerarDefault();
 			usuario = CriarAdmin.getInstance().getUsuario();
 		}	
 		else{

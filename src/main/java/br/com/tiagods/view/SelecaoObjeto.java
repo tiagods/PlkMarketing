@@ -25,7 +25,7 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.modelDAO.MyDao;
+import br.com.tiagods.modelDAO.MyDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 import javax.swing.ListSelectionModel;
@@ -45,13 +45,15 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 /**
 	 * Create the dialog.
 	 */
+	
+	
 	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome) {
 		initComponents(labelId, labelNome);
 		if(object != null){
 			if(object instanceof Empresa){
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
-				List<Empresa> lista = new MyDao().listar("Empresa", session);
+				List<Empresa> lista = new MyDAO().listar("Empresa", session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				
@@ -65,7 +67,7 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 			else if(object instanceof Negocio){
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
-				List<Negocio> lista = new MyDao().listar("Negocio", session);
+				List<Negocio> lista = new MyDAO().listar("Negocio", session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				
@@ -79,7 +81,7 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 			else if (object instanceof Pessoa){
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
-				List<Pessoa> lista = new MyDao().listar("Pessoa", session);
+				List<Pessoa> lista = new MyDAO().listar("Pessoa", session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){

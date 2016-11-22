@@ -51,9 +51,9 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.MyDao;
+import br.com.tiagods.modelDAO.MyDAO;
 import br.com.tiagods.modelDAO.TarefaDAO;
-import br.com.tiagods.modelDAO.UsuarioDao;
+import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
@@ -124,7 +124,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				tarefa.setCriadoEm(new Date());
 				tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			}
-			Usuario atendente = new UsuarioDao().getLogin((String)cbAtendente.getSelectedItem(),session);
+			Usuario atendente = new UsuarioDAO().getLogin((String)cbAtendente.getSelectedItem(),session);
 			tarefa.setAtendente(atendente);
 			tarefa.setClasse(cbObject.getSelectedItem().toString());
 			try{
@@ -178,18 +178,18 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				else{
 					Object object = getObject(cbObject.getSelectedItem().toString());
 					if(object instanceof Empresa){
-						object = new MyDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
+						object = new MyDAO().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setEmpresa((Empresa)object);
 						System.out.println(""+cbObject.getSelectedItem());
 					}
 					else if(object instanceof Negocio){
-						object = new MyDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
+						object = new MyDAO().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setNegocio((Negocio)object);
 
 						System.out.println(""+cbObject.getSelectedItem());
 					}
 					else if(object instanceof Pessoa){
-						object = new MyDao().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
+						object = new MyDAO().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setPessoa((Pessoa)object);
 
 						System.out.println(""+cbObject.getSelectedItem());
@@ -230,7 +230,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
-		List<Usuario> lista = new MyDao().listar("Usuario", session);
+		List<Usuario> lista = new MyDAO().listar("Usuario", session);
 		cbAtendente.removeAllItems();
 		lista.forEach(c->{
 			cbAtendente.addItem(c.getLogin());

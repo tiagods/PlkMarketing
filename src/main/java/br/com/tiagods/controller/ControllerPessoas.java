@@ -24,15 +24,15 @@ import static br.com.tiagods.view.MenuView.jDBody;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.modelDAO.MyDao;
-import br.com.tiagods.modelDAO.Padrao;
+import br.com.tiagods.modelDAO.MyDAO;
+import br.com.tiagods.modelDAO.EmpresaPessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 /**
  *
  * @author Tiago
  */
 public class ControllerPessoas implements ActionListener,KeyListener,ItemListener{
-	Padrao padrao = new Padrao();
+	EmpresaPessoaDAO padrao = new EmpresaPessoaDAO();
 	List<Pessoa> listaPessoas;
 	
 	Session session=null;
@@ -56,14 +56,15 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     				}
     				else{
     					padrao.preencherCombo((JComboBox)panel.getComponent(i),session, pessoa.getAtendente(),
-    							pessoa.getNivel(),pessoa.getCategoria(),pessoa.getOrigem(),pessoa.getServico(),pessoa.getEndereco(), cbEstado);
+    							null,pessoa.getCategoria(),pessoa.getOrigem(),pessoa.getServico(),pessoa.getEndereco(), cbEstado);
     				}
     			}
     		}
     	}
-    	listaPessoas = new MyDao().listar("Pessoa", session);
-    	padrao.preencherTabela(listaPessoas, tbPrincipal);
-    	preencherFormulario(listaPessoas.get(0));
+    	listaPessoas = new MyDAO().listar("Pessoa", session);
+    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class);
+    	if(!listaPessoas.isEmpty())
+    		preencherFormulario(listaPessoas.get(0));
     	long fim = System.currentTimeMillis();
     	session.close();
     	System.out.println("Fim da view Pessoas: "+(fim-inicio));
@@ -113,6 +114,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			novoEditar();
 			break;
 		case "Editar":
+			this.pessoaBackup=pessoa;
 			novoEditar();
 			break;
 		case "Cancelar":
@@ -170,7 +172,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			}
 		}
 		if(!lista.isEmpty()){
-			padrao.preencherTabela(lista, tbPrincipal);
+			padrao.preencherTabela(lista, tbPrincipal, Pessoa.class);
 		}else{
 			JOptionPane.showMessageDialog(jDBody,"Não foi encontrado registros com o criterio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
@@ -178,11 +180,9 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		switch(e.getSource().toString()){
-		case "Estado":
+		if(e.getSource()==cbCidade){
 			padrao.preencherCombo(cbCidade,session, null,
 					null,null,null,null,null,cbEstado);
-			break;
 		}
 		
 	}
