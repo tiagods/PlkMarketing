@@ -331,20 +331,24 @@ public class PessoasView extends JInternalFrame {
         btnNovo = new JButton();
         btnNovo.setText("Novo");
         btnNovo.setBounds(57, 306, 90, 23);
+        btnNovo.addActionListener(controller);
         pnPrincipal.add(btnNovo);
         
         btnEditar = new JButton();
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(controller);
         btnEditar.setBounds(153, 306, 90, 23);
         pnPrincipal.add(btnEditar);
         
         btnSalvar = new JButton();
         btnSalvar.setText("Salvar");
+        
         btnSalvar.setBounds(249, 306, 90, 23);
         pnPrincipal.add(btnSalvar);
         
         btnExcluir = new JButton();
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(controller);
         btnExcluir.setBounds(345, 306, 90, 23);
         pnPrincipal.add(btnExcluir);
         

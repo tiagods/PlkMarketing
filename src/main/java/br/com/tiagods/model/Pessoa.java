@@ -2,7 +2,7 @@ package br.com.tiagods.model;
 
 import java.io.Serializable;
 
-public class Pessoa extends PfPj implements Serializable{
+public class Pessoa implements Serializable{
 	/**
 	 * 
 	 */

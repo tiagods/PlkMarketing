@@ -29,6 +29,8 @@ import br.com.tiagods.modelDAO.MyDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 import javax.swing.ListSelectionModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 	
@@ -45,7 +47,6 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 /**
 	 * Create the dialog.
 	 */
-	
 	
 	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome) {
 		initComponents(labelId, labelNome);
@@ -103,6 +104,16 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 			scrollPane = new JScrollPane();
 			{
 				tbRelacao = new JTable();
+				tbRelacao.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+						int column = tbRelacao.getSelectedColumn();
+						int row = tbRelacao.getSelectedRow();
+						
+						String texto="";
+						texto+=tbRelacao.getModel().getValueAt(row, column)+",";
+					}
+				});
 				tbRelacao.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				tbRelacao.setFillsViewportHeight(true);
 				tbRelacao.setSelectionBackground(Color.GREEN);

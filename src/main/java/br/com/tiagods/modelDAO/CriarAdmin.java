@@ -83,13 +83,13 @@ public class CriarAdmin {
 		pj.setCriadoPor(usuario);
 		pj.setOrigem(origem);
 		pj.setServico(servico);
+		pj.setCriadoEm(new Date());
 
 		Pessoa pessoa = new Pessoa();
 		pessoa.setCpf("11111111111");
 		pessoa.setEndereco(endereco);
 		pessoa.setNome("Fabiano Alves Ferreira");
 		pessoa.setPessoaFisica(pj);
-		pessoa.setCriadoEm(new Date());
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		session.save(pessoa);

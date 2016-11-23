@@ -1,5 +1,7 @@
 package br.com.tiagods.modelDAO;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +45,6 @@ public class EmpresaPessoaDAO {
 		if(object == Pessoa.class){
 			List<Pessoa> lista = (List<Pessoa>)list;
 			String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
-			String[][] data = new String[lista.size()][tableHeader.length];
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 				boolean[] canEdit = new boolean[]{
 					false,false,false,false,false,false
@@ -56,17 +57,24 @@ public class EmpresaPessoaDAO {
 			};
 			for(int i=0;i<lista.size();i++){
 				Pessoa p = lista.get(i);
-				Object[] linha = new Object[5];
+				Object[] linha = new Object[6];
 				linha[0] = ""+p.getId(); 
 				linha[1] = p.getNome();
-				linha[2] = p.getCategoria()==null?"":p.getCategoria().getNome();
-				linha[3] = p.getOrigem()==null?"":p.getOrigem().getNome();
-				linha[4] = ""+p.getCriadoEm()==null?"":""+p.getCriadoEm();
-				linha[5] = p.getAtendente()==null?"":p.getAtendente().getLogin();
+				linha[2] = p.getPessoaFisica().getCategoria()==null?"":p.getPessoaFisica().getCategoria().getNome();
+				linha[3] = p.getPessoaFisica().getOrigem()==null?"":p.getPessoaFisica().getOrigem().getNome();
+				try{
+					Date criadoEm = p.getPessoaFisica().getCriadoEm();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+					linha[4] = sdf.format(criadoEm);
+				}catch (Exception e) {
+					// TODO: handle exception
+					linha[4] = "";
+				}
+				linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getLogin();
 				model.addRow(linha);
 			}
-			
 			tbPessoas.setModel(model);
+			tbPessoas.setAutoCreateRowSorter(true);
 		}
 
 	}

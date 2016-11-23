@@ -6,7 +6,7 @@ import org.hibernate.Session;
 
 public interface InterfaceDAO {
 	public boolean salvar(Object classe,Session session);
-	public boolean excluir(Session session);
+	public boolean excluir(Session session, int id);
 	public List listar(String classe, Session session);
 	public Object receberObjeto(Class classe, int id,Session session);
 }

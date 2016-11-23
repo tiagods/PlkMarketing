@@ -55,8 +55,12 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     							null,null,null,null,null,cbEstado);
     				}
     				else{
-    					padrao.preencherCombo((JComboBox)panel.getComponent(i),session, pessoa.getAtendente(),
-    							null,pessoa.getCategoria(),pessoa.getOrigem(),pessoa.getServico(),pessoa.getEndereco(), cbEstado);
+    					padrao.preencherCombo((JComboBox)panel.getComponent(i),session, 
+    							pessoa.getPessoaFisica().getAtendente(),
+    							null,pessoa.getPessoaFisica().getCategoria(),
+    							pessoa.getPessoaFisica().getOrigem(),
+    							pessoa.getPessoaFisica().getServico(),
+    							pessoa.getEndereco(), cbEstado);
     				}
     			}
     		}
@@ -72,25 +76,20 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	private void preencherFormulario(Pessoa pessoa){
 		txCodigo.setText(""+pessoa.getId());
 		SimpleDateFormat conversor = new SimpleDateFormat("dd/MM/yyyy");
-		txCadastradoPor.setText(pessoa.getCriadoPor()==null?"":pessoa.getCriadoPor().getNome());
-		//txDataCadastro.setText(conversor.format(pessoa.getCriadoEm()));
+		txCadastradoPor.setText(pessoa.getPessoaFisica().getCriadoPor()==null?"":pessoa.getPessoaFisica().getCriadoPor().getLogin());
 		
+		txDataCadastro.setText(conversor.format(pessoa.getPessoaFisica().getCriadoEm()));
 		txNome.setText(pessoa.getNome());
-		
-		cbAtendenteCad.setSelectedItem(pessoa.getAtendente());
-		
+		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente());
 		txCpf.setText(pessoa.getCpf());
 		txDataNascimento.setText(pessoa.getDataNascimento());
-		
-		cbOrigemCad.setSelectedItem(pessoa.getOrigem()==null?"":pessoa.getOrigem().getNome());
-		cbCategoriaCad.setSelectedItem(pessoa.getCategoria()==null?"":pessoa.getCategoria().getNome());
-		cbProdServicosCad.setSelectedItem(pessoa.getServico()==null?"":pessoa.getServico().getNome());
-		
-		txTelefone.setText(pessoa.getTelefone());
-		txCelular.setText(pessoa.getCelular());
-		txEmail.setText(pessoa.getEmail());
-		txSite.setText(pessoa.getSite());
-		
+		cbOrigemCad.setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
+		cbCategoriaCad.setSelectedItem(pessoa.getPessoaFisica().getCategoria()==null?"":pessoa.getPessoaFisica().getCategoria().getNome());
+		cbProdServicosCad.setSelectedItem(pessoa.getPessoaFisica().getServico()==null?"":pessoa.getPessoaFisica().getServico().getNome());
+		txTelefone.setText(pessoa.getPessoaFisica().getTelefone());
+		txCelular.setText(pessoa.getPessoaFisica().getCelular());
+		txEmail.setText(pessoa.getPessoaFisica().getEmail());
+		txSite.setText(pessoa.getPessoaFisica().getSite());
 		Endereco end = pessoa.getEndereco();
 		cbLogradouro.setSelectedItem(DefaultModelComboBox.Logradouro.valueOf(end.getLogradouro()));
 		txLogradouro.setText(end.getNome());

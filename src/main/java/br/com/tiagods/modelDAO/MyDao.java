@@ -12,7 +12,7 @@ import br.com.tiagods.factory.HibernateFactory;
 
 import static br.com.tiagods.view.MenuView.jDBody;
 
-public class MyDao implements InterfaceDAO {
+public class MyDAO implements InterfaceDAO {
 
 	@Override
 	public boolean salvar(Object classe, Session session) {
@@ -37,7 +37,7 @@ public class MyDao implements InterfaceDAO {
 	}
 
 	@Override
-	public boolean excluir(Session session) {
+	public boolean excluir(Session session, int id) {
 		// TODO Auto-generated method stub
 		return false;
 		
