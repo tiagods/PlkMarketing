@@ -3,7 +3,6 @@
  */
 package br.com.tiagods.controller;
 
-
 import static br.com.tiagods.view.PessoasView.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +35,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	List<Pessoa> listaPessoas;
 	
 	Session session=null;
-	
 	Pessoa pessoa= null;
 	Pessoa pessoaBackup;
 	
@@ -69,6 +67,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class);
     	if(!listaPessoas.isEmpty())
     		preencherFormulario(listaPessoas.get(0));
+    	//salvarCancelar();
     	long fim = System.currentTimeMillis();
     	session.close();
     	System.out.println("Fim da view Pessoas: "+(fim-inicio));
@@ -80,7 +79,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		
 		txDataCadastro.setText(conversor.format(pessoa.getPessoaFisica().getCriadoEm()));
 		txNome.setText(pessoa.getNome());
-		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente());
+		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente().getLogin());
 		txCpf.setText(pessoa.getCpf());
 		txDataNascimento.setText(pessoa.getDataNascimento());
 		cbOrigemCad.setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
@@ -90,6 +89,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txCelular.setText(pessoa.getPessoaFisica().getCelular());
 		txEmail.setText(pessoa.getPessoaFisica().getEmail());
 		txSite.setText(pessoa.getPessoaFisica().getSite());
+		
 		Endereco end = pessoa.getEndereco();
 		cbLogradouro.setSelectedItem(DefaultModelComboBox.Logradouro.valueOf(end.getLogradouro()));
 		txLogradouro.setText(end.getNome());

@@ -64,7 +64,7 @@ public class EmpresaPessoaDAO {
 				linha[3] = p.getPessoaFisica().getOrigem()==null?"":p.getPessoaFisica().getOrigem().getNome();
 				try{
 					Date criadoEm = p.getPessoaFisica().getCriadoEm();
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 					linha[4] = sdf.format(criadoEm);
 				}catch (Exception e) {
 					// TODO: handle exception

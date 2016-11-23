@@ -69,9 +69,8 @@ public class PessoasView extends JInternalFrame {
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
-	ControllerPessoas controller = new ControllerPessoas();
 	
-
+	ControllerPessoas controller = new ControllerPessoas();
 	/**
 	 * Create the frame.
 	 */
@@ -330,7 +329,7 @@ public class PessoasView extends JInternalFrame {
         
         btnNovo = new JButton();
         btnNovo.setText("Novo");
-        btnNovo.setBounds(57, 306, 90, 23);
+        btnNovo.setBounds(46, 306, 90, 23);
         btnNovo.addActionListener(controller);
         pnPrincipal.add(btnNovo);
         
@@ -346,11 +345,11 @@ public class PessoasView extends JInternalFrame {
         btnSalvar.setBounds(249, 306, 90, 23);
         pnPrincipal.add(btnSalvar);
         
-        btnExcluir = new JButton();
-        btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(controller);
-        btnExcluir.setBounds(345, 306, 90, 23);
-        pnPrincipal.add(btnExcluir);
+        btnCancelar = new JButton();
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(controller);
+        btnCancelar.setBounds(345, 306, 90, 23);
+        pnPrincipal.add(btnCancelar);
         
         txEmail = new JTextField();
         txEmail.setBounds(107, 183, 201, 20);
@@ -502,6 +501,7 @@ public class PessoasView extends JInternalFrame {
         
         btnNegocios = new JButton();
         btnNegocios.setText("Neg\u00F3cios");
+        btnNegocios.setActionCommand("Negocios");
         btnNegocios.setBounds(249, 340, 90, 23);
         pnPrincipal.add(btnNegocios);
         
@@ -510,10 +510,12 @@ public class PessoasView extends JInternalFrame {
         btnHistorico.setBounds(153, 340, 90, 23);
         pnPrincipal.add(btnHistorico);
         
-        JButton button = new JButton();
-        button.setText("Excluir");
-        button.setBounds(438, 306, 90, 23);
-        pnPrincipal.add(button);
+        btnExcluir = new JButton();
+        btnExcluir.setText("Excluir");
+        btnExcluir.setActionCommand("Excluir");
+        btnExcluir.addActionListener(controller);
+        btnExcluir.setBounds(438, 306, 90, 23);
+        pnPrincipal.add(btnExcluir);
         
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));

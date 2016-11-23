@@ -29,7 +29,7 @@ public class TarefaDAO implements InterfaceDAO{
 		return false;
 	}
 	@Override
-	public boolean excluir(Session session) {
+	public boolean excluir(Session session, int id) {
 		// TODO Auto-generated method stub
 		return false;
 	}
