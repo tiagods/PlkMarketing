@@ -1,6 +1,5 @@
 package br.com.tiagods.view.interfaces;
 
-import br.com.tiagods.model.*;
 public interface DefaultModelComboBox {
 	
 	public enum Modelos{
@@ -14,9 +13,7 @@ public interface DefaultModelComboBox {
 		Travessa, Trecho, Trevo, Vale, Vereda, Via, Viaduto, Viela, Vila
 	}
 	//empresas, pessoas, negocios
-	public enum Estados{
-		AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA, PB, PR, PE, PI, RJ, RN, RS, RO, RR, SC, SP, SE, TO
-	}
+	
 	default Object getObject(String valor){
 		Object object = null;
 		switch(valor){

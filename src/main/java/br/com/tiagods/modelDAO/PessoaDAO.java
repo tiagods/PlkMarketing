@@ -2,33 +2,48 @@ package br.com.tiagods.modelDAO;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
+
+import br.com.tiagods.model.Pessoa;
 
 public class PessoaDAO implements InterfaceDAO {
 
 	@Override
 	public boolean salvar(Object classe, Session session) {
-		// TODO Auto-generated method stub
+		try{
+			session.saveOrUpdate(classe);
+			session.getTransaction().commit();
+			return true;
+		}catch (HibernateException e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
 		return false;
 	}
 
 	@Override
-	public boolean excluir(Session session, int id) {
-		// TODO Auto-generated method stub
-		
+	public boolean excluir(Object object, Session session) {
+		try{
+			session.delete((Pessoa)object);
+			session.getTransaction().commit();
+			return true;
+		}catch (HibernateException e) {
+			session.getTransaction().rollback();
+		}
 		return false;
 	}
 
 	@Override
-	public List listar(String classe, Session session) {
-		// TODO Auto-generated method stub
-		return null;
+	public List listar(Object object, Session session) {
+		return session.createQuery("from "+object).getResultList();
 	}
 
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
-		// TODO Auto-generated method stub
-		return null;
+		Object o = session.get(classe, id);
+		return o;
 	}
 
 }

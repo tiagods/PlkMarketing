@@ -1,31 +1,28 @@
 package br.com.tiagods.view;
 
+import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Font;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JComboBox;
-import java.awt.Color;
-import javax.swing.SwingConstants;
-import com.toedter.calendar.JDateChooser;
-import javax.swing.JTextArea;
-import javax.swing.JFormattedTextField;
-import javax.swing.JCheckBox;
-import javax.swing.JTable;
 import javax.swing.JRadioButton;
-import java.awt.FlowLayout;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+
+import com.toedter.calendar.JDateChooser;
 
 public class NegociosView extends JInternalFrame {
 	private javax.swing.ButtonGroup group_situacao;

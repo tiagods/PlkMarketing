@@ -1,23 +1,14 @@
 package br.com.tiagods.view;
 
-import static br.com.tiagods.view.TarefasSaveView.cbObject;
-import static br.com.tiagods.view.TarefasSaveView.txCodigo;
-import static br.com.tiagods.view.TarefasSaveView.txNome;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Date;
-import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -32,17 +23,9 @@ import com.toedter.calendar.JDateChooser;
  */
 
 import br.com.tiagods.controller.ControllerTarefasSave;
-import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.UsuarioDAO;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
-import java.awt.event.ItemListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	

@@ -33,6 +33,9 @@ public class UsuarioLogado {
 		}
 		session.close();
 	}
+	public void setUsuario(Usuario usuario){
+		this.usuario=usuario;
+	}
 	public Usuario getUsuario(){
 		return usuario;
 	}

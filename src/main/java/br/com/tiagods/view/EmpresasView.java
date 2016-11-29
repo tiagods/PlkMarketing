@@ -24,9 +24,8 @@ import javax.swing.SwingConstants;
 
 import com.toedter.calendar.JDateChooser;
 
-import br.com.tiagods.view.interfaces.DefaultUtilities;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Logradouro;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Estados;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class EmpresasView extends JInternalFrame implements DefaultUtilities{
 	private javax.swing.ButtonGroup group_situacao;
@@ -344,8 +343,6 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         lbComplemento.setText("Compl:");
 
         lbBairro.setText("Bairro:");
-
-        cbEstado.setModel(new DefaultComboBoxModel(Estados.values()));
 
         lbEstado.setText("Estado:");
 

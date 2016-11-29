@@ -3,8 +3,11 @@ package br.com.tiagods.modelDAO;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -223,17 +226,22 @@ public class EmpresaPessoaDAO {
     			combo.setSelectedItem("");
     		break;
     	case "Cidade":
-    		combo.removeAllItems();
     		combo.addItem("");
-    		if(!comboEstado.getSelectedItem().toString().equals("")){
-    			List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
-    					.setParameter("nomeEstado", comboEstado.getSelectedItem().toString()).getResultList();
-    			cidades = new HashMap<String,Cidade>();
-    			listarCidades.forEach(c->{
-    				cidades.put(c.getNome(), c);
-    				combo.addItem(c.getNome());
-    			});
-    			if(endereco!=null){
+    		if(comboEstado.getSelectedItem()!=null){
+    			combo.removeAllItems();
+				List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
+						.setParameter("nomeEstado", (String)comboEstado.getSelectedItem()).getResultList();
+				cidades = new HashMap<String, Cidade>();
+				combo.addItem("");
+				if(!listarCidades.isEmpty()){
+					listarCidades.forEach(c->{
+						combo.addItem(c.getNome());
+						cidades.put(c.getNome(), c);
+					});
+				}
+				combo.setSelectedItem("");
+					
+				if(endereco!=null){
     				combo.setSelectedItem(endereco.getCidade().getNome());
     			}
     		}
@@ -241,12 +249,20 @@ public class EmpresaPessoaDAO {
     	case "Estado":
     		combo.removeAllItems();
     		combo.addItem("");
-    		combo.setModel(new DefaultComboBoxModel<>(DefaultModelComboBox.Estados.values()));
+    		List<Cidade> listaCidades = session.createQuery("from Cidade").getResultList();
+    		Set<String> listaEstados = new TreeSet<String>();
+    		listaCidades.forEach(c->{
+    			listaEstados.add(c.getEstado());
+    		});
+    		Iterator<String> i = listaEstados.iterator();
+    		while(i.hasNext()){
+    			combo.addItem(i.next());
+    		}
     		if(endereco!=null){
-    			combo.setSelectedItem(DefaultModelComboBox.Estados.valueOf(endereco.getCidade().getEstado()));
+    			combo.setSelectedItem(endereco.getCidade().getEstado());
     		}
     		else
-    			combo.setSelectedItem(DefaultModelComboBox.Estados.valueOf("SP"));
+    			combo.setSelectedItem("");
     		break;
     	case "Logradouro":
     		combo.removeAllItems();
@@ -265,9 +281,51 @@ public class EmpresaPessoaDAO {
     }
 
 	/**
+	 * @return the categorias
+	 */
+	public Categoria getCategorias(String key) {
+		return categorias.get(key);
+	}
+
+	/**
+	 * @return the niveis
+	 */
+	public Nivel getNiveis(String key) {
+		return niveis.get(key);
+	}
+
+	/**
+	 * @return the origens
+	 */
+	public Origem getOrigens(String key) {
+		return origens.get(key);
+	}
+
+	/**
+	 * @return the servicos
+	 */
+	public Servico getServicos(String key) {
+		return servicos.get(key);
+	}
+
+	/**
+	 * @return the cidades
+	 */
+	public Cidade getCidades(String key) {
+		return cidades.get(key);
+	}
+
+	/**
+	 * @return the empresas
+	 */
+	public Empresa getEmpresas(String key) {
+		return empresas.get(key);
+	}
+
+	/**
 	 * @return the atendentes
 	 */
-	public Map<String, Usuario> getAtendentes() {
-		return atendentes;
+	public Usuario getAtendentes(String key) {
+		return atendentes.get(key);
 	}
 }

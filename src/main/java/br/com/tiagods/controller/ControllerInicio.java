@@ -19,8 +19,8 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.MyDAO;
 import br.com.tiagods.modelDAO.TarefaDAO;
+import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.TarefasView;
 
 public class ControllerInicio implements ActionListener,MouseListener{
@@ -74,7 +74,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	//carregar lista de atendentes
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
-		List<Usuario> lista = new MyDAO().listar("Usuario", session);
+		List<Usuario> lista = new UsuarioDAO().listar("Usuario", session);
 		cbAtendentes.removeAllItems();
 		lista.forEach(c->{
 			cbAtendentes.addItem(c.getLogin());

@@ -1,6 +1,8 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -54,7 +56,7 @@ public class PessoasView extends JInternalFrame {
 	private JButton button_1;
 	public static JTextField txLogradouro;
 	public static JTextField txComplemento;
-	public static JTextField txCodigo;
+	public static JLabel txCodigo;
 	public static JTextField txNome;
 	public static JTextField txNum;
 	public static JTextField txTelefone;
@@ -69,7 +71,7 @@ public class PessoasView extends JInternalFrame {
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
-	
+	int i = 0 ;
 	ControllerPessoas controller = new ControllerPessoas();
 	/**
 	 * Create the frame.
@@ -79,6 +81,15 @@ public class PessoasView extends JInternalFrame {
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
 		controller.iniciar(pessoa);
+		
+		data1.addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				// TODO Auto-generated method stub
+				System.out.println("Invoke "+i);
+				i++;
+			}
+		});
 	}
 	private void initComponents() {
         jPanel1 = new javax.swing.JPanel();
@@ -253,7 +264,7 @@ public class PessoasView extends JInternalFrame {
         txComplemento.setBounds(252, 245, 56, 20);
         pnPrincipal.add(txComplemento);
         
-        txCodigo = new JTextField();
+        txCodigo = new JLabel();
         txCodigo.setBounds(107, 11, 87, 20);
         pnPrincipal.add(txCodigo);
         
@@ -329,20 +340,23 @@ public class PessoasView extends JInternalFrame {
         
         btnNovo = new JButton();
         btnNovo.setText("Novo");
+        btnNovo.setActionCommand("Novo");
         btnNovo.setBounds(46, 306, 90, 23);
         btnNovo.addActionListener(controller);
         pnPrincipal.add(btnNovo);
         
         btnEditar = new JButton();
         btnEditar.setText("Editar");
+        btnEditar.setActionCommand("Editar");
         btnEditar.addActionListener(controller);
         btnEditar.setBounds(153, 306, 90, 23);
         pnPrincipal.add(btnEditar);
         
         btnSalvar = new JButton();
         btnSalvar.setText("Salvar");
-        
         btnSalvar.setBounds(249, 306, 90, 23);
+        btnSalvar.setActionCommand("Salvar");
+        btnSalvar.addActionListener(controller);
         pnPrincipal.add(btnSalvar);
         
         btnCancelar = new JButton();
@@ -431,7 +445,7 @@ public class PessoasView extends JInternalFrame {
         
         MaskFormatter formatterCep=null;
         try{
-        	formatterCep = new MaskFormatter("######-###");
+        	formatterCep = new MaskFormatter("#####-###");
         }catch(Exception e){
         	
         }
@@ -448,7 +462,6 @@ public class PessoasView extends JInternalFrame {
         try{
         	formatterNascimento = new MaskFormatter("##/##");
         }catch (Exception e) {
-			// TODO: handle exception
 		}
         txDataNascimento = new JFormattedTextField(formatterNascimento);
         txDataNascimento.setBounds(438, 68, 50, 20);
@@ -611,6 +624,7 @@ public class PessoasView extends JInternalFrame {
         jPanel1.add(scrollPrincipal);
         
         tbPrincipal = new JTable();
+        tbPrincipal.addMouseListener(controller);
         scrollPrincipal.setViewportView(tbPrincipal);
         
         txBuscar = new JTextField();

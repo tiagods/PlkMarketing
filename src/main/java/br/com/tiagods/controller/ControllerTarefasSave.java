@@ -1,6 +1,5 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.MenuView.jDBody;
 import static br.com.tiagods.view.TarefasSaveView.btnCancelar;
 import static br.com.tiagods.view.TarefasSaveView.btnEditar;
 import static br.com.tiagods.view.TarefasSaveView.btnNovo;
@@ -33,7 +32,6 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -42,7 +40,6 @@ import javax.swing.JTextField;
 import javax.swing.JViewport;
 
 import org.hibernate.Session;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
@@ -52,7 +49,6 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelDAO.MyDAO;
-import br.com.tiagods.modelDAO.TarefaDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
