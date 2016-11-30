@@ -40,8 +40,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
 	
-	@Override
-	public Color getColor() {
+	@Override	public Color getColor() {
 		// TODO Auto-generated method stub
 		return DefaultUtilities.super.getColor();
 	}
@@ -49,18 +48,6 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	/**
 	 * Launch the application.
 	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					TarefasSaveView frame = new TarefasSaveView();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the frame.

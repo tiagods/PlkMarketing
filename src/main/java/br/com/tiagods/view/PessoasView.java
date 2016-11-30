@@ -28,10 +28,12 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerPessoas;
 import br.com.tiagods.model.Pessoa;
+import java.awt.Font;
 
 public class PessoasView extends JInternalFrame {
 	public static javax.swing.JComboBox<Object> cbAtendente;
-    public static javax.swing.JComboBox<String> cbCategoria,cbCategoriaCad;
+    public static javax.swing.JComboBox<String> cbCategoria;
+    public static javax.swing.JComboBox<String> cbCategoriaCad;
     public static javax.swing.JComboBox<String> cbOrigem;
     public static javax.swing.JComboBox<String> cbEmpresa;
     public static javax.swing.JComboBox<String> cbProdServicos;
@@ -53,10 +55,10 @@ public class PessoasView extends JInternalFrame {
 	private JLabel label;
 	public static JDateChooser data1,data2;
 	public static JLabel label_1, txCadastradoPor, txDataCadastro;
-	private JButton button_1;
 	public static JTextField txLogradouro;
 	public static JTextField txComplemento;
 	public static JLabel txCodigo;
+	public static JLabel txContador;
 	public static JTextField txNome;
 	public static JTextField txNum;
 	public static JTextField txTelefone;
@@ -80,16 +82,12 @@ public class PessoasView extends JInternalFrame {
 		initComponents();
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
+		
+		txContador = new JLabel("");
+		txContador.setBounds(780, 235, 150, 14);
+		jPanel1.add(txContador);
 		controller.iniciar(pessoa);
 		
-		data1.addPropertyChangeListener(new PropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				// TODO Auto-generated method stub
-				System.out.println("Invoke "+i);
-				i++;
-			}
-		});
 	}
 	private void initComponents() {
         jPanel1 = new javax.swing.JPanel();
@@ -109,22 +107,27 @@ public class PessoasView extends JInternalFrame {
 
         cbAtendente.setBackground(new java.awt.Color(250, 250, 250));
         cbAtendente.setName("Atendente");
+        cbAtendente.addItemListener(controller);
         cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Atendente"}));
         
         cbCategoria.setBackground(new java.awt.Color(250, 250, 250));
         cbCategoria.setName("Categoria");
+        cbCategoria.addItemListener(controller);
         cbCategoria.setModel(new DefaultComboBoxModel(new String[] {"Categoria"}));
 
         cbOrigem.setBackground(new java.awt.Color(250, 250, 250));
         cbOrigem.setName("Origem");
+        cbOrigem.addItemListener(controller);
         cbOrigem.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
 
         cbEmpresa.setBackground(new java.awt.Color(250, 250, 250));
         cbEmpresa.setName("Empresa");
+        cbEmpresa.addItemListener(controller);
         cbEmpresa.setModel(new DefaultComboBoxModel(new String[] {"Empresa"}));
         
         cbProdServicos = new JComboBox<String>();
         cbProdServicos.setName("Produtos/Serviços");
+        cbProdServicos.addItemListener(controller);
         cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Produtos/Servicos"}));
         cbProdServicos.setBackground(new Color(250, 250, 250));
         
@@ -136,8 +139,6 @@ public class PessoasView extends JInternalFrame {
         label.setText("at\u00E9");
         label.setHorizontalAlignment(SwingConstants.LEFT);
         
-        data2 = new JDateChooser();
-        data2.setBounds(36, 37, 100, 20);
         
         label_1 = new JLabel();
         label_1.setHorizontalAlignment(SwingConstants.LEFT);
@@ -146,10 +147,10 @@ public class PessoasView extends JInternalFrame {
         
         data1 = new JDateChooser();
         data1.setBounds(36, 11, 100, 20);
-        
-        button_1 = new JButton();
-        button_1.setBounds(142, 37, 51, 20);
-        button_1.setText("OK");
+        data1.addPropertyChangeListener(controller);
+        data2 = new JDateChooser();
+        data2.addPropertyChangeListener(controller);
+        data2.setBounds(36, 37, 100, 20);
         
         javax.swing.GroupLayout gl_pnCabecalho = new javax.swing.GroupLayout(pnCabecalho);
         gl_pnCabecalho.setHorizontalGroup(
@@ -189,7 +190,6 @@ public class PessoasView extends JInternalFrame {
         panel.add(label);
         panel.add(data2);
         panel.add(data1);
-        panel.add(button_1);
         pnCabecalho.setLayout(gl_pnCabecalho);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -210,11 +210,6 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.setBackground((Color) null);
         pnPrincipal.setBounds(10, 260, 760, 363);
         jPanel1.add(pnPrincipal);
-        
-        JLabel lbCodigo = new JLabel();
-        lbCodigo.setText("{COD###}");
-        lbCodigo.setBounds(10, 14, 56, 14);
-        pnPrincipal.add(lbCodigo);
         
         JLabel lblEstados = new JLabel();
         lblEstados.setText("Estado:");
@@ -320,7 +315,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(txCadastradoPor);
         
         JLabel lblCadastro = new JLabel();
-        lblCadastro.setText("Cadastro em:");
+        lblCadastro.setText("Criado em:");
         lblCadastro.setBounds(385, 14, 73, 14);
         pnPrincipal.add(lblCadastro);
         
@@ -339,13 +334,15 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(txCpf);
         
         btnNovo = new JButton();
+        btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnNovo.setText("Novo");
         btnNovo.setActionCommand("Novo");
-        btnNovo.setBounds(46, 306, 90, 23);
+        btnNovo.setBounds(59, 306, 90, 23);
         btnNovo.addActionListener(controller);
         pnPrincipal.add(btnNovo);
         
         btnEditar = new JButton();
+        btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnEditar.setText("Editar");
         btnEditar.setActionCommand("Editar");
         btnEditar.addActionListener(controller);
@@ -353,6 +350,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(btnEditar);
         
         btnSalvar = new JButton();
+        btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnSalvar.setText("Salvar");
         btnSalvar.setBounds(249, 306, 90, 23);
         btnSalvar.setActionCommand("Salvar");
@@ -360,6 +358,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(btnSalvar);
         
         btnCancelar = new JButton();
+        btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(345, 306, 90, 23);
@@ -508,22 +507,26 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(cbCidade);
         
         btnEmpresas = new JButton();
+        btnEmpresas.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnEmpresas.setText("Empresas");
         btnEmpresas.setBounds(346, 340, 87, 23);
         pnPrincipal.add(btnEmpresas);
         
         btnNegocios = new JButton();
+        btnNegocios.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
         btnNegocios.setBounds(249, 340, 90, 23);
         pnPrincipal.add(btnNegocios);
         
         btnHistorico = new JButton();
+        btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnHistorico.setText("Historico");
         btnHistorico.setBounds(153, 340, 90, 23);
         pnPrincipal.add(btnHistorico);
         
         btnExcluir = new JButton();
+        btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnExcluir.setText("Excluir");
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.addActionListener(controller);
@@ -597,26 +600,7 @@ public class PessoasView extends JInternalFrame {
         JTextArea textArea = new JTextArea();
         scrollPane_1.setViewportView(textArea);
         pnAuxiliar.setLayout(gl_pnAuxiliar);
-        
-        JComboBox<String> cbOrdenar = new JComboBox<String>();
-        cbOrdenar.setModel(new DefaultComboBoxModel(new String[] {"Ordem Alfab\u00E9tica", "Data de Cadastro", "Atualiza\u00E7\u00E3o"}));
-        cbOrdenar.setBounds(780, 107, 110, 20);
-        jPanel1.add(cbOrdenar);
-        
-        JRadioButton btCrescente = new JRadioButton();
-        btCrescente.setText("Crescente");
-        btCrescente.setBackground(new Color(250, 250, 250));
-        btCrescente.setBounds(780, 134, 110, 23);
-        jPanel1.add(btCrescente);
-        
-        JRadioButton btDecrescente = new JRadioButton();
-        btDecrescente.setText("Decrescente");
-        btDecrescente.setBackground(new Color(250, 250, 250));
-        btDecrescente.setBounds(780, 164, 110, 23);
-        jPanel1.add(btDecrescente);
         ButtonGroup group = new ButtonGroup();
-        group.add(btCrescente);
-        group.add(btDecrescente);
         
         
         JScrollPane scrollPrincipal = new JScrollPane();

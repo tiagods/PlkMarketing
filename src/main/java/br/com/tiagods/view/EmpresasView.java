@@ -1,7 +1,8 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.awt.EventQueue;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -21,607 +22,573 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
+import javax.swing.text.MaskFormatter;
 
 import com.toedter.calendar.JDateChooser;
 
+import br.com.tiagods.controller.ControllerEmpresas;
+import br.com.tiagods.model.Empresa;
+import java.awt.Font;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox.Logradouro;
-import br.com.tiagods.view.interfaces.DefaultUtilities;
 
-public class EmpresasView extends JInternalFrame implements DefaultUtilities{
-	private javax.swing.ButtonGroup group_situacao;
-    public static javax.swing.JButton btHistorico;
-    public static javax.swing.JButton btNegocios;
-    public static javax.swing.JButton btPessoas;
-    public static javax.swing.JButton btEditar;
-    public static javax.swing.JButton btSalvar;
-    public static javax.swing.JComboBox<String> cbNivelCad;
-    public static javax.swing.JComboBox<String> cbMeioCad;
-    public static javax.swing.JComboBox<String> cbAtendente;
-    public static javax.swing.JComboBox<String> cbLogradouro;
-    public static javax.swing.JComboBox<String> cbEstado;
+public class EmpresasView extends JInternalFrame {
+	public static javax.swing.JComboBox<Object> cbAtendente;
     public static javax.swing.JComboBox<String> cbCategoria;
-    public static javax.swing.JComboBox<String> cbMeio;
+    public static javax.swing.JComboBox<String> cbCategoriaCad;
+    public static javax.swing.JComboBox<String> cbOrigem;
+    public static javax.swing.JComboBox<String> cbEmpresa;
     public static javax.swing.JComboBox<String> cbProdServicos;
-    public static javax.swing.JFormattedTextField txTelefone;
-    public static javax.swing.JFormattedTextField txCelular;
-    private javax.swing.JLabel lbNome;
-    private javax.swing.JLabel lbCod;
-    private javax.swing.JLabel lnNum;
-    private javax.swing.JLabel lbComplemento;
-    private javax.swing.JLabel lbBairro;
-    public static javax.swing.JLabel lbCadatroEm;
-    public static javax.swing.JLabel txDataCadastro;
-    public static javax.swing.JLabel txQuemCadastrou;
-    private javax.swing.JLabel lbCnpj;
-    private javax.swing.JLabel lbNivel;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel lbTelefone;
-    private javax.swing.JLabel lbCelular;
-    private javax.swing.JLabel lbCidade;
-    private javax.swing.JLabel lbEstado;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;;
-    public static javax.swing.JTextField txCod;
-    public static javax.swing.JTextField txNome;
-    public static javax.swing.JTextField txCnpj;
-    public static javax.swing.JTextField txBairro;
-    public static javax.swing.JTextField txLogradouro;
-    public static javax.swing.JTextField txComplemento;
-    public static javax.swing.JTextField txNum;
-    public static JButton btExcluir;
-    public static JButton btNovo;
-    public static JTextField txEmail;
-    private JLabel lbEmail;
-    public static JTextField txSite;
-    private JLabel lbSite;
+    public static javax.swing.JComboBox<String> cbLogradouro;
+    public static javax.swing.JComboBox<String> cbOrigemCad;
+    public static javax.swing.JComboBox<String> cbNivel;
+    public static javax.swing.JComboBox<String> cbNivelCad;
+    public static javax.swing.JComboBox cbEstado;   
+    public static javax.swing.JComboBox<String> cbAtendenteCad;
+    public static javax.swing.JComboBox<String> cbProdServicosCad;
+    public static javax.swing.JComboBox<String> cbCidade;
+    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JPanel pnPrincipal;
+    public static javax.swing.JPanel pnCabecalho;
+    public static javax.swing.JPanel pnAuxiliar;
+    public static javax.swing.JPanel pnPrivacidade;
+    public static javax.swing.JButton btnNegocios, btnHistorico, btnPessoas;
+    public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar;
 	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
-	public static JDateChooser dateChooser;
-	private JLabel label_1;
-	public static JDateChooser dateChooser_1;
-	public static JButton button_1;
-	public static JComboBox<String> cbNivel;
-	private JLabel lbAtendente;
-	public static JComboBox<String> cbAtendenteCad;
-	private JLabel lbCep;
-	public static JTextField txtBusca;
-	public static JPanel pnAuxiliar;
-	public static JPanel pnPrivacidade;
-	private JScrollPane scrollPane;
-	public static JTextField textField_1;
-	private JLabel label_3;
-	public static JButton button_2;
-	public static JButton button_3;
-	public static JButton button_4;
-	private JScrollPane scrollPane_1;
-	public static JTextArea textArea;
+	public static JDateChooser data1,data2;
+	public static JLabel label_1, txCadastradoPor, txDataCadastro;
+	public static JTextField txLogradouro;
+	public static JTextField txComplemento;
+	public static JLabel txCodigo;
+	public static JLabel txContador;
+	public static JTextField txNome;
+	public static JTextField txNum;
+	public static JTextField txTelefone;
+	public static JTextField txCelular;
+	public static JTextField txBairro;
+	public static JFormattedTextField txCep;
+	public static JFormattedTextField txCnpj;
+	public static JTextField txEmail;
+	public static JTextField txSite;
+	public static JTextField textField_11;
 	public static JTable tbAuxiliar;
+	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
-	public static JButton btAddMeio;
-	public static JButton btAddNivel;
-	private JLabel lbCategoria;
-	public static JComboBox<String> cbCategoriaCad;
-	public static JButton btCategoriaAdd;
-	private JLabel lbProdServicos;
-	public static JComboBox cbProdServicosCad;
-	public static JButton btnAddProdServicos;
-
-	@Override
-	public Color getColor() {
-		// TODO Auto-generated method stub
-		return DefaultUtilities.super.getColor();
-	}
-	@Override
-	public Color getPanelColor() {
-		// TODO Auto-generated method stub
-		return DefaultUtilities.super.getPanelColor();
-	}
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EmpresasView frame = new EmpresasView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	int i = 0 ;
+	ControllerEmpresas controller = new ControllerEmpresas();
 	/**
 	 * Create the frame.
 	 */
-	public EmpresasView() {
+	public EmpresasView(Empresa empresa) {
 		initComponents();
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
+		
+		txContador = new JLabel("");
+		txContador.setBounds(780, 235, 150, 14);
+		jPanel1.add(txContador);
+		controller.iniciar(empresa);
+		
 	}
-    private void initComponents() {
-    	group_situacao = new javax.swing.ButtonGroup();
+	private void initComponents() {
         jPanel1 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel3.setBounds(10, 11, 1240, 69);
+        pnCabecalho = new javax.swing.JPanel();
+        pnCabecalho.setBounds(0, 0, 1240, 69);
         cbAtendente = new javax.swing.JComboBox<>();
         cbCategoria = new javax.swing.JComboBox<>();
-        cbMeio = new javax.swing.JComboBox<>();
-        cbProdServicos = new javax.swing.JComboBox<>();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel4.setBounds(10, 260, 760, 363);
-        txCod = new javax.swing.JTextField();
-        txCod.setBounds(107, 11, 87, 20);
-        txQuemCadastrou = new javax.swing.JLabel();
-        txQuemCadastrou.setBounds(546, 14, 56, 14);
-        lbCadatroEm = new javax.swing.JLabel();
-        lbCadatroEm.setBounds(385, 14, 78, 14);
-        txDataCadastro = new javax.swing.JLabel();
-        txDataCadastro.setBounds(463, 14, 73, 14);
-        lbCod = new javax.swing.JLabel();
-        lbCod.setBounds(10, 14, 56, 14);
-        txNome = new javax.swing.JTextField();
-        txNome.setBounds(107, 39, 201, 20);
-        lbNome = new javax.swing.JLabel();
-        lbNome.setBounds(10, 40, 56, 17);
-        txCnpj = new javax.swing.JTextField();
-        txCnpj.setBounds(107, 68, 109, 20);
-        lbCnpj = new javax.swing.JLabel();
-        lbCnpj.setBounds(10, 71, 56, 14);
-        cbNivelCad = new javax.swing.JComboBox<>();
-        cbNivelCad.setBounds(107, 96, 87, 20);
-        lbNivel = new javax.swing.JLabel();
-        lbNivel.setBounds(10, 96, 56, 18);
-        cbMeioCad = new javax.swing.JComboBox<>();
-        cbMeioCad.setBounds(438, 96, 92, 20);
-        jLabel4 = new javax.swing.JLabel();
-        jLabel4.setBounds(385, 98, 35, 14);
-        txTelefone = new javax.swing.JFormattedTextField();
-        txTelefone.setBounds(107, 154, 87, 20);
-        lbTelefone = new javax.swing.JLabel();
-        lbTelefone.setBounds(10, 154, 56, 20);
-        txCelular = new javax.swing.JFormattedTextField();
-        txCelular.setBounds(440, 154, 95, 20);
-        lbCelular = new javax.swing.JLabel();
-        lbCelular.setBounds(385, 154, 51, 19);
-        txLogradouro = new javax.swing.JTextField();
-        txLogradouro.setBounds(107, 214, 201, 20);
-        cbLogradouro = new javax.swing.JComboBox<>();
-        cbLogradouro.setBounds(10, 214, 92, 20);
-        txNum = new javax.swing.JTextField();
-        txNum.setBounds(440, 213, 35, 20);
-        lnNum = new javax.swing.JLabel();
-        lnNum.setBounds(385, 213, 51, 20);
-        txComplemento = new javax.swing.JTextField();
-        txComplemento.setBounds(252, 245, 56, 20);
-        lbComplemento = new javax.swing.JLabel();
-        lbComplemento.setBounds(203, 245, 43, 20);
-        txBairro = new javax.swing.JTextField();
-        txBairro.setBounds(440, 244, 90, 20);
-        lbBairro = new javax.swing.JLabel();
-        lbBairro.setBounds(385, 244, 43, 20);
-        cbEstado = new javax.swing.JComboBox<>();
-        cbEstado.setBounds(440, 275, 52, 20);
-        lbEstado = new javax.swing.JLabel();
-        lbEstado.setBounds(384, 275, 52, 19);
-        lbCidade = new javax.swing.JLabel();
-        lbCidade.setBounds(10, 278, 56, 17);
+        cbOrigem = new javax.swing.JComboBox<>();
+        cbEmpresa = new javax.swing.JComboBox<>();
         setBorder(null);
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
 
         jPanel1.setBackground(new java.awt.Color(250, 250, 250));
-
-        jPanel3.setBackground(getColor());
-
-        cbAtendente.setBackground(getPanelColor());
-        cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Atendente", "Todos"}));
         
-        cbCategoria.setBackground(getPanelColor());
+        pnCabecalho.setBackground(new java.awt.Color(250, 250, 250));
+
+        cbAtendente.setBackground(new java.awt.Color(250, 250, 250));
+        cbAtendente.setName("Atendente");
+        cbAtendente.addItemListener(controller);
+        cbAtendente.setModel(new DefaultComboBoxModel(new String[] {"Atendente"}));
+        
+        cbCategoria.setBackground(new java.awt.Color(250, 250, 250));
+        cbCategoria.setName("Categoria");
+        cbCategoria.addItemListener(controller);
         cbCategoria.setModel(new DefaultComboBoxModel(new String[] {"Categoria"}));
 
-        cbMeio.setBackground(getPanelColor());
-        cbMeio.setModel(new DefaultComboBoxModel(new String[] {"Meio"}));
+        cbOrigem.setBackground(new java.awt.Color(250, 250, 250));
+        cbOrigem.setName("Origem");
+        cbOrigem.addItemListener(controller);
+        cbOrigem.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
 
-        cbProdServicos.setBackground(getPanelColor());
-        cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Produto/Servi\u00E7os"}));
+        cbEmpresa.setBackground(new java.awt.Color(250, 250, 250));
+        cbEmpresa.setName("Empresa");
+        cbEmpresa.addItemListener(controller);
+        cbEmpresa.setModel(new DefaultComboBoxModel(new String[] {"Empresa"}));
         
-        JComboBox<String> cbPessoas = new JComboBox<String>();
-        cbPessoas.setModel(new DefaultComboBoxModel(new String[] {"Pessoa", "Todos"}));
-        cbPessoas.setBackground(getPanelColor());
+        cbProdServicos = new JComboBox<String>();
+        cbProdServicos.setName("Produtos/Serviços");
+        cbProdServicos.addItemListener(controller);
+        cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Produtos/Servicos"}));
+        cbProdServicos.setBackground(new Color(250, 250, 250));
         
         panel = new JPanel();
-        panel.setBackground(getColor());
+        panel.setBackground(new Color(250, 250, 250));
         
         label = new JLabel();
         label.setBounds(10, 37, 22, 20);
         label.setText("at\u00E9");
         label.setHorizontalAlignment(SwingConstants.LEFT);
         
-        dateChooser = new JDateChooser();
-        dateChooser.setBounds(36, 37, 100, 20);
         
         label_1 = new JLabel();
         label_1.setHorizontalAlignment(SwingConstants.LEFT);
         label_1.setBounds(10, 11, 22, 20);
         label_1.setText("de:");
         
-        dateChooser_1 = new JDateChooser();
-        dateChooser_1.setBounds(36, 11, 100, 20);
-        
-        button_1 = new JButton();
-        button_1.setBounds(142, 37, 51, 20);
-        button_1.setText("OK");
+        data1 = new JDateChooser();
+        data1.setBounds(36, 11, 100, 20);
+        data1.addPropertyChangeListener(controller);
+        data2 = new JDateChooser();
+        data2.addPropertyChangeListener(controller);
+        data2.setBounds(36, 37, 100, 20);
         
         cbNivel = new JComboBox<String>();
         cbNivel.setModel(new DefaultComboBoxModel(new String[] {"Nivel"}));
-        cbNivel.setBackground(getPanelColor());
+        cbNivel.setName("Nivel");
+        cbNivel.setBackground(new Color(250, 250, 250));
         
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3Layout.setHorizontalGroup(
-        	jPanel3Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout gl_pnCabecalho = new javax.swing.GroupLayout(pnCabecalho);
+        gl_pnCabecalho.setHorizontalGroup(
+        	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnCabecalho.createSequentialGroup()
         			.addContainerGap()
         			.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbMeio, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbPessoas, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addGap(37)
+        			.addGap(33)
         			.addComponent(panel, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(138, Short.MAX_VALUE))
+        			.addContainerGap(314, Short.MAX_VALUE))
         );
-        jPanel3Layout.setVerticalGroup(
-        	jPanel3Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel3Layout.createSequentialGroup()
-        			.addGroup(jPanel3Layout.createParallelGroup(Alignment.LEADING)
+        gl_pnCabecalho.setVerticalGroup(
+        	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnCabecalho.createSequentialGroup()
+        			.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
         				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        				.addGroup(jPanel3Layout.createSequentialGroup()
+        				.addGroup(gl_pnCabecalho.createSequentialGroup()
         					.addGap(23)
-        					.addGroup(jPanel3Layout.createParallelGroup(Alignment.BASELINE)
+        					.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.BASELINE)
         						.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbMeio, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbPessoas, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
         			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel.setLayout(null);
         panel.add(label_1);
         panel.add(label);
-        panel.add(dateChooser);
-        panel.add(dateChooser_1);
-        panel.add(button_1);
-        jPanel3.setLayout(jPanel3Layout);
-
-        jPanel4.setBackground(getPanelColor());
-
-        txQuemCadastrou.setText("{Usuario}");
-
-        lbCadatroEm.setText("Cadastro em:");
-
-        txDataCadastro.setText("{Date###}");
-
-        lbCod.setText("{COD###}");
-
-        lbNome.setText("Nome:");
-
-        txCnpj.setText("00.000.000/000-91");
-
-        lbCnpj.setText("CNPJ:");
-
-        cbNivelCad.setModel(new DefaultComboBoxModel(new String[] {"Ouro", "Prata", "Diamante"}));
-
-        lbNivel.setText("Nivel:");
-
-        cbMeioCad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel4.setText("Meio");
-
-        txTelefone.setText("(99)3204-0000");
-
-        lbTelefone.setText("Telefone:");
-
-        txCelular.setText("(00)99999-0000");
-
-        lbCelular.setText("Celular");
-
-        cbLogradouro.setModel(new DefaultComboBoxModel(Logradouro.values()));
-
-        lnNum.setText("Nº:");
-
-        lbComplemento.setText("Compl:");
-
-        lbBairro.setText("Bairro:");
-
-        lbEstado.setText("Estado:");
-
-        lbCidade.setText("Cidade:");
-        btEditar = new javax.swing.JButton();
-        btEditar.setBounds(203, 307, 90, 23);
-        
-        btEditar.setText("Editar");
-        btSalvar = new javax.swing.JButton();
-        btSalvar.setBounds(299, 307, 90, 23);
-        
-        btSalvar.setText("Salvar");
-        
-        btExcluir = new JButton();
-        btExcluir.setBounds(395, 307, 90, 23);
-        btExcluir.setText("Excluir");
-        
-        btNovo = new JButton();
-        btNovo.setBounds(107, 307, 90, 23);
-        btNovo.setText("Novo");
+        panel.add(data2);
+        panel.add(data1);
+        pnCabecalho.setLayout(gl_pnCabecalho);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-        	layout.createParallelGroup(Alignment.TRAILING)
-        		.addComponent(jPanel1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 1250, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-        	layout.createParallelGroup(Alignment.TRAILING)
-        		.addComponent(jPanel1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        getContentPane().setLayout(layout);
         jPanel1.setLayout(null);
-        jPanel1.add(jPanel3);
-        jPanel1.add(jPanel4);
-        jPanel4.setLayout(null);
-        jPanel4.add(lbCod);
-        jPanel4.add(lbCidade);
-        jPanel4.add(lbNivel);
-        jPanel4.add(lbTelefone);
-        jPanel4.add(cbLogradouro);
-        jPanel4.add(lbNome);
-        jPanel4.add(lbCnpj);
-        jPanel4.add(lbComplemento);
-        jPanel4.add(cbNivelCad);
-        jPanel4.add(jLabel4);
-        jPanel4.add(cbMeioCad);
-        jPanel4.add(txLogradouro);
-        jPanel4.add(txComplemento);
-        jPanel4.add(txCod);
-        jPanel4.add(txNome);
-        jPanel4.add(txTelefone);
-        jPanel4.add(lbEstado);
-        jPanel4.add(cbEstado);
-        jPanel4.add(lnNum);
-        jPanel4.add(lbCelular);
-        jPanel4.add(lbBairro);
-        jPanel4.add(txCelular);
-        jPanel4.add(txNum);
-        jPanel4.add(txBairro);
-        jPanel4.add(txQuemCadastrou);
-        jPanel4.add(lbCadatroEm);
-        jPanel4.add(txDataCadastro);
-        jPanel4.add(txCnpj);
-        jPanel4.add(btNovo);
-        jPanel4.add(btEditar);
-        jPanel4.add(btSalvar);
-        jPanel4.add(btExcluir);
+        jPanel1.add(pnCabecalho);
+        
+        pnPrincipal = new JPanel();
+        pnPrincipal.setLayout(null);
+        pnPrincipal.setBackground((Color) null);
+        pnPrincipal.setBounds(10, 260, 760, 363);
+        jPanel1.add(pnPrincipal);
+        
+        JLabel lblEstados = new JLabel();
+        lblEstados.setText("Estado:");
+        lblEstados.setBounds(10, 278, 56, 17);
+        pnPrincipal.add(lblEstados);
+        
+        JLabel lbTelefone = new JLabel();
+        lbTelefone.setText("Telefone:");
+        lbTelefone.setBounds(10, 154, 56, 20);
+        pnPrincipal.add(lbTelefone);
+        
+        cbLogradouro = new JComboBox<String>();
+        cbLogradouro.setModel(new DefaultComboBoxModel(Logradouro.values()));
+        cbLogradouro.setName("Logradouro");
+        cbLogradouro.setBounds(10, 214, 87, 20);
+        pnPrincipal.add(cbLogradouro);
+        
+        JLabel lbNome = new JLabel();
+        lbNome.setText("Nome:");
+        lbNome.setBounds(10, 40, 56, 17);
+        pnPrincipal.add(lbNome);
+        
+        JLabel lbCnpj = new JLabel();
+        lbCnpj.setText("CNPJ:");
+        lbCnpj.setBounds(10, 71, 56, 14);
+        pnPrincipal.add(lbCnpj);
+        
+        JLabel lbComplemento = new JLabel();
+        lbComplemento.setText("Compl:");
+        lbComplemento.setBounds(203, 245, 43, 20);
+        pnPrincipal.add(lbComplemento);
+        
+        JLabel lbMeio = new JLabel();
+        lbMeio.setText("Origem:");
+        lbMeio.setBounds(385, 96, 50, 18);
+        pnPrincipal.add(lbMeio);
+        
+        cbOrigemCad = new JComboBox<String>();
+        cbOrigemCad.setName("OrigemCad");
+        cbOrigemCad.setBounds(438, 96, 92, 20);
+        pnPrincipal.add(cbOrigemCad);
+        
+        txLogradouro = new JTextField();
+        txLogradouro.setBounds(107, 214, 201, 20);
+        pnPrincipal.add(txLogradouro);
+        
+        txComplemento = new JTextField();
+        txComplemento.setBounds(252, 245, 56, 20);
+        pnPrincipal.add(txComplemento);
+        
+        txCodigo = new JLabel();
+        txCodigo.setBounds(107, 11, 87, 20);
+        pnPrincipal.add(txCodigo);
+        
+        txNome = new JTextField();
+        txNome.setBounds(107, 39, 201, 20);
+        pnPrincipal.add(txNome);
+        
+        txTelefone = new JTextField();
+        txTelefone.setBounds(107, 154, 87, 20);
+        pnPrincipal.add(txTelefone);
+        
+        JLabel lbEstado = new JLabel();
+        lbEstado.setText("Cidade:");
+        lbEstado.setBounds(384, 275, 52, 19);
+        pnPrincipal.add(lbEstado);
+        
+        cbEstado = new JComboBox<String>();
+        cbEstado.setName("Estado");
+        cbEstado.addItemListener(controller);
+        cbEstado.setBounds(107, 276, 52, 20);
+        pnPrincipal.add(cbEstado);
+        
+        JLabel lbNum = new JLabel();
+        lbNum.setText("N\u00BA:");
+        lbNum.setBounds(385, 213, 51, 20);
+        pnPrincipal.add(lbNum);
+        
+        JLabel lbCelular = new JLabel();
+        lbCelular.setText("Celular");
+        lbCelular.setBounds(385, 154, 51, 19);
+        pnPrincipal.add(lbCelular);
+        
+        JLabel label_13 = new JLabel();
+        label_13.setText("Bairro:");
+        label_13.setBounds(385, 244, 43, 20);
+        pnPrincipal.add(label_13);
+        
+        txCelular = new JTextField();
+        txCelular.setBounds(440, 154, 95, 20);
+        pnPrincipal.add(txCelular);
+        
+        txNum = new JTextField();
+        txNum.setBounds(440, 213, 35, 20);
+        pnPrincipal.add(txNum);
+        
+        txBairro = new JTextField();
+        txBairro.setBounds(440, 244, 90, 20);
+        pnPrincipal.add(txBairro);
+        
+        txCadastradoPor = new JLabel();
+        txCadastradoPor.setText("{Usuario}");
+        txCadastradoPor.setBounds(546, 14, 56, 14);
+        pnPrincipal.add(txCadastradoPor);
+        
+        JLabel lblCadastro = new JLabel();
+        lblCadastro.setText("Criado em:");
+        lblCadastro.setBounds(385, 14, 73, 14);
+        pnPrincipal.add(lblCadastro);
+        
+        txDataCadastro = new JLabel();
+        txDataCadastro.setText("{Date###}");
+        txDataCadastro.setBounds(463, 14, 73, 14);
+        pnPrincipal.add(txDataCadastro);
+        
+        MaskFormatter formatterCnpj=null;
+        try{
+        	formatterCnpj = new MaskFormatter("##.###.###/###-##");
+        }catch(Exception e){
+        }
+        txCnpj = new JFormattedTextField(formatterCnpj);
+        txCnpj.setBounds(107, 68, 109, 20);
+        pnPrincipal.add(txCnpj);
+        
+        btnNovo = new JButton();
+        btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnNovo.setText("Novo");
+        btnNovo.setActionCommand("Novo");
+        btnNovo.setBounds(59, 306, 90, 23);
+        btnNovo.addActionListener(controller);
+        pnPrincipal.add(btnNovo);
+        
+        btnEditar = new JButton();
+        btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnEditar.setText("Editar");
+        btnEditar.setActionCommand("Editar");
+        btnEditar.addActionListener(controller);
+        btnEditar.setBounds(153, 306, 90, 23);
+        pnPrincipal.add(btnEditar);
+        
+        btnSalvar = new JButton();
+        btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnSalvar.setText("Salvar");
+        btnSalvar.setBounds(249, 306, 90, 23);
+        btnSalvar.setActionCommand("Salvar");
+        btnSalvar.addActionListener(controller);
+        pnPrincipal.add(btnSalvar);
+        
+        btnCancelar = new JButton();
+        btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(controller);
+        btnCancelar.setBounds(345, 306, 90, 23);
+        pnPrincipal.add(btnCancelar);
         
         txEmail = new JTextField();
         txEmail.setBounds(107, 183, 201, 20);
-        jPanel4.add(txEmail);
+        pnPrincipal.add(txEmail);
         
-        lbEmail = new JLabel();
-        lbEmail.setText("E-mail");
-        lbEmail.setBounds(10, 183, 56, 20);
-        jPanel4.add(lbEmail);
+        JLabel lbEmail1 = new JLabel();
+        lbEmail1.setText("E-mail");
+        lbEmail1.setBounds(10, 183, 56, 20);
+        pnPrincipal.add(lbEmail1);
         
         txSite = new JTextField();
         txSite.setBounds(440, 184, 126, 20);
-        jPanel4.add(txSite);
+        pnPrincipal.add(txSite);
         
-        lbSite = new JLabel();
+        JLabel lbSite = new JLabel();
         lbSite.setText("Site");
         lbSite.setBounds(385, 184, 43, 20);
-        jPanel4.add(lbSite);
+        pnPrincipal.add(lbSite);
         
-        lbAtendente = new JLabel();
+        JLabel lbAtendente = new JLabel();
         lbAtendente.setText("Atendente:");
         lbAtendente.setBounds(385, 42, 87, 17);
-        jPanel4.add(lbAtendente);
+        pnPrincipal.add(lbAtendente);
         
         cbAtendenteCad = new JComboBox<String>();
+        cbAtendenteCad.setName("AtendenteCad");
         cbAtendenteCad.setBounds(476, 40, 92, 20);
-        jPanel4.add(cbAtendenteCad);
+        pnPrincipal.add(cbAtendenteCad);
         
         pnPrivacidade = new JPanel();
-        pnPrivacidade.setBackground(getColor());
+        pnPrivacidade.setBackground((Color) null);
         pnPrivacidade.setBounds(601, 0, 159, 363);
-        jPanel4.add(pnPrivacidade);
+        pnPrincipal.add(pnPrivacidade);
         
-        JLabel lblNewLabel = new JLabel("Privacidade:");
-        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JCheckBox checkBox = new JCheckBox("Outros");
+        checkBox.setBackground((Color) null);
         
-        JCheckBox chckbxTodos = new JCheckBox("Todos");
-        chckbxTodos.setBackground(getPanelColor());
+        JCheckBox checkBox_1 = new JCheckBox("Eu");
+        checkBox_1.setBackground((Color) null);
         
-        JCheckBox chckbxEu = new JCheckBox("Eu");
-        chckbxEu.setBackground(getPanelColor());
+        JCheckBox checkBox_2 = new JCheckBox("Todos");
+        checkBox_2.setBackground((Color) null);
         
-        JCheckBox chckbxOutros = new JCheckBox("Outros");
-        chckbxOutros.setBackground(getPanelColor());
+        JLabel label_20 = new JLabel("Privacidade:");
+        label_20.setHorizontalAlignment(SwingConstants.CENTER);
         GroupLayout gl_pnPrivacidade = new GroupLayout(pnPrivacidade);
         gl_pnPrivacidade.setHorizontalGroup(
         	gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)
+        		.addGap(0, 159, Short.MAX_VALUE)
         		.addGroup(gl_pnPrivacidade.createSequentialGroup()
         			.addContainerGap()
         			.addGroup(gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)
-        				.addComponent(chckbxOutros, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
-        				.addComponent(chckbxEu, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
-        				.addComponent(chckbxTodos, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
-        				.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
+        				.addComponent(checkBox, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+        				.addComponent(checkBox_1, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+        				.addComponent(checkBox_2, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+        				.addComponent(label_20, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
         			.addContainerGap())
         );
         gl_pnPrivacidade.setVerticalGroup(
         	gl_pnPrivacidade.createParallelGroup(Alignment.LEADING)
+        		.addGap(0, 334, Short.MAX_VALUE)
         		.addGroup(gl_pnPrivacidade.createSequentialGroup()
         			.addGap(43)
-        			.addComponent(lblNewLabel)
+        			.addComponent(label_20)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(chckbxTodos)
+        			.addComponent(checkBox_2)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(chckbxEu)
+        			.addComponent(checkBox_1)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(chckbxOutros)
-        			.addContainerGap(162, Short.MAX_VALUE))
+        			.addComponent(checkBox)
+        			.addContainerGap(195, Short.MAX_VALUE))
         );
         pnPrivacidade.setLayout(gl_pnPrivacidade);
-        btHistorico = new JButton();
-        btHistorico.setBounds(203, 340, 90, 23);
-        jPanel4.add(btHistorico);
         
-        btHistorico.setText("Historico");
-        btNegocios = new javax.swing.JButton();
-        btNegocios.setBounds(299, 340, 90, 23);
-        jPanel4.add(btNegocios);
-        btNegocios.setText("Neg\u00F3cios");
-        btPessoas = new javax.swing.JButton();
-        btPessoas.setBounds(396, 340, 87, 23);
-        jPanel4.add(btPessoas);
-
-        btPessoas.setText("Pessoas");
-
-        lbCep = new JLabel();
+        JLabel lbCep = new JLabel();
         lbCep.setText("CEP:");
         lbCep.setBounds(10, 247, 35, 20);
-        jPanel4.add(lbCep);
-
-        JFormattedTextField txCep = new JFormattedTextField();
-        txCep.setText("00000-000");
+        pnPrincipal.add(lbCep);
+        
+        MaskFormatter formatterCep=null;
+        try{
+        	formatterCep = new MaskFormatter("#####-###");
+        }catch(Exception e){
+        	
+        }
+        txCep = new JFormattedTextField(formatterCep);
         txCep.setBounds(107, 245, 78, 20);
-        jPanel4.add(txCep);
+        pnPrincipal.add(txCep);
         
-        btAddMeio = new JButton();
-        btAddMeio.setText("ADC");
-        btAddMeio.setBounds(540, 94, 36, 23);
-        jPanel4.add(btAddMeio);
+        MaskFormatter formatterNascimento=null;
+        try{
+        	formatterNascimento = new MaskFormatter("##/##");
+        }catch (Exception e) {
+		}
         
-        btAddNivel = new JButton();
-        btAddNivel.setText("ADC");
-        btAddNivel.setBounds(203, 94, 36, 23);
-        jPanel4.add(btAddNivel);
+        JButton btMeioCad = new JButton();
+        btMeioCad.setText("ADC");
+        btMeioCad.setBounds(540, 94, 36, 23);
+        pnPrincipal.add(btMeioCad);
         
-        lbCategoria = new JLabel();
-        lbCategoria.setText("Categoria:");
-        lbCategoria.setBounds(10, 126, 87, 18);
-        jPanel4.add(lbCategoria);
-        
-        cbCategoriaCad = new JComboBox<String>();
-        cbCategoriaCad.setBounds(107, 126, 87, 20);
-        jPanel4.add(cbCategoriaCad);
-        
-        btCategoriaAdd = new JButton();
-        btCategoriaAdd.setText("ADC");
-        btCategoriaAdd.setBounds(203, 123, 36, 23);
-        jPanel4.add(btCategoriaAdd);
-        
-        lbProdServicos = new JLabel();
-        lbProdServicos.setText("Produtos/Servi\u00E7os:");
-        lbProdServicos.setBounds(317, 126, 109, 17);
-        jPanel4.add(lbProdServicos);
+        JButton btAddProdServicos = new JButton();
+        btAddProdServicos.setText("ADC");
+        btAddProdServicos.setBounds(564, 123, 36, 23);
+        pnPrincipal.add(btAddProdServicos);
         
         cbProdServicosCad = new JComboBox();
+        cbProdServicosCad.setName("ServicosCad");
         cbProdServicosCad.setBounds(438, 126, 116, 20);
-        jPanel4.add(cbProdServicosCad);
+        pnPrincipal.add(cbProdServicosCad);
         
-        btnAddProdServicos = new JButton();
-        btnAddProdServicos.setText("ADC");
-        btnAddProdServicos.setBounds(564, 123, 36, 23);
-        jPanel4.add(btnAddProdServicos);
+        JLabel lbProdServicosCad = new JLabel();
+        lbProdServicosCad.setText("Produtos/Servi\u00E7os:");
+        lbProdServicosCad.setBounds(317, 126, 109, 17);
+        pnPrincipal.add(lbProdServicosCad);
         
-        JComboBox<String> comboBox = new JComboBox<String>();
-        comboBox.setBounds(107, 276, 87, 20);
-        jPanel4.add(comboBox);
+        JButton button_13 = new JButton();
+        button_13.setText("ADC");
+        button_13.setBounds(203, 123, 36, 23);
+        pnPrincipal.add(button_13);
         
-        JLabel lbBusca = new JLabel("Buscar");
-        lbBusca.setBounds(10, 83, 53, 14);
-        jPanel1.add(lbBusca);
+        cbCategoriaCad = new JComboBox<String>();
+        cbCategoriaCad.setName("CategoriaCad");
+        cbCategoriaCad.setBounds(107, 126, 87, 20);
+        pnPrincipal.add(cbCategoriaCad);
         
-        txtBusca = new JTextField();
-        txtBusca.setColumns(10);
-        txtBusca.setBounds(74, 80, 139, 20);
-        jPanel1.add(txtBusca);
+        JLabel lbCategoria = new JLabel();
+        lbCategoria.setText("Categoria:");
+        lbCategoria.setBounds(10, 126, 87, 18);
+        pnPrincipal.add(lbCategoria);
         
-        JScrollPane scrollPrincipal = new JScrollPane();
-        scrollPrincipal.setBounds(10, 107, 760, 142);
-        jPanel1.add(scrollPrincipal);
+        cbCidade = new JComboBox<String>();
+        cbCidade.setName("Cidade");
+        cbCidade.setBounds(438, 276, 128, 20);
+        pnPrincipal.add(cbCidade);
         
-        tbPrincipal = new JTable();
-        scrollPrincipal.setViewportView(tbPrincipal);
+        btnPessoas = new JButton();
+        btnPessoas.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnPessoas.setText("Pessoas");
+        btnPessoas.setBounds(346, 340, 87, 23);
+        pnPrincipal.add(btnPessoas);
         
-        JRadioButton rbDecrescente = new JRadioButton();
-        rbDecrescente.setText("Decrescente");
-        rbDecrescente.setBackground(new Color(250, 250, 250));
-        rbDecrescente.setBounds(780, 164, 110, 23);
-        jPanel1.add(rbDecrescente);
+        btnNegocios = new JButton();
+        btnNegocios.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnNegocios.setText("Neg\u00F3cios");
+        btnNegocios.setActionCommand("Negocios");
+        btnNegocios.setBounds(249, 340, 90, 23);
+        pnPrincipal.add(btnNegocios);
         
-        JRadioButton rbCrescente = new JRadioButton();
-        rbCrescente.setText("Crescente");
-        rbCrescente.setBackground(new Color(250, 250, 250));
-        rbCrescente.setBounds(780, 134, 110, 23);
-        jPanel1.add(rbCrescente);
+        btnHistorico = new JButton();
+        btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnHistorico.setText("Historico");
+        btnHistorico.setBounds(153, 340, 90, 23);
+        pnPrincipal.add(btnHistorico);
         
-        ButtonGroup group = new ButtonGroup();
-        group.add(rbCrescente);
-        group.add(rbDecrescente);
+        btnExcluir = new JButton();
+        btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnExcluir.setText("Excluir");
+        btnExcluir.setActionCommand("Excluir");
+        btnExcluir.addActionListener(controller);
+        btnExcluir.setBounds(438, 306, 90, 23);
+        pnPrincipal.add(btnExcluir);
         
-        JComboBox<String> cbOrganizacao = new JComboBox<String>();
-        cbOrganizacao.setModel(new DefaultComboBoxModel(new String[] {"Ordem Alfab\u00E9tica", "Data de Cadastro", "Atualiza\u00E7\u00E3o"}));
-        cbOrganizacao.setBounds(780, 107, 110, 20);
-        jPanel1.add(cbOrganizacao);
+        cbNivelCad = new JComboBox<String>();
+        cbNivelCad.setName("NivelCad");
+        cbNivelCad.setBounds(107, 96, 87, 20);
+        pnPrincipal.add(cbNivelCad);
+        
+        JLabel lblNivel = new JLabel();
+        lblNivel.setText("Nivel:");
+        lblNivel.setBounds(10, 96, 87, 18);
+        pnPrincipal.add(lblNivel);
+        
+        JButton btNivelCadNovo = new JButton();
+        btNivelCadNovo.setText("ADC");
+        btNivelCadNovo.setBounds(203, 93, 36, 23);
+        pnPrincipal.add(btNivelCadNovo);
         
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
         pnAuxiliar.setBounds(780, 260, 460, 363);
         jPanel1.add(pnAuxiliar);
         
-        scrollPane = new JScrollPane();
+        JScrollPane scrolAuxiliar = new JScrollPane();
         
-        textField_1 = new JTextField();
-        textField_1.setColumns(10);
+        textField_11 = new JTextField();
+        textField_11.setColumns(10);
         
-        label_3 = new JLabel("Historico");
+        JLabel label_7 = new JLabel("Historico");
         
-        button_2 = new JButton("Esconder");
+        JButton btEsconder = new JButton("Esconder");
         
-        button_3 = new JButton("Novo");
+        JButton button_9 = new JButton("Novo");
         
-        button_4 = new JButton("Alterar");
+        JButton button_10 = new JButton("Alterar");
         
-        scrollPane_1 = new JScrollPane();
+        JScrollPane scrollPane_1 = new JScrollPane();
         GroupLayout gl_pnAuxiliar = new GroupLayout(pnAuxiliar);
         gl_pnAuxiliar.setHorizontalGroup(
         	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 460, Short.MAX_VALUE)
+        		.addGap(0, 284, Short.MAX_VALUE)
         		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
-        				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
-        				.addGroup(gl_pnAuxiliar.createSequentialGroup()
+        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
+        				.addComponent(scrolAuxiliar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
         					.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
-        						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(label_3, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
-        					.addPreferredGap(ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
-        					.addComponent(button_2))
-        				.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        					.addContainerGap(314, Short.MAX_VALUE)
-        					.addComponent(button_3, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
+        					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
+        					.addComponent(btEsconder))
+        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
+        					.addContainerGap(138, Short.MAX_VALUE)
+        					.addComponent(button_9, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
         					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(button_4))
-        				.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE))
+        					.addComponent(button_10))
+        				.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
         			.addContainerGap())
         );
         gl_pnAuxiliar.setVerticalGroup(
@@ -630,28 +597,49 @@ public class EmpresasView extends JInternalFrame implements DefaultUtilities{
         		.addGroup(gl_pnAuxiliar.createSequentialGroup()
         			.addContainerGap()
         			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(label_3)
-        				.addComponent(button_2))
+        				.addComponent(label_7)
+        				.addComponent(btEsconder))
         			.addGap(4)
-        			.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         			.addGap(7)
         			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
         			.addGap(13)
         			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(button_3)
-        				.addComponent(button_4))
+        				.addComponent(button_9)
+        				.addComponent(button_10))
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(scrolAuxiliar, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
         );
         
         tbAuxiliar = new JTable();
-        scrollPane.setViewportView(tbAuxiliar);
+        scrolAuxiliar.setViewportView(tbAuxiliar);
         
-        textArea = new JTextArea();
+        JTextArea textArea = new JTextArea();
         scrollPane_1.setViewportView(textArea);
         pnAuxiliar.setLayout(gl_pnAuxiliar);
+        ButtonGroup group = new ButtonGroup();
+        
+        
+        JScrollPane scrollPrincipal = new JScrollPane();
+        scrollPrincipal.setBounds(10, 107, 760, 142);
+        jPanel1.add(scrollPrincipal);
+        
+        tbPrincipal = new JTable();
+        tbPrincipal.addMouseListener(controller);
+        scrollPrincipal.setViewportView(tbPrincipal);
+        
+        txBuscar = new JTextField();
+        
+        txBuscar.setActionCommand("Buscar");
+        txBuscar.addKeyListener(controller);
+        txBuscar.setBounds(74, 80, 139, 20);
+        jPanel1.add(txBuscar);
+        
+        JLabel lbBuscar = new JLabel("Buscar");
+        lbBuscar.setBounds(10, 83, 53, 14);
+        jPanel1.add(lbBuscar);
 
         setBounds(0, 0, 1250, 660);
-    }// </editor-fold>//GEN-END:initComponents
+    }
 }

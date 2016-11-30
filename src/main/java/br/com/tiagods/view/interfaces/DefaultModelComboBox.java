@@ -1,5 +1,9 @@
 package br.com.tiagods.view.interfaces;
 
+import br.com.tiagods.model.Empresa;
+import br.com.tiagods.model.Negocio;
+import br.com.tiagods.model.Pessoa;
+
 public interface DefaultModelComboBox {
 	
 	public enum Modelos{
@@ -18,16 +22,33 @@ public interface DefaultModelComboBox {
 		Object object = null;
 		switch(valor){
 		case "Empresas":
-			object = "Empresa";
+			Empresa empresa = null;
+			object = empresa;
+			break;
 		case "Negocios":
-			object = "Negocio";
+			Negocio negocio = null;
+			object = negocio;
+			break;
 		case "Pessoas":
-			object = "Pessoa";
+			Pessoa pessoa = null;
+			object = pessoa;
+			break;
+		default:
+			break;
 		}
 		return object;
 	}
-	default Enum getEnumModelos(String valor){
-		return Modelos.valueOf(valor);
+	default String getEnumModelos(String valor){
+		switch(valor){
+		case "Pessoa":
+			return Modelos.Pessoas.toString();
+		case "Empresa":
+			return Modelos.Empresas.toString();
+		case "Negocio":
+			return Modelos.Negocios.toString();
+		default:
+			return "";
+		}
 	}
 	
 	default String getName(String valor){

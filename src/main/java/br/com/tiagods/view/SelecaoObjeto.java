@@ -27,14 +27,14 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.modelDAO.MyDAO;
+import br.com.tiagods.modeldao.EmpresaDAO;
+import br.com.tiagods.modeldao.NegocioDAO;
+import br.com.tiagods.modeldao.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
-	
 	@Override
 	public Object getObject(String valor) {
-		// TODO Auto-generated method stub
 		return DefaultModelComboBox.super.getObject(valor);
 	}
 	private final JPanel contentPanel = new JPanel();
@@ -52,9 +52,10 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 			if(object instanceof Empresa){
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
-				List<Empresa> lista = new MyDAO().listar("Empresa", session);
+				List<Empresa> lista = (List<Empresa>)new EmpresaDAO().listar(Empresa.class, session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
+				
 				
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -66,7 +67,7 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 			else if(object instanceof Negocio){
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
-				List<Negocio> lista = new MyDAO().listar("Negocio", session);
+				List<Negocio> lista = (List<Negocio>)new NegocioDAO().listar(Negocio.class, session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				
@@ -80,7 +81,7 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 			else if (object instanceof Pessoa){
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
-				List<Pessoa> lista = new MyDAO().listar("Pessoa", session);
+				List<Pessoa> lista = new PessoaDAO().listar(Pessoa.class, session);
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
@@ -105,11 +106,12 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 				tbRelacao.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent arg0) {
-						int column = tbRelacao.getSelectedColumn();
-						int row = tbRelacao.getSelectedRow();
-						
-						String texto="";
-						texto+=tbRelacao.getModel().getValueAt(row, column)+",";
+						if(tbRelacao.getSelectedColumn()!=-1 && tbRelacao.getSelectedRow()!=-1){
+							int column = tbRelacao.getSelectedColumn();
+							int row = tbRelacao.getSelectedRow();
+							String texto="";
+							texto+=tbRelacao.getModel().getValueAt(row, column)+",";
+						}
 					}
 				});
 				tbRelacao.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -126,7 +128,7 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 					boolean[] canEdit = new boolean [] {
 							false, false, false, false, false, false
 					};
-
+					@Override
 					public boolean isCellEditable(int rowIndex, int columnIndex) {
 						return canEdit [columnIndex];
 					}
@@ -153,7 +155,6 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 				JButton btOkDialog = new JButton("OK");
 				btOkDialog.setActionCommand("OK");
 				btOkDialog.addActionListener(new ActionListener(){
-
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
@@ -170,10 +171,8 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 				JButton btCancelDialog = new JButton("Cancel");
 				btCancelDialog.setActionCommand("Cancel");
 				btCancelDialog.addActionListener(new ActionListener() {
-					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
 						dispose();
 					}
 				});

@@ -68,7 +68,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
 	        abrirCorpo(inicio);
             break;
         case "Empresas":
-        	empresas = new EmpresasView();
+        	empresas = new EmpresasView(null);
             abrirCorpo(empresas);
             break;
         case "Tarefas":

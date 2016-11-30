@@ -27,6 +27,7 @@ import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -48,22 +49,24 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.MyDAO;
-import br.com.tiagods.modelDAO.UsuarioDAO;
+import br.com.tiagods.modeldao.EmpresaDAO;
+import br.com.tiagods.modeldao.NegocioDAO;
+import br.com.tiagods.modeldao.PessoaDAO;
+import br.com.tiagods.modeldao.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener, ItemListener{
 	@Override
 	public Object getObject(String valor) {
-		// TODO Auto-generated method stub
 		return DefaultModelComboBox.super.getObject(valor);
 	}
-	
 	Tarefa tarefa = null;
 	Tarefa tarefaBackup;
 	String item = "";
 	Object minhaClasse;
+	
+	HashMap<String, Tarefa> tipoTarefas = new HashMap();  
 	
 	Session session = null;
 	//se for null o formulario nao sera preenchido
@@ -92,10 +95,13 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){
 		case "Novo":
-			this.tarefaBackup=tarefa;
+			if(tarefa!=null)
+				this.tarefaBackup=tarefa;
 			novoEditar();
 			break;
 		case "Editar":
+			if(tarefa!=null)
+				this.tarefaBackup=tarefa;
 			novoEditar();
 			break;
 		case "ChamarDialog":
@@ -113,7 +119,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 		case "Salvar":
 			setarSelecao();
 			session = HibernateFactory.getSession();
-			boolean continuar = true;
+			boolean continuar;
 			StringBuilder builder = new StringBuilder();
 			if(tarefa==null){
 				tarefa = new Tarefa();
@@ -161,12 +167,13 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 						continuar=false;
 					}	
 				}
+				System.out.println("Validei a hora");
 				TipoTarefa tipoTarefa = (TipoTarefa)session.createQuery("from TipoTarefa t where t.nome=:tarefaNome")
 						.setParameter("tarefaNome", item)
 						.getSingleResult();//apagar codigo
 				
 				tarefa.setTipoTarefa(tipoTarefa);
-				if(txCodigo.getText().equals("")){
+				if("".equals(txCodigo.getText())){
 					continuar=false;
 					builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
 					builder.append("\n");
@@ -174,18 +181,18 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				else{
 					Object object = getObject(cbObject.getSelectedItem().toString());
 					if(object instanceof Empresa){
-						object = new MyDAO().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
+						object = new EmpresaDAO().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setEmpresa((Empresa)object);
 						System.out.println(""+cbObject.getSelectedItem());
 					}
 					else if(object instanceof Negocio){
-						object = new MyDAO().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
+						object = new NegocioDAO().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setNegocio((Negocio)object);
 
 						System.out.println(""+cbObject.getSelectedItem());
 					}
 					else if(object instanceof Pessoa){
-						object = new MyDAO().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
+						object = new PessoaDAO().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setPessoa((Pessoa)object);
 
 						System.out.println(""+cbObject.getSelectedItem());
@@ -226,7 +233,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
-		List<Usuario> lista = new MyDAO().listar("Usuario", session);
+		List<Usuario> lista = new UsuarioDAO().listar(Usuario.class, session);
 		cbAtendente.removeAllItems();
 		lista.forEach(c->{
 			cbAtendente.addItem(c.getLogin());
@@ -236,49 +243,46 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	private void preencherFormulario(Tarefa tarefa){
 		if(tarefa!=null){
 			JRadioButton radio = recuperaRadio(tarefa.getTipoTarefa().getNome());
-			int id=0;
 			String[] nome = null;
-			
-			switch(tarefa.getClasse()){
-			case "Empresa":
+			int id=-1;
+			if("Empresa".equals(tarefa.getClasse())){
 				id = tarefa.getEmpresa().getId();
 				nome = tarefa.getEmpresa().getNome().split(" ");
-				break;
-			case "Negocio":
+			}
+			else if("Negocio".equals(tarefa.getClasse())){
 				id = tarefa.getNegocio().getId();
 				nome = tarefa.getNegocio().getNome().split(" ");
-				break;
-			case "Pessoa":
+			}
+			else if("Pessoa".equals(tarefa.getClasse())){
 				id = tarefa.getPessoa().getId();
 				nome = tarefa.getPessoa().getNome().split(" ");
-				break;
 			}
-			enviarDados(radio, tarefa.getDescricao(), tarefa.getClasse(), id, nome[0], tarefa.getAtendente().getLogin(), tarefa.getDataEvento(), tarefa.getHoraEvento());
+			enviarDados(radio, tarefa, nome[0],String.valueOf(id));
 			}
 	}
 	
 	private JRadioButton recuperaRadio(String item){
-		if(item.equals("Email"))
+		if("Email".equals(item))
 			return rdbtnEmail;
-		else if(item.equals("Proposta"))
+		else if("Proposta".equals(item))
 			return rdbtnProposta;
-		else if(item.equals("Reuniao"))
+		else if("Reuniao".equals(item))
 			return rdbtnReuniao;
-		else if(item.equals("Telefone"))
+		else if("Telefone".equals(item))
 			return rdbtnTelefone;
 		else
 			return rdbtnVisita;
 	}
-	private void enviarDados(JRadioButton rb, String detalhes, String tipo, int id, String nome,String atendente, Date data, Date hora){
+	private void enviarDados(JRadioButton rb, Tarefa tarefa, String nome,String id){
 		rb.setSelected(true);
-		txDetalhes.setText(detalhes);
-		//cbObject.setSelectedItem(getObject(tipo));
-		txCodigo.setText(""+id);
+		txDetalhes.setText(tarefa.getDescricao());
+		cbObject.setSelectedItem(getEnumModelos(tarefa.getClasse()));
+		txCodigo.setText(id);
 		txNome.setText(nome);
-		cbAtendente.setSelectedItem(atendente);
-		txData.setDate(data);
+		cbAtendente.setSelectedItem(tarefa.getAtendente().getLogin());
+		txData.setDate(tarefa.getDataEvento());
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-		txHora.setText(sdf.format(hora));
+		txHora.setText(sdf.format(tarefa.getHoraEvento()));
 	}
 	private void salvarCancelar(){
 		btnSalvar.setEnabled(false);
@@ -304,28 +308,30 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
         if (painel instanceof JViewport) {
             container = (JViewport) painel;
         }
-        for(int i=0;i<container.getComponentCount();i++){
-            Component c = container.getComponent(i);
-            if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
-                limparCampos(c);
-                continue;
-            }
-            if (c instanceof JTextField) {
-                JTextField field = (JTextField) c;
-                field.setText("");
-            }
-            if (c instanceof JFormattedTextField) {
-                JFormattedTextField field = (JFormattedTextField) c;
-                field.setText("");
-            }
-            if (c instanceof JTextArea) {
-                JTextArea field = (JTextArea) c;
-                field.setText("");
-            }
-            if (c instanceof JComboBox) {
-                JComboBox field = (JComboBox) c;
-                field.setSelectedItem("");
-            }
+        if(container!=null){
+        	for(int i=0;i<container.getComponentCount();i++){
+        		Component c = container.getComponent(i);
+        		if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
+        			limparCampos(c);
+        			continue;
+        		}
+        		if (c instanceof JTextField) {
+        			JTextField field = (JTextField) c;
+        			field.setText("");
+        		}
+        		if (c instanceof JFormattedTextField) {
+        			JFormattedTextField field = (JFormattedTextField) c;
+        			field.setText("");
+        		}
+        		if (c instanceof JTextArea) {
+        			JTextArea field = (JTextArea) c;
+        			field.setText("");
+        		}
+        		if (c instanceof JComboBox) {
+        			JComboBox field = (JComboBox) c;
+        			field.setSelectedItem("");
+        		}
+        	}
         }
 	}
 	//pegar radioButton selecionado
@@ -344,7 +350,6 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
 		txCodigo.setText("");
 		txNome.setText("");
 	}

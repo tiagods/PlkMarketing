@@ -1,5 +1,7 @@
-package br.com.tiagods.modelDAO;
+package br.com.tiagods.controller;
 
+import java.awt.Color;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,12 +13,12 @@ import java.util.TreeSet;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
 
-import br.com.tiagods.controller.UsuarioLogado;
 import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Empresa;
@@ -26,9 +28,17 @@ import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modeldao.CategoriaDAO;
+import br.com.tiagods.modeldao.EmpresaDAO;
+import br.com.tiagods.modeldao.NivelDAO;
+import br.com.tiagods.modeldao.OrigemDAO;
+import br.com.tiagods.modeldao.ServicoDAO;
+import br.com.tiagods.modeldao.UsuarioDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
-
-public class EmpresaPessoaDAO {
+/*
+ * Essa classe é invocada pelos controllers de pessoa e empresa
+ */
+public class ControllerEmpresaPessoa {
 	Map <String,Categoria> categorias;
 	Map <String,Nivel> niveis;
 	Map <String,Origem> origens;
@@ -44,41 +54,80 @@ public class EmpresaPessoaDAO {
 	List<Servico> listarServicos;
 	List<Empresa> listarEmpresas;
 	
-	public void preencherTabela(List list, JTable tbPessoas, Class object){
+	public void preencherTabela(List list, JTable table, Class object,JLabel txContadorRegistros){
 		if(object == Pessoa.class){
 			List<Pessoa> lista = (List<Pessoa>)list;
 			String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+			
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 				boolean[] canEdit = new boolean[]{
 					false,false,false,false,false,false
 				};
 				@Override
-				public boolean isCellEditable(int row, int column) {
-					// TODO Auto-generated method stub
-					return super.isCellEditable(row, column);
+				public boolean isCellEditable(int rowIndex, int columnIndex) {
+					return canEdit [columnIndex];
 				}
 			};
-			for(int i=0;i<lista.size();i++){
-				Pessoa p = lista.get(i);
-				Object[] linha = new Object[6];
-				linha[0] = ""+p.getId(); 
-				linha[1] = p.getNome();
-				linha[2] = p.getPessoaFisica().getCategoria()==null?"":p.getPessoaFisica().getCategoria().getNome();
-				linha[3] = p.getPessoaFisica().getOrigem()==null?"":p.getPessoaFisica().getOrigem().getNome();
-				try{
-					Date criadoEm = p.getPessoaFisica().getCriadoEm();
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					linha[4] = sdf.format(criadoEm);
-				}catch (Exception e) {
-					// TODO: handle exception
-					linha[4] = "";
+			if(!lista.isEmpty()){
+				for(int i=0;i<lista.size();i++){
+					Pessoa p = lista.get(i);
+					Object[] linha = new Object[6];
+					linha[0] = ""+p.getId(); 
+					linha[1] = p.getNome();
+					linha[2] = p.getPessoaFisica().getCategoria()==null?"":p.getPessoaFisica().getCategoria().getNome();
+					linha[3] = p.getPessoaFisica().getOrigem()==null?"":p.getPessoaFisica().getOrigem().getNome();
+					try{
+						Date criadoEm = p.getPessoaFisica().getCriadoEm();
+						SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+						linha[4] = sdf.format(criadoEm);
+					}catch (NumberFormatException e) {
+						linha[4] = "";
+					}
+					linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getLogin();
+					model.addRow(linha);
+					txContadorRegistros.setText("Total: "+lista.size()+" registros");
+					table.setModel(model);
 				}
-				linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getLogin();
-				model.addRow(linha);
 			}
-			tbPessoas.setModel(model);
-			tbPessoas.setAutoCreateRowSorter(true);
+		}else{
+			List<Empresa> lista = (List<Empresa>)list;
+			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+			
+			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+				boolean[] canEdit = new boolean[]{
+					false,false,false,false,false,false,false
+				};
+				@Override
+				public boolean isCellEditable(int rowIndex, int columnIndex) {
+					return canEdit [columnIndex];
+				}
+			};
+			if(!lista.isEmpty()){
+				for(int i=0;i<lista.size();i++){
+					Empresa em= lista.get(i);
+					Object[] linha = new Object[6];
+					linha[0] = ""+em.getId(); 
+					linha[1] = em.getNome();
+					linha[2] = em.getNivel()==null?"":em.getNivel().getNome();
+					linha[3] = em.getPessoaJuridica().getCategoria()==null?"":em.getPessoaJuridica().getCategoria().getNome();
+					linha[4] = em.getPessoaJuridica().getOrigem()==null?"":em.getPessoaJuridica().getOrigem().getNome();
+					try{
+						Date criadoEm = em.getPessoaJuridica().getCriadoEm();
+						SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+						linha[5] = sdf.format(criadoEm);
+					}catch (NumberFormatException e) {
+						linha[5] = "";
+					}
+					linha[6] = em.getPessoaJuridica().getAtendente()==null?"":em.getPessoaJuridica().getAtendente().getLogin();
+					model.addRow(linha);
+					txContadorRegistros.setText("Total: "+lista.size()+" registros");
+					table.setModel(model);
+				}
+			}
 		}
+		
+		table.setAutoCreateRowSorter(true);
+		table.setSelectionBackground(Color.CYAN);
 
 	}
 	
@@ -87,11 +136,11 @@ public class EmpresaPessoaDAO {
 			Categoria categoria, Origem origem, Servico servico, Endereco endereco,JComboBox comboEstado){
     	combo.removeAllItems();
     	combo.addItem(combo.getName());
-    	combo.addItem("Todos");
+    	//ombo.addItem("Todos");
     	switch(combo.getName()){
     	case "Categoria":
-    		listarCategorias = new MyDAO().listar("Categoria", session);
-    		categorias = new HashMap<String,Categoria>();
+    		listarCategorias = new CategoriaDAO().listar(Categoria.class, session);
+    		categorias = new HashMap();
     		if(!listarCategorias.isEmpty()){
     			listarCategorias.forEach(c->{
     				categorias.put(c.getNome(), c);
@@ -101,8 +150,8 @@ public class EmpresaPessoaDAO {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Nivel":
-    		listarNiveis =	new MyDAO().listar("Nivel", session);
-    		niveis = new HashMap<String,Nivel>();
+    		listarNiveis =	new NivelDAO().listar(Nivel.class, session);
+    		niveis = new HashMap();
     		if(!listarNiveis.isEmpty()){
     			listarNiveis.forEach(c->{
     				niveis.put(c.getNome(), c);
@@ -112,8 +161,8 @@ public class EmpresaPessoaDAO {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Origem":
-    		listarOrigens =	new MyDAO().listar("Origem", session);
-    		origens = new HashMap<String,Origem>();
+    		listarOrigens =	new OrigemDAO().listar(Origem.class, session);
+    		origens = new HashMap();
     		if(!listarOrigens.isEmpty()){
     			listarOrigens.forEach(c->{
     				origens.put(c.getNome(), c);
@@ -123,8 +172,8 @@ public class EmpresaPessoaDAO {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Empresa":
-    		listarEmpresas = new MyDAO().listar("Empresa", session);
-    		empresas = new HashMap<String,Empresa>();
+    		listarEmpresas = new EmpresaDAO().listar(Empresa.class, session);
+    		empresas = new HashMap();
     		if(!listarEmpresas.isEmpty()){
     			listarEmpresas.forEach(c->{
     				empresas.put(c.getNome(), c);
@@ -134,8 +183,8 @@ public class EmpresaPessoaDAO {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Produtos/Serviços":
-    		listarServicos = new MyDAO().listar("Servico", session);
-    		servicos = new HashMap<String,Servico>();
+    		listarServicos = new ServicoDAO().listar(Servico.class,session);
+    		servicos = new HashMap();
     		if(!listarServicos.isEmpty()){
     			listarServicos.forEach(c->{
     				servicos.put(c.getNome(), c);
@@ -145,8 +194,8 @@ public class EmpresaPessoaDAO {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Atendente":
-    		listarUsuarios= new MyDAO().listar("Usuario", session);
-    		atendentes = new HashMap<String,Usuario>();
+    		listarUsuarios= new UsuarioDAO().listar(Usuario.class, session);
+    		atendentes = new HashMap();
     		if(!listarUsuarios.isEmpty()){
     			listarUsuarios.forEach(c->{
     				atendentes.put(c.getLogin(),c);
@@ -231,7 +280,7 @@ public class EmpresaPessoaDAO {
     			combo.removeAllItems();
 				List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
 						.setParameter("nomeEstado", (String)comboEstado.getSelectedItem()).getResultList();
-				cidades = new HashMap<String, Cidade>();
+				cidades = new HashMap();
 				combo.addItem("");
 				if(!listarCidades.isEmpty()){
 					listarCidades.forEach(c->{
@@ -250,7 +299,7 @@ public class EmpresaPessoaDAO {
     		combo.removeAllItems();
     		combo.addItem("");
     		List<Cidade> listaCidades = session.createQuery("from Cidade").getResultList();
-    		Set<String> listaEstados = new TreeSet<String>();
+    		Set<String> listaEstados = new TreeSet();
     		listaCidades.forEach(c->{
     			listaEstados.add(c.getEstado());
     		});

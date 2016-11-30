@@ -4,37 +4,7 @@
 package br.com.tiagods.controller;
 
 import static br.com.tiagods.view.MenuView.jDBody;
-import static br.com.tiagods.view.PessoasView.btnCancelar;
-import static br.com.tiagods.view.PessoasView.btnEditar;
-import static br.com.tiagods.view.PessoasView.btnNovo;
-import static br.com.tiagods.view.PessoasView.btnExcluir;
-import static br.com.tiagods.view.PessoasView.btnSalvar;
-import static br.com.tiagods.view.PessoasView.cbAtendenteCad;
-import static br.com.tiagods.view.PessoasView.cbCategoriaCad;
-import static br.com.tiagods.view.PessoasView.cbCidade;
-import static br.com.tiagods.view.PessoasView.cbEstado;
-import static br.com.tiagods.view.PessoasView.cbLogradouro;
-import static br.com.tiagods.view.PessoasView.cbOrigemCad;
-import static br.com.tiagods.view.PessoasView.cbProdServicosCad;
-import static br.com.tiagods.view.PessoasView.pnCabecalho;
-import static br.com.tiagods.view.PessoasView.pnPrincipal;
-import static br.com.tiagods.view.PessoasView.tbPrincipal;
-import static br.com.tiagods.view.PessoasView.txBairro;
-import static br.com.tiagods.view.PessoasView.txBuscar;
-import static br.com.tiagods.view.PessoasView.txCadastradoPor;
-import static br.com.tiagods.view.PessoasView.txCelular;
-import static br.com.tiagods.view.PessoasView.txCep;
-import static br.com.tiagods.view.PessoasView.txCodigo;
-import static br.com.tiagods.view.PessoasView.txComplemento;
-import static br.com.tiagods.view.PessoasView.txCpf;
-import static br.com.tiagods.view.PessoasView.txDataCadastro;
-import static br.com.tiagods.view.PessoasView.txDataNascimento;
-import static br.com.tiagods.view.PessoasView.txEmail;
-import static br.com.tiagods.view.PessoasView.txLogradouro;
-import static br.com.tiagods.view.PessoasView.txNome;
-import static br.com.tiagods.view.PessoasView.txNum;
-import static br.com.tiagods.view.PessoasView.txSite;
-import static br.com.tiagods.view.PessoasView.txTelefone;
+import static br.com.tiagods.view.PessoasView.*;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -46,42 +16,49 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
-import br.com.tiagods.modelDAO.EmpresaPessoaDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
+import br.com.tiagods.modeldao.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 /**
  *
  * @author Tiago
  */
-public class ControllerPessoas implements ActionListener,KeyListener,ItemListener,MouseListener{
-	EmpresaPessoaDAO padrao = new EmpresaPessoaDAO();
+public class ControllerPessoas implements ActionListener,KeyListener,ItemListener,MouseListener,PropertyChangeListener{
+	ControllerEmpresaPessoa padrao = new ControllerEmpresaPessoa();
 	List<Pessoa> listaPessoas;
 	
 	Session session=null;
 	Pessoa pessoa= null;
 	Pessoa pessoaBackup;
-	
+	boolean telaEmEdicao = false;
+	@SuppressWarnings("unchecked")
 	public void iniciar(Pessoa pessoa){
+		cbEmpresa.setEnabled(false);
+		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programação");
 		this.pessoa=pessoa;
     	session = HibernateFactory.getSession();
     	session.beginTransaction();
@@ -89,14 +66,16 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	for(JPanel panel : panels){
     		preencherComboBox(panel);
     	}
-    	listaPessoas = new PessoaDAO().listar("Pessoa", session);
-    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class);
+    	listaPessoas = (List<Pessoa>)(new PessoaDAO().listar(Pessoa.class, session));
+    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class,txContador);
     	if(!listaPessoas.isEmpty() && pessoa==null){
     		preencherFormulario(listaPessoas.get(0));
     	}
     	else if(pessoa!=null){
     		preencherFormulario(pessoa);
     	}
+    	salvarCancelar();
+    	desbloquerFormulario(false, pnPrincipal);
     	session.close();
     }
 	@Override
@@ -108,27 +87,37 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			}			
 			break;
 		case "Novo":
+			limparFormulario(pnPrincipal);
+			telaEmEdicao = true;
 			pessoa = null;
 			novoEditar();
 			break;
 		case "Editar":
+			telaEmEdicao = true;
 			novoEditar();
 			break;
 		case "Cancelar":
 			salvarCancelar();
+			telaEmEdicao = false;
 			break;
 		case "Excluir":
 			if(pessoa!=null){
 				invocarExclusao();
 			}
+			telaEmEdicao = false;
 			break;
 		case "Salvar":
 			invocarSalvamento();
-	    	break;
+			telaEmEdicao = false;
+			break;
 			default:
+				boolean open = recebeSessao();
+				realizarFiltro();
+				fechaSessao(open);
 				break;
 		}
 	}
+	@SuppressWarnings("rawtypes")
 	private void preencherComboBox(JPanel panel){
 		for(int i=0;i<panel.getComponentCount();i++){
 			if(panel.getComponent(i) instanceof JComboBox){
@@ -185,9 +174,10 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			pessoa=pessoaBackup;
 			preencherFormulario(pessoa);
 		}
+		else
+			btnExcluir.setEnabled(false);
 	}
 	private void novoEditar(){
-		limparFormulario(pnPrincipal);
 		desbloquerFormulario(true, pnPrincipal);
 		btnNovo.setEnabled(false);
 		btnEditar.setEnabled(false);
@@ -197,9 +187,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(txBuscar.getText().trim().length()>=2 && e.getKeyCode()!=KeyEvent.VK_BACK_SPACE){
-			pesquisar();
-		}	
+		pesquisar();
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -218,30 +206,59 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			}
 		}
 		if(!lista.isEmpty()){
-			padrao.preencherTabela(lista, tbPrincipal, Pessoa.class);
+			padrao.preencherTabela(lista, tbPrincipal, Pessoa.class,txContador);
 		}else{
 			JOptionPane.showMessageDialog(jDBody,"Não foi encontrado registros com o criterio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	//atualizador de combo box
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getStateChange()==ItemEvent.DESELECTED){
 			JComboBox combo = (JComboBox)e.getSource();
 			if(cbEstado.getSelectedItem()!=null){
 				boolean openHere = recebeSessao();
-				switch(combo.getName()){
-					case "Estado":
-						padrao.preencherCombo(cbCidade,session, null,null,null,null,null,null,cbEstado);
-						break;
-					default:
-						break;
+				if("Estado".equals(combo.getName())){
+					padrao.preencherCombo(cbCidade,session, null,null,null,null,null,null,cbEstado);
 				}
+				else
+					realizarFiltro();
 				fechaSessao(openHere);
 			}
 		}
 		
+	}
+	@SuppressWarnings("deprecation")
+	private void realizarFiltro(){
+		if(!telaEmEdicao){
+		Criteria criteria = session.createCriteria(Pessoa.class);
+		criteria.addOrder(Order.asc("id"));
+		if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
+			criteria.add(Restrictions.eq("pessoaFisica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
+		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))	
+			criteria.add(Restrictions.eq("pessoaFisica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
+		if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
+			criteria.add(Restrictions.eq("pessoaFisica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
+		if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
+			criteria.add(Restrictions.eq("pessoaFisica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
+		if(!"".equals(txBuscar.getText().trim()))
+			criteria.add(Restrictions.like("nome", txBuscar.getText().trim()+"%"));
+		try{
+			Date data01 = data1.getDate();
+			Date data02 = data2.getDate();
+			if(data02.compareTo(data01)>=0){
+				criteria.add(Restrictions.between("pessoaFisica.criadoEm", data01, data02));
+			}
+		}catch(NullPointerException e){
+			
+		}
+		List<Pessoa> lista = criteria.list();
+		padrao.preencherTabela(lista, tbPrincipal, Pessoa.class,txContador);
+		}
+		else
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edição ou cancele para poder realizar novas buscas!","Em edição...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	private boolean recebeSessao(){
 		boolean open = false;
@@ -258,6 +275,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	private void limparFormulario(Container container){
 		for(Component c : container.getComponents()){
 			if(c instanceof JTextField){
@@ -277,16 +295,17 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txCadastradoPor.setText("");
 		txDataCadastro.setText("");
 	}
+	@SuppressWarnings("rawtypes")
 	private void desbloquerFormulario(boolean desbloquear,Container container){
 		for(Component c : container.getComponents()){
 			if(c instanceof JTextField){
-				((JTextField)c).setEditable(desbloquear);;
+				((JTextField)c).setEditable(desbloquear);
 			}
 			else if(c instanceof JComboBox){
-				((JComboBox)c).setEnabled(desbloquear);;
+				((JComboBox)c).setEnabled(desbloquear);
 			}
 			else if(c instanceof JTextArea){
-				((JTextArea)c).setEnabled(desbloquear);;
+				((JTextArea)c).setEnabled(desbloquear);
 			}
 			else if(c instanceof JScrollPane){
 				desbloquerFormulario(desbloquear,(Container)c);
@@ -320,7 +339,8 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	public void mouseReleased(MouseEvent arg0) {
 		new UnsupportedOperationException();
 	}
-    private void invocarSalvamento(){
+    @SuppressWarnings("unchecked")
+	private void invocarSalvamento(){
     	PfPj pessoaFisica;
 		Endereco endereco = new Endereco();
 		if("".equals(txCodigo.getText())) {
@@ -372,12 +392,13 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		fechaSessao(openHere);
 		if(salvo) {
 			openHere = recebeSessao();
-			listaPessoas = new PessoaDAO().listar("Pessoa", session);
-	    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class);
+			listaPessoas = (List<Pessoa>)new PessoaDAO().listar(Pessoa.class, session);
+	    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class,txContador);
 	    	fechaSessao(openHere);
 		}
     }
-    private void invocarExclusao(){
+    @SuppressWarnings("unchecked")
+	private void invocarExclusao(){
     	int escolha = JOptionPane.showConfirmDialog(jDBody, "Você deseja excluir esse registro? "
 				+ "\nTodos os historicos serão perdido, lembre-se que essa ação não terá mais volta!",
 				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
@@ -389,10 +410,25 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			if(excluiu){
 				limparFormulario(pnPrincipal);
 				openHere = recebeSessao();
-				listaPessoas = dao.listar("Pessoa", session);
-		    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class);
+				listaPessoas = (List<Pessoa>)dao.listar(Pessoa.class, session);
+		    	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class,txContador);
 		    	fechaSessao(openHere);
 			}
 		}
     }
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		try{
+			Date data01 = data1.getDate();
+			Date data02 = data2.getDate();
+			if(data02.compareTo(data01)>=0){
+				boolean open  = recebeSessao();
+				realizarFiltro();
+				fechaSessao(open);
+			}
+		}catch (NullPointerException e) {
+		}
+		
+		
+	}
 }
