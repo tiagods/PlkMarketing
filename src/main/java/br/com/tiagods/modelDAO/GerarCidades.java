@@ -1,4 +1,4 @@
-package br.com.tiagods.modelDAO;
+package br.com.tiagods.modeldao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,7 +15,6 @@ import br.com.tiagods.model.Cidade;
 public class GerarCidades {
 
 	public static void main(String[] args) throws IOException{
-		// TODO Auto-generated method stub
 		Scanner scanner = new Scanner(new InputStreamReader(
 				new FileInputStream(System.getProperty("user.home")+"/Desktop/munic.csv"),"UTF-8"))
                 .useDelimiter("\n");
@@ -38,9 +37,7 @@ public class GerarCidades {
 		do{
 			try{
 				session.save(cidades.get(i));
-
 			}catch (Exception e) {
-				// TODO: handle exception
 				e.printStackTrace();
 				session.getTransaction().rollback();
 			}

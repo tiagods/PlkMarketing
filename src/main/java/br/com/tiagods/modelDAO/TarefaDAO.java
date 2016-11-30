@@ -1,4 +1,4 @@
-package br.com.tiagods.modelDAO;
+package br.com.tiagods.modeldao;
 
 import java.util.Date;
 import java.util.List;
@@ -17,30 +17,25 @@ public class TarefaDAO implements InterfaceDAO{
 		String hql = "FROM Tarefa as t where t.dataEvento between "
 				+ ":dataInicial and :dataFim "
 				+ "and t.atendente = :atendente";
-		int quant = session.createQuery(hql)
+		return session.createQuery(hql)
 				.setParameter("dataInicial", dataInicio)
 				.setParameter("dataFim", dataFinal)
 				.setParameter("atendente", usuario).getResultList().size();
-		return quant;
 	}
 	@Override
 	public boolean salvar(Object classe,Session session) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override
-	public boolean excluir(Session session, Object object) {
-		// TODO Auto-generated method stub
+	public boolean excluir(Object object,Session session) {
 		return false;
 	}
 	@Override
-	public List<Tarefa> listar(String classe, Session session) {
-		// TODO Auto-generated method stub
-		return null;
+	public List listar(Class classe, Session session) {
+		return session.createQuery("from "+classe.getSimpleName()).getResultList();
 	}
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
-		// TODO Auto-generated method stub
-		return null;
+		return session.get(classe, id);
 	}
 }

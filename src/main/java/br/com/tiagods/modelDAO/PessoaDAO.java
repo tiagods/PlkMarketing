@@ -1,10 +1,9 @@
-package br.com.tiagods.modelDAO;
+package br.com.tiagods.modeldao;
 
 import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import br.com.tiagods.model.Pessoa;
 
@@ -36,14 +35,12 @@ public class PessoaDAO implements InterfaceDAO {
 	}
 
 	@Override
-	public List listar(Object object, Session session) {
-		return session.createQuery("from "+object).getResultList();
+	public Object receberObjeto(Class classe, int id, Session session) {
+		return session.get(classe, id);
 	}
 
 	@Override
-	public Object receberObjeto(Class classe, int id, Session session) {
-		Object o = session.get(classe, id);
-		return o;
+	public List listar(Class classe, Session session) {
+		return session.createQuery("from "+classe.getSimpleName()+" c order by c.id").getResultList();
 	}
-
 }

@@ -1,4 +1,4 @@
-package br.com.tiagods.modelDAO;
+package br.com.tiagods.modeldao;
 
 import java.io.FileInputStream;
 import java.io.IOException;
