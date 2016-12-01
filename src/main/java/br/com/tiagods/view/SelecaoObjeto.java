@@ -27,9 +27,9 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.modeldao.EmpresaDAO;
-import br.com.tiagods.modeldao.NegocioDAO;
-import br.com.tiagods.modeldao.PessoaDAO;
+import br.com.tiagods.modelDAO.EmpresaDAO;
+import br.com.tiagods.modelDAO.NegocioDAO;
+import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{

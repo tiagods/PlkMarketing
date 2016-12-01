@@ -87,9 +87,9 @@ public class ControllerMenu implements ActionListener, MouseListener{
             pessoas = new PessoasView(null);
             abrirCorpo(pessoas);
         	break;
-        case "Relatorios":
+        default:
         	JOptionPane.showMessageDialog(jDBody, "Esse modulo esta em fase de desenvolvimento, aguarde...!","Modulo em Desenvolvimento!",JOptionPane.OK_OPTION);
-            break;  
+        	break;
     	}
     }
     @Override

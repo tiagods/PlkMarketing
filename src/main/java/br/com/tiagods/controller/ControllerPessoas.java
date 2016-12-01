@@ -3,6 +3,7 @@
  */
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.EmpresasView.txCodigo;
 import static br.com.tiagods.view.MenuView.jDBody;
 import static br.com.tiagods.view.PessoasView.*;
 
@@ -41,7 +42,7 @@ import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
-import br.com.tiagods.modeldao.PessoaDAO;
+import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 /**
  *
@@ -69,7 +70,8 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	listaPessoas = (List<Pessoa>)(new PessoaDAO().listar(Pessoa.class, session));
     	padrao.preencherTabela(listaPessoas, tbPrincipal, Pessoa.class,txContador);
     	if(!listaPessoas.isEmpty() && pessoa==null){
-    		preencherFormulario(listaPessoas.get(0));
+    		pessoa = listaPessoas.get(0);
+    		preencherFormulario(pessoa);
     	}
     	else if(pessoa!=null){
     		preencherFormulario(pessoa);
@@ -77,6 +79,13 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
+    	String toolTip = "Essa opção não esta liberado porque depende da conclusão de outro modulo, aguarde...";
+    	btnHistorico.setEnabled(false);
+    	btnHistorico.setToolTipText(toolTip);
+    	btnNegocios.setEnabled(false);
+    	btnHistorico.setToolTipText(toolTip);
+    	btnEmpresas.setEnabled(false);
+    	btnEmpresas.setToolTipText(toolTip);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -101,9 +110,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			telaEmEdicao = false;
 			break;
 		case "Excluir":
-			if(pessoa!=null){
-				invocarExclusao();
-			}
+			invocarExclusao();
 			telaEmEdicao = false;
 			break;
 		case "Salvar":
@@ -175,7 +182,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			pessoa=pessoaBackup;
 			preencherFormulario(pessoa);
 		}
-		else
+		if("".equals(txCodigo.getText()))
 			btnExcluir.setEnabled(false);
 	}
 	private void novoEditar(){

@@ -6,7 +6,7 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.CriarAdmin;
+import br.com.tiagods.modelDAO.CriarAdmin;
 
 @SuppressWarnings("unchecked")
 public class UsuarioLogado {

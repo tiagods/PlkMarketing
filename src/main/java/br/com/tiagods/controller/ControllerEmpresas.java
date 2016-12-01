@@ -40,7 +40,7 @@ import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.PfPj;
-import br.com.tiagods.modeldao.EmpresaDAO;
+import br.com.tiagods.modelDAO.EmpresaDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 /**
  *
@@ -68,7 +68,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	listaEmpresas = (List<Empresa>)(new EmpresaDAO().listar(Empresa.class, session));
     	padrao.preencherTabela(listaEmpresas, tbPrincipal, Empresa.class,txContador);
     	if(!listaEmpresas.isEmpty() && empresa==null){
-    		preencherFormulario(listaEmpresas.get(0));
+    		empresa = listaEmpresas.get(0);
+    		preencherFormulario(empresa);
     	}
     	else if(empresa!=null){
     		preencherFormulario(empresa);
@@ -76,6 +77,13 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
+    	String toolTip = "Essa opção não esta liberado porque depende da conclusão de outro modulo, aguarde...";
+    	btnHistorico.setEnabled(false);
+    	btnHistorico.setToolTipText(toolTip);
+    	btnNegocios.setEnabled(false);
+    	btnNegocios.setToolTipText(toolTip);
+    	btnPessoas.setEnabled(false);
+    	btnPessoas.setToolTipText(toolTip);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -100,9 +108,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			telaEmEdicao = false;
 			break;
 		case "Excluir":
-			if(empresa!=null){
-				invocarExclusao();
-			}
+			invocarExclusao();
 			telaEmEdicao = false;
 			break;
 		case "Salvar":
@@ -174,7 +180,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			empresa=empresaBackup;
 			preencherFormulario(empresa);
 		}
-		else
+		if("".equals(txCodigo.getText()))
 			btnExcluir.setEnabled(false);
 	}
 	private void novoEditar(){
@@ -407,6 +413,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(escolha==JOptionPane.YES_OPTION){
 			EmpresaDAO dao = new EmpresaDAO();
 			boolean openHere = recebeSessao();
+			
 			boolean excluiu = dao.excluir(empresa,session);
 			fechaSessao(openHere);
 			if(excluiu){

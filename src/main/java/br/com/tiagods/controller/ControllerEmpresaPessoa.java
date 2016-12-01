@@ -28,12 +28,12 @@ import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.CategoriaDAO;
-import br.com.tiagods.modeldao.EmpresaDAO;
-import br.com.tiagods.modeldao.NivelDAO;
-import br.com.tiagods.modeldao.OrigemDAO;
-import br.com.tiagods.modeldao.ServicoDAO;
-import br.com.tiagods.modeldao.UsuarioDAO;
+import br.com.tiagods.modelDAO.CategoriaDAO;
+import br.com.tiagods.modelDAO.EmpresaDAO;
+import br.com.tiagods.modelDAO.NivelDAO;
+import br.com.tiagods.modelDAO.OrigemDAO;
+import br.com.tiagods.modelDAO.ServicoDAO;
+import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 /*
  * Essa classe é invocada pelos controllers de pessoa e empresa

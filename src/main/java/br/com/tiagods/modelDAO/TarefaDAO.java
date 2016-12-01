@@ -1,4 +1,4 @@
-package br.com.tiagods.modeldao;
+package br.com.tiagods.modelDAO;
 
 import java.util.Date;
 import java.util.List;
@@ -24,6 +24,13 @@ public class TarefaDAO implements InterfaceDAO{
 	}
 	@Override
 	public boolean salvar(Object classe,Session session) {
+		try{
+			session.save(classe);
+			session.getTransaction().commit();
+			return true;
+		}catch (Exception e) {
+			session.getTransaction().rollback();
+		}
 		return false;
 	}
 	@Override

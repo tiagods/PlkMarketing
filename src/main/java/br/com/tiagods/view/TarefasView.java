@@ -16,19 +16,19 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.interfaces.DefaultUtilities;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
-	private JDateChooser jData1;
-	private JDateChooser jData2;
-	private javax.swing.JButton btTarefa;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox12;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
-    private javax.swing.JCheckBox jCheckBox5;
-    private javax.swing.JComboBox<String> jComboBox1;
+	public static JDateChooser jData1;
+	public static JDateChooser jData2;
+	public static javax.swing.JButton btTarefa;
+	public static javax.swing.JButton jButton1;
+	public static javax.swing.JButton jButton2;
+	public static javax.swing.JButton jButton3;
+	public static javax.swing.JCheckBox jCheckBox1;
+	public static javax.swing.JCheckBox jCheckBox12;
+	public static javax.swing.JCheckBox jCheckBox2;
+	public static javax.swing.JCheckBox jCheckBox3;
+	public static javax.swing.JCheckBox jCheckBox4;
+	public static javax.swing.JCheckBox jCheckBox5;
+	public static javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
@@ -40,19 +40,19 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     private javax.swing.JPanel jPData;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JRadioButton jRDefinir;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
+    public static javax.swing.JRadioButton jRDefinir;
+    public static javax.swing.JRadioButton jRadioButton1;
+    public static javax.swing.JRadioButton jRadioButton2;
+    public static javax.swing.JRadioButton jRadioButton3;
+    public static javax.swing.JRadioButton jRadioButton4;
+    public static javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable3;
-    private javax.swing.JTextField jTextField4;
+    public static javax.swing.JTable jTable1;
+    public static javax.swing.JTable tbPrincipal;
+    public static javax.swing.JTextField jTextField4;
     private javax.swing.ButtonGroup group;
-    private JButton btnNewButton;
+    public static JButton btnNewButton;
     
     ControllerTarefas controller = new ControllerTarefas();
     
@@ -61,24 +61,10 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     	// TODO Auto-generated method stub
     	return DefaultUtilities.super.getColor();
     }
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					TarefasView frame = new TarefasView();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
     public TarefasView(Date data1, Date data2, Usuario sessao) {
         initComponents();
+        controller.iniciar();
     }
 
     @SuppressWarnings("unchecked")
@@ -90,7 +76,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel4.setBounds(10, 281, 1060, 323);
         jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane3.setBounds(84, 11, 668, 308);
-        jTable3 = new javax.swing.JTable();
+        tbPrincipal = new javax.swing.JTable();
         jTextField4 = new javax.swing.JTextField();
         jTextField4.setBounds(762, 11, 171, 20);
         jCheckBox12 = new javax.swing.JCheckBox();
@@ -155,22 +141,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 
         jPanel4.setBackground(getColor());
 
-        jTable3.setModel(new DefaultTableModel(
-        	new Object[][] {
-        	},
-        	new String[] {
-        		"Cod", "Tipo", "Data", "Hora", "Prazo", "Nivel", "Nome"
-        	}
-        ) {
-        	boolean[] columnEditables = new boolean[] {
-        		true, false, true, true, true, true, true
-        	};
-        	public boolean isCellEditable(int row, int column) {
-        		return columnEditables[column];
-        	}
-        });
-        jTable3.setGridColor(getColor());
-        jScrollPane3.setViewportView(jTable3);
+        tbPrincipal.setGridColor(getColor());
+        jScrollPane3.setViewportView(tbPrincipal);
 
         jCheckBox12.setBackground(getColor());
         jCheckBox12.setText("Finalizar");

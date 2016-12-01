@@ -1,4 +1,4 @@
-package br.com.tiagods.modeldao;
+package br.com.tiagods.modelDAO;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -121,6 +121,7 @@ public class CriarAdmin {
 		empresa.setEndereco(endereco);
 		empresa.setNome("Empresa Teste Ltda");
 		empresa.setNivel(nivel);
+		empresa.setPessoaJuridica(pj);
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		session.save(empresa);
@@ -283,7 +284,7 @@ public class CriarAdmin {
 		Scanner scanner = null;
 		try{
 		scanner = new Scanner(new InputStreamReader(
-				new FileInputStream("D:\\Users\\Tiago\\Desktop\\munic.csv"),"UTF-8"))
+				new FileInputStream(System.getProperty("user.home")+"/Desktop/munic.csv"),"UTF-8"))
                 .useDelimiter("\n");
 		}catch (IOException e) {
 			// TODO: handle exception

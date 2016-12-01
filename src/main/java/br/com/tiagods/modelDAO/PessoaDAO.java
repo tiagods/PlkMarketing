@@ -1,4 +1,4 @@
-package br.com.tiagods.modeldao;
+package br.com.tiagods.modelDAO;
 
 import java.util.List;
 

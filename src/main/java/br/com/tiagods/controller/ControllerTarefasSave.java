@@ -17,6 +17,7 @@ import static br.com.tiagods.view.TarefasSaveView.txData;
 import static br.com.tiagods.view.TarefasSaveView.txDetalhes;
 import static br.com.tiagods.view.TarefasSaveView.txHora;
 import static br.com.tiagods.view.TarefasSaveView.txNome;
+import static br.com.tiagods.view.MenuView.jDBody;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -33,6 +34,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -49,10 +51,12 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.EmpresaDAO;
-import br.com.tiagods.modeldao.NegocioDAO;
-import br.com.tiagods.modeldao.PessoaDAO;
-import br.com.tiagods.modeldao.UsuarioDAO;
+import br.com.tiagods.modelDAO.EmpresaDAO;
+import br.com.tiagods.modelDAO.NegocioDAO;
+import br.com.tiagods.modelDAO.PessoaDAO;
+import br.com.tiagods.modelDAO.TarefaDAO;
+import br.com.tiagods.modelDAO.TipoTarefaDAO;
+import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
@@ -66,7 +70,8 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	String item = "";
 	Object minhaClasse;
 	
-	HashMap<String, Tarefa> tipoTarefas = new HashMap();  
+	HashMap<String, TipoTarefa> tipoTarefas = new HashMap();  
+	HashMap<String, Usuario> usuarios = new HashMap();  
 	
 	Session session = null;
 	//se for null o formulario nao sera preenchido
@@ -75,6 +80,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			session = HibernateFactory.getSession();
 			session.beginTransaction();
 			carregarAtendentes();
+			carregarTipoTarefasEAtendentes();
 			if(tarefa==null){
 				limparCampos(panel);
 				novoEditar();
@@ -91,12 +97,23 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			}
 			session.close();
 		}
+		private void carregarTipoTarefasEAtendentes(){
+			List<TipoTarefa> listTiposTarefas = new TipoTarefaDAO().listar(TipoTarefa.class, session);
+			listTiposTarefas.forEach(t->{
+				tipoTarefas.put(t.getNome(), t);
+			});
+			List<Usuario> listUsuarios = new UsuarioDAO().listar(Usuario.class, session);
+			listUsuarios.forEach(u->{
+				usuarios.put(u.getLogin(), u);
+			});
+		}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){
 		case "Novo":
-			if(tarefa!=null)
+			if(tarefa!=null){
 				this.tarefaBackup=tarefa;
+			}
 			novoEditar();
 			break;
 		case "Editar":
@@ -106,11 +123,11 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			break;
 		case "ChamarDialog":
 			SelecaoObjeto dialog = null;
-			if(cbObject.getSelectedItem().equals(Modelos.Empresas))
+			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
 				dialog =new SelecaoObjeto(new Empresa(),txCodigo,txNome);
-			else if(cbObject.getSelectedItem().equals(Modelos.Pessoas))
+			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
 				dialog =new SelecaoObjeto(new Pessoa(),txCodigo,txNome);
-			else if(cbObject.getSelectedItem().equals(Modelos.Negocios))
+			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
 				dialog =new SelecaoObjeto(new Negocio(),txCodigo,txNome);
 				
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -118,7 +135,6 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			break;
 		case "Salvar":
 			setarSelecao();
-			session = HibernateFactory.getSession();
 			boolean continuar;
 			StringBuilder builder = new StringBuilder();
 			if(tarefa==null){
@@ -126,8 +142,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				tarefa.setCriadoEm(new Date());
 				tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			}
-			Usuario atendente = new UsuarioDAO().getLogin((String)cbAtendente.getSelectedItem(),session);
-			tarefa.setAtendente(atendente);
+			tarefa.setAtendente(usuarios.get(cbAtendente.getSelectedItem()));
 			tarefa.setClasse(cbObject.getSelectedItem().toString());
 			try{
 				Date data = txData.getDate();
@@ -144,9 +159,10 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				if(hora.length()==5){
 					String horas = hora.substring(0, 2);
 					String minutos = hora.substring(3);
+					System.out.println(horas+":"+minutos);
 					try{
-						if(Integer.parseInt(horas)>0 && Integer.parseInt(minutos)<24){
-							if(Integer.parseInt(horas)>0 && Integer.parseInt(minutos)<60){
+						if(Integer.parseInt(horas)>0 && Integer.parseInt(horas)<24){
+							if(Integer.parseInt(minutos)>0 && Integer.parseInt(minutos)<60){
 								continuar=true;
 								Calendar calendar = Calendar.getInstance();
 								calendar.set(1900, 01, 01, Integer.parseInt(horas), Integer.parseInt(minutos));
@@ -167,12 +183,9 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 						continuar=false;
 					}	
 				}
-				System.out.println("Validei a hora");
-				TipoTarefa tipoTarefa = (TipoTarefa)session.createQuery("from TipoTarefa t where t.nome=:tarefaNome")
-						.setParameter("tarefaNome", item)
-						.getSingleResult();//apagar codigo
-				
-				tarefa.setTipoTarefa(tipoTarefa);
+				tarefa.setTipoTarefa(tipoTarefas.get(item));
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
 				if("".equals(txCodigo.getText())){
 					continuar=false;
 					builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
@@ -181,30 +194,28 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				else{
 					Object object = getObject(cbObject.getSelectedItem().toString());
 					if(object instanceof Empresa){
-						object = new EmpresaDAO().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
-						tarefa.setEmpresa((Empresa)object);
-						System.out.println(""+cbObject.getSelectedItem());
+						Empresa empresa = (Empresa) new EmpresaDAO().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
+						tarefa.setEmpresa(empresa);
 					}
 					else if(object instanceof Negocio){
-						object = new NegocioDAO().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
-						tarefa.setNegocio((Negocio)object);
-
-						System.out.println(""+cbObject.getSelectedItem());
+						Negocio negocio = (Negocio) new NegocioDAO().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
+						tarefa.setNegocio(negocio);
 					}
 					else if(object instanceof Pessoa){
-						object = new PessoaDAO().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
-						tarefa.setPessoa((Pessoa)object);
-
-						System.out.println(""+cbObject.getSelectedItem());
+						Pessoa pessoa = (Pessoa) new PessoaDAO().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
+						tarefa.setPessoa(pessoa);
 					}
 				}
-//				if(continuar){
-//					boolean salvou = new MyDao().salvar(tarefa,session);
-//					if(salvou)
-//						salvarCancelar();
-//				}else{
-//					JOptionPane.showConfirmDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
-//				}
+				
+				if(continuar){
+					boolean salvou = new TarefaDAO().salvar(tarefa,session);
+					if(salvou)
+						salvarCancelar();
+				}else{
+					JOptionPane.showMessageDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
+				}
+
+				session.close();
 			}
 			break;
 		case "Cancelar":

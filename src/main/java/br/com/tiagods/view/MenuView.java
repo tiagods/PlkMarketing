@@ -132,6 +132,8 @@ public class MenuView extends JFrame implements DefaultUtilities{
         menuBar.add(mnRelatorios);
         
         JMenu mnExtra = new JMenu("Extra");
+        mnExtra.setName("Extra");
+        mnExtra.addMouseListener(controller);
         menuBar.add(mnExtra);
 	}
 }

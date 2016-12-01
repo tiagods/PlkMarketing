@@ -7,7 +7,7 @@ import br.com.tiagods.model.Pessoa;
 public interface DefaultModelComboBox {
 	
 	public enum Modelos{
-		Empresas, Negocios, Pessoas
+		Empresa, Negocio, Pessoa
 	}
 	//classe empresas, pessoas
 	public enum Logradouro{
@@ -21,18 +21,15 @@ public interface DefaultModelComboBox {
 	default Object getObject(String valor){
 		Object object = null;
 		switch(valor){
-		case "Empresas":
-			Empresa empresa = null;
-			object = empresa;
-			break;
-		case "Negocios":
-			Negocio negocio = null;
-			object = negocio;
-			break;
-		case "Pessoas":
-			Pessoa pessoa = null;
-			object = pessoa;
-			break;
+		case "Empresa":
+			Object novo = new Empresa();
+			return novo;
+		case "Negocio":
+			novo = new Negocio();
+			return novo;
+		case "Pessoa":
+			novo = new Pessoa();
+			return novo;
 		default:
 			break;
 		}
@@ -41,11 +38,11 @@ public interface DefaultModelComboBox {
 	default String getEnumModelos(String valor){
 		switch(valor){
 		case "Pessoa":
-			return Modelos.Pessoas.toString();
+			return Modelos.Pessoa.toString();
 		case "Empresa":
-			return Modelos.Empresas.toString();
+			return Modelos.Empresa.toString();
 		case "Negocio":
-			return Modelos.Negocios.toString();
+			return Modelos.Negocio.toString();
 		default:
 			return "";
 		}

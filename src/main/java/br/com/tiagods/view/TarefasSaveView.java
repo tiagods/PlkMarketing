@@ -130,10 +130,10 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         button.addActionListener(controller);
         panEscolha.add(button);
         
-        txCodigo = new JLabel("{Cod***}");
+        txCodigo = new JLabel("");
         panEscolha.add(txCodigo);
         
-        txNome = new JLabel("{Name***}");
+        txNome = new JLabel("");
         panEscolha.add(txNome);
         
         JLabel lblResponsavel = new JLabel("Responsavel:");

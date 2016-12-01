@@ -19,8 +19,8 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.TarefaDAO;
-import br.com.tiagods.modeldao.UsuarioDAO;
+import br.com.tiagods.modelDAO.TarefaDAO;
+import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.TarefasView;
 
 public class ControllerInicio implements ActionListener,MouseListener{
