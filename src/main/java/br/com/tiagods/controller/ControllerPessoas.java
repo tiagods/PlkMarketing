@@ -109,6 +109,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		case "Salvar":
 			invocarSalvamento();
 			telaEmEdicao = false;
+			desbloquerFormulario(false, pnPrincipal);
 			break;
 			default:
 				boolean open = recebeSessao();

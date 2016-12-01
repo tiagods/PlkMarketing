@@ -105,7 +105,7 @@ public class ControllerEmpresaPessoa {
 			if(!lista.isEmpty()){
 				for(int i=0;i<lista.size();i++){
 					Empresa em= lista.get(i);
-					Object[] linha = new Object[6];
+					Object[] linha = new Object[7];
 					linha[0] = ""+em.getId(); 
 					linha[1] = em.getNome();
 					linha[2] = em.getNivel()==null?"":em.getNivel().getNome();
@@ -125,7 +125,6 @@ public class ControllerEmpresaPessoa {
 				}
 			}
 		}
-		
 		table.setAutoCreateRowSorter(true);
 		table.setSelectionBackground(Color.CYAN);
 

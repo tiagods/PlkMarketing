@@ -24,12 +24,13 @@ public class GerarCidades {
 
 		while(scanner.hasNext()){
 			Cidade c = new Cidade();
-			String[] dados = scanner.nextLine().split(";");
+			String[] dados = scanner.nextLine().split(",");
 			c.setEstado(dados[0]);
 			c.setIdExtra(dados[1]);
 			c.setNome(dados[2]);
 			cidades.add(c);
 		}
+		
 		Session session = HibernateFactory.getSession();
 		int i=0;
 		session.beginTransaction();

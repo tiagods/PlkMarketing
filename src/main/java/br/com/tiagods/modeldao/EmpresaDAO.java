@@ -2,13 +2,21 @@ package br.com.tiagods.modeldao;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 public class EmpresaDAO implements InterfaceDAO {
 
 	@Override
 	public boolean salvar(Object classe, Session session) {
-		// TODO Auto-generated method stub
+		try{
+			session.saveOrUpdate(classe);
+			session.getTransaction().commit();
+			return true;
+		}catch (HibernateException e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
 		return false;
 	}
 

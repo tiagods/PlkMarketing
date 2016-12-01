@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -108,7 +109,8 @@ public class CriarAdmin {
 		pj.setCriadoPor(usuario);
 		pj.setOrigem(origem);
 		pj.setServico(servico);
-
+		pj.setCriadoEm(new Date());
+		
 		endereco.setCidade(c1);
 		endereco.setBairro("jd paulista");
 		endereco.setNumero("14");
@@ -117,7 +119,7 @@ public class CriarAdmin {
 		Empresa empresa = new Empresa();
 		empresa.setCnpj("00000000000000");
 		empresa.setEndereco(endereco);
-		empresa.setNome("Castelao");
+		empresa.setNome("Empresa Teste Ltda");
 		empresa.setNivel(nivel);
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
@@ -292,7 +294,7 @@ public class CriarAdmin {
 
 		while(scanner.hasNext()){
 			Cidade c = new Cidade();
-			String[] dados = scanner.nextLine().split(";");
+			String[] dados = scanner.nextLine().split(",");
 			c.setEstado(dados[0]);
 			c.setIdExtra(dados[1]);
 			c.setNome(dados[2]);
@@ -348,9 +350,9 @@ public class CriarAdmin {
 	public void criarUsuario(){
 		List<Usuario> lista = new ArrayList<>();
 		usuario = new Usuario();
-		usuario.setLogin("admin");
-		usuario.setNome("Administrador");
-		usuario.setSenha("admin");
+		usuario.setLogin("Isabelle");
+		usuario.setNome("Isabelle Souza");
+		usuario.setSenha("isabelle");
 		usuario.setEmail("suporte.ti@prolinkcontabil.com.br");
 		usuario.setDepartamento(departamento);
 		usuario.setFuncao(funcao);
@@ -358,10 +360,10 @@ public class CriarAdmin {
 		lista.add(usuario);
 
 		Usuario usuario2 = new Usuario();
-		usuario2.setLogin("tiago");
+		usuario2.setLogin("Tiago");
 		usuario2.setNome("Tiago");
 		usuario2.setSenha("tiago");
-		usuario2.setEmail("suporte.ti@prolinkcontabil.com.br");
+		usuario2.setEmail("tiago.dias@prolinkcontabil.com.br");
 		usuario2.setDepartamento(departamento);
 		usuario2.setFuncao(funcao);
 		usuario2.setTotalVendas(new BigDecimal("0.00"));
@@ -375,7 +377,6 @@ public class CriarAdmin {
 		usuario3.setFuncao(funcao);
 		usuario3.setTotalVendas(new BigDecimal("0.00"));
 		lista.add(usuario3);
-
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		lista.forEach(c->{

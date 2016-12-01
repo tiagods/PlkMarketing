@@ -108,6 +108,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		case "Salvar":
 			invocarSalvamento();
 			telaEmEdicao = false;
+			desbloquerFormulario(false, pnPrincipal);
 			break;
 			default:
 				boolean open = recebeSessao();
@@ -142,7 +143,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		
 		txDataCadastro.setText(conversor.format(empresa.getPessoaJuridica().getCriadoEm()));
 		txNome.setText(empresa.getNome());
-		cbAtendenteCad.setSelectedItem(empresa.getPessoaJuridica().getAtendente().getLogin());
+		cbAtendenteCad.setSelectedItem(empresa.getPessoaJuridica().getAtendente()==null?"":empresa.getPessoaJuridica().getAtendente().getLogin());
 		txCnpj.setText(empresa.getCnpj());
 		cbNivelCad.setSelectedItem(empresa.getNivel()==null?"":empresa.getNivel().getNome());
 		cbOrigemCad.setSelectedItem(empresa.getPessoaJuridica().getOrigem()==null?"":empresa.getPessoaJuridica().getOrigem().getNome());
@@ -237,7 +238,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
 			criteria.add(Restrictions.eq("pessoaJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
 		if(!cbNivel.getSelectedItem().equals(cbNivel.getName()))
-			criteria.add(Restrictions.eq("pessoaJuridica.nivel", padrao.getNiveis((String)cbNivel.getSelectedItem())));
+			criteria.add(Restrictions.eq("nivel", padrao.getNiveis((String)cbNivel.getSelectedItem())));
 		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))	
 			criteria.add(Restrictions.eq("pessoaJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
 		if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
