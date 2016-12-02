@@ -20,10 +20,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static JDateChooser jData2;
 	public static javax.swing.JButton btTarefa;
 	public static javax.swing.JButton jButton1;
-	public static javax.swing.JButton jButton2;
-	public static javax.swing.JButton jButton3;
 	public static javax.swing.JCheckBox jCheckBox1;
-	public static javax.swing.JCheckBox jCheckBox12;
 	public static javax.swing.JCheckBox jCheckBox2;
 	public static javax.swing.JCheckBox jCheckBox3;
 	public static javax.swing.JCheckBox jCheckBox4;
@@ -50,9 +47,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     private javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable jTable1;
     public static javax.swing.JTable tbPrincipal;
-    public static javax.swing.JTextField jTextField4;
     private javax.swing.ButtonGroup group;
-    public static JButton btnNewButton;
     
     ControllerTarefas controller = new ControllerTarefas();
     
@@ -75,22 +70,14 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel4 = new javax.swing.JPanel();
         jPanel4.setBounds(10, 281, 1060, 323);
         jScrollPane3 = new javax.swing.JScrollPane();
-        jScrollPane3.setBounds(84, 11, 668, 308);
+        jScrollPane3.setBounds(84, 11, 966, 308);
         tbPrincipal = new javax.swing.JTable();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField4.setBounds(762, 11, 171, 20);
-        jCheckBox12 = new javax.swing.JCheckBox();
-        jCheckBox12.setBounds(762, 130, 100, 20);
         jLabel36 = new javax.swing.JLabel();
         jLabel36.setBounds(5, 50, 69, 14);
         jLabel15 = new javax.swing.JLabel();
         jLabel15.setBounds(5, 70, 69, 248);
         jLabel37 = new javax.swing.JLabel();
         jLabel37.setBounds(5, 16, 69, 28);
-        jButton2 = new javax.swing.JButton();
-        jButton2.setBounds(762, 37, 115, 23);
-        jButton3 = new javax.swing.JButton();
-        jButton3.setBounds(762, 69, 115, 23);
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton1.setBounds(420, 95, 93, 23);
         jRadioButton2 = new javax.swing.JRadioButton();
@@ -144,9 +131,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         tbPrincipal.setGridColor(getColor());
         jScrollPane3.setViewportView(tbPrincipal);
 
-        jCheckBox12.setBackground(getColor());
-        jCheckBox12.setText("Finalizar");
-
         jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel36.setText("Quantidade:");
 
@@ -156,10 +140,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel37.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel37.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel37.setText("{typ#}");
-
-        jButton2.setText("Abrir #negocio empresa or pessoa#");
-
-        jButton3.setText("Abrir Tarefa");
 
         jRadioButton1.setBackground(getColor());
         jRadioButton1.setText("Pendentes");
@@ -248,14 +228,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel4.add(jLabel36);
         jPanel4.add(jLabel15);
         jPanel4.add(jScrollPane3);
-        jPanel4.add(jTextField4);
-        jPanel4.add(jButton2);
-        jPanel4.add(jCheckBox12);
-        jPanel4.add(jButton3);
-        
-        btnNewButton = new JButton("Excluir");
-        btnNewButton.setBounds(762, 100, 115, 23);
-        jPanel4.add(btnNewButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -269,9 +241,26 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         );
         jPanel1.setLayout(null);
         jPanel1.add(jPanel4);
+        jPanel1.add(jLabel3);
+        jPanel1.add(jCheckBox1);
+        jPanel1.add(jCheckBox2);
+        jPanel1.add(jCheckBox3);
+        jPanel1.add(jCheckBox4);
+        jPanel1.add(jCheckBox5);
+        jPanel1.add(jLabel1);
+        jPanel1.add(jLabel2);
+        jPanel1.add(jComboBox1);
+        jPanel1.add(jRadioButton1);
+        jPanel1.add(jRadioButton2);
+        jPanel1.add(btTarefa);
+        jPanel1.add(jRadioButton3);
+        jPanel1.add(jRadioButton5);
+        jPanel1.add(jRadioButton4);
+        jPanel1.add(jRDefinir);
+        jPanel1.add(jPData);
         jScrollPane1 = new javax.swing.JScrollPane();
-        jScrollPane1.setBounds(762, 163, 171, 126);
-        jPanel4.add(jScrollPane1);
+        jScrollPane1.setBounds(766, 142, 171, 126);
+        jPanel1.add(jScrollPane1);
         jTable1 = new javax.swing.JTable();
         
                 jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -292,24 +281,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
                 });
                 jTable1.setGridColor(new java.awt.Color(255, 255, 255));
                 jScrollPane1.setViewportView(jTable1);
-        jPanel1.add(jLabel3);
-        jPanel1.add(jCheckBox1);
-        jPanel1.add(jCheckBox2);
-        jPanel1.add(jCheckBox3);
-        jPanel1.add(jCheckBox4);
-        jPanel1.add(jCheckBox5);
-        jPanel1.add(jLabel1);
-        jPanel1.add(jLabel2);
-        jPanel1.add(jComboBox1);
-        jPanel1.add(jRadioButton1);
-        jPanel1.add(jRadioButton2);
-        jPanel1.add(btTarefa);
-        jPanel1.add(jRadioButton3);
-        jPanel1.add(jRadioButton5);
-        jPanel1.add(jRadioButton4);
-        jPanel1.add(jRDefinir);
-        jPanel1.add(jPData);
-
+                jScrollPane1.setVisible(false);
         setBounds(0, 0, 1250, 660);
     }
 

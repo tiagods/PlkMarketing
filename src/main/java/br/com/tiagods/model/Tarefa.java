@@ -20,6 +20,7 @@ public class Tarefa implements Serializable{
 	private Pessoa pessoa;
 	private Empresa empresa;
 	private Negocio negocio;
+	private int finalizado=0;
 	/**
 	 * @return the id
 	 */
@@ -163,6 +164,18 @@ public class Tarefa implements Serializable{
 	 */
 	public void setNegocio(Negocio negocio) {
 		this.negocio = negocio;
+	}
+	/**
+	 * @return the finalizado
+	 */
+	public int getFinalizado() {
+		return finalizado;
+	}
+	/**
+	 * @param finalizado the finalizado to set
+	 */
+	public void setFinalizado(int finalizado) {
+		this.finalizado = finalizado;
 	}
 	 
 }

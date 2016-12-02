@@ -12,6 +12,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -99,6 +100,7 @@ public class NegociosView extends JInternalFrame {
 	 */
 	public NegociosView() {
 		initComponents();
+		JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Essa tela ainda não esta pronta! Modo somente leitura");
 	}
 	private void initComponents() {
 
