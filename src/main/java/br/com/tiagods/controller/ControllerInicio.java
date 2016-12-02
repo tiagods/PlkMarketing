@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -26,14 +27,14 @@ import br.com.tiagods.view.TarefasView;
 public class ControllerInicio implements ActionListener,MouseListener{
 		
 	Session session = null;
-	
+	HashMap<String, Usuario> atendentes = new HashMap();
 	boolean liberar = false;
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){
 		case "Filtrar":
 			if(validarDatas())
-				abrirTarefasView();
+				abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));
 			break;
 		default:
 			
@@ -80,6 +81,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		cbAtendentes.removeAllItems();
 		lista.forEach(c->{
 			cbAtendentes.addItem(c.getLogin());
+			atendentes.put(c.getLogin(), c);
 		});
 		cbAtendentes.setSelectedItem(UsuarioLogado.getInstance().usuario.getLogin());
 	}
@@ -95,7 +97,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		try{
 			calendar.setTime(jData1.getDate());
 			calendar2.setTime(jData2.getDate());
-			if(calendar.after(calendar2) && !calendar.equals(calendar2)){
+			if(calendar.after(calendar2)){
 				JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
 						"O intervalo entre as datas está incorreto\n"
 						+ "A data 1 deve ser igual ou menor que a data 2!",
@@ -114,35 +116,34 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	}
 	//abrir nova tela
 	@SuppressWarnings("static-access")
-	private void abrirTarefasView(){
+	private void abrirTarefasView(Date data1, Date data2, Usuario usuario){
 		 ControllerMenu menu = ControllerMenu.getInstance();
-		 TarefasView tView = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
+		 TarefasView tView = new TarefasView(data1, data2, usuario);
 		 menu.abrirCorpo(tView);
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		switch(e.getComponent().getName()){
-		case "OK":
+		case "OK":	
 		if(validarDatas())
-			abrirTarefasView();
+				abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));
 		break;
+		default:
+				abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));	
+			break;
 		}
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 	}
 
 }

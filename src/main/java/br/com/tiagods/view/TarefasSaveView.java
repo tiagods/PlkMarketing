@@ -180,9 +180,6 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         btnCancelar.addActionListener(controller);
         panEscolha.add(btnCancelar);
         
-        JLabel lblNewLabel = new JLabel("quando na\u00F5 for passado parametro de classe  e invocar um jcomponents solitando Negocio, Empresa ou pessoa para salvar");
-        lblNewLabel.setBounds(174, 124, 846, 14);
-        panel.add(lblNewLabel);
 
 	}
 }

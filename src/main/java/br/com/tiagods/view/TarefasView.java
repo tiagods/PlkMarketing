@@ -13,36 +13,37 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerTarefas;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.view.interfaces.DefaultUtilities;;
+import br.com.tiagods.view.interfaces.DefaultUtilities;
+
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static JDateChooser jData1;
 	public static JDateChooser jData2;
-	public static javax.swing.JButton btTarefa;
+	public static javax.swing.JButton btNovaTarefa;
 	public static javax.swing.JButton jButton1;
-	public static javax.swing.JCheckBox jCheckBox1;
-	public static javax.swing.JCheckBox jCheckBox2;
-	public static javax.swing.JCheckBox jCheckBox3;
-	public static javax.swing.JCheckBox jCheckBox4;
-	public static javax.swing.JCheckBox jCheckBox5;
-	public static javax.swing.JComboBox<String> jComboBox1;
+	public static javax.swing.JCheckBox ckVisita;
+	public static javax.swing.JCheckBox ckReuniao;
+	public static javax.swing.JCheckBox ckProposta;
+	public static javax.swing.JCheckBox ckTelefone;
+	public static javax.swing.JCheckBox ckEmail;
+	public static javax.swing.JComboBox<String> cbAtendentes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel36;
-    private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPData;
+    private javax.swing.JPanel pnData;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
-    public static javax.swing.JRadioButton jRDefinir;
-    public static javax.swing.JRadioButton jRadioButton1;
-    public static javax.swing.JRadioButton jRadioButton2;
-    public static javax.swing.JRadioButton jRadioButton3;
-    public static javax.swing.JRadioButton jRadioButton4;
-    public static javax.swing.JRadioButton jRadioButton5;
+    public static javax.swing.JRadioButton rbDefinirData;
+    public static javax.swing.JRadioButton rbPendentes;
+    public static javax.swing.JRadioButton rbFinalizadas;
+    public static javax.swing.JRadioButton rbTudo;
+    public static javax.swing.JRadioButton rbEssaSemana;
+    public static javax.swing.JRadioButton rbHoje;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     public static javax.swing.JTable jTable1;
@@ -57,9 +58,9 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     	return DefaultUtilities.super.getColor();
     }
 
-    public TarefasView(Date data1, Date data2, Usuario sessao) {
+    public TarefasView(Date data1, Date data2, Usuario usuario) {
         initComponents();
-        controller.iniciar();
+        controller.iniciar(data1,data2,usuario);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,53 +73,49 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane3.setBounds(84, 11, 966, 308);
         tbPrincipal = new javax.swing.JTable();
-        jLabel36 = new javax.swing.JLabel();
-        jLabel36.setBounds(5, 50, 69, 14);
         jLabel15 = new javax.swing.JLabel();
-        jLabel15.setBounds(5, 70, 69, 248);
-        jLabel37 = new javax.swing.JLabel();
-        jLabel37.setBounds(5, 16, 69, 28);
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton1.setBounds(420, 95, 93, 23);
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton2.setBounds(515, 95, 93, 23);
-        btTarefa = new javax.swing.JButton();
-        btTarefa.setBounds(10, 52, 105, 24);
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton3.setBounds(121, 53, 60, 23);
-        group.add(jRadioButton3);
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jRadioButton4.setBounds(251, 53, 105, 23);
-        group.add(jRadioButton4);
-        jRadioButton5 = new javax.swing.JRadioButton();
-        jRadioButton5.setBounds(183, 53, 60, 23);
-        group.add(jRadioButton5);
-        jRDefinir = new javax.swing.JRadioButton();
-        jRDefinir.setBounds(362, 53, 73, 23);
-        group.add(jRDefinir);
+        jLabel15.setBounds(5, 273, 69, 45);
+        rbPendentes = new javax.swing.JRadioButton();
+        rbPendentes.setBounds(420, 95, 93, 23);
+        rbFinalizadas = new javax.swing.JRadioButton();
+        rbFinalizadas.setBounds(515, 95, 93, 23);
+        btNovaTarefa = new javax.swing.JButton();
+        btNovaTarefa.setBounds(10, 52, 105, 24);
+        rbTudo = new javax.swing.JRadioButton();
+        rbTudo.setBounds(121, 53, 60, 23);
+        group.add(rbTudo);
+        rbEssaSemana = new javax.swing.JRadioButton();
+        rbEssaSemana.setBounds(251, 53, 105, 23);
+        group.add(rbEssaSemana);
+        rbHoje = new javax.swing.JRadioButton();
+        rbHoje.setBounds(183, 53, 60, 23);
+        group.add(rbHoje);
+        rbDefinirData = new javax.swing.JRadioButton();
+        rbDefinirData.setBounds(362, 53, 73, 23);
+        group.add(rbDefinirData);
         jLabel1 = new javax.swing.JLabel();
         jLabel1.setBounds(669, 10, 90, 23);
         jLabel2 = new javax.swing.JLabel();
         jLabel2.setBounds(782, 10, 30, 23);
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox1.setBounds(822, 11, 105, 20);
-        jPData = new javax.swing.JPanel();
-        jPData.setBounds(441, 52, 331, 23);
+        cbAtendentes = new javax.swing.JComboBox<>();
+        cbAtendentes.setBounds(822, 11, 105, 20);
+        pnData = new javax.swing.JPanel();
+        pnData.setBounds(441, 52, 331, 23);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jCheckBox5 = new javax.swing.JCheckBox();
-        jCheckBox5.setBounds(392, 10, 73, 23);
+        ckEmail = new javax.swing.JCheckBox();
+        ckEmail.setBounds(392, 10, 73, 23);
         jLabel3 = new javax.swing.JLabel();
         jLabel3.setBounds(10, 14, 40, 14);
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox1.setBounds(56, 10, 73, 23);
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jCheckBox2.setBounds(131, 10, 73, 23);
-        jCheckBox3 = new javax.swing.JCheckBox();
-        jCheckBox3.setBounds(208, 10, 90, 23);
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jCheckBox4.setBounds(300, 10, 90, 23);
+        ckVisita = new javax.swing.JCheckBox();
+        ckVisita.setBounds(56, 10, 73, 23);
+        ckReuniao = new javax.swing.JCheckBox();
+        ckReuniao.setBounds(131, 10, 73, 23);
+        ckProposta = new javax.swing.JCheckBox();
+        ckProposta.setBounds(208, 10, 90, 23);
+        ckTelefone = new javax.swing.JCheckBox();
+        ckTelefone.setBounds(300, 10, 90, 23);
         jData1 = new JDateChooser();
         jData2 = new JDateChooser();
         
@@ -131,46 +128,42 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         tbPrincipal.setGridColor(getColor());
         jScrollPane3.setViewportView(tbPrincipal);
 
-        jLabel36.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel36.setText("Quantidade:");
-
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel15.setText("{###}");
 
-        jLabel37.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel37.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel37.setText("{typ#}");
+        rbPendentes.setBackground(getColor());
+        rbPendentes.setText("Pendentes");
 
-        jRadioButton1.setBackground(getColor());
-        jRadioButton1.setText("Pendentes");
-
-        jRadioButton2.setBackground(getColor());
-        jRadioButton2.setText("Finalizadas");
-
-        btTarefa.setText("Criar Tarefa");
-        btTarefa.setActionCommand("Criar Tarefa");
-
-        jRadioButton3.setBackground(getColor());
-        jRadioButton3.setText("Tudo");
+        rbFinalizadas.setBackground(getColor());
+        rbFinalizadas.setText("Finalizadas");
+        ButtonGroup groupEstado = new ButtonGroup();
+        groupEstado.add(rbFinalizadas);
+        groupEstado.add(rbPendentes);
         
-        jRadioButton4.setBackground(getColor());
-        jRadioButton4.setText("Essa Semana");
+        btNovaTarefa.setText("Criar Tarefa");
+        btNovaTarefa.setActionCommand("Criar Tarefa");
+        btNovaTarefa.addActionListener(controller);
+        rbTudo.setBackground(getColor());
+        rbTudo.setText("Tudo");
         
-        jRadioButton5.setBackground(getColor());
-        jRadioButton5.setText("Hoje");
+        rbEssaSemana.setBackground(getColor());
+        rbEssaSemana.setText("Essa Semana");
         
-        jRDefinir.setBackground(getColor());
-        jRDefinir.setText("Definir");
+        rbHoje.setBackground(getColor());
+        rbHoje.setText("Hoje");
+        
+        rbDefinirData.setBackground(getColor());
+        rbDefinirData.setText("Definir");
         
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("{#### Tarefas}");
 
         jLabel2.setText("de:");
 
-        jComboBox1.setBackground(getColor());
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "#Pessoa 1", "#Pessoa 2", "#Pessoa 3", "#Pessoa 4", "Todos" }));
+        cbAtendentes.setBackground(getColor());
+        cbAtendentes.setModel(new DefaultComboBoxModel(new String[] {"Todos"}));
         
-        jPData.setBackground(getColor());
+        pnData.setBackground(getColor());
 
         jLabel4.setText("de:");
 
@@ -179,10 +172,10 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 
         jButton1.setText("OK");
 
-        javax.swing.GroupLayout jPDataLayout = new javax.swing.GroupLayout(jPData);
-        jPDataLayout.setHorizontalGroup(
-        	jPDataLayout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPDataLayout.createSequentialGroup()
+        javax.swing.GroupLayout gl_pnData = new javax.swing.GroupLayout(pnData);
+        gl_pnData.setHorizontalGroup(
+        	gl_pnData.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnData.createSequentialGroup()
         			.addContainerGap()
         			.addComponent(jLabel4)
         			.addGap(4)
@@ -194,10 +187,10 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         			.addGap(6)
         			.addComponent(jButton1))
         );
-        jPDataLayout.setVerticalGroup(
-        	jPDataLayout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(Alignment.TRAILING, jPDataLayout.createSequentialGroup()
-        			.addGroup(jPDataLayout.createParallelGroup(Alignment.TRAILING)
+        gl_pnData.setVerticalGroup(
+        	gl_pnData.createParallelGroup(Alignment.LEADING)
+        		.addGroup(Alignment.TRAILING, gl_pnData.createSequentialGroup()
+        			.addGroup(gl_pnData.createParallelGroup(Alignment.TRAILING)
         				.addComponent(jData1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
         				.addComponent(jButton1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 12, Short.MAX_VALUE)
         				.addComponent(jData2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -205,27 +198,25 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         				.addComponent(jLabel4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
         			.addGap(11))
         );
-        jPData.setLayout(jPDataLayout);
+        pnData.setLayout(gl_pnData);
 
-        jCheckBox5.setBackground(getColor());
-        jCheckBox5.setText("E-mail");
+        ckEmail.setBackground(getColor());
+        ckEmail.setText("E-mail");
 
         jLabel3.setText("Filtro:");
 
-        jCheckBox1.setBackground(getColor());
-        jCheckBox1.setText("Visita");
+        ckVisita.setBackground(getColor());
+        ckVisita.setText("Visita");
 
-        jCheckBox2.setBackground(getColor());
-        jCheckBox2.setText("Reunião");
+        ckReuniao.setBackground(getColor());
+        ckReuniao.setText("Reunião");
 
-        jCheckBox3.setBackground(getColor());
-        jCheckBox3.setText("Proposta");
+        ckProposta.setBackground(getColor());
+        ckProposta.setText("Proposta");
 
-        jCheckBox4.setBackground(getColor());
-        jCheckBox4.setText("Telefone");
+        ckTelefone.setBackground(getColor());
+        ckTelefone.setText("Telefone");
         jPanel4.setLayout(null);
-        jPanel4.add(jLabel37);
-        jPanel4.add(jLabel36);
         jPanel4.add(jLabel15);
         jPanel4.add(jScrollPane3);
 
@@ -242,22 +233,22 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.setLayout(null);
         jPanel1.add(jPanel4);
         jPanel1.add(jLabel3);
-        jPanel1.add(jCheckBox1);
-        jPanel1.add(jCheckBox2);
-        jPanel1.add(jCheckBox3);
-        jPanel1.add(jCheckBox4);
-        jPanel1.add(jCheckBox5);
+        jPanel1.add(ckVisita);
+        jPanel1.add(ckReuniao);
+        jPanel1.add(ckProposta);
+        jPanel1.add(ckTelefone);
+        jPanel1.add(ckEmail);
         jPanel1.add(jLabel1);
         jPanel1.add(jLabel2);
-        jPanel1.add(jComboBox1);
-        jPanel1.add(jRadioButton1);
-        jPanel1.add(jRadioButton2);
-        jPanel1.add(btTarefa);
-        jPanel1.add(jRadioButton3);
-        jPanel1.add(jRadioButton5);
-        jPanel1.add(jRadioButton4);
-        jPanel1.add(jRDefinir);
-        jPanel1.add(jPData);
+        jPanel1.add(cbAtendentes);
+        jPanel1.add(rbPendentes);
+        jPanel1.add(rbFinalizadas);
+        jPanel1.add(btNovaTarefa);
+        jPanel1.add(rbTudo);
+        jPanel1.add(rbHoje);
+        jPanel1.add(rbEssaSemana);
+        jPanel1.add(rbDefinirData);
+        jPanel1.add(pnData);
         jScrollPane1 = new javax.swing.JScrollPane();
         jScrollPane1.setBounds(766, 142, 171, 126);
         jPanel1.add(jScrollPane1);

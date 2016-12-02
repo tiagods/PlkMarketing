@@ -3,7 +3,9 @@ package br.com.tiagods.modelDAO;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import br.com.tiagods.model.Tarefa;
@@ -44,5 +46,12 @@ public class TarefaDAO implements InterfaceDAO{
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
 		return session.get(classe, id);
+	}
+	public List<Tarefa> filtrar(List<Criterion> criterios, Session session){
+		Criteria criteria  = session.createCriteria(Tarefa.class);
+		criterios.forEach(c->{
+			criteria.add(c);
+		});
+		return criteria.list();
 	}
 }

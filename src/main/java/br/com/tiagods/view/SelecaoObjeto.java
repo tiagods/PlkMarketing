@@ -157,10 +157,14 @@ public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
 				btOkDialog.addActionListener(new ActionListener(){
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
 						if(tbRelacao.getSelectedRow()!=-1){
 							labelId.setText((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 0));
-							labelNome.setText((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 1));
+							String[] nome = ((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 1)).split(" ");
+							labelNome.setText(nome[0]);
+							labelId.setOpaque(true);
+							labelNome.setOpaque(true);
+							labelId.setBackground(Color.GREEN);
+							labelNome.setBackground(Color.GREEN);
 							dispose();
 						}
 					}});

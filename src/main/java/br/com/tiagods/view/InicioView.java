@@ -29,6 +29,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
     public static JDateChooser jData1;
 	public static JDateChooser jData2;
 	public static JComboBox cbAtendentes;
+	public static JButton btnOk;
 	
 	ControllerInicio controller = new ControllerInicio();
 	
@@ -102,6 +103,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         lbInfoTarefas = new JLabel();
         lbInfoTarefas.setBounds(0, 5, 1230, 549);
         lbInfoTarefas.setHorizontalAlignment(SwingConstants.CENTER);
+        lbInfoTarefas.setName("Info");
         lbInfoTarefas.addMouseListener(controller);
         pnDetalhes.setLayout(null);
         pnDetalhes.add(lbInfoTarefas);
@@ -123,9 +125,8 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         pnStatus.add(lblAte);
         pnStatus.add(jData2);
         
-        JButton btnOk = new JButton("OK");
+        btnOk = new JButton("OK");
         btnOk.setActionCommand("Filtrar");
-        btnOk.setName("OK");
         btnOk.addActionListener(controller);
         pnStatus.add(btnOk);
         

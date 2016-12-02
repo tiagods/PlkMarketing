@@ -8,6 +8,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultCellEditor;
@@ -21,12 +23,15 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelDAO.TarefaDAO;
 import br.com.tiagods.view.interfaces.*;
 import static br.com.tiagods.view.TarefasView.*;
@@ -34,11 +39,28 @@ import static br.com.tiagods.view.TarefasView.*;
 * @author Tiago
 */
 public class ControllerTarefas implements ActionListener, MouseListener {
-    public void iniciar(){
-    	Session sessao = HibernateFactory.getSession();
-    	List<Tarefa> tarefas = new TarefaDAO().listar(Tarefa.class, sessao);
+	Date data1;
+	Date data2;
+	Usuario userSessao;
+    Session session;
+	public void iniciar(Date data1, Date data2, Usuario usuario){
+    	this.data1=data1;
+    	this.data2=data2;
+    	this.userSessao=usuario;
+    	
+    	session = HibernateFactory.getSession();
+
+    	//List<Tarefa> tarefas = new TarefaDAO().listar(Tarefa.class, sessao);
+    	List<Criterion> lista = new ArrayList();
+    	Criterion criterio =  Restrictions.eq("atendente", usuario);
+    	Criterion criterio2 = Restrictions.between("dataEvento", data1, data2);
+    	Criterion criterio3 = Restrictions.eq("finalizado", 0);
+    	lista.add(criterio);
+    	lista.add(criterio2);
+    	lista.add(criterio3);
+    	List<Tarefa> tarefas = new TarefaDAO().filtrar(lista, session);
     	preencherTabela(tbPrincipal, tarefas, new JTextField());
-    	sessao.close();
+    	session.close();
     	JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Essa tela ainda não esta pronta! Modo somente leitura");
     }
 	public void mouseClicked(MouseEvent e) {}

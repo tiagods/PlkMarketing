@@ -58,6 +58,7 @@ import br.com.tiagods.modelDAO.TarefaDAO;
 import br.com.tiagods.modelDAO.TipoTarefaDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
+import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.DefaultModelComboBox;
 
 public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener, ItemListener{
@@ -68,7 +69,6 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 	Tarefa tarefa = null;
 	Tarefa tarefaBackup;
 	String item = "";
-	Object minhaClasse;
 	
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap();  
 	HashMap<String, Usuario> usuarios = new HashMap();  
@@ -134,7 +134,6 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			dialog.setVisible(true);
 			break;
 		case "Salvar":
-			setarSelecao();
 			boolean continuar;
 			StringBuilder builder = new StringBuilder();
 			if(tarefa==null){
@@ -183,9 +182,10 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 						continuar=false;
 					}	
 				}
-				tarefa.setTipoTarefa(tipoTarefas.get(item));
 				session = HibernateFactory.getSession();
 				session.beginTransaction();
+				setarSelecao();
+				tarefa.setTipoTarefa(tipoTarefas.get(item));
 				if("".equals(txCodigo.getText())){
 					continuar=false;
 					builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
@@ -209,8 +209,11 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				
 				if(continuar){
 					boolean salvou = new TarefaDAO().salvar(tarefa,session);
-					if(salvou)
+					if(salvou){
 						salvarCancelar();
+						 TarefasView tView = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
+						 ControllerMenu.getInstance().abrirCorpo(tView);
+					}
 				}else{
 					JOptionPane.showMessageDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
 				}
