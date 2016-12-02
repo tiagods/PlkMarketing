@@ -335,7 +335,7 @@ public class CriarAdmin {
 		tipoTarefa.add("Visita");
 		tipoTarefa.add("Reuniao");
 		tipoTarefa.add("Proposta");
-		tipoTarefa.add("Ligacao");
+		tipoTarefa.add("Telefone");
 		tipoTarefa.add("Email");
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
