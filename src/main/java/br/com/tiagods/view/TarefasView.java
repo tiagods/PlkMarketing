@@ -35,7 +35,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel pnData;
+    public static javax.swing.JPanel pnData;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     public static javax.swing.JRadioButton rbDefinirData;
@@ -100,6 +100,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         cbAtendentes = new javax.swing.JComboBox<>();
         cbAtendentes.setBounds(822, 11, 105, 20);
         pnData = new javax.swing.JPanel();
+        pnData.setVisible(false);
         pnData.setBounds(441, 52, 331, 23);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -141,19 +142,28 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         groupEstado.add(rbPendentes);
         
         btNovaTarefa.setText("Criar Tarefa");
-        btNovaTarefa.setActionCommand("Criar Tarefa");
+        btNovaTarefa.setName("CriarTarefa");
         btNovaTarefa.addActionListener(controller);
+        
         rbTudo.setBackground(getColor());
         rbTudo.setText("Tudo");
+        rbTudo.setName("Tudo");
+        rbTudo.addMouseListener(controller);
         
         rbEssaSemana.setBackground(getColor());
         rbEssaSemana.setText("Essa Semana");
+        rbEssaSemana.setName("EssaSemana");
+        rbEssaSemana.addMouseListener(controller);
         
         rbHoje.setBackground(getColor());
         rbHoje.setText("Hoje");
+        rbHoje.setName("Hoje");
+        rbHoje.addMouseListener(controller);
         
         rbDefinirData.setBackground(getColor());
         rbDefinirData.setText("Definir");
+        rbDefinirData.setName("Definir");
+        rbDefinirData.addMouseListener(controller);
         
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("{#### Tarefas}");

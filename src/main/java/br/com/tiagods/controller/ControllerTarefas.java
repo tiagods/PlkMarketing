@@ -3,24 +3,30 @@
   */
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.TarefasView.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.print.attribute.standard.DateTimeAtCompleted;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableColumn;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -33,8 +39,8 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelDAO.TarefaDAO;
-import br.com.tiagods.view.interfaces.*;
-import static br.com.tiagods.view.TarefasView.*;
+import br.com.tiagods.modelDAO.UsuarioDAO;
+import br.com.tiagods.view.interfaces.ButtonColumn;
 /*
 * @author Tiago
 */
@@ -43,14 +49,28 @@ public class ControllerTarefas implements ActionListener, MouseListener {
 	Date data2;
 	Usuario userSessao;
     Session session;
+    Map<String,Usuario> atendentes = new HashMap();
+    
 	public void iniciar(Date data1, Date data2, Usuario usuario){
     	this.data1=data1;
     	this.data2=data2;
     	this.userSessao=usuario;
-    	
+    	try{
+    		jData1.setDate(data1);
+    		jData2.setDate(data2);
+    	}catch(Exception e){
+    	}
+    	boolean hoje = verificarSeHoje(data1,data2);
+    	if(hoje){
+    		rbHoje.setSelected(true);
+    		mostrarDatas(pnData, false);
+    	}
+    	else{ 
+    		rbDefinirData.setSelected(true);
+    		mostrarDatas(pnData, true);
+    	}
     	session = HibernateFactory.getSession();
-
-    	//List<Tarefa> tarefas = new TarefaDAO().listar(Tarefa.class, sessao);
+    	carregarAtendentes();
     	List<Criterion> lista = new ArrayList();
     	Criterion criterio =  Restrictions.eq("atendente", usuario);
     	Criterion criterio2 = Restrictions.between("dataEvento", data1, data2);
@@ -61,9 +81,28 @@ public class ControllerTarefas implements ActionListener, MouseListener {
     	List<Tarefa> tarefas = new TarefaDAO().filtrar(lista, session);
     	preencherTabela(tbPrincipal, tarefas, new JTextField());
     	session.close();
-    	JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Essa tela ainda não esta pronta! Modo somente leitura");
+    	//JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Essa tela ainda não esta pronta! Modo somente leitura");
     }
-	public void mouseClicked(MouseEvent e) {}
+	
+	public void mouseClicked(MouseEvent e) {
+		switch(e.getComponent().getName()){
+		case "Tudo":
+			mostrarDatas(pnData, false);
+			break;
+		case "EssaSemana":
+			mostrarDatas(pnData, false);
+			break;
+		case "Hoje":
+			mostrarDatas(pnData, false);
+			break;
+		case "Definir":
+			mostrarDatas(pnData, true);
+			break;
+		default:
+			break;
+		}
+		
+	}
     public void mousePressed(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
@@ -71,12 +110,30 @@ public class ControllerTarefas implements ActionListener, MouseListener {
     public void actionPerformed(ActionEvent e) {
     	
     }
+    private void carregarAtendentes(){
+    	List<Usuario> lista = new UsuarioDAO().listar(Usuario.class,session);
+    	cbAtendentes.removeAllItems();
+    	cbAtendentes.addItem("Todos");
+    	
+    	Set<String> arvore = new TreeSet();
+    	Iterator<Usuario> iterator = lista.listIterator();
+    	while(iterator.hasNext()){
+    		Usuario u = iterator.next();
+    		arvore.add(u.getLogin());
+    		atendentes.put(u.getLogin(), u);
+    	}
+    	arvore.forEach(a->{
+    		cbAtendentes.addItem(a);
+    	});
+    }
     public class Finalize implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			// TODO Auto-generated method stub
-			System.out.println("Valor da linha: "+tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
+			switch(arg0.getActionCommand()){
+			
+			}
+			//System.out.println("Valor da linha: "+tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 		}
     	
     }
@@ -134,5 +191,23 @@ public class ControllerTarefas implements ActionListener, MouseListener {
 					new ButtonColumn(table,11);
     				
     			}
+    }
+    private boolean validarDatas(){
+		Calendar calendar = Calendar.getInstance();
+		Calendar calendar2 = Calendar.getInstance();
+		try{
+			calendar.setTime(jData1.getDate());
+			calendar2.setTime(jData2.getDate());
+			return true;
+		}catch(NullPointerException e){
+			return false;
+		}
+	}
+    private boolean verificarSeHoje(Date data1,Date data2){
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    	return sdf.format(data1).equals(sdf.format(new Date())) && sdf.format(data1).equals(sdf.format(data2));
+    }
+    private void mostrarDatas(JPanel panel, boolean esconder){
+    	panel.setVisible(esconder);
     }
 }

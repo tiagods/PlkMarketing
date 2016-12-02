@@ -105,7 +105,8 @@ public class ControllerInicio implements ActionListener,MouseListener{
 						JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
-			return true;
+			else
+				return true;
 		}catch(NullPointerException e){
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
 					"Data incorreta\nPor favor verifique a(s) data(s) informada(s)!",
