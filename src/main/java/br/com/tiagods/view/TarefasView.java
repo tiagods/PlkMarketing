@@ -23,11 +23,11 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static JDateChooser jData2;
 	public static javax.swing.JButton btNovaTarefa;
 	public static javax.swing.JButton jButton1;
-	public static javax.swing.JCheckBox ckVisita;
-	public static javax.swing.JCheckBox ckReuniao;
-	public static javax.swing.JCheckBox ckProposta;
-	public static javax.swing.JCheckBox ckTelefone;
 	public static javax.swing.JCheckBox ckEmail;
+	public static javax.swing.JCheckBox ckProposta;
+	public static javax.swing.JCheckBox ckReuniao;
+	public static javax.swing.JCheckBox ckTelefone;
+	public static javax.swing.JCheckBox ckVisita;
 	public static javax.swing.JComboBox<String> cbAtendentes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
@@ -105,16 +105,16 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        ckEmail = new javax.swing.JCheckBox();
-        ckEmail.setBounds(392, 10, 73, 23);
+        ckVisita = new javax.swing.JCheckBox();
+        ckVisita.setBounds(392, 10, 73, 23);
         jLabel3 = new javax.swing.JLabel();
         jLabel3.setBounds(10, 14, 40, 14);
-        ckVisita = new javax.swing.JCheckBox();
-        ckVisita.setBounds(56, 10, 73, 23);
-        ckReuniao = new javax.swing.JCheckBox();
-        ckReuniao.setBounds(131, 10, 73, 23);
+        ckEmail = new javax.swing.JCheckBox();
+        ckEmail.setBounds(56, 10, 73, 23);
         ckProposta = new javax.swing.JCheckBox();
-        ckProposta.setBounds(208, 10, 90, 23);
+        ckProposta.setBounds(131, 10, 73, 23);
+        ckReuniao = new javax.swing.JCheckBox();
+        ckReuniao.setBounds(208, 10, 90, 23);
         ckTelefone = new javax.swing.JCheckBox();
         ckTelefone.setBounds(300, 10, 90, 23);
         jData1 = new JDateChooser();
@@ -210,19 +210,19 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         );
         pnData.setLayout(gl_pnData);
 
-        ckEmail.setBackground(getColor());
-        ckEmail.setText("E-mail");
-
-        jLabel3.setText("Filtro:");
-
         ckVisita.setBackground(getColor());
         ckVisita.setText("Visita");
 
-        ckReuniao.setBackground(getColor());
-        ckReuniao.setText("Reunião");
+        jLabel3.setText("Filtro:");
+
+        ckEmail.setBackground(getColor());
+        ckEmail.setText("E-mail");
 
         ckProposta.setBackground(getColor());
         ckProposta.setText("Proposta");
+
+        ckReuniao.setBackground(getColor());
+        ckReuniao.setText("Reuni\u00E3o");
 
         ckTelefone.setBackground(getColor());
         ckTelefone.setText("Telefone");
@@ -243,11 +243,11 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.setLayout(null);
         jPanel1.add(jPanel4);
         jPanel1.add(jLabel3);
-        jPanel1.add(ckVisita);
-        jPanel1.add(ckReuniao);
-        jPanel1.add(ckProposta);
-        jPanel1.add(ckTelefone);
         jPanel1.add(ckEmail);
+        jPanel1.add(ckProposta);
+        jPanel1.add(ckReuniao);
+        jPanel1.add(ckTelefone);
+        jPanel1.add(ckVisita);
         jPanel1.add(jLabel1);
         jPanel1.add(jLabel2);
         jPanel1.add(cbAtendentes);

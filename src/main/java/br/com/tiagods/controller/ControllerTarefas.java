@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.print.attribute.standard.DateTimeAtCompleted;
-import javax.swing.JOptionPane;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -50,12 +49,17 @@ public class ControllerTarefas implements ActionListener, MouseListener {
 	Usuario userSessao;
     Session session;
     Map<String,Usuario> atendentes = new HashMap();
-    
+
 	public void iniciar(Date data1, Date data2, Usuario usuario){
     	this.data1=data1;
     	this.data2=data2;
     	this.userSessao=usuario;
-    	try{
+			ativarBotao(ckVisita);
+			ativarBotao(ckReuniao);
+			ativarBotao(ckProposta);
+			ativarBotao(ckTelefone);
+			ativarBotao(ckEmail);
+			try{
     		jData1.setDate(data1);
     		jData2.setDate(data2);
     	}catch(Exception e){
@@ -65,7 +69,7 @@ public class ControllerTarefas implements ActionListener, MouseListener {
     		rbHoje.setSelected(true);
     		mostrarDatas(pnData, false);
     	}
-    	else{ 
+    	else{
     		rbDefinirData.setSelected(true);
     		mostrarDatas(pnData, true);
     	}
@@ -81,9 +85,11 @@ public class ControllerTarefas implements ActionListener, MouseListener {
     	List<Tarefa> tarefas = new TarefaDAO().filtrar(lista, session);
     	preencherTabela(tbPrincipal, tarefas, new JTextField());
     	session.close();
-    	//JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Essa tela ainda não esta pronta! Modo somente leitura");
+    	//JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Essa tela ainda nï¿½o esta pronta! Modo somente leitura");
     }
-	
+	public void ativarBotao(JCheckBox radio){
+		radio.setSelected(true);
+	}
 	public void mouseClicked(MouseEvent e) {
 		switch(e.getComponent().getName()){
 		case "Tudo":
@@ -101,20 +107,20 @@ public class ControllerTarefas implements ActionListener, MouseListener {
 		default:
 			break;
 		}
-		
+
 	}
     public void mousePressed(MouseEvent e) {}
     public void mouseReleased(MouseEvent e) {}
     public void mouseEntered(MouseEvent e) {}
     public void mouseExited(MouseEvent e) {}
     public void actionPerformed(ActionEvent e) {
-    	
+
     }
     private void carregarAtendentes(){
     	List<Usuario> lista = new UsuarioDAO().listar(Usuario.class,session);
     	cbAtendentes.removeAllItems();
     	cbAtendentes.addItem("Todos");
-    	
+
     	Set<String> arvore = new TreeSet();
     	Iterator<Usuario> iterator = lista.listIterator();
     	while(iterator.hasNext()){
@@ -131,66 +137,66 @@ public class ControllerTarefas implements ActionListener, MouseListener {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			switch(arg0.getActionCommand()){
-			
+
 			}
 			//System.out.println("Valor da linha: "+tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 		}
-    	
+
     }
     private void preencherTabela(JTable table, List<Tarefa> lista, JTextField txContador){
-    			Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
-    					"DETALHES","ATENDENTE", "FINALIZADO","ABRIR","EDITAR","EXCLUIR"};
-    			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
-    				boolean[] canEdit = new boolean[]{
-    					false,false,false,false,false,false,false,false,true,true,true,true
-    				};
-    				@Override
-    				public boolean isCellEditable(int rowIndex, int columnIndex) {
-    					return canEdit [columnIndex];
-    				}
-    				@Override
-    				public Class getColumnClass(int columnIndex) {
-    					return getValueAt(0, columnIndex).getClass();
-    				}
-    			};
-    			if(!lista.isEmpty()){
-    				for(int i=0;i<lista.size();i++){
-    					Tarefa t = lista.get(i);
-    					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-						SimpleDateFormat sdH = new SimpleDateFormat("HH:mm");
-    					
-						Object[] o = new Object[12];
-						o[0] = t.getId();
-						o[1] = sdf.format(t.getDataEvento())+" "+sdH.format(t.getHoraEvento());
-						o[2] = t.getTipoTarefa().getNome();
-						o[3] = t.getClasse();
-						if(Empresa.class.getSimpleName().equals(t.getClasse()))
-							o[4] = t.getEmpresa().getNome();
-						else if(Negocio.class.getSimpleName().equals(t.getClasse()))
-							o[4] = t.getNegocio().getNome();
-						else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
-							o[4] = t.getPessoa().getNome();
-						else
-							o[4] = "Erro";
-						o[5] = "Aberto";
-						o[6] = t.getDescricao();
-						o[7] = t.getAtendente().getLogin();
-						if(t.getFinalizado()==0)
-							o[8] =Boolean.FALSE;
-						else
-							o[8]=Boolean.TRUE;
-						o[9]= t.getClasse();
-						o[10] ="Editar";
-						o[11] ="Excluir";
-						model.addRow(o);
-    				}
-    				txContador.setText("Total: "+lista.size()+" registros");
-					table.setModel(model);
-					new ButtonColumn(table,9);
-					new ButtonColumn(table,10);
-					new ButtonColumn(table,11);
-    				
-    			}
+    	Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
+    			"DETALHES","ATENDENTE", "FINALIZADO","ABRIR","EDITAR","EXCLUIR"};
+    	DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+    		boolean[] canEdit = new boolean[]{
+    				false,false,false,false,false,false,false,false,true,true,true,true
+    		};
+    		@Override
+    		public boolean isCellEditable(int rowIndex, int columnIndex) {
+    			return canEdit [columnIndex];
+    		}
+    		@Override
+    		public Class getColumnClass(int columnIndex) {
+    			return getValueAt(0, columnIndex).getClass();
+    		}
+    	};
+    	if(!lista.isEmpty()){
+    		for(int i=0;i<lista.size();i++){
+    			Tarefa t = lista.get(i);
+    			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    			SimpleDateFormat sdH = new SimpleDateFormat("HH:mm");
+
+    			Object[] o = new Object[12];
+    			o[0] = t.getId();
+    			o[1] = sdf.format(t.getDataEvento())+" "+sdH.format(t.getHoraEvento());
+    			o[2] = t.getTipoTarefa().getNome();
+    			o[3] = t.getClasse();
+    			if(Empresa.class.getSimpleName().equals(t.getClasse()))
+    				o[4] = t.getEmpresa().getNome();
+    			else if(Negocio.class.getSimpleName().equals(t.getClasse()))
+    				o[4] = t.getNegocio().getNome();
+    			else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
+    				o[4] = t.getPessoa().getNome();
+    			else
+    				o[4] = "Erro";
+    			o[5] = "Aberto";
+    			o[6] = t.getDescricao();
+    			o[7] = t.getAtendente().getLogin();
+    			if(t.getFinalizado()==0)
+    				o[8] =Boolean.FALSE;
+    			else
+    				o[8]=Boolean.TRUE;
+    			o[9]= t.getClasse();
+    			o[10] ="Editar";
+    			o[11] ="Excluir";
+    			model.addRow(o);
+    		}
+    		txContador.setText("Total: "+lista.size()+" registros");
+    		table.setModel(model);
+    		new ButtonColumn(table,9);
+    		new ButtonColumn(table,10);
+    		new ButtonColumn(table,11);
+
+    	}
     }
     private boolean validarDatas(){
 		Calendar calendar = Calendar.getInstance();
