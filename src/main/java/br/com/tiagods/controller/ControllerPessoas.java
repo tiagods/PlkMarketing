@@ -86,7 +86,12 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	btnHistorico.setToolTipText(toolTip);
     	btnEmpresas.setEnabled(false);
     	btnEmpresas.setToolTipText(toolTip);
+    	definirAcoes();
     }
+	private void definirAcoes(){
+		data1.addPropertyChangeListener(this);
+		data2.addPropertyChangeListener(this);
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){

@@ -16,13 +16,14 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static JDateChooser jData1;
 	public static JDateChooser jData2;
 	public static javax.swing.JButton btNovaTarefa;
-	public static javax.swing.JButton jButton1;
 	public static javax.swing.JCheckBox ckEmail;
 	public static javax.swing.JCheckBox ckProposta;
 	public static javax.swing.JCheckBox ckReuniao;
@@ -39,8 +40,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     public static javax.swing.JRadioButton rbDefinirData;
-    public static javax.swing.JRadioButton rbPendentes;
-    public static javax.swing.JRadioButton rbFinalizadas;
+    public static javax.swing.JCheckBox ckPendentes;
+    public static javax.swing.JCheckBox ckFinalizados;
     public static javax.swing.JRadioButton rbTudo;
     public static javax.swing.JRadioButton rbEssaSemana;
     public static javax.swing.JRadioButton rbHoje;
@@ -54,7 +55,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     
     @Override
     public Color getColor() {
-    	// TODO Auto-generated method stub
     	return DefaultUtilities.super.getColor();
     }
 
@@ -75,10 +75,10 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         tbPrincipal = new javax.swing.JTable();
         jLabel15 = new javax.swing.JLabel();
         jLabel15.setBounds(5, 273, 69, 45);
-        rbPendentes = new javax.swing.JRadioButton();
-        rbPendentes.setBounds(420, 95, 93, 23);
-        rbFinalizadas = new javax.swing.JRadioButton();
-        rbFinalizadas.setBounds(515, 95, 93, 23);
+        ckPendentes = new javax.swing.JCheckBox();
+        ckPendentes.setBounds(420, 95, 93, 23);
+        ckFinalizados = new javax.swing.JCheckBox();
+        ckFinalizados.setBounds(515, 95, 93, 23);
         btNovaTarefa = new javax.swing.JButton();
         btNovaTarefa.setBounds(10, 52, 105, 24);
         rbTudo = new javax.swing.JRadioButton();
@@ -104,7 +104,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         pnData.setBounds(441, 52, 331, 23);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        
         ckVisita = new javax.swing.JCheckBox();
         ckVisita.setBounds(392, 10, 73, 23);
         jLabel3 = new javax.swing.JLabel();
@@ -132,38 +132,42 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel15.setText("{###}");
 
-        rbPendentes.setBackground(getColor());
-        rbPendentes.setText("Pendentes");
-
-        rbFinalizadas.setBackground(getColor());
-        rbFinalizadas.setText("Finalizadas");
-        ButtonGroup groupEstado = new ButtonGroup();
-        groupEstado.add(rbFinalizadas);
-        groupEstado.add(rbPendentes);
+        ckPendentes.setBackground(getColor());
+        ckPendentes.setText("Pendentes");
+        ckPendentes.setActionCommand("Status");
+        ckPendentes.addActionListener(controller);
         
+        ckFinalizados.setBackground(getColor());
+        ckFinalizados.setText("Finalizadas");
+        ckFinalizados.setActionCommand("Status");
+        ckFinalizados.addActionListener(controller);
+       
         btNovaTarefa.setText("Criar Tarefa");
         btNovaTarefa.setName("CriarTarefa");
+        btNovaTarefa.setActionCommand("CriarTarefa");
         btNovaTarefa.addActionListener(controller);
+        
+        String commandPrazo ="Prazo";
         
         rbTudo.setBackground(getColor());
         rbTudo.setText("Tudo");
-        rbTudo.setName("Tudo");
-        rbTudo.addMouseListener(controller);
+        rbTudo.setActionCommand(commandPrazo);
+        rbTudo.addActionListener(controller);
         
         rbEssaSemana.setBackground(getColor());
         rbEssaSemana.setText("Essa Semana");
-        rbEssaSemana.setName("EssaSemana");
-        rbEssaSemana.addMouseListener(controller);
+        rbEssaSemana.setActionCommand(commandPrazo);
+        rbEssaSemana.addActionListener(controller);
         
         rbHoje.setBackground(getColor());
         rbHoje.setText("Hoje");
-        rbHoje.setName("Hoje");
-        rbHoje.addMouseListener(controller);
+        rbHoje.setActionCommand(commandPrazo);
+        rbHoje.addActionListener(controller);
         
         rbDefinirData.setBackground(getColor());
         rbDefinirData.setText("Definir");
-        rbDefinirData.setName("Definir");
-        rbDefinirData.addMouseListener(controller);
+        rbDefinirData.setActionCommand(commandPrazo);
+        rbDefinirData.addActionListener(controller);
         
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("{#### Tarefas}");
@@ -180,12 +184,10 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel5.setText("até");
 
-        jButton1.setText("OK");
-
-        javax.swing.GroupLayout gl_pnData = new javax.swing.GroupLayout(pnData);
-        gl_pnData.setHorizontalGroup(
-        	gl_pnData.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_pnData.createSequentialGroup()
+        javax.swing.GroupLayout grLayout = new javax.swing.GroupLayout(pnData);
+        grLayout.setHorizontalGroup(
+        	grLayout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(grLayout.createSequentialGroup()
         			.addContainerGap()
         			.addComponent(jLabel4)
         			.addGap(4)
@@ -193,39 +195,54 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         			.addGap(18)
         			.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
         			.addGap(8)
-        			.addComponent(jData2, GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-        			.addGap(6)
-        			.addComponent(jButton1))
+        			.addComponent(jData2, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+        			.addGap(53))
         );
-        gl_pnData.setVerticalGroup(
-        	gl_pnData.createParallelGroup(Alignment.LEADING)
-        		.addGroup(Alignment.TRAILING, gl_pnData.createSequentialGroup()
-        			.addGroup(gl_pnData.createParallelGroup(Alignment.TRAILING)
-        				.addComponent(jData1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-        				.addComponent(jButton1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 12, Short.MAX_VALUE)
-        				.addComponent(jData2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        grLayout.setVerticalGroup(
+        	grLayout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(grLayout.createSequentialGroup()
+        			.addGroup(grLayout.createParallelGroup(Alignment.TRAILING)
+        				.addComponent(jData1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+        				.addComponent(jData2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
         				.addComponent(jLabel5, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(jLabel4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+        				.addComponent(jLabel4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
         			.addGap(11))
         );
-        pnData.setLayout(gl_pnData);
-
-        ckVisita.setBackground(getColor());
-        ckVisita.setText("Visita");
-
+        pnData.setLayout(grLayout);
+        
         jLabel3.setText("Filtro:");
 
+        String commandFiltro= "TipoTarefa";
         ckEmail.setBackground(getColor());
         ckEmail.setText("E-mail");
+        ckEmail.setName("Email");
+        ckEmail.setActionCommand(commandFiltro);
+        ckEmail.addMouseListener(controller);
 
         ckProposta.setBackground(getColor());
         ckProposta.setText("Proposta");
-
+        ckProposta.setName("Proposta");
+        ckProposta.setActionCommand(commandFiltro);
+        ckProposta.addMouseListener(controller);
+        
         ckReuniao.setBackground(getColor());
         ckReuniao.setText("Reuni\u00E3o");
-
+        ckReuniao.setName("Reuniao");
+        ckReuniao.setActionCommand(commandFiltro);
+        ckReuniao.addMouseListener(controller);
+        
         ckTelefone.setBackground(getColor());
         ckTelefone.setText("Telefone");
+        ckTelefone.setName("Telefone");
+        ckTelefone.setActionCommand(commandFiltro);
+        ckTelefone.addMouseListener(controller);
+        
+        ckVisita.setBackground(getColor());
+        ckVisita.setText("Visita");
+        ckVisita.setName("Visita");
+        ckVisita.setActionCommand(commandFiltro);
+        ckVisita.addMouseListener(controller);
+        
         jPanel4.setLayout(null);
         jPanel4.add(jLabel15);
         jPanel4.add(jScrollPane3);
@@ -251,8 +268,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.add(jLabel1);
         jPanel1.add(jLabel2);
         jPanel1.add(cbAtendentes);
-        jPanel1.add(rbPendentes);
-        jPanel1.add(rbFinalizadas);
+        jPanel1.add(ckPendentes);
+        jPanel1.add(ckFinalizados);
         jPanel1.add(btNovaTarefa);
         jPanel1.add(rbTudo);
         jPanel1.add(rbHoje);
@@ -263,26 +280,26 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jScrollPane1.setBounds(766, 142, 171, 126);
         jPanel1.add(jScrollPane1);
         jTable1 = new javax.swing.JTable();
-        
-                jTable1.setModel(new javax.swing.table.DefaultTableModel(
-                    new Object [][] {
-        
-                    },
-                    new String [] {
-                        "Tipo", "Qtde"
-                    }
-                ) {
-                    boolean[] canEdit = new boolean [] {
-                        false, false
-                    };
-        
-                    public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        return canEdit [columnIndex];
-                    }
-                });
-                jTable1.setGridColor(new java.awt.Color(255, 255, 255));
-                jScrollPane1.setViewportView(jTable1);
-                jScrollPane1.setVisible(false);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        		new Object [][] {
+
+        		},
+        		new String [] {
+        				"Tipo", "Qtde"
+        		}
+        		) {
+        	boolean[] canEdit = new boolean [] {
+        			false, false
+        	};
+        	@Override
+        	public boolean isCellEditable(int rowIndex, int columnIndex) {
+        		return canEdit [columnIndex];
+        	}
+        });
+        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setVisible(false);
         setBounds(0, 0, 1250, 660);
     }
 

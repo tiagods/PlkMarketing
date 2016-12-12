@@ -12,20 +12,20 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-public class ButtonColumn extends AbstractCellEditor
-        implements TableCellRenderer, TableCellEditor, ActionListener{
+public class ButtonColumnModel extends AbstractCellEditor
+        implements TableCellRenderer, TableCellEditor{
         JTable table;
         JButton renderButton;
         JButton editButton;
         String text;
-        public ButtonColumn(JTable table, int column)
+        public ButtonColumnModel(JTable table, int column)
         {
             super();
             this.table = table;
             renderButton = new JButton();
             editButton = new JButton();
             editButton.setFocusPainted( false );
-            editButton.addActionListener( this );
+            //editButton.addActionListener( this );
             TableColumnModel columnModel = table.getColumnModel();
             columnModel.getColumn(column).setCellRenderer( this );
             columnModel.getColumn(column).setCellEditor( this );
@@ -62,9 +62,13 @@ public class ButtonColumn extends AbstractCellEditor
         {
             return text;
         }
-        public void actionPerformed(ActionEvent e)
-        {
-            fireEditingStopped();
-            System.out.println( e.getActionCommand() + " : " + table.getSelectedRow());
+//        public void actionPerformed(ActionEvent e)
+//        {
+//            fireEditingStopped();
+//            //System.out.println( e.getActionCommand() + " : " + table.getSelectedRow());
+//        }
+        public JButton getButton(){
+        	return this.editButton;
         }
     }
+

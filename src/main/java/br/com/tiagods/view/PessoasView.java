@@ -147,9 +147,9 @@ public class PessoasView extends JInternalFrame {
         
         data1 = new JDateChooser();
         data1.setBounds(36, 11, 100, 20);
-        data1.addPropertyChangeListener(controller);
+        //data1.addPropertyChangeListener(controller);
         data2 = new JDateChooser();
-        data2.addPropertyChangeListener(controller);
+        //data2.addPropertyChangeListener(controller);
         data2.setBounds(36, 37, 100, 20);
         
         javax.swing.GroupLayout gl_pnCabecalho = new javax.swing.GroupLayout(pnCabecalho);
