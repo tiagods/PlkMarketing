@@ -42,6 +42,7 @@ import javax.swing.table.TableColumn;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
@@ -57,6 +58,7 @@ import br.com.tiagods.modelDAO.TarefaDAO;
 import br.com.tiagods.modelDAO.TipoTarefaDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.EmpresasView;
+import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumn;
@@ -74,7 +76,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	Set<TipoTarefa> tipoTarefas =  new HashSet<>();
 	Map<String,Usuario> atendentes = new HashMap<>();
 	Map<String,TipoTarefa> tipoTarefasMapa = new HashMap<>();
-
+	
+	String pendente = "Aberto";
+	String fechado = "Finalizado";
+	
 	public void iniciar(Date data1, Date data2, Usuario usuario){
 		this.userSessao=usuario;
 		long inicio = System.currentTimeMillis();
@@ -140,7 +145,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
 					tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), tbPrincipal.getSelectedColumn()), 
 					"Detalhes", 
-					JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.DEFAULT_OPTION);
 		}
 		else if(e.getComponent() instanceof JCheckBox){
 			JCheckBox ck = (JCheckBox)e.getComponent();
@@ -235,9 +240,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				Criterion criterion = Restrictions.between("dataEvento", jData1.getDate(), jData2.getDate());
 				criterios.add(criterion);
 		}
-		else{
+		else if(!validarDatas()){
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody,
-					"Data informada estï¿½ incorreta, \nVerifique o valor informado e tente novamente",
+					"Data informada esta incorreta, \nVerifique o valor informado e tente novamente",
 					"Erro na data!",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
@@ -267,7 +272,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		session.close();
 		return true;
 	}
-
+	
 	private void receberDatasSemana(){
 		LocalDate dataHoje = LocalDate.now();
 		DayOfWeek day = dataHoje.getDayOfWeek();
@@ -329,7 +334,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 
 				Object[] o = new Object[12];
 				o[0] = t.getId();
-				o[1] = sdf.format(t.getDataEvento())+" "+sdH.format(t.getHoraEvento());
+				String hora = sdf.format(t.getDataEvento())+" "+sdH.format(t.getHoraEvento());
+				
+				o[1] = hora;
 				o[2] = t.getTipoTarefa().getNome();
 				o[3] = t.getClasse();
 				if(Empresa.class.getSimpleName().equals(t.getClasse()))
@@ -340,7 +347,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 					o[4] = t.getPessoa().getNome();
 				else
 					o[4] = "Erro";
-				o[5] = "Aberto";
+				if(t.getFinalizado()==0)
+					o[5] = pendente;
+				else
+					o[5] = fechado;
 				o[6] = t.getDescricao();
 				o[7] = t.getAtendente().getLogin();
 				if(t.getFinalizado()==0)
@@ -382,7 +392,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			switch(e.getActionCommand()){
 			case "Finalizar":
 				finalizar(session);
-				System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
+				//System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
 				break;
 			case "Abrir":
 				abrirCadastro(session);
@@ -408,7 +418,33 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 
 	}
 	public void finalizar(Session session){
+		boolean value = (boolean)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 8);
+		int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
+		String status = (String)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 5);
+
+		if(!value && pendente.equals(status)){
+			TarefaDAO dao = new TarefaDAO();
+			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
+			thisTar.setFinalizado(1);
+			if(dao.salvar(thisTar, session)){
+				tbPrincipal.setValueAt(fechado, tbPrincipal.getSelectedRow(), 5);
+			}
+
+		}
+		else if(value && fechado.equals(status)){
+			TarefaDAO dao = new TarefaDAO();
+			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
+			thisTar.setFinalizado(0);
+			if(dao.salvar(thisTar, session)){
+				tbPrincipal.setValueAt(pendente, tbPrincipal.getSelectedRow(), 5);
+			}
+		}
 		
+		try{
+			Thread.sleep(2000);
+			buscar();
+		}catch (InterruptedException e) {
+		}
 	}
 	public void excluir(Session session){
 		int row = tbPrincipal.getSelectedRow();
@@ -417,23 +453,30 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				" relacionado a :"+tbPrincipal.getValueAt(row, 3)+" de nome:"+tbPrincipal.getValueAt(row, 4)+
 				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
 		if(i==JOptionPane.OK_OPTION){
-			System.out.println("Exclusao bem sucedida");
+			TarefaDAO dao = new TarefaDAO();
+			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
+			Tarefa tRemove = (Tarefa)dao.receberObjeto(Tarefa.class, id, session);
+			if(dao.excluir(tRemove, session))
+				buscar();
 		}
 	}
 	public void abrirCadastro(Session session){
-		Object value = tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 4);
-		if(value instanceof Empresa){
-			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
-			Empresa empresa = (Empresa) new EmpresaDAO().receberObjeto(Empresa.class, id, session);
+		String value = (String)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 3);
+		int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
+		Tarefa transfer = (Tarefa) new TarefaDAO().receberObjeto(Tarefa.class, id, session);
+		
+		if("Empresa".equals(value)){
+			Empresa empresa = transfer.getEmpresa();
 			EmpresasView viewEmpresas = new EmpresasView(empresa);
 			ControllerMenu.getInstance().abrirCorpo(viewEmpresas);
 		}
-		else if(value instanceof Negocio){
-			
+		else if("Negocio".equals(value)){
+			Negocio negocio = transfer.getNegocio();
+			NegociosView viewNegocios = new NegociosView();
+			ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 		}
-		else if(value instanceof Pessoa){
-			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
-			Pessoa pessoa = (Pessoa) new PessoaDAO().receberObjeto(Pessoa.class, id, session);
+		else if("Pessoa".equals(value)){
+			Pessoa pessoa = transfer.getPessoa();
 			PessoasView viewPessoa = new PessoasView(pessoa);
 			ControllerMenu.getInstance().abrirCorpo(viewPessoa);
 		}
