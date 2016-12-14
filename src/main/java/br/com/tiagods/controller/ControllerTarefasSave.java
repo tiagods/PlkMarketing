@@ -59,12 +59,12 @@ import br.com.tiagods.modelDAO.TipoTarefaDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.TarefasView;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
-public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener, ItemListener{
+public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, ItemListener{
 	@Override
 	public Object getObject(String valor) {
-		return DefaultModelComboBox.super.getObject(valor);
+		return DefaultEnumModel.super.getObject(valor);
 	}
 	Tarefa tarefa = null;
 	Tarefa tarefaBackup;

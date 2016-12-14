@@ -24,7 +24,7 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerTarefasSave;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
+import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {

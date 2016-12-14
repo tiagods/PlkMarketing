@@ -34,7 +34,7 @@ import br.com.tiagods.modelDAO.NivelDAO;
 import br.com.tiagods.modelDAO.OrigemDAO;
 import br.com.tiagods.modelDAO.ServicoDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
  * Essa classe é invocada pelos controllers de pessoa e empresa
  */
@@ -315,13 +315,13 @@ public class ControllerEmpresaPessoa {
     	case "Logradouro":
     		combo.removeAllItems();
     		combo.addItem("");
-    		combo.setModel(new DefaultComboBoxModel<>(DefaultModelComboBox.Logradouro.values()));
+    		combo.setModel(new DefaultComboBoxModel<>(DefaultEnumModel.Logradouro.values()));
     		combo.setSelectedItem("Rua");
     		if(endereco!=null){
     			combo.setSelectedItem(endereco.getLogradouro());
     		}
     		else
-    			combo.setSelectedItem(DefaultModelComboBox.Logradouro.valueOf("Rua"));
+    			combo.setSelectedItem(DefaultEnumModel.Logradouro.valueOf("Rua"));
     		break;
     		default:
     			break;

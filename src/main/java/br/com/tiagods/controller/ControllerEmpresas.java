@@ -41,7 +41,7 @@ import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /**
  *
  * @author Tiago
@@ -161,7 +161,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		txSite.setText(empresa.getPessoaJuridica().getSite());
 		
 		Endereco end = empresa.getEndereco();
-		cbLogradouro.setSelectedItem(DefaultModelComboBox.Logradouro.valueOf(end.getLogradouro()));
+		cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
 		txLogradouro.setText(end.getNome());
 		txNum.setText(end.getNumero());
 		txComplemento.setText(end.getComplemento());

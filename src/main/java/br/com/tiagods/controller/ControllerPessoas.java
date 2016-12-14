@@ -43,7 +43,7 @@ import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.modelDAO.PessoaDAO;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /**
  *
  * @author Tiago
@@ -168,7 +168,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txSite.setText(pessoa.getPessoaFisica().getSite());
 		
 		Endereco end = pessoa.getEndereco();
-		cbLogradouro.setSelectedItem(DefaultModelComboBox.Logradouro.valueOf(end.getLogradouro()));
+		cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
 		txLogradouro.setText(end.getNome());
 		txNum.setText(end.getNumero());
 		txComplemento.setText(end.getComplemento());

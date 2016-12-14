@@ -4,7 +4,7 @@ import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
 
-public interface DefaultModelComboBox {
+public interface DefaultEnumModel {
 	
 	public enum Modelos{
 		Empresa, Negocio, Pessoa

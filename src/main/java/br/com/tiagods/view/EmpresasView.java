@@ -29,7 +29,7 @@ import com.toedter.calendar.JDateChooser;
 import br.com.tiagods.controller.ControllerEmpresas;
 import br.com.tiagods.model.Empresa;
 import java.awt.Font;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Logradouro;
+import br.com.tiagods.view.interfaces.DefaultEnumModel.Logradouro;
 
 public class EmpresasView extends JInternalFrame {
 	public static javax.swing.JComboBox<Object> cbAtendente;
