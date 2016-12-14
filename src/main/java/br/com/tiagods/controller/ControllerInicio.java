@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,17 +58,29 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		//verificar permissão e carregar tarefas do's usuarios
 		int quant = new TarefaDAO().getQuantidade(usuario, new Date(), new Date(),session);
 		String[] nome = usuario.getNome().split(" ");
+		
+		LocalDateTime time = LocalDateTime.now();
+		String hey;
+		if(time.getHour()>=0 &&time.getHour()<12){
+			hey="Bom dia";
+		}
+		else if(time.getHour()>=12 && time.getHour()<18){
+			hey="Boa tarde";
+		}
+		else
+			hey = "Boa noite";
+		
 		switch(quant){
 		case 0:
-			String v1 = "Bom dia "+nome[0]+", você não tem tarefas pendentes para hoje!";
+			String v1 = hey+" "+nome[0]+", você não tem tarefas pendentes para hoje!";
 			lbInfoTarefas.setText(v1);
 			break;
 		case 1:
-			String v2 = "Bom dia "+nome[0]+",  você tem 1 tarefa pendente para hoje!Clique aqui...";
+			String v2 = hey+" "+nome[0]+",  você tem 1 tarefa pendente para hoje! Clique aqui...";
 			lbInfoTarefas.setText(v2);
 			break;
 		case 3:
-			String v3 = "Bom dia "+nome[0]+", você tem "+quant+" tarefas pendentes para hoje!Clique aqui...";
+			String v3 = hey+" "+nome[0]+", você tem "+quant+" tarefas pendentes para hoje! Clique aqui...";
 			lbInfoTarefas.setText(v3);
 			break;
 		default:

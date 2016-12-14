@@ -43,21 +43,23 @@ public class ControllerMenu implements ActionListener, MouseListener{
     	return instance;
     }
     
-    public void Inicia(){
+    public void iniciar(){
     	inicio = new InicioView();
         abrirCorpo(inicio);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
     	switch(e.getActionCommand()){
-    	 case "Tarefas":
-             tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
-             abrirCorpo(tarefas);
-             break;
-         case "TarefasSave":
-         	tarefasSave = new TarefasSaveView(null);
-         	abrirCorpo(tarefasSave);
-         	break;
+    	case "Tarefas":
+    		tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
+    		abrirCorpo(tarefas);
+    		break;
+    	case "TarefasSave":
+    		tarefasSave = new TarefasSaveView(null);
+    		abrirCorpo(tarefasSave);
+    		break;
+    	default:
+    		break;
     	}
     }
     @Override
@@ -80,7 +82,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
         	abrirCorpo(tarefasSave);
         	break;
         case "Negocios":
-        	negocios = new NegociosView();
+        	negocios = new NegociosView(null);
         	abrirCorpo(negocios);
             break;
         case "Pessoas":
@@ -93,13 +95,21 @@ public class ControllerMenu implements ActionListener, MouseListener{
     	}
     }
     @Override
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    	new UnsupportedOperationException();
+    }
     @Override
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    	new UnsupportedOperationException();
+    }
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    	new UnsupportedOperationException();
+    }
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    	new UnsupportedOperationException();
+    }
     
     public static void abrirCorpo(JInternalFrame jframe){
         jDBody.removeAll();
@@ -108,4 +118,5 @@ public class ControllerMenu implements ActionListener, MouseListener{
         jframe.setVisible(true);
     }
 
+    
 }

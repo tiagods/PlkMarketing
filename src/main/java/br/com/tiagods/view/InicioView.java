@@ -18,6 +18,7 @@ import javax.swing.SwingConstants;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerInicio;
+import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
@@ -28,7 +29,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
     public static JPanel pnStatus;
     public static JDateChooser jData1;
 	public static JDateChooser jData2;
-	public static JComboBox cbAtendentes;
+	public static DefaultComboBox cbAtendentes;
 	public static JButton btnOk;
 	
 	ControllerInicio controller = new ControllerInicio();
@@ -113,7 +114,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         
         pnStatus.add(lblCriadoPor);
         
-        cbAtendentes = new JComboBox();
+        cbAtendentes = new DefaultComboBox();
         pnStatus.add(cbAtendentes);
         
         JLabel lblDe = new JLabel("de:");

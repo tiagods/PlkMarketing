@@ -24,7 +24,8 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerTarefasSave;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Modelos;
+import br.com.tiagods.view.interfaces.DefaultComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
@@ -32,7 +33,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	public static JPanel panItem, panel;
 	public static JDateChooser txData;
 	public static JComboBox cbObject; 
-	public static JComboBox<String> cbAtendente;
+	public static DefaultComboBox cbAtendente;
 	public static JTextArea txDetalhes;
 	public static JLabel txCodigo, txNome;
 	public static JFormattedTextField txHora;
@@ -139,7 +140,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         JLabel lblResponsavel = new JLabel("Responsavel:");
         panEscolha.add(lblResponsavel);
         
-        cbAtendente = new JComboBox();
+        cbAtendente = new DefaultComboBox();
         cbAtendente.setPreferredSize(new Dimension(100,20));
         panEscolha.add(cbAtendente);
         

@@ -29,23 +29,25 @@ import com.toedter.calendar.JDateChooser;
 import br.com.tiagods.controller.ControllerEmpresas;
 import br.com.tiagods.model.Empresa;
 import java.awt.Font;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox.Logradouro;
+
+import br.com.tiagods.view.interfaces.DefaultComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel.Logradouro;
 
 public class EmpresasView extends JInternalFrame {
-	public static javax.swing.JComboBox<Object> cbAtendente;
-    public static javax.swing.JComboBox<String> cbCategoria;
-    public static javax.swing.JComboBox<String> cbCategoriaCad;
-    public static javax.swing.JComboBox<String> cbOrigem;
-    public static javax.swing.JComboBox<String> cbEmpresa;
-    public static javax.swing.JComboBox<String> cbProdServicos;
-    public static javax.swing.JComboBox<String> cbLogradouro;
-    public static javax.swing.JComboBox<String> cbOrigemCad;
-    public static javax.swing.JComboBox<String> cbNivel;
-    public static javax.swing.JComboBox<String> cbNivelCad;
-    public static javax.swing.JComboBox cbEstado;   
-    public static javax.swing.JComboBox<String> cbAtendenteCad;
-    public static javax.swing.JComboBox<String> cbProdServicosCad;
-    public static javax.swing.JComboBox<String> cbCidade;
+	public static DefaultComboBox cbAtendente;
+    public static DefaultComboBox cbCategoria;
+    public static DefaultComboBox cbCategoriaCad;
+    public static DefaultComboBox cbOrigem;
+    public static DefaultComboBox cbEmpresa;
+    public static DefaultComboBox cbProdServicos;
+    public static javax.swing.JComboBox cbLogradouro;
+    public static DefaultComboBox cbOrigemCad;
+    public static DefaultComboBox cbNivel;
+    public static DefaultComboBox cbNivelCad;
+    public static DefaultComboBox cbEstado;   
+    public static DefaultComboBox cbAtendenteCad;
+    public static DefaultComboBox cbProdServicosCad;
+    public static DefaultComboBox cbCidade;
     public static javax.swing.JPanel jPanel1;
     public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
@@ -95,10 +97,10 @@ public class EmpresasView extends JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         pnCabecalho = new javax.swing.JPanel();
         pnCabecalho.setBounds(0, 0, 1240, 69);
-        cbAtendente = new javax.swing.JComboBox<>();
-        cbCategoria = new javax.swing.JComboBox<>();
-        cbOrigem = new javax.swing.JComboBox<>();
-        cbEmpresa = new javax.swing.JComboBox<>();
+        cbAtendente = new DefaultComboBox();
+        cbCategoria = new DefaultComboBox();
+        cbOrigem = new DefaultComboBox();
+        cbEmpresa = new DefaultComboBox();
         setBorder(null);
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
@@ -127,7 +129,7 @@ public class EmpresasView extends JInternalFrame {
         cbEmpresa.addItemListener(controller);
         cbEmpresa.setModel(new DefaultComboBoxModel(new String[] {"Empresa"}));
         
-        cbProdServicos = new JComboBox<String>();
+        cbProdServicos = new DefaultComboBox();
         cbProdServicos.setName("Produtos/Serviços");
         cbProdServicos.addItemListener(controller);
         cbProdServicos.setModel(new DefaultComboBoxModel(new String[] {"Produtos/Servicos"}));
@@ -154,7 +156,7 @@ public class EmpresasView extends JInternalFrame {
         data2.addPropertyChangeListener(controller);
         data2.setBounds(36, 37, 100, 20);
         
-        cbNivel = new JComboBox<String>();
+        cbNivel = new DefaultComboBox();
         cbNivel.setModel(new DefaultComboBoxModel(new String[] {"Nivel"}));
         cbNivel.setName("Nivel");
         cbNivel.setBackground(new Color(250, 250, 250));
@@ -231,7 +233,7 @@ public class EmpresasView extends JInternalFrame {
         lbTelefone.setBounds(10, 154, 56, 20);
         pnPrincipal.add(lbTelefone);
         
-        cbLogradouro = new JComboBox<String>();
+        cbLogradouro = new DefaultComboBox();
         cbLogradouro.setModel(new DefaultComboBoxModel(Logradouro.values()));
         cbLogradouro.setName("Logradouro");
         cbLogradouro.setBounds(10, 214, 87, 20);
@@ -257,7 +259,7 @@ public class EmpresasView extends JInternalFrame {
         lbMeio.setBounds(385, 96, 50, 18);
         pnPrincipal.add(lbMeio);
         
-        cbOrigemCad = new JComboBox<String>();
+        cbOrigemCad = new DefaultComboBox();
         cbOrigemCad.setName("OrigemCad");
         cbOrigemCad.setBounds(438, 96, 92, 20);
         pnPrincipal.add(cbOrigemCad);
@@ -287,7 +289,7 @@ public class EmpresasView extends JInternalFrame {
         lbEstado.setBounds(384, 275, 52, 19);
         pnPrincipal.add(lbEstado);
         
-        cbEstado = new JComboBox<String>();
+        cbEstado = new DefaultComboBox();
         cbEstado.setName("Estado");
         cbEstado.addItemListener(controller);
         cbEstado.setBounds(107, 276, 52, 20);
@@ -398,7 +400,7 @@ public class EmpresasView extends JInternalFrame {
         lbAtendente.setBounds(385, 42, 87, 17);
         pnPrincipal.add(lbAtendente);
         
-        cbAtendenteCad = new JComboBox<String>();
+        cbAtendenteCad = new DefaultComboBox();
         cbAtendenteCad.setName("AtendenteCad");
         cbAtendenteCad.setBounds(476, 40, 92, 20);
         pnPrincipal.add(cbAtendenteCad);
@@ -479,7 +481,7 @@ public class EmpresasView extends JInternalFrame {
         btAddProdServicos.setBounds(564, 123, 36, 23);
         pnPrincipal.add(btAddProdServicos);
         
-        cbProdServicosCad = new JComboBox();
+        cbProdServicosCad = new DefaultComboBox();
         cbProdServicosCad.setName("ServicosCad");
         cbProdServicosCad.setBounds(438, 126, 116, 20);
         pnPrincipal.add(cbProdServicosCad);
@@ -494,7 +496,7 @@ public class EmpresasView extends JInternalFrame {
         button_13.setBounds(203, 123, 36, 23);
         pnPrincipal.add(button_13);
         
-        cbCategoriaCad = new JComboBox<String>();
+        cbCategoriaCad = new DefaultComboBox();
         cbCategoriaCad.setName("CategoriaCad");
         cbCategoriaCad.setBounds(107, 126, 87, 20);
         pnPrincipal.add(cbCategoriaCad);
@@ -504,7 +506,7 @@ public class EmpresasView extends JInternalFrame {
         lbCategoria.setBounds(10, 126, 87, 18);
         pnPrincipal.add(lbCategoria);
         
-        cbCidade = new JComboBox<String>();
+        cbCidade = new DefaultComboBox();
         cbCidade.setName("Cidade");
         cbCidade.setBounds(438, 276, 128, 20);
         pnPrincipal.add(cbCidade);
@@ -536,7 +538,7 @@ public class EmpresasView extends JInternalFrame {
         btnExcluir.setBounds(438, 306, 90, 23);
         pnPrincipal.add(btnExcluir);
         
-        cbNivelCad = new JComboBox<String>();
+        cbNivelCad = new DefaultComboBox();
         cbNivelCad.setName("NivelCad");
         cbNivelCad.setBounds(107, 96, 87, 20);
         pnPrincipal.add(cbNivelCad);

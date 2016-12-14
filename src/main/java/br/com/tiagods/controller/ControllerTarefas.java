@@ -105,6 +105,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 		session = HibernateFactory.getSession();
 		carregarAtendentes();
+		cbAtendentes.setSelectedItem(usuario.getLogin());
 		carregarTipoTarefas();
 		List<Criterion> lista = new ArrayList();
 		Criterion criterio =  Restrictions.eq("atendente", usuario);
@@ -157,7 +158,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				tipoTarefas.remove(tipoTarefasMapa.get(ck.getName()));
 				buscar();
 			}
-
 		}
 
 	}
@@ -399,8 +399,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
 				break;
 			case "Editar":
-				int linha = tbPrincipal.getSelectedRow();
-				int valor = (int) tbPrincipal.getModel().getValueAt(linha, 0);
+				int valor = (int) tbPrincipal.getModel().getValueAt(tbPrincipal.getSelectedRow(), 0);
 				Tarefa tarefa = (Tarefa)new TarefaDAO().receberObjeto(Tarefa.class, valor, session);
 				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa);
 				ControllerMenu.getInstance().abrirCorpo(viewTarefas);
@@ -472,7 +471,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 		else if("Negocio".equals(value)){
 			Negocio negocio = transfer.getNegocio();
-			NegociosView viewNegocios = new NegociosView();
+			NegociosView viewNegocios = new NegociosView(negocio);
 			ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 		}
 		else if("Pessoa".equals(value)){

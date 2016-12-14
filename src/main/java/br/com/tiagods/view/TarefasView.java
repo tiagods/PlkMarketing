@@ -13,6 +13,7 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerTarefas;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 import javax.swing.ButtonGroup;
@@ -29,7 +30,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static javax.swing.JCheckBox ckReuniao;
 	public static javax.swing.JCheckBox ckTelefone;
 	public static javax.swing.JCheckBox ckVisita;
-	public static javax.swing.JComboBox<String> cbAtendentes;
+	public static DefaultComboBox cbAtendentes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
@@ -97,7 +98,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel1.setBounds(669, 10, 90, 23);
         jLabel2 = new javax.swing.JLabel();
         jLabel2.setBounds(782, 10, 30, 23);
-        cbAtendentes = new javax.swing.JComboBox<>();
+        cbAtendentes = new DefaultComboBox();
         cbAtendentes.setBounds(822, 11, 105, 20);
         pnData = new javax.swing.JPanel();
         pnData.setVisible(false);

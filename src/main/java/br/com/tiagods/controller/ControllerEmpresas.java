@@ -6,6 +6,7 @@ package br.com.tiagods.controller;
 import static br.com.tiagods.view.MenuView.jDBody;
 import static br.com.tiagods.view.EmpresasView.*;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -24,16 +25,20 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.DataException;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Cidade;
@@ -41,13 +46,13 @@ import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /**
  *
  * @author Tiago
  */
 public class ControllerEmpresas implements ActionListener,KeyListener,ItemListener,MouseListener,PropertyChangeListener{
-	ControllerEmpresaPessoa padrao = new ControllerEmpresaPessoa();
+	PadraoMap padrao = new PadraoMap();
 	List<Empresa> listaEmpresas;
 	
 	Session session=null;
@@ -66,10 +71,10 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     		preencherComboBox(panel);
     	}
     	listaEmpresas = (List<Empresa>)(new EmpresaDAO().listar(Empresa.class, session));
-    	padrao.preencherTabela(listaEmpresas, tbPrincipal, Empresa.class,txContador);
+    	preencherTabela(listaEmpresas, tbPrincipal,txContador);
     	if(!listaEmpresas.isEmpty() && empresa==null){
-    		empresa = listaEmpresas.get(0);
-    		preencherFormulario(empresa);
+    		this.empresa = listaEmpresas.get(0);
+    		preencherFormulario(this.empresa);
     	}
     	else if(empresa!=null){
     		preencherFormulario(empresa);
@@ -125,20 +130,9 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	}
 	@SuppressWarnings("rawtypes")
 	private void preencherComboBox(JPanel panel){
-		for(int i=0;i<panel.getComponentCount();i++){
-			if(panel.getComponent(i) instanceof JComboBox){
-				if(empresa==null){
-					padrao.preencherCombo((JComboBox)panel.getComponent(i),session, null,
-							null,null,null,null,null,cbEstado);
-				}
-				else{
-					padrao.preencherCombo((JComboBox)panel.getComponent(i),session, 
-							empresa.getPessoaJuridica().getAtendente(),
-							null,empresa.getPessoaJuridica().getCategoria(),
-							empresa.getPessoaJuridica().getOrigem(),
-							empresa.getPessoaJuridica().getServico(),
-							empresa.getEndereco(), cbEstado);
-				}
+		for(Component component : panel.getComponents()){
+			if(component instanceof JComboBox){
+				padrao.preencherCombo((JComboBox)component,session, cbEstado);
 			}
 		}
 	}
@@ -161,7 +155,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		txSite.setText(empresa.getPessoaJuridica().getSite());
 		
 		Endereco end = empresa.getEndereco();
-		cbLogradouro.setSelectedItem(DefaultModelComboBox.Logradouro.valueOf(end.getLogradouro()));
+		cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
 		txLogradouro.setText(end.getNome());
 		txNum.setText(end.getNumero());
 		txComplemento.setText(end.getComplemento());
@@ -212,7 +206,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			}
 		}
 		if(!lista.isEmpty()){
-			padrao.preencherTabela(lista, tbPrincipal, Empresa.class,txContador);
+			preencherTabela(lista, tbPrincipal,txContador);
 		}else{
 			JOptionPane.showMessageDialog(jDBody,"Não foi encontrado registros com o criterio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
@@ -227,43 +221,42 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			if(cbEstado.getSelectedItem()!=null){
 				boolean openHere = recebeSessao();
 				if("Estado".equals(combo.getName())){
-					padrao.preencherCombo(cbCidade,session, null,null,null,null,null,null,cbEstado);
+					//padrao.preencherCombo(cbCidade,session,cbEstado);
 				}
 				else
 					realizarFiltro();
 				fechaSessao(openHere);
 			}
 		}
-		
 	}
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	private void realizarFiltro(){
 		if(!telaEmEdicao){
-		Criteria criteria = session.createCriteria(Empresa.class);
-		criteria.addOrder(Order.asc("id"));
-		if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
-			criteria.add(Restrictions.eq("pessoaJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
-		if(!cbNivel.getSelectedItem().equals(cbNivel.getName()))
-			criteria.add(Restrictions.eq("nivel", padrao.getNiveis((String)cbNivel.getSelectedItem())));
-		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))	
-			criteria.add(Restrictions.eq("pessoaJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
-		if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
-			criteria.add(Restrictions.eq("pessoaJuridica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
-		if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
-			criteria.add(Restrictions.eq("pessoaJuridica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
-		if(!"".equals(txBuscar.getText().trim()))
-			criteria.add(Restrictions.like("nome", txBuscar.getText().trim()+"%"));
-		try{
-			Date data01 = data1.getDate();
-			Date data02 = data2.getDate();
-			if(data02.compareTo(data01)>=0){
-				criteria.add(Restrictions.between("pessoaJuridica.criadoEm", data01, data02));
+			Criteria criteria = session.createCriteria(Empresa.class);
+			criteria.addOrder(Order.asc("id"));
+			if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
+				criteria.add(Restrictions.eq("pessoaJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
+			if(!cbNivel.getSelectedItem().equals(cbNivel.getName()))
+				criteria.add(Restrictions.eq("nivel", padrao.getNiveis((String)cbNivel.getSelectedItem())));
+			if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))	
+				criteria.add(Restrictions.eq("pessoaJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
+			if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
+				criteria.add(Restrictions.eq("pessoaJuridica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
+			if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
+				criteria.add(Restrictions.eq("pessoaJuridica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
+			if(!"".equals(txBuscar.getText().trim()))
+				criteria.add(Restrictions.like("nome", txBuscar.getText().trim()+"%"));
+			try{
+				Date data01 = data1.getDate();
+				Date data02 = data2.getDate();
+				if(data02.compareTo(data01)>=0){
+					criteria.add(Restrictions.between("pessoaJuridica.criadoEm", data01, data02));
+				}
+			}catch(NullPointerException e){
+				e.getMessage();
 			}
-		}catch(NullPointerException e){
-			
-		}
-		List<Empresa> lista = criteria.list();
-		padrao.preencherTabela(lista, tbPrincipal, Empresa.class,txContador);
+			List<Empresa> lista = criteria.list();
+			preencherTabela(lista, tbPrincipal, txContador);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edição ou cancele para poder realizar novas buscas!","Em edição...",JOptionPane.INFORMATION_MESSAGE);
@@ -401,7 +394,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(salvo) {
 			openHere = recebeSessao();
 			listaEmpresas = (List<Empresa>)new EmpresaDAO().listar(Empresa.class, session);
-	    	padrao.preencherTabela(listaEmpresas, tbPrincipal, Empresa.class,txContador);
+	    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
 		}
     }
@@ -420,7 +413,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				limparFormulario(pnPrincipal);
 				openHere = recebeSessao();
 				listaEmpresas = (List<Empresa>)dao.listar(Empresa.class, session);
-		    	padrao.preencherTabela(listaEmpresas, tbPrincipal, Empresa.class,txContador);
+		    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 		    	fechaSessao(openHere);
 			}
 		}
@@ -437,8 +430,45 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			}
 		}catch (NullPointerException e) {
 		}
-		
-		
+	}
+	@SuppressWarnings({ "serial", "unchecked", "rawtypes" })
+	public void preencherTabela(List list, JTable table, JLabel txContadorRegistros){
+		List<Empresa> lista = (List<Empresa>)list;
+		String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+		table.removeAll();
+		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+			boolean[] canEdit = new boolean[]{
+					false,false,false,false,false,false,false
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+		};
+		if(!lista.isEmpty()){
+			for(int i=0;i<lista.size();i++){
+				Empresa em= lista.get(i);
+				Object[] linha = new Object[7];
+				linha[0] = ""+em.getId(); 
+				linha[1] = em.getNome();
+				linha[2] = em.getNivel()==null?"":em.getNivel().getNome();
+				linha[3] = em.getPessoaJuridica().getCategoria()==null?"":em.getPessoaJuridica().getCategoria().getNome();
+				linha[4] = em.getPessoaJuridica().getOrigem()==null?"":em.getPessoaJuridica().getOrigem().getNome();
+				try{
+					Date criadoEm = em.getPessoaJuridica().getCriadoEm();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					linha[5] = sdf.format(criadoEm);
+				}catch (NumberFormatException e) {
+					linha[5] = "";
+				}
+				linha[6] = em.getPessoaJuridica().getAtendente()==null?"":em.getPessoaJuridica().getAtendente().getLogin();
+				model.addRow(linha);
+				txContadorRegistros.setText("Total: "+lista.size()+" registros");
+				table.setModel(model);
+			}
+		}
+		table.setAutoCreateRowSorter(true);
+		table.setSelectionBackground(Color.CYAN);
 	}
 }
 

@@ -30,12 +30,12 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.modelDAO.EmpresaDAO;
 import br.com.tiagods.modelDAO.NegocioDAO;
 import br.com.tiagods.modelDAO.PessoaDAO;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
-public class SelecaoObjeto extends JDialog implements DefaultModelComboBox{
+public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 	@Override
 	public Object getObject(String valor) {
-		return DefaultModelComboBox.super.getObject(valor);
+		return DefaultEnumModel.super.getObject(valor);
 	}
 	private final JPanel contentPanel = new JPanel();
 	private JTable tbRelacao;

@@ -59,19 +59,21 @@ import br.com.tiagods.modelDAO.TipoTarefaDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.TarefasView;
-import br.com.tiagods.view.interfaces.DefaultModelComboBox;
+import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
-public class ControllerTarefasSave implements DefaultModelComboBox, ActionListener, ItemListener{
+public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, ItemListener{
 	@Override
 	public Object getObject(String valor) {
-		return DefaultModelComboBox.super.getObject(valor);
+		return DefaultEnumModel.super.getObject(valor);
 	}
 	Tarefa tarefa = null;
 	Tarefa tarefaBackup;
 	String item = "";
 	
-	HashMap<String, TipoTarefa> tipoTarefas = new HashMap();  
-	HashMap<String, Usuario> usuarios = new HashMap();  
+	PadraoMap padrao = new PadraoMap();
+	
+	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
+	HashMap<String, Usuario> usuarios = new HashMap<>();  
 	
 	Session session = null;
 	//se for null o formulario nao sera preenchido
@@ -167,7 +169,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 								calendar.set(1900, 01, 01, Integer.parseInt(horas), Integer.parseInt(minutos));
 								tarefa.setHoraEvento(calendar.getTime());
 							}else{
-								builder.append("Hora incorreta");
+								builder.append("Valor da Hora incorreta");
 								builder.append("\n");
 								continuar=false;
 							}
@@ -176,7 +178,7 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 							builder.append("\n");
 							continuar=false;
 						}
-					}catch (Exception e) {
+					}catch (NumberFormatException e) {
 						builder.append("Hora incorreta");
 						builder.append("\n");
 						continuar=false;
@@ -227,24 +229,11 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 				salvarCancelar();
 			}
 			break;
-		case "Email":
-			setarSelecao();
-			break;
-		case "Proposta":
-			setarSelecao();
-			break;
-		case "Reuniao":
-			setarSelecao();
-			break;
-		case "Telefone":
-			setarSelecao();
-			break;
-		case "Visita":
+		default:
 			setarSelecao();
 			break;
 		}
 	}
-	
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
 		List<Usuario> lista = new UsuarioDAO().listar(Usuario.class, session);
@@ -274,7 +263,6 @@ public class ControllerTarefasSave implements DefaultModelComboBox, ActionListen
 			enviarDados(radio, tarefa, nome[0],String.valueOf(id));
 			}
 	}
-	
 	private JRadioButton recuperaRadio(String item){
 		if("Email".equals(item))
 			return rdbtnEmail;

@@ -18,7 +18,7 @@ public class NivelDAO implements InterfaceDAO {
 
 	@Override
 	public List listar(Class classe, Session session) {
-		return session.createQuery("from "+classe.getSimpleName()).getResultList();
+		return session.createQuery("from "+classe.getSimpleName()+" c order by c.nome").getResultList();
 	}
 
 	@Override

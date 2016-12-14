@@ -26,11 +26,12 @@ public class Negocio implements Serializable{
 	private Date envioProposta;
 	private Date followUp;
 	private Date fechamento;
-	private Set<Tarefa> tarefas = new LinkedHashSet<Tarefa>();
+	private Set<Tarefa> tarefas = new LinkedHashSet<>();
 	private Empresa empresa;
 	private Pessoa pessoa;
-	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<ServicoContratado>();
+	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	private BigDecimal honorario;
+	private Origem origem;
 	
 	/**
 	 * @return the id
@@ -274,6 +275,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setServicosContratados(Set<ServicoContratado> servicosContratados) {
 		this.servicosContratados = servicosContratados;
+	}
+	/**
+	 * @return the origem
+	 */
+	public Origem getOrigem() {
+		return origem;
+	}
+	/**
+	 * @param origem the origem to set
+	 */
+	public void setOrigem(Origem origem) {
+		this.origem = origem;
 	}
 		
 }

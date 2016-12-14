@@ -2,21 +2,12 @@ package br.com.tiagods.modelDAO;
 
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
-public class EmpresaDAO implements InterfaceDAO {
+public class StatusDAO implements InterfaceDAO {
 
 	@Override
 	public boolean salvar(Object classe, Session session) {
-		try{
-			session.saveOrUpdate(classe);
-			session.getTransaction().commit();
-			return true;
-		}catch (HibernateException e) {
-			e.printStackTrace();
-			session.getTransaction().rollback();
-		}
 		return false;
 	}
 
@@ -28,9 +19,8 @@ public class EmpresaDAO implements InterfaceDAO {
 
 	@Override
 	public List listar(Class classe, Session session) {
-		return session.createQuery("from "+classe.getSimpleName()+" e order by e.id").getResultList();
+		return session.createQuery("from "+classe.getSimpleName()+" c order by c.nome").getResultList();
 	}
-
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
 		return session.get(classe, id);

@@ -15,6 +15,11 @@ import br.com.tiagods.controller.ControllerMenu;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class MenuView extends JFrame implements DefaultUtilities{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	ControllerMenu controller = ControllerMenu.getInstance();
 	
     public static javax.swing.JDesktopPane jDBody;
@@ -22,7 +27,6 @@ public class MenuView extends JFrame implements DefaultUtilities{
     
     @Override
     public Color getColor() {
-    	// TODO Auto-generated method stub
     	return DefaultUtilities.super.getColor();
     }
 	/**
@@ -30,13 +34,11 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
-					MenuView frame = new MenuView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+					new MenuView().setVisible(true);
+				} catch (RuntimeException e) {e.getMessage();}
 			}
 		});
 	}
@@ -46,11 +48,10 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	 */
 	public MenuView() {
 		initComponents();
-		controller.Inicia();
+		controller.iniciar();
 	}
 	public void initComponents(){
 		getContentPane().setBackground(getColor());
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//setBounds(100, 100, 450, 300);
 
         pnPrincipal = new javax.swing.JPanel();
@@ -72,18 +73,18 @@ public class MenuView extends JFrame implements DefaultUtilities{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
-        GroupLayout gl_pnPrincipal = new GroupLayout(pnPrincipal);
-        gl_pnPrincipal.setHorizontalGroup(
-        	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+        GroupLayout groupLayoutPrincipal = new GroupLayout(pnPrincipal);
+        groupLayoutPrincipal.setHorizontalGroup(
+        	groupLayoutPrincipal.createParallelGroup(Alignment.LEADING)
         		.addComponent(jDBody, GroupLayout.DEFAULT_SIZE, 1263, Short.MAX_VALUE)
         );
-        gl_pnPrincipal.setVerticalGroup(
-        	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_pnPrincipal.createSequentialGroup()
+        groupLayoutPrincipal.setVerticalGroup(
+        	groupLayoutPrincipal.createParallelGroup(Alignment.LEADING)
+        		.addGroup(groupLayoutPrincipal.createSequentialGroup()
         			.addComponent(jDBody, GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)
         			.addContainerGap())
         );
-        pnPrincipal.setLayout(gl_pnPrincipal);
+        pnPrincipal.setLayout(groupLayoutPrincipal);
 
         setSize(new Dimension(1280, 723));
         setLocationRelativeTo(null);

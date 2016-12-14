@@ -14,7 +14,11 @@ import javax.swing.table.TableColumnModel;
 
 public class ButtonColumnModel extends AbstractCellEditor
         implements TableCellRenderer, TableCellEditor{
-        JTable table;
+        /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2516017885760546736L;
+		JTable table;
         JButton renderButton;
         JButton editButton;
         String text;

@@ -36,7 +36,8 @@
 		<key column="SER_CON_NEGOCIO_COD"/>
 		<one-to-many class="ServicoContratado"/>
  	</set>
-    <property name="honorario" column="NEG_HONORARIO" type="big_decimal"></property>
+    <property name="honorario" column="NEG_HONORARIO" type="big_decimal"/>
+    <many-to-one name="origem" column="NEG_ORIGEM_COD" foreign-key="FK_NEG_ORIGEM_COD"/>
 	</class>
 </hibernate-mapping>
 
