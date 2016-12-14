@@ -30,6 +30,10 @@ import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static JPanel panItem, panel;
 	public static JDateChooser txData;
 	public static JComboBox cbObject; 
