@@ -42,6 +42,7 @@ public class MyJFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings("unchecked")
 	public MyJFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -59,6 +60,8 @@ public class MyJFrame extends JFrame {
 		
 		DefaultListModel model = new DefaultListModel();
 		JList list = new JList(model);
+		
+		
 		
 		model.add(0,"item 1");
 		model.add(1,"item 2");
