@@ -221,7 +221,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			if(cbEstado.getSelectedItem()!=null){
 				boolean openHere = recebeSessao();
 				if("Estado".equals(combo.getName())){
-					//padrao.preencherCombo(cbCidade,session,cbEstado);
+					padrao.preencherCombo(cbCidade,session,cbEstado);
 				}
 				else
 					realizarFiltro();

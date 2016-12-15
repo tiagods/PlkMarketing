@@ -84,7 +84,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
-    	String toolTip = "Essa opção não esta liberado porque depende da conclusão de outro modulo, aguarde...";
+    	String toolTip = "Essa opção não foi liberada porque depende da conclusão de outro modulo, aguarde...";
     	btnHistorico.setEnabled(false);
     	btnHistorico.setToolTipText(toolTip);
     	btnNegocios.setEnabled(false);

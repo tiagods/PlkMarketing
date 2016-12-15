@@ -223,27 +223,27 @@ public class Autocomplete extends PlainDocument {
         return 0;
     }
     
-    private static void createAndShowGUI() {
-        // the combo box (add/modify items if you like to)
-        JComboBox comboBox = new JComboBox(new Object[] {"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
-        // has to be editable
-        comboBox.setEditable(true);
-        // change the editor's document
-        new Autocomplete(comboBox);
-        
-        // create and show a window containing the combo box
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(3);
-        frame.getContentPane().add(comboBox);
-        frame.pack(); frame.setVisible(true);
-    }
+//    private static void createAndShowGUI() {
+//        // the combo box (add/modify items if you like to)
+//        JComboBox comboBox = new JComboBox(new Object[] {"Ester", "Jordi", "Jordina", "Jorge", "Sergi"});
+//        // has to be editable
+//        comboBox.setEditable(true);
+//        // change the editor's document
+//        new Autocomplete(comboBox);
+//        
+//        // create and show a window containing the combo box
+//        JFrame frame = new JFrame();
+//        frame.setDefaultCloseOperation(3);
+//        frame.getContentPane().add(comboBox);
+//        frame.pack(); frame.setVisible(true);
+//    }
     
     
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+//            public void run() {
+//                createAndShowGUI();
+//            }
+//        });
+//    }
 }

@@ -89,7 +89,6 @@ public class PessoasView extends JInternalFrame {
 		txContador.setBounds(780, 235, 150, 14);
 		jPanel1.add(txContador);
 		controller.iniciar(pessoa);
-		cbCidade.setEditable(true);
 		
 	}
 	private void initComponents() {

@@ -37,6 +37,7 @@ import br.com.tiagods.modelDAO.OrigemDAO;
 import br.com.tiagods.modelDAO.ServicoDAO;
 import br.com.tiagods.modelDAO.StatusDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
+import br.com.tiagods.view.interfaces.Autocomplete;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
  * Essa classe é invocada pelos controllers de pessoa e empresa
@@ -206,7 +207,7 @@ public class PadraoMap {
     		combo.addItem("");
     		if(comboEstado.getSelectedItem()!=null){
     			combo.removeAllItems();
-				List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
+    			List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
 						.setParameter("nomeEstado", comboEstado.getSelectedItem().toString()).getResultList();
 				cidades = new HashMap();
 				combo.addItem("");
@@ -217,6 +218,8 @@ public class PadraoMap {
 					});
 				}
 				combo.setSelectedItem("");
+				combo.setEditable(true);
+				new Autocomplete(combo);
     		}
     		break;
     	case "Estado":
