@@ -17,7 +17,6 @@ import javax.swing.table.DefaultTableModel;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.modelDAO.NegocioDAO;
 
@@ -38,11 +37,10 @@ public class ControllerNegocios {
 		this.negocio=negocio;
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		
-		//for(Component component : pnPrincipal.getComponents()){
-		//	if(component instanceof JComboBox)
-		//		padrao.preencherCombo((JComboBox<String>)component, session, null, null, null, null, null, null, null);
-		//}
+		for(Component component : pnPrincipal.getComponents()){
+			if(component instanceof JComboBox)
+				padrao.preencherCombo((JComboBox<String>)component, session, null);
+		}
 		List<Negocio> lista = (List<Negocio>)new NegocioDAO().listar(Negocio.class, session);
 		preencherTabela(lista, tbNegocios, new JLabel());
 		session.close();
