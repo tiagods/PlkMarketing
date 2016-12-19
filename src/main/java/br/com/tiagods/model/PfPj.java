@@ -18,10 +18,11 @@ public class PfPj implements Serializable{
 	private Usuario criadoPor;
 	private Origem origem;
 	private Usuario atendente;
-	private Set<Negocio> negocios = new LinkedHashSet<Negocio>();
-	private Set<Tarefa> tarefas = new LinkedHashSet<Tarefa>();
+	private Set<Negocio> negocios = new LinkedHashSet<>();
+	private Set<Tarefa> tarefas = new LinkedHashSet<>();
 	private Servico servico;
 	private Categoria categoria;
+	private Nivel nivel;
 
 	/**
 	 * @return the telefone
@@ -166,6 +167,18 @@ public class PfPj implements Serializable{
 	 */
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+	/**
+	 * @return the nivel
+	 */
+	public Nivel getNivel() {
+		return nivel;
+	}
+	/**
+	 * @param nivel the nivel to set
+	 */
+	public void setNivel(Nivel nivel) {
+		this.nivel = nivel;
 	}
 	
 	

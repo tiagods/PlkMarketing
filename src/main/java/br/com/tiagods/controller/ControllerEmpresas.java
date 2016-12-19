@@ -145,7 +145,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		txNome.setText(empresa.getNome());
 		cbAtendenteCad.setSelectedItem(empresa.getPessoaJuridica().getAtendente()==null?"":empresa.getPessoaJuridica().getAtendente().getLogin());
 		txCnpj.setText(empresa.getCnpj());
-		cbNivelCad.setSelectedItem(empresa.getNivel()==null?"":empresa.getNivel().getNome());
+		cbNivelCad.setSelectedItem(empresa.getPessoaJuridica().getNivel()==null?"":empresa.getPessoaJuridica().getNivel().getNome());
 		cbOrigemCad.setSelectedItem(empresa.getPessoaJuridica().getOrigem()==null?"":empresa.getPessoaJuridica().getOrigem().getNome());
 		cbCategoriaCad.setSelectedItem(empresa.getPessoaJuridica().getCategoria()==null?"":empresa.getPessoaJuridica().getCategoria().getNome());
 		cbProdServicosCad.setSelectedItem(empresa.getPessoaJuridica().getServico()==null?"":empresa.getPessoaJuridica().getServico().getNome());
@@ -364,7 +364,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		else
 			pessoaJuridica.setAtendente(padrao.getAtendentes((String)cbAtendenteCad.getSelectedItem()));
 		if(!"".equals(cbNivelCad.getSelectedItem()))
-			empresa.setNivel(padrao.getNiveis((String)cbNivelCad.getSelectedItem()));
+			pessoaJuridica.setNivel(padrao.getNiveis((String)cbNivelCad.getSelectedItem()));
 		if(!"".equals(cbProdServicosCad.getSelectedItem()))
 				pessoaJuridica.setServico(padrao.getServicos((String)cbProdServicosCad.getSelectedItem()));
 		if(!"".equals(cbCategoriaCad.getSelectedItem()))
@@ -451,7 +451,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				Object[] linha = new Object[7];
 				linha[0] = ""+em.getId(); 
 				linha[1] = em.getNome();
-				linha[2] = em.getNivel()==null?"":em.getNivel().getNome();
+				linha[2] = em.getPessoaJuridica().getNivel()==null?"":em.getPessoaJuridica().getNivel().getNome();
 				linha[3] = em.getPessoaJuridica().getCategoria()==null?"":em.getPessoaJuridica().getCategoria().getNome();
 				linha[4] = em.getPessoaJuridica().getOrigem()==null?"":em.getPessoaJuridica().getOrigem().getNome();
 				try{

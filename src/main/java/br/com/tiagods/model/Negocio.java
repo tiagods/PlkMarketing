@@ -32,6 +32,7 @@ public class Negocio implements Serializable{
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	private BigDecimal honorario;
 	private Origem origem;
+	private PfPj pessoaFisicaOrJuridica;
 	
 	/**
 	 * @return the id
@@ -287,6 +288,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setOrigem(Origem origem) {
 		this.origem = origem;
+	}
+	/**
+	 * @return the pessoaFisicaOrJuridica
+	 */
+	public PfPj getPessoaFisicaOrJuridica() {
+		return pessoaFisicaOrJuridica;
+	}
+	/**
+	 * @param pessoaFisicaOrJuridica the pessoaFisicaOrJuridica to set
+	 */
+	public void setPessoaFisicaOrJuridica(PfPj pessoaFisicaOrJuridica) {
+		this.pessoaFisicaOrJuridica = pessoaFisicaOrJuridica;
 	}
 		
 }

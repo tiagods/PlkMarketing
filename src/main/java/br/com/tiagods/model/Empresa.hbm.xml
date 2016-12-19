@@ -10,7 +10,6 @@
 	</id>
 	<property name="nome" column="EMP_NOME" length="200"/>
 	<property name="cnpj" column="EMP_CNPJ" length="100"/>
-	<many-to-one name="nivel" column="EMP_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
 	<component name="endereco">
       <property name="logradouro" column="EMP_END_LOGRADOURO" length="200"/>
       <property name="nome" column="EMP_END_NOME" length="200"/>
@@ -39,6 +38,7 @@
 		</set>		
 	  	<many-to-one name="servico" column="EMP_SERVICO_COD" foreign-key="FK_SER_EMPRESA_COD"/>
 		<many-to-one name="categoria" column="EMP_CATEGORIA_COD" foreign-key="FK_EMP_CATEGORIA_COD"/>
+		<many-to-one name="nivel" column="EMP_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
 	</component>
 	</class>
 </hibernate-mapping>

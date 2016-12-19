@@ -11,10 +11,12 @@ import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
+import org.hibernate.hql.internal.ast.tree.ComponentJoin.ComponentFromElementType;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Negocio;
@@ -27,25 +29,29 @@ import static br.com.tiagods.view.NegociosView.*;
  * @author Tiago
  */
 public class ControllerNegocios {
-	
+
 	Session session = null;
 	Negocio negocio = null;
 	PadraoMap padrao = new PadraoMap();
-	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Negocio negocio){
 		this.negocio=negocio;
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		for(Component component : pnPrincipal.getComponents()){
-			if(component instanceof JComboBox)
-				padrao.preencherCombo((JComboBox<String>)component, session, null);
+
+		JPanel[] panels = {pnPrincipal,pnAndamento,pnCadastro};
+		for (JPanel panel : panels) {
+			for(Component component : panel.getComponents()){
+				if(component instanceof JComboBox)
+					padrao.preencherCombo((JComboBox<String>)component, session, null);
+				
+			}
 		}
 		List<Negocio> lista = (List<Negocio>)new NegocioDAO().listar(Negocio.class, session);
 		preencherTabela(lista, tbNegocios, new JLabel());
 		session.close();
     }
-	
+
 	@SuppressWarnings({ "serial", "unchecked", "rawtypes" })
 	private void preencherTabela(List<Negocio> list, JTable table, JLabel txContadorRegistros){
 		List<Negocio> lista = list;
@@ -64,7 +70,7 @@ public class ControllerNegocios {
 			for(int i=0;i<lista.size();i++){
 				Negocio n= lista.get(i);
 				Object[] linha = new Object[7];
-				linha[0] = ""+n.getId(); 
+				linha[0] = ""+n.getId();
 				linha[1] = n.getNome();
 				linha[2] = n.getEtapa()==null?"":n.getEtapa().getNome();
 				linha[3] = n.getStatus()==null?"":n.getStatus().getNome();
@@ -78,10 +84,10 @@ public class ControllerNegocios {
 				}
 				linha[6] = n.getAtendente()==null?"":n.getAtendente().getLogin();
 				model.addRow(linha);
-				txContadorRegistros.setText("Total: "+lista.size()+" registros");
-				table.setModel(model);
 			}
 		}
+		txContadorRegistros.setText("Total: "+lista.size()+" registros");
+		table.setModel(model);
 		table.setAutoCreateRowSorter(true);
 		table.setSelectionBackground(Color.CYAN);
 	}

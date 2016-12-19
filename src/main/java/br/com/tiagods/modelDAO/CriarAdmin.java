@@ -110,6 +110,7 @@ public class CriarAdmin {
 		pj.setOrigem(origem);
 		pj.setServico(servico);
 		pj.setCriadoEm(new Date());
+		pj.setNivel(nivel);
 		
 		endereco.setCidade(c1);
 		endereco.setBairro("jd paulista");
@@ -120,7 +121,6 @@ public class CriarAdmin {
 		empresa.setCnpj("00000000000000");
 		empresa.setEndereco(endereco);
 		empresa.setNome("Empresa Teste Ltda");
-		empresa.setNivel(nivel);
 		empresa.setPessoaJuridica(pj);
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
@@ -138,7 +138,7 @@ public class CriarAdmin {
 		session.close();
 	}
 	private void criarEtapa() {
-		List<Etapa> lStatus = new ArrayList<Etapa>();
+		List<Etapa> lStatus = new ArrayList<>();
 		Etapa n1= new Etapa();
 		n1.setNome("Contato");
 
@@ -146,10 +146,13 @@ public class CriarAdmin {
 		n2.setNome("Envio de Proposta");
 
 		Etapa n3 = new Etapa();
-		n3.setNome("Followup");
+		n3.setNome("Follow-up");
 
 		Etapa n4 = new Etapa();
-		n3.setNome("Fechamento");
+		n4.setNome("Fechamento");
+		
+		Etapa n5 = new Etapa();
+		n5.setNome("Indefinida");
 
 		lStatus.add(n1);
 		lStatus.add(n2);
@@ -169,7 +172,7 @@ public class CriarAdmin {
 		session.close();
 	}
 	private void criarStatus() {
-		List<Status> lStatus = new ArrayList<Status>();
+		List<Status> lStatus = new ArrayList<>();
 		Status n1 = new Status();
 		n1.setNome("Em Andamento");
 
@@ -196,7 +199,7 @@ public class CriarAdmin {
 		session.close();
 	}
 	private void criarCategoria() {
-		List<Categoria> lista = new ArrayList<Categoria>();
+		List<Categoria> lista = new ArrayList<>();
 		categoria = new Categoria();
 		categoria.setNome("Indefinida");
 

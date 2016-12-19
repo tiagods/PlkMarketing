@@ -32,6 +32,7 @@ import br.com.tiagods.model.Status;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelDAO.CategoriaDAO;
 import br.com.tiagods.modelDAO.EmpresaDAO;
+import br.com.tiagods.modelDAO.EtapaDAO;
 import br.com.tiagods.modelDAO.NivelDAO;
 import br.com.tiagods.modelDAO.OrigemDAO;
 import br.com.tiagods.modelDAO.ServicoDAO;
@@ -40,18 +41,19 @@ import br.com.tiagods.modelDAO.UsuarioDAO;
 import br.com.tiagods.view.interfaces.Autocomplete;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
- * Essa classe é invocada pelos controllers de pessoa e empresa
+ * Essa classe ï¿½ invocada pelos controllers de pessoa e empresa
  */
 public class PadraoMap {
 	Map <String,Usuario> atendentes;
 	Map <String,Categoria> categorias;
 	Map <String,Cidade> cidades;
 	Map <String,Empresa> empresas;
+	Map <String,Etapa> etapas;
 	Map <String,Nivel> niveis;
 	Map <String,Origem> origens;
 	Map <String,Servico> servicos;
 	Map <String,Status> statusMapa;
-	
+
 	List<Usuario> listarUsuarios;
 	List<Categoria> listarCategorias;
 	List<Nivel> listarNiveis;
@@ -60,7 +62,7 @@ public class PadraoMap {
 	List<Empresa> listarEmpresas;
 	List<Etapa> listarEtapas;
 	List<Status> listarStatus;
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void preencherCombo(JComboBox combo, Session session, JComboBox comboEstado){
     	combo.removeAllItems();
@@ -117,6 +119,17 @@ public class PadraoMap {
     		}
         	combo.setSelectedItem(combo.getName());
     		break;
+    	case "Etapa":
+    		listarEtapas = new EtapaDAO().listar(Etapa.class, session);
+    		etapas = new HashMap();
+    		if(!listarEtapas.isEmpty()){
+    			listarEtapas.forEach(c->{
+    				etapas.put(c.getNome(),c);
+    				combo.addItem(c.getNome());
+    			});
+    		}
+        	combo.setSelectedItem(combo.getName());
+    		break;
     	case "Logradouro":
     		combo.removeAllItems();
     		combo.addItem("");
@@ -163,7 +176,7 @@ public class PadraoMap {
     			});
     		}
     		break;
-    	case "Produtos/Serviços":
+    	case "Produtos/Servicos":
     		listarServicos = new ServicoDAO().listar(Servico.class,session);
     		servicos = new HashMap();
     		if(!listarServicos.isEmpty()){
@@ -234,6 +247,11 @@ public class PadraoMap {
     		while(i.hasNext()){
     			combo.addItem(i.next());
     		}
+    		break;
+    	case "Objeto":
+    		combo.removeAllItems();
+    		combo.addItem("Empresa");
+    		combo.addItem("Pessoa");
     		break;
     	default:
     		break;

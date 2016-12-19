@@ -14,8 +14,7 @@ public class Empresa implements Serializable{
 	private Endereco endereco;
 	private PfPj pessoaJuridica;
 	private String cnpj;
-	private Nivel nivel;
-	private Set<Pessoa> pessoas = new LinkedHashSet<Pessoa>();
+	private Set<Pessoa> pessoas = new LinkedHashSet<>();
 	
 	/**
 	 * @return the id
@@ -76,18 +75,6 @@ public class Empresa implements Serializable{
 	 */
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-	/**
-	 * @return the nivel
-	 */
-	public Nivel getNivel() {
-		return nivel;
-	}
-	/**
-	 * @param nivel the nivel to set
-	 */
-	public void setNivel(Nivel nivel) {
-		this.nivel = nivel;
 	}
 	/**
 	 * @return the pessoaJuridica
