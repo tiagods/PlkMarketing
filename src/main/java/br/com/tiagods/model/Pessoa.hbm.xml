@@ -37,9 +37,9 @@
 			<key column="TAR_PESSOA_COD"/>
 			<one-to-many class="Tarefa" />
 		</set>
-      	<many-to-one name="servico" column="PES_SERVICO_COD" foreign-key="FK_SER_SERVICO_COD"/>
+      	<many-to-one name="servico" column="PES_SERVICO_COD" foreign-key="FK_PES_SERVICO_COD"/>
 		<many-to-one name="categoria" column="PES_CATEGORIA_COD" foreign-key="FK_PES_CATEGORIA_COD"/>
-		<many-to-one name="nivel" column="EMP_NIVEL_COD" foreign-key="FK_PES_NIVEL_COD"/>
+		<many-to-one name="nivel" column="PES_NIVEL_COD" foreign-key="FK_PES_NIVEL_COD"/>
 	</component>
 	
 	</class>

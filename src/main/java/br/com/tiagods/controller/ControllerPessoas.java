@@ -56,7 +56,7 @@ import br.com.tiagods.view.interfaces.DefaultEnumModel;
 public class ControllerPessoas implements ActionListener,KeyListener,ItemListener,MouseListener,PropertyChangeListener{
 	PadraoMap padrao = new PadraoMap();
 	List<Pessoa> listaPessoas;
-	
+
 	Session session=null;
 	Pessoa pessoa= null;
 	Pessoa pessoaBackup;
@@ -84,7 +84,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
-    	String toolTip = "Essa opção não foi liberada porque depende da conclusão de outro modulo, aguarde...";
+    	String toolTip = "Essa opção foi liberada porque depende da conclusão de outro modulo, aguarde...";
     	btnHistorico.setEnabled(false);
     	btnHistorico.setToolTipText(toolTip);
     	btnNegocios.setEnabled(false);
@@ -103,7 +103,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		case "Buscar":
 			if(txBuscar.getText().trim().length()>=3){
 				pesquisar();
-			}			
+			}
 			break;
 		case "Novo":
 			limparFormulario(pnPrincipal);
@@ -147,7 +147,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txCodigo.setText(""+pessoa.getId());
 		SimpleDateFormat conversor = new SimpleDateFormat("dd/MM/yyyy");
 		txCadastradoPor.setText(pessoa.getPessoaFisica().getCriadoPor()==null?"":pessoa.getPessoaFisica().getCriadoPor().getLogin());
-		
+
 		txDataCadastro.setText(conversor.format(pessoa.getPessoaFisica().getCriadoEm()));
 		txNome.setText(pessoa.getNome());
 		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente().getLogin());
@@ -160,13 +160,13 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txCelular.setText(pessoa.getPessoaFisica().getCelular());
 		txEmail.setText(pessoa.getPessoaFisica().getEmail());
 		txSite.setText(pessoa.getPessoaFisica().getSite());
-		
+
 		Endereco end = pessoa.getEndereco();
 		cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
 		txLogradouro.setText(end.getNome());
 		txNum.setText(end.getNumero());
 		txComplemento.setText(end.getComplemento());
-		
+
 		cbEstado.setSelectedItem(end.getCidade()==null?"":end.getCidade().getEstado());
 		cbCidade.setSelectedItem(end.getCidade()==null?"":end.getCidade().getNome());
 	}
@@ -235,7 +235,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				fechaSessao(openHere);
 			}
 		}
-		
+
 	}
 	@SuppressWarnings("deprecation")
 	private void realizarFiltro(){
@@ -244,7 +244,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		criteria.addOrder(Order.asc("id"));
 		if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
 			criteria.add(Restrictions.eq("pessoaFisica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
-		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))	
+		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))
 			criteria.add(Restrictions.eq("pessoaFisica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
 		if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
 			criteria.add(Restrictions.eq("pessoaFisica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
@@ -259,13 +259,13 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				criteria.add(Restrictions.between("pessoaFisica.criadoEm", data01, data02));
 			}
 		}catch(NullPointerException e){
-			
+
 		}
 		List<Pessoa> lista = criteria.list();
 		preencherTabela(lista, tbPrincipal, txContador);
 		}
 		else
-			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edição ou cancele para poder realizar novas buscas!","Em edição...",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	private boolean recebeSessao(){
 		boolean open = false;
@@ -277,11 +277,11 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		return open;
 	}
 	private void fechaSessao(boolean close){
-		if(close){ 
+		if(close){
 			session.close();
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private void limparFormulario(Container container){
 		for(Component c : container.getComponents()){
@@ -296,7 +296,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			}
 			else if(c instanceof JScrollPane){
 				limparFormulario((Container)c);
-			}	
+			}
 		}
 		txCodigo.setText("");
 		txCadastradoPor.setText("");
@@ -316,7 +316,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			}
 			else if(c instanceof JScrollPane){
 				desbloquerFormulario(desbloquear,(Container)c);
-			}	
+			}
 		}
 	}
 	@Override
@@ -369,7 +369,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 		else
 			pessoaFisica.setAtendente(padrao.getAtendentes((String)cbAtendenteCad.getSelectedItem()));
-		
+
 		if(!"".equals(cbProdServicosCad.getSelectedItem()))
 				pessoaFisica.setServico(padrao.getServicos((String)cbProdServicosCad.getSelectedItem()));
 		if(!"".equals(cbCategoriaCad.getSelectedItem()))
@@ -386,7 +386,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		endereco.setNumero(txNum.getText());
 		endereco.setCep(txCep.getText().replace("-", ""));
 		endereco.setBairro(txBairro.getText());
-		
+
 		if(!"".equals(cbCidade.getSelectedItem())){
 			Cidade cidade = padrao.getCidades((String)cbCidade.getSelectedItem());
 			endereco.setCidade(cidade);
@@ -407,8 +407,8 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     @SuppressWarnings("unchecked")
 	private void invocarExclusao(){
     	int escolha = JOptionPane.showConfirmDialog(jDBody, "Você deseja excluir esse registro? "
-				+ "\nTodos os historicos serão perdido, lembre-se que essa ação não terá mais volta!",
-				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
+				+ "\nTodos os historicos serãoo perdidos, lembre-se que essa ação não terá mais volta!",
+				"Pedido de Exclusão", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
 			PessoaDAO dao = new PessoaDAO();
 			boolean openHere = recebeSessao();
@@ -435,7 +435,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			}
 		}catch (NullPointerException e) {
 		}
-		
+
 	}
 	public void preencherTabela(List<Pessoa> list, JTable table, JLabel txContadorRegistros){
 		List<Pessoa> lista = list;
@@ -454,7 +454,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			for(int i=0;i<lista.size();i++){
 				Pessoa p = lista.get(i);
 				Object[] linha = new Object[6];
-				linha[0] = ""+p.getId(); 
+				linha[0] = ""+p.getId();
 				linha[1] = p.getNome();
 				linha[2] = p.getPessoaFisica().getCategoria()==null?"":p.getPessoaFisica().getCategoria().getNome();
 				linha[3] = p.getPessoaFisica().getOrigem()==null?"":p.getPessoaFisica().getOrigem().getNome();

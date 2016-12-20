@@ -56,7 +56,6 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 				String[] colunas = {"ID", "Nome"};
 				String[][] linhas = new String[lista.size()][colunas.length];
 				
-				
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();

@@ -24,7 +24,7 @@
 	<property name="envioProposta" column="NEG_ANDENVIOPROPOSTA" type="timestamp"/>
 	<property name="followUp" column="NEG_ANDFOLLOWUP" type="timestamp"/>
 	<property name="fechamento" column="NEG_ANDFECHAMENTO" type="timestamp"/>
-	
+	<property name="indefinida" column="NEG_ANDINDEFINIDA" type="timestamp"/>
 	<set name="tarefas" inverse="true" cascade="save-update, delete">
 		<key column="TAR_NEGOCIO_COD"/>
 		<one-to-many class="Tarefa" />
@@ -37,13 +37,13 @@
 		<one-to-many class="ServicoContratado"/>
  	</set>
     <property name="honorario" column="NEG_HONORARIO" type="big_decimal"/>
-    
     <component name="pessoaFisicaOrJuridica">
-	  	<many-to-one name="origem" column="EMP_ORIGEM_COD" foreign-key="FK_EMP_ORIGEM_COD"/>
-		<many-to-one name="servico" column="EMP_SERVICO_COD" foreign-key="FK_SER_EMPRESA_COD"/>
-		<many-to-one name="categoria" column="EMP_CATEGORIA_COD" foreign-key="FK_EMP_CATEGORIA_COD"/>
-		<many-to-one name="nivel" column="EMP_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
+	  	<many-to-one name="origem" column="NEG_ORIGEM_COD" foreign-key="FK_NEG_ORIGEM_COD"/>
+		<many-to-one name="servico" column="NEG_SERVICO_COD" foreign-key="FK_NEG_EMPRESA_COD"/>
+		<many-to-one name="categoria" column="NEG_CATEGORIA_COD" foreign-key="FK_NEG_CATEGORIA_COD"/>
+		<many-to-one name="nivel" column="NEG_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
     </component>
+    <property name="descricao" column="NEG_DESCRICAO" type="text"></property>
 	</class>
 </hibernate-mapping>
 

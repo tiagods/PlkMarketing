@@ -372,7 +372,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(!"".equals(cbOrigemCad.getSelectedItem()))
 				pessoaJuridica.setOrigem(padrao.getOrigens((String)cbOrigemCad.getSelectedItem()));
 		empresa.setNome(txNome.getText());
-		empresa.setCnpj("".equals(txCnpj.getText().replace(".", "").replace("-", "").replace("/",""))?"":txCnpj.getText().replace(".", "").replace("-", ""));
+		empresa.setCnpj("".equals(txCnpj.getText().replace(".", "").replace("-", "").replace("/",""))?"":txCnpj.getText().replace(".", "").replace("-", "").replace("/", ""));
 		//endereco
 		endereco.setLogradouro(cbLogradouro.getSelectedItem().toString());
 		endereco.setNome(txLogradouro.getText());

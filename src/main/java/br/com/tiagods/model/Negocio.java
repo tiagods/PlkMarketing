@@ -26,13 +26,14 @@ public class Negocio implements Serializable{
 	private Date envioProposta;
 	private Date followUp;
 	private Date fechamento;
+	private Date indefinida;
 	private Set<Tarefa> tarefas = new LinkedHashSet<>();
 	private Empresa empresa;
 	private Pessoa pessoa;
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	private BigDecimal honorario;
-	private Origem origem;
 	private PfPj pessoaFisicaOrJuridica;
+	private String descricao;
 	
 	/**
 	 * @return the id
@@ -230,6 +231,18 @@ public class Negocio implements Serializable{
 		this.fechamento = fechamento;
 	}
 	/**
+	 * @return the indefinida
+	 */
+	public Date getIndefinida() {
+		return indefinida;
+	}
+	/**
+	 * @param indefinida the indefinida to set
+	 */
+	public void setIndefinida(Date indefinida) {
+		this.indefinida = indefinida;
+	}
+	/**
 	 * @return the tarefas
 	 */
 	public Set<Tarefa> getTarefas() {
@@ -278,18 +291,6 @@ public class Negocio implements Serializable{
 		this.servicosContratados = servicosContratados;
 	}
 	/**
-	 * @return the origem
-	 */
-	public Origem getOrigem() {
-		return origem;
-	}
-	/**
-	 * @param origem the origem to set
-	 */
-	public void setOrigem(Origem origem) {
-		this.origem = origem;
-	}
-	/**
 	 * @return the pessoaFisicaOrJuridica
 	 */
 	public PfPj getPessoaFisicaOrJuridica() {
@@ -300,6 +301,12 @@ public class Negocio implements Serializable{
 	 */
 	public void setPessoaFisicaOrJuridica(PfPj pessoaFisicaOrJuridica) {
 		this.pessoaFisicaOrJuridica = pessoaFisicaOrJuridica;
+	}
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 		
 }

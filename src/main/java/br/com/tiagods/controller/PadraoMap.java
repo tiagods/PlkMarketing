@@ -35,6 +35,7 @@ import br.com.tiagods.modelDAO.EmpresaDAO;
 import br.com.tiagods.modelDAO.EtapaDAO;
 import br.com.tiagods.modelDAO.NivelDAO;
 import br.com.tiagods.modelDAO.OrigemDAO;
+import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.modelDAO.ServicoDAO;
 import br.com.tiagods.modelDAO.StatusDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
@@ -51,15 +52,17 @@ public class PadraoMap {
 	Map <String,Etapa> etapas;
 	Map <String,Nivel> niveis;
 	Map <String,Origem> origens;
+	Map <String, Pessoa> pessoas;
 	Map <String,Servico> servicos;
 	Map <String,Status> statusMapa;
-
+	
 	List<Usuario> listarUsuarios;
 	List<Categoria> listarCategorias;
 	List<Nivel> listarNiveis;
 	List<Origem> listarOrigens;
 	List<Servico> listarServicos;
 	List<Empresa> listarEmpresas;
+	List<Pessoa> listarPessoas;
 	List<Etapa> listarEtapas;
 	List<Status> listarStatus;
 
@@ -176,6 +179,16 @@ public class PadraoMap {
     			});
     		}
     		break;
+    	case "Pessoa":
+    		listarPessoas = new PessoaDAO().listar(Pessoa.class, session);
+    		pessoas = new HashMap();
+    		if(!listarPessoas.isEmpty()){
+    			listarPessoas.forEach(c->{
+    				pessoas.put(c.getNome(), c);
+    				combo.addItem(c.getNome());
+    			});
+    		}
+    		break;
     	case "Produtos/Servicos":
     		listarServicos = new ServicoDAO().listar(Servico.class,session);
     		servicos = new HashMap();
@@ -209,7 +222,6 @@ public class PadraoMap {
     		break;
     	case "StatusCad":
     		combo.removeAllItems();
-    		combo.addItem("");
     		if(!listarStatus.isEmpty()){
     			listarStatus.forEach(c->{
     				combo.addItem(c.getNome());
@@ -298,7 +310,14 @@ public class PadraoMap {
 	public Empresa getEmpresas(String key) {
 		return empresas.get(key);
 	}
+	
+	public Etapa getEtapa(String key){
+		return etapas.get(key);
+	}
 
+	public Status getStatus(String key){
+		return statusMapa.get(key);
+	}
 	/**
 	 * @return the atendentes
 	 */
