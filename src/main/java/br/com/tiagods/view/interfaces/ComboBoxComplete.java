@@ -6,7 +6,7 @@ import javax.swing.text.*;
 import java.lang.reflect.Field;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
-public class Autocomplete extends PlainDocument {
+public class ComboBoxComplete extends PlainDocument {
     JComboBox comboBox;
     ComboBoxModel model;
     JTextComponent editor;
@@ -17,7 +17,7 @@ public class Autocomplete extends PlainDocument {
     boolean hitBackspace=false;
     boolean hitBackspaceOnSelection;
     
-    public Autocomplete(final JComboBox comboBox) {
+    public ComboBoxComplete(final JComboBox comboBox) {
         this.comboBox = comboBox;
         model = comboBox.getModel();
         editor = (JTextComponent) comboBox.getEditor().getEditorComponent();

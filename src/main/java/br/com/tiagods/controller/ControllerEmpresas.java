@@ -47,6 +47,7 @@ import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.modelDAO.EmpresaDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
+import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
  *
  * @author Tiago
@@ -394,8 +395,10 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(salvo) {
 			openHere = recebeSessao();
 			listaEmpresas = (List<Empresa>)new EmpresaDAO().listar(Empresa.class, session);
+			preencherFormulario(empresa);
 	    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
+	    	salvarCancelar();
 		}
     }
     @SuppressWarnings("unchecked")
@@ -431,21 +434,22 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		}catch (NullPointerException e) {
 		}
 	}
-	@SuppressWarnings({ "serial", "unchecked", "rawtypes" })
-	public void preencherTabela(List list, JTable table, JLabel txContadorRegistros){
-		List<Empresa> lista = (List<Empresa>)list;
-		String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
-		table.removeAll();
-		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
-			boolean[] canEdit = new boolean[]{
-					false,false,false,false,false,false,false
+	@SuppressWarnings({ "serial"})
+	public void preencherTabela(List<Empresa> lista, JTable table, JLabel txContadorRegistros){
+		if(lista.isEmpty()){
+			new SemRegistrosJTable(table,"Relação de Empresas");
+		}
+		else{
+			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+				boolean[] canEdit = new boolean[]{
+						false,false,false,false,false,false,false
+				};
+				@Override
+				public boolean isCellEditable(int rowIndex, int columnIndex) {
+					return canEdit [columnIndex];
+				}
 			};
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit [columnIndex];
-			}
-		};
-		if(!lista.isEmpty()){
 			for(int i=0;i<lista.size();i++){
 				Empresa em= lista.get(i);
 				Object[] linha = new Object[7];
@@ -463,12 +467,13 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				}
 				linha[6] = em.getPessoaJuridica().getAtendente()==null?"":em.getPessoaJuridica().getAtendente().getLogin();
 				model.addRow(linha);
-				txContadorRegistros.setText("Total: "+lista.size()+" registros");
-				table.setModel(model);
 			}
+			txContadorRegistros.setText("Total: "+lista.size()+" registros");
+			table.setModel(model);
+			table.setAutoCreateRowSorter(true);
+			table.setSelectionBackground(Color.orange);
 		}
-		table.setAutoCreateRowSorter(true);
-		table.setSelectionBackground(Color.CYAN);
+		
 	}
 }
 

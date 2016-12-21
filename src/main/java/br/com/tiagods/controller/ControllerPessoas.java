@@ -3,7 +3,6 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.EmpresasView.txCodigo;
 import static br.com.tiagods.view.MenuView.jDBody;
 import static br.com.tiagods.view.PessoasView.*;
 
@@ -49,6 +48,7 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
+import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
  *
  * @author Tiago
@@ -74,12 +74,12 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	}
     	listaPessoas = (List<Pessoa>)(new PessoaDAO().listar(Pessoa.class, session));
     	preencherTabela(listaPessoas, tbPrincipal,txContador);
-    	if(!listaPessoas.isEmpty() && pessoa==null){
+    	if(!listaPessoas.isEmpty() && this.pessoa==null){
     		this.pessoa = listaPessoas.get(0);
     		preencherFormulario(this.pessoa);
     	}
-    	else if(pessoa!=null){
-    		preencherFormulario(pessoa);
+    	else if(this.pessoa!=null){
+    		preencherFormulario(this.pessoa);
     	}
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
@@ -400,8 +400,10 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		if(salvo) {
 			openHere = recebeSessao();
 			listaPessoas = (List<Pessoa>)new PessoaDAO().listar(Pessoa.class, session);
-	    	preencherTabela(listaPessoas, tbPrincipal, txContador);
+	    	preencherFormulario(pessoa);
+			preencherTabela(listaPessoas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
+	    	salvarCancelar();
 		}
     }
     @SuppressWarnings("unchecked")
@@ -437,20 +439,21 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 
 	}
-	public void preencherTabela(List<Pessoa> list, JTable table, JLabel txContadorRegistros){
-		List<Pessoa> lista = list;
-		table.removeAll();
-		String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
-		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
-			boolean[] canEdit = new boolean[]{
-					false,false,false,false,false,false
+	public void preencherTabela(List<Pessoa> lista, JTable table, JLabel txContadorRegistros){
+		if(lista.isEmpty()){
+			new SemRegistrosJTable(table,"Relação de Pessoas");
+		}
+		else{
+			String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+				boolean[] canEdit = new boolean[]{
+						false,false,false,false,false,false
+				};
+				@Override
+				public boolean isCellEditable(int rowIndex, int columnIndex) {
+					return canEdit [columnIndex];
+				}
 			};
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit [columnIndex];
-			}
-		};
-		if(!lista.isEmpty()){
 			for(int i=0;i<lista.size();i++){
 				Pessoa p = lista.get(i);
 				Object[] linha = new Object[6];
@@ -467,12 +470,14 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				}
 				linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getLogin();
 				model.addRow(linha);
-				txContadorRegistros.setText("Total: "+lista.size()+" registros");
-				table.setModel(model);
+				
 			}
+			txContadorRegistros.setText("Total: "+lista.size()+" registros");
+			table.setModel(model);
+			table.setAutoCreateRowSorter(true);
+			table.setSelectionBackground(Color.orange);
 		}
-		table.setAutoCreateRowSorter(true);
-		table.setSelectionBackground(Color.CYAN);
+		
 
 	}
 }

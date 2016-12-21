@@ -12,7 +12,7 @@ public class ServicoAgregado implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String nome;
-	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<ServicoContratado>();
+	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	/**
 	 * @return the id
 	 */

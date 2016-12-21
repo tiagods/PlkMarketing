@@ -19,7 +19,6 @@
 	<many-to-one name="etapa" column="NEG_ETA_COD"  foreign-key="FK_NEG_ETAPA_COD"/>
 	<many-to-one name="atendente" column="NEG_ATENDENTE_COD" foreign-key="FK_NEG_ATENDENTE_COD"/>
 	
-	<property name="andamento" column="NEG_ANDAMENTO"/>
 	<property name="contato" column="NEG_ANDCONTATO" type="timestamp"/>
 	<property name="envioProposta" column="NEG_ANDENVIOPROPOSTA" type="timestamp"/>
 	<property name="followUp" column="NEG_ANDFOLLOWUP" type="timestamp"/>

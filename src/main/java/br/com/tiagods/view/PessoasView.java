@@ -59,7 +59,6 @@ public class PessoasView extends JInternalFrame {
 	public static JLabel label_1, txCadastradoPor, txDataCadastro;
 	public static JTextField txLogradouro;
 	public static JTextField txComplemento;
-	public static JLabel txCodigo;
 	public static JLabel txContador;
 	public static JTextField txNome;
 	public static JTextField txNum;
@@ -75,6 +74,7 @@ public class PessoasView extends JInternalFrame {
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
+	public static JLabel txCodigo;
 	int i = 0 ;
 	ControllerPessoas controller = new ControllerPessoas();
 	/**
@@ -260,10 +260,6 @@ public class PessoasView extends JInternalFrame {
         txComplemento = new JTextField();
         txComplemento.setBounds(252, 245, 56, 20);
         pnPrincipal.add(txComplemento);
-
-        txCodigo = new JLabel();
-        txCodigo.setBounds(107, 11, 87, 20);
-        pnPrincipal.add(txCodigo);
 
         txNome = new JTextField();
         txNome.setBounds(107, 39, 201, 20);
@@ -535,6 +531,10 @@ public class PessoasView extends JInternalFrame {
         btnExcluir.addActionListener(controller);
         btnExcluir.setBounds(438, 306, 90, 23);
         pnPrincipal.add(btnExcluir);
+        
+        txCodigo = new JLabel("");
+        txCodigo.setBounds(107, 14, 109, 14);
+        pnPrincipal.add(txCodigo);
 
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));

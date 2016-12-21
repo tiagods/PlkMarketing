@@ -53,6 +53,8 @@ public class NegociosView extends JInternalFrame {
 	public static JDateChooser data2;
 	private JLabel label_1;
 	public static JDateChooser data1;
+	public static JDateChooser dataInicio;
+	public static JDateChooser dataFim;
 	public static JButton button_1;
 	public static DefaultComboBox cbOrigem;
 	public static DefaultComboBox cbCategoria;
@@ -73,7 +75,6 @@ public class NegociosView extends JInternalFrame {
 	private JButton button_3;
 	private JScrollPane scrollPane_1;
 	public static JPanel pnCadastro;
-	private JLabel label_3;
 	private JLabel label_7;
 	private JLabel lblDescrio;
 	public static JLabel txCodigo;
@@ -81,7 +82,7 @@ public class NegociosView extends JInternalFrame {
 	public static JLabel txCadastradoPor;
 	private JLabel label_16;
 	public static JLabel txDataCadastro;
-	public static JLabel txContador;
+	public static JLabel txContadorRegistros;
 	public static JFormattedTextField txHonorario;
 	public static JRadioButton rbContato, rbEnvioProposta, rbFollowup, rbFechamento, rbIndefinida;
 	public static JButton btnNovo;
@@ -109,6 +110,7 @@ public class NegociosView extends JInternalFrame {
 	public static JTextArea txDescricao;
 
 	ControllerNegocios controller = new ControllerNegocios();
+	public static JTable tbServicosContratados;
 	/**
 	 * Create the frame.
 	 */
@@ -338,11 +340,6 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.setBounds(10, 268, 760, 355);
         pnVisao.add(pnCadastro);
 
-        label_3 = new JLabel();
-        label_3.setText("{COD###}");
-        label_3.setBounds(8, 5, 56, 14);
-        pnCadastro.add(label_3);
-
         label_7 = new JLabel();
         label_7.setBounds(new Rectangle(0, 40, 0, 0));
         label_7.setText("Nome:");
@@ -355,7 +352,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(lblDescrio);
 
         txCodigo = new JLabel();
-        txCodigo.setBounds(107, 11, 87, 20);
+        txCodigo.setBounds(107, 5, 87, 14);
         pnCadastro.add(txCodigo);
 
         txNome = new JTextField();
@@ -380,6 +377,7 @@ public class NegociosView extends JInternalFrame {
         btnNovo.setActionCommand("Novo");
         btnNovo.setName("Novo");
         btnNovo.setText("Novo");
+        btnNovo.addActionListener(controller);
         btnNovo.setBounds(107, 321, 90, 23);
         pnCadastro.add(btnNovo);
 
@@ -387,6 +385,7 @@ public class NegociosView extends JInternalFrame {
         btnEditar.setActionCommand("Editar");
         btnEditar.setName("Editar");
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(controller);
         btnEditar.setBounds(203, 321, 90, 23);
         pnCadastro.add(btnEditar);
 
@@ -394,6 +393,7 @@ public class NegociosView extends JInternalFrame {
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.setName("Salvar");
         btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(controller);
         btnSalvar.setBounds(299, 321, 90, 23);
         pnCadastro.add(btnSalvar);
 
@@ -401,6 +401,7 @@ public class NegociosView extends JInternalFrame {
         btnCancelar.setActionCommand("Cancelar");
         btnCancelar.setName("Cancelar");
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(395, 321, 90, 23);
         pnCadastro.add(btnCancelar);
 
@@ -506,11 +507,11 @@ public class NegociosView extends JInternalFrame {
         lbFim.setBounds(8, 178, 87, 20);
         pnCadastro.add(lbFim);
 
-        JDateChooser dataFim = new JDateChooser();
+        dataFim = new JDateChooser();
         dataFim.setBounds(107, 178, 98, 20);
         pnCadastro.add(dataFim);
 
-        JDateChooser dataInicio = new JDateChooser();
+        dataInicio = new JDateChooser();
         dataInicio.setBounds(107, 150, 98, 20);
         pnCadastro.add(dataInicio);
 
@@ -541,6 +542,9 @@ public class NegociosView extends JInternalFrame {
         	gl_panel_6.createParallelGroup(Alignment.LEADING)
         		.addComponent(scrollServicos, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
         );
+        
+        tbServicosContratados = new JTable();
+        scrollServicos.setViewportView(tbServicosContratados);
         panel_6.setLayout(gl_panel_6);
 
         txNomeObjeto = new JLabel();
@@ -551,6 +555,7 @@ public class NegociosView extends JInternalFrame {
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.setName("Excluir");
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(controller);
         btnExcluir.setBounds(491, 321, 90, 23);
         pnCadastro.add(btnExcluir);
 
@@ -558,7 +563,6 @@ public class NegociosView extends JInternalFrame {
         cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
         cbObject.setBounds(107, 58, 87, 20);
         cbObject.setName("Objeto");
-        cbObject.addItemListener(controller);
         pnCadastro.add(cbObject);
         
         JLabel label_4 = new JLabel();
@@ -638,6 +642,7 @@ public class NegociosView extends JInternalFrame {
         scrollPrincipal.setViewportView(tbPrincipal);
 
         pnAndamento = new JPanel();
+        pnAndamento.setBackground(new Color(250,250,250));
         pnAndamento.setBounds(10, 235, 760, 30);
         pnVisao.add(pnAndamento);
 
@@ -666,6 +671,7 @@ public class NegociosView extends JInternalFrame {
         cbStatusCad.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
 
         panel_5 = new JPanel();
+        panel_5.setBackground(new Color(250,250,250));
         panel_5.setBounds(980, 90, 260, 142);
         pnVisao.add(panel_5);
 
@@ -701,9 +707,9 @@ public class NegociosView extends JInternalFrame {
         );
         panel_5.setLayout(gl_panel_5);
         
-        txContador = new JLabel("");
-        txContador.setBounds(780, 218, 110, 14);
-        pnVisao.add(txContador);
+        txContadorRegistros = new JLabel("");
+        txContadorRegistros.setBounds(780, 218, 152, 14);
+        pnVisao.add(txContadorRegistros);
         
         ButtonGroup groupEtapas = new ButtonGroup();
         groupEtapas.add(rbContato);

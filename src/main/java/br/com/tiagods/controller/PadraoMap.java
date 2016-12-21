@@ -39,7 +39,7 @@ import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.modelDAO.ServicoDAO;
 import br.com.tiagods.modelDAO.StatusDAO;
 import br.com.tiagods.modelDAO.UsuarioDAO;
-import br.com.tiagods.view.interfaces.Autocomplete;
+import br.com.tiagods.view.interfaces.ComboBoxComplete;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
  * Essa classe � invocada pelos controllers de pessoa e empresa
@@ -244,7 +244,7 @@ public class PadraoMap {
 				}
 				combo.setSelectedItem("");
 				combo.setEditable(true);
-				new Autocomplete(combo);
+				new ComboBoxComplete(combo);
     		}
     		break;
     	case "Estado":
@@ -310,11 +310,15 @@ public class PadraoMap {
 	public Empresa getEmpresas(String key) {
 		return empresas.get(key);
 	}
-	
+	/**
+	 * @return the etapas
+	 */
 	public Etapa getEtapa(String key){
 		return etapas.get(key);
 	}
-
+	/**
+	 * @return the status
+	 */
 	public Status getStatus(String key){
 		return statusMapa.get(key);
 	}
@@ -323,5 +327,12 @@ public class PadraoMap {
 	 */
 	public Usuario getAtendentes(String key) {
 		return atendentes.get(key);
+	}
+	/**
+	 * 
+	 * @return the pessoas
+	 */
+	public Pessoa getPessoas(String key){
+		return pessoas.get(key);
 	}
 }

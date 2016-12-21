@@ -115,7 +115,7 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 				});
 				tbRelacao.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 				tbRelacao.setFillsViewportHeight(true);
-				tbRelacao.setSelectionBackground(Color.GREEN);
+				tbRelacao.setSelectionBackground(Color.ORANGE);
 				tbRelacao.setModel(new DefaultTableModel(
 						new Object[][] {
 						},
@@ -162,8 +162,8 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 							labelNome.setText(nome[0]);
 							labelId.setOpaque(true);
 							labelNome.setOpaque(true);
-							labelId.setBackground(Color.GREEN);
-							labelNome.setBackground(Color.GREEN);
+							labelId.setForeground(Color.ORANGE);
+							labelNome.setForeground(Color.ORANGE);
 							dispose();
 						}
 					}});

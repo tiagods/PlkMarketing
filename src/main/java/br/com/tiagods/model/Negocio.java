@@ -21,7 +21,6 @@ public class Negocio implements Serializable{
 	private Status status;
 	private Etapa etapa;
 	private Usuario atendente;
-	private String andamento="";
 	private Date contato;
 	private Date envioProposta;
 	private Date followUp;
@@ -166,21 +165,6 @@ public class Negocio implements Serializable{
 	 */
 	public void setAtendente(Usuario atendente) {
 		this.atendente = atendente;
-	}
-	public enum Andamento{
-		Contato, EnvioProposta, FollowUp,Fechamento;
-	}
-	/**
-	 * @return the andamento
-	 */
-	public String getAndamento() {
-		return andamento;
-	}
-	/**
-	 * @param andamento the andamento to set
-	 */
-	public void setAndamento(String andamento) {
-		this.andamento = andamento;
 	}
 	/**
 	 * @return the contato

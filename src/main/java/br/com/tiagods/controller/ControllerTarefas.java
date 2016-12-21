@@ -5,6 +5,8 @@ package br.com.tiagods.controller;
 
 import static br.com.tiagods.view.TarefasView.*;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -36,7 +38,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import org.hibernate.Criteria;
@@ -63,6 +67,8 @@ import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumn;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
+import br.com.tiagods.view.interfaces.CentralizarColumnJTable;
+import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /*
  * @author Tiago
  */
@@ -309,29 +315,31 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		LocalDate novaDataFimDeSemana = dataHoje.plusDays(diaDomingo);
 		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1);
 	}
-
 	public void preencherTabela(JTable table, List<Tarefa> lista, JTextField txContador){
-		Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
-				"DETALHES","ATENDENTE", "FINALIZADO","ABRIR","EDITAR","EXCLUIR"};
-		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
-			boolean[] canEdit = new boolean[]{
-					false,false,false,false,false,false,false,false,true,true,true,true
+		if(lista.isEmpty()){
+			new SemRegistrosJTable(table,"Relação de Tarefas");
+		}
+		else{
+			Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
+					"DETALHES","ATENDENTE", "FINALIZADO","ABRIR","EDITAR","EXCLUIR"};
+			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+				boolean[] canEdit = new boolean[]{
+						false,false,false,false,false,false,false,false,true,true,true,true
+				};
+				@Override
+				public boolean isCellEditable(int rowIndex, int columnIndex) {
+					return canEdit [columnIndex];
+				}
+				@Override
+				public Class getColumnClass(int columnIndex) {
+					return getValueAt(0, columnIndex).getClass();
+				}
+				
 			};
-			@Override
-			public boolean isCellEditable(int rowIndex, int columnIndex) {
-				return canEdit [columnIndex];
-			}
-			@Override
-			public Class getColumnClass(int columnIndex) {
-				return getValueAt(0, columnIndex).getClass();
-			}
-		};
-		if(!lista.isEmpty()){
 			for(int i=0;i<lista.size();i++){
 				Tarefa t = lista.get(i);
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 				SimpleDateFormat sdH = new SimpleDateFormat("HH:mm");
-
 				Object[] o = new Object[12];
 				o[0] = t.getId();
 				String hora = sdf.format(t.getDataEvento())+" "+sdH.format(t.getHoraEvento());
@@ -362,27 +370,29 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				o[11] ="Excluir";
 				model.addRow(o);
 			}
+			table.setModel(model);
+			JCheckBox ckFinalize = new JCheckBox();
+			TableColumn col = table.getColumnModel().getColumn(8);
+			col.setCellEditor(new DefaultCellEditor(ckFinalize));
+			ckFinalize.setActionCommand("Finalizar");
+			ckFinalize.addActionListener(new AcaoInTable());
+
+			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
+			btAbrir.setActionCommand("Abrir");
+			btAbrir.addActionListener(new AcaoInTable());
+
+			JButton btEdit = new ButtonColumnModel(table,10).getButton();
+			btEdit.setActionCommand("Editar");
+			btEdit.addActionListener(new AcaoInTable());
+
+			JButton btExcluir  =new ButtonColumnModel(table,11).getButton();
+			btExcluir.setActionCommand("Excluir");
+			btExcluir.addActionListener(new AcaoInTable());
+			
+			table.setAutoCreateRowSorter(true);
+			table.setSelectionBackground(Color.orange);
 		}
 		txContador.setText("Total: "+lista.size()+" registros");
-		table.setModel(model);
-
-		JCheckBox ckFinalize = new JCheckBox();
-		TableColumn col = table.getColumnModel().getColumn(8);
-		col.setCellEditor(new DefaultCellEditor(ckFinalize));
-		ckFinalize.setActionCommand("Finalizar");
-		ckFinalize.addActionListener(new AcaoInTable());
-
-		JButton btAbrir = new ButtonColumnModel(table,9).getButton();
-		btAbrir.setActionCommand("Abrir");
-		btAbrir.addActionListener(new AcaoInTable());
-
-		JButton btEdit = new ButtonColumnModel(table,10).getButton();
-		btEdit.setActionCommand("Editar");
-		btEdit.addActionListener(new AcaoInTable());
-
-		JButton btExcluir  =new ButtonColumnModel(table,11).getButton();
-		btExcluir.setActionCommand("Excluir");
-		btExcluir.addActionListener(new AcaoInTable());
 	}
 	public class AcaoInTable implements ActionListener{
 		@Override
@@ -414,7 +424,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			}
 			session.close();
 		}
-
+		
 	}
 	public void finalizar(Session session){
 		boolean value = (boolean)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 8);
@@ -463,7 +473,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		String value = (String)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 3);
 		int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
 		Tarefa transfer = (Tarefa) new TarefaDAO().receberObjeto(Tarefa.class, id, session);
-		
 		if("Empresa".equals(value)){
 			Empresa empresa = transfer.getEmpresa();
 			EmpresasView viewEmpresas = new EmpresasView(empresa);

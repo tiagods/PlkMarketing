@@ -282,22 +282,14 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.add(jScrollPane1);
         jTable1 = new javax.swing.JTable();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-        		new Object [][] {
-
-        		},
-        		new String [] {
-        				"Tipo", "Qtde"
-        		}
-        		) {
-        	boolean[] canEdit = new boolean [] {
-        			false, false
-        	};
-        	@Override
-        	public boolean isCellEditable(int rowIndex, int columnIndex) {
-        		return canEdit [columnIndex];
+        jTable1.setModel(new DefaultTableModel(
+        	new Object[][] {
+        		
+        	},
+        	new String[] {
+        		"Tipo", "Qtde"
         	}
-        });
+        ));
         jTable1.setGridColor(new java.awt.Color(255, 255, 255));
         jScrollPane1.setViewportView(jTable1);
         jScrollPane1.setVisible(false);
