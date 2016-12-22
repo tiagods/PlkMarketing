@@ -53,7 +53,7 @@ public class EmpresasView extends JInternalFrame {
     public static javax.swing.JPanel pnCabecalho;
     public static javax.swing.JPanel pnAuxiliar;
     public static javax.swing.JPanel pnPrivacidade;
-    public static javax.swing.JButton btnNegocios, btnHistorico, btnPessoas;
+    public static javax.swing.JButton btnNegocios, btnHistorico, btnPessoas,btEsconder;
     public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar;
 	private JPanel contentPane;
 	private JPanel panel;
@@ -73,11 +73,10 @@ public class EmpresasView extends JInternalFrame {
 	public static JFormattedTextField txCnpj;
 	public static JTextField txEmail;
 	public static JTextField txSite;
-	public static JTextField textField_11;
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
-	int i = 0 ;
+	
 	ControllerEmpresas controller = new ControllerEmpresas();
 	/**
 	 * Create the frame.
@@ -86,7 +85,6 @@ public class EmpresasView extends JInternalFrame {
 		initComponents();
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
-
 		txContador = new JLabel("");
 		txContador.setBounds(780, 235, 150, 14);
 		jPanel1.add(txContador);
@@ -323,7 +321,6 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(txBairro);
 
         txCadastradoPor = new JLabel();
-        txCadastradoPor.setText("{Usuario}");
         txCadastradoPor.setBounds(546, 14, 56, 14);
         pnPrincipal.add(txCadastradoPor);
 
@@ -333,7 +330,6 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(lblCadastro);
 
         txDataCadastro = new JLabel();
-        txDataCadastro.setText("{Date###}");
         txDataCadastro.setBounds(463, 14, 73, 14);
         pnPrincipal.add(txDataCadastro);
 
@@ -512,9 +508,11 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(cbCidade);
 
         btnPessoas = new JButton();
+        btnPessoas.setActionCommand("Pessoas");
         btnPessoas.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnPessoas.setText("Pessoas");
         btnPessoas.setBounds(346, 340, 87, 23);
+        btnPessoas.addActionListener(controller);
         pnPrincipal.add(btnPessoas);
 
         btnNegocios = new JButton();
@@ -522,12 +520,15 @@ public class EmpresasView extends JInternalFrame {
         btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
         btnNegocios.setBounds(249, 340, 90, 23);
+        btnNegocios.addActionListener(controller);
         pnPrincipal.add(btnNegocios);
 
         btnHistorico = new JButton();
+        btnHistorico.setActionCommand("Historico");
         btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnHistorico.setText("Historico");
         btnHistorico.setBounds(153, 340, 90, 23);
+        btnHistorico.addActionListener(controller);
         pnPrincipal.add(btnHistorico);
 
         btnExcluir = new JButton();
@@ -559,67 +560,18 @@ public class EmpresasView extends JInternalFrame {
         jPanel1.add(pnAuxiliar);
 
         JScrollPane scrolAuxiliar = new JScrollPane();
+        scrolAuxiliar.setBounds(0, 52, 450, 308);
 
-        textField_11 = new JTextField();
-        textField_11.setColumns(10);
-
-        JLabel label_7 = new JLabel("Historico");
-
-        JButton btEsconder = new JButton("Esconder");
-
-        JButton button_9 = new JButton("Novo");
-
-        JButton button_10 = new JButton("Alterar");
-
-        JScrollPane scrollPane_1 = new JScrollPane();
-        GroupLayout gl_pnAuxiliar = new GroupLayout(pnAuxiliar);
-        gl_pnAuxiliar.setHorizontalGroup(
-        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 284, Short.MAX_VALUE)
-        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        				.addComponent(scrolAuxiliar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
-        					.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
-        						.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
-        					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-        					.addComponent(btEsconder))
-        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
-        					.addContainerGap(138, Short.MAX_VALUE)
-        					.addComponent(button_9, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(button_10))
-        				.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
-        			.addContainerGap())
-        );
-        gl_pnAuxiliar.setVerticalGroup(
-        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 334, Short.MAX_VALUE)
-        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(label_7)
-        				.addComponent(btEsconder))
-        			.addGap(4)
-        			.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(7)
-        			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-        			.addGap(13)
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(button_9)
-        				.addComponent(button_10))
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrolAuxiliar, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap())
-        );
+        btEsconder = new JButton("Esconder");
+        btEsconder.setBounds(369, 11, 83, 23);
+        btEsconder.setActionCommand("Esconder");
+        btEsconder.addActionListener(controller);
+        pnAuxiliar.setLayout(null);
 
         tbAuxiliar = new JTable();
         scrolAuxiliar.setViewportView(tbAuxiliar);
-
-        JTextArea textArea = new JTextArea();
-        scrollPane_1.setViewportView(textArea);
-        pnAuxiliar.setLayout(gl_pnAuxiliar);
+        pnAuxiliar.add(scrolAuxiliar);
+        pnAuxiliar.add(btEsconder);
         ButtonGroup group = new ButtonGroup();
 
 

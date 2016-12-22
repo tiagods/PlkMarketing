@@ -68,12 +68,7 @@ public class NegociosView extends JInternalFrame {
 	public static DefaultComboBox cbCategoriaCad;
 	public static JPanel pnAuxiliar;
 	private JScrollPane scrollPane;
-	private JTextField textField;
-	private JLabel label_2;
 	private JButton button;
-	private JButton button_2;
-	private JButton button_3;
-	private JScrollPane scrollPane_1;
 	public static JPanel pnCadastro;
 	private JLabel label_7;
 	private JLabel lblDescrio;
@@ -91,6 +86,7 @@ public class NegociosView extends JInternalFrame {
 	public static JButton btnExcluir;
 	public static JButton btnCancelar;
 	public static JButton btnHistorico;
+	public static JButton btEsconder;
 	private JLabel label_20;
 	private JPanel pnPrivacidade;
 	public static JCheckBox checkBox;
@@ -98,17 +94,16 @@ public class NegociosView extends JInternalFrame {
 	public static JCheckBox checkBox_2;
 	private JLabel label_21;
 	public static JLabel txCodObjeto;
-	private JTextArea textArea_1;
 	private JTable table;
 	public static JTextField txBuscar;
-	public static JTable tbPrincipal;
-	public static JButton btAddServicos;
+	public static JTable tbPrincipal, tbAuxiliar;
+	public static JButton btAddServicosContratados;
 	public static JButton btAddEmpresaPessoa;
 	private JPanel panel_5;
 	private JLabel lblValorTotalDe;
 	public static JLabel txNomeObjeto;
 	public static JTextArea txDescricao;
-
+	public static JScrollPane scrollServicos;
 	ControllerNegocios controller = new ControllerNegocios();
 	public static JTable tbServicosContratados;
 	/**
@@ -268,71 +263,22 @@ public class NegociosView extends JInternalFrame {
 
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
-        pnAuxiliar.setBounds(780, 268, 460, 355);
+        pnAuxiliar.setBounds(780, 260, 460, 363);
         pnVisao.add(pnAuxiliar);
 
-        scrollPane = new JScrollPane();
+        JScrollPane scrolAuxiliar = new JScrollPane();
+        scrolAuxiliar.setBounds(0, 52, 450, 308);
 
-        textField = new JTextField();
-        textField.setColumns(10);
+        btEsconder = new JButton("Esconder");
+        btEsconder.setBounds(369, 11, 83, 23);
+        btEsconder.setActionCommand("Esconder");
+        btEsconder.addActionListener(controller);
+        pnAuxiliar.setLayout(null);
 
-        label_2 = new JLabel("Historico");
-
-        button = new JButton("Esconder");
-
-        button_2 = new JButton("Novo");
-
-        button_3 = new JButton("Alterar");
-
-        scrollPane_1 = new JScrollPane();
-        GroupLayout gl_pnAuxiliar = new GroupLayout(pnAuxiliar);
-        gl_pnAuxiliar.setHorizontalGroup(
-        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 284, Short.MAX_VALUE)
-        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
-        				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-        				.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        					.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
-        						.addComponent(textField, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(label_2, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
-        					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-        					.addComponent(button))
-        				.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        					.addContainerGap(138, Short.MAX_VALUE)
-        					.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(button_3))
-        				.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
-        			.addContainerGap())
-        );
-        gl_pnAuxiliar.setVerticalGroup(
-        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 334, Short.MAX_VALUE)
-        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(label_2)
-        				.addComponent(button))
-        			.addGap(4)
-        			.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(7)
-        			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-        			.addGap(13)
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(button_2)
-        				.addComponent(button_3))
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap())
-        );
-
-        table = new JTable();
-        scrollPane.setViewportView(table);
-
-        textArea_1 = new JTextArea();
-        scrollPane_1.setViewportView(textArea_1);
-        pnAuxiliar.setLayout(gl_pnAuxiliar);
+        tbAuxiliar = new JTable();
+        scrolAuxiliar.setViewportView(tbAuxiliar);
+        pnAuxiliar.add(scrolAuxiliar);
+        pnAuxiliar.add(btEsconder);
 
         pnCadastro = new JPanel();
         pnCadastro.setLayout(null);
@@ -419,7 +365,7 @@ public class NegociosView extends JInternalFrame {
 
         pnPrivacidade = new JPanel();
         pnPrivacidade.setBackground((Color) null);
-        pnPrivacidade.setBounds(601, 0, 159, 268);
+        pnPrivacidade.setBounds(601, 0, 159, 142);
         pnCadastro.add(pnPrivacidade);
 
         checkBox = new JCheckBox("Outros");
@@ -464,9 +410,9 @@ public class NegociosView extends JInternalFrame {
 
         btnHistorico = new JButton();
         btnHistorico.setActionCommand("Historico");
-        btnHistorico.setName("Historico");
         btnHistorico.setText("Historico");
         btnHistorico.setBounds(588, 321, 90, 23);
+        btnHistorico.addActionListener(controller);
         pnCadastro.add(btnHistorico);
 
         JScrollPane scrollPane_2 = new JScrollPane();
@@ -498,6 +444,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(btAddEmpresaPessoa);
 
         txCodObjeto = new JLabel("");
+        txCodObjeto.setBackground(new Color(250,250,250));
         txCodObjeto.setBounds(246, 61, 29, 17);
         pnCadastro.add(txCodObjeto);
 
@@ -521,33 +468,22 @@ public class NegociosView extends JInternalFrame {
         lbInicio.setBounds(8, 150, 87, 20);
         pnCadastro.add(lbInicio);
 
-        btAddServicos = new JButton();
-        btAddServicos.setText("Incluir Servi\u00E7os");
-        btAddServicos.setBounds(424, 209, 128, 23);
-        pnCadastro.add(btAddServicos);
+        btAddServicosContratados = new JButton();
+        btAddServicosContratados.setText("Incluir Servi\u00E7os");
+        btAddServicosContratados.setBounds(395, 152, 118, 23);
+        pnCadastro.add(btAddServicosContratados);
 
-        JPanel panel_6 = new JPanel();
-        panel_6.setBounds(385, 240, 206, 70);
-        pnCadastro.add(panel_6);
-
-        JScrollPane scrollServicos = new JScrollPane();
+        scrollServicos = new JScrollPane();
+        scrollServicos.setBounds(395, 193, 290, 117);
+        pnCadastro.add(scrollServicos);
         scrollServicos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollServicos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        GroupLayout gl_panel_6 = new GroupLayout(panel_6);
-        gl_panel_6.setHorizontalGroup(
-        	gl_panel_6.createParallelGroup(Alignment.LEADING)
-        		.addComponent(scrollServicos, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
-        );
-        gl_panel_6.setVerticalGroup(
-        	gl_panel_6.createParallelGroup(Alignment.LEADING)
-        		.addComponent(scrollServicos, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-        );
-        
+        //scrollServicos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+
         tbServicosContratados = new JTable();
         scrollServicos.setViewportView(tbServicosContratados);
-        panel_6.setLayout(gl_panel_6);
 
         txNomeObjeto = new JLabel();
+        txNomeObjeto.setBackground(new Color(250,250,250));
         txNomeObjeto.setBounds(285, 61, 311, 17);
         pnCadastro.add(txNomeObjeto);
 
@@ -555,8 +491,8 @@ public class NegociosView extends JInternalFrame {
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.setName("Excluir");
         btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(controller);
         btnExcluir.setBounds(491, 321, 90, 23);
+        btnExcluir.addActionListener(controller);
         pnCadastro.add(btnExcluir);
 
         cbObject = new JComboBox();
@@ -647,18 +583,23 @@ public class NegociosView extends JInternalFrame {
         pnVisao.add(pnAndamento);
 
         rbContato = new JRadioButton("Contato");
+        rbContato.setOpaque(false);
         pnAndamento.add(rbContato);
 
         rbEnvioProposta = new JRadioButton("Envio de Proposta");
+        rbEnvioProposta.setOpaque(false);
         pnAndamento.add(rbEnvioProposta);
 
         rbFollowup = new JRadioButton("Follow-up");
+        rbFollowup.setOpaque(false);
         pnAndamento.add(rbFollowup);
 
         rbFechamento = new JRadioButton("Fechamento");
+        rbFechamento.setOpaque(false);
         pnAndamento.add(rbFechamento);
         
         rbIndefinida = new JRadioButton("Indefinida");
+        rbIndefinida.setOpaque(false);
         pnAndamento.add(rbIndefinida);
 
         JLabel lblStatus = new JLabel();

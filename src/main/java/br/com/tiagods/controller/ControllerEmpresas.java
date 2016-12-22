@@ -3,8 +3,8 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.MenuView.jDBody;
 import static br.com.tiagods.view.EmpresasView.*;
+import static br.com.tiagods.view.MenuView.jDBody;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -22,7 +22,9 @@ import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -36,16 +38,20 @@ import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.exception.DataException;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Empresa;
+import br.com.tiagods.model.Endereco;
+import br.com.tiagods.model.Negocio;
+import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
+import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modelDAO.EmpresaDAO;
+import br.com.tiagods.modelDAO.ItemsDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
@@ -60,6 +66,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	Empresa empresa= null;
 	Empresa empresaBackup;
 	boolean telaEmEdicao = false;
+	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Empresa empresa){
 		cbEmpresa.setEnabled(false);
@@ -83,13 +90,6 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
-    	String toolTip = "Essa opção não esta liberado porque depende da conclusão de outro modulo, aguarde...";
-    	btnHistorico.setEnabled(false);
-    	btnHistorico.setToolTipText(toolTip);
-    	btnNegocios.setEnabled(false);
-    	btnNegocios.setToolTipText(toolTip);
-    	btnPessoas.setEnabled(false);
-    	btnPessoas.setToolTipText(toolTip);
     }
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -122,11 +122,33 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			telaEmEdicao = false;
 			desbloquerFormulario(false, pnPrincipal);
 			break;
-			default:
-				boolean open = recebeSessao();
-				realizarFiltro();
-				fechaSessao(open);
-				break;
+		case "Historico":
+			pnAuxiliar.setVisible(true);
+			boolean open = recebeSessao();
+			Criterion criterion = Restrictions.eq("empresa", empresa);
+			Order order = Order.desc("dataEvento");		
+			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDAO().items(Tarefa.class, session, criterion, order);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
+			fechaSessao(open);
+			break;
+		case "Pessoas":
+			pnAuxiliar.setVisible(true);
+			//new AuxiliarTabela(new Pessoa(),tbAuxiliar, pessoas);
+			break;
+		case "Negocios":
+			pnAuxiliar.setVisible(true);
+			open = recebeSessao();
+			criterion = Restrictions.eq("empresa", empresa);
+			order = Order.desc("id");		
+			List<Negocio> negocios = (List<Negocio>) new ItemsDAO().items(Negocio.class, session, criterion, order);
+			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
+			fechaSessao(open);
+			break;
+		case "Esconder":
+			pnAuxiliar.setVisible(false);
+			break;
+		default:
+			break;
 		}
 	}
 	@SuppressWarnings("rawtypes")

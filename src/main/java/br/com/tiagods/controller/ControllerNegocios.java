@@ -30,6 +30,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -38,6 +39,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import com.toedter.calendar.JDateChooser;
@@ -49,7 +51,9 @@ import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.ServicoContratado;
+import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modelDAO.EmpresaDAO;
+import br.com.tiagods.modelDAO.ItemsDAO;
 import br.com.tiagods.modelDAO.NegocioDAO;
 import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.SelecaoObjeto;
@@ -57,8 +61,6 @@ import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 
 import static br.com.tiagods.view.NegociosView.*;
-import static br.com.tiagods.view.PessoasView.cbCidade;
-import static br.com.tiagods.view.PessoasView.cbEstado;
 /**
  *
  * @author Tiago
@@ -91,6 +93,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		tbPrincipal.addMouseListener(this);
 		session.close();
 		definirAcoes();
+		desbloquerFormulario(false, pnCadastro);
+		desbloquerFormulario(false, pnAndamento);
+		salvarCancelar();
     }
 	public void definirAcoes(){
 		data1.addPropertyChangeListener(this);
@@ -148,21 +153,17 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		preencherServicos(servicos);
 	}
 	private void preencherServicos(Set<ServicoContratado> servicos){
-		tbServicosContratados.removeAll();
-		if(servicos.isEmpty()){
-			new SemRegistrosJTable(tbServicosContratados, "Serviços Contratados");
-		}
-		if(!servicos.isEmpty()){
-		Iterator<ServicoContratado> iterator = servicos.iterator();
 		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR"},0){
 			boolean[] canEdit = new boolean[]{
-					false,false
+					false,false,false
 			};
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
 		};
+		if(!servicos.isEmpty()){
+		Iterator<ServicoContratado> iterator = servicos.iterator();
 		while(iterator.hasNext()){
 			Object[] o = new Object[2];
 			o[0] = iterator.next().getServicosAgregados().getNome();
@@ -179,6 +180,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
@@ -188,19 +190,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}			
 			break;
 		case "Novo":
-			if("".equals(txHonorario.getSelectedText().trim().replace(",", "")))
+			limparFormulario(pnCadastro);
+			novoEditar();
+			
+			if("".equals(txHonorario.getText().trim().replace(",", "")))
 				negocio.setHonorario(new BigDecimal("0.00"));
 			dataInicio.setDate(new Date());
-			limparFormulario(pnCadastro);
 			telaEmEdicao = true;
 			negocio = null;
-			novoEditar();
 			break;
 		case "Editar":
 			telaEmEdicao = true;
 			novoEditar();
 			break;
 		case "Cancelar":
+			if(negocioBackup!=null)
+				preencherFormulario(negocioBackup);
 			salvarCancelar();
 			telaEmEdicao = false;
 			break;
@@ -213,6 +218,19 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				invocarSalvamento();
 				telaEmEdicao = false;
 			}
+			break;
+		case "Historico":
+			pnAuxiliar.setVisible(true);
+			if(negocio==null) System.out.println("is null");
+			boolean open = recebeSessao();
+			Criterion criterion = Restrictions.eq("negocio", negocio);
+			Order order = Order.desc("dataEvento");		
+			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDAO().items(Tarefa.class, session, criterion, order);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
+			fechaSessao(open);
+			break;
+		case "Esconder":
+			pnAuxiliar.setVisible(false);
 			break;
 		case "VincularObjeto":
 			SelecaoObjeto dialog = null;
@@ -230,7 +248,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	private void realizarFiltro() {
 		List<Criterion> criterios = new ArrayList<>();
-		
 		if(!"Status".equals(cbStatus.getSelectedItem())){
 			Criterion c = Restrictions.eq("status", padrao.getStatus((String)cbStatus.getSelectedItem()));
 			criterios.add(c);
@@ -274,10 +291,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				criterios.add(Restrictions.between("criadoEm", data01, data02));
 			}
 		}catch(NullPointerException e){
-
 		}
 		if("".equals(txBuscar.getText().trim())){
 			Criterion c = Restrictions.like("nome", txBuscar.getText().trim()+"%");
+			criterios.add(c);
 		}
 		listarNegocios = new NegocioDAO().filtrar(criterios, session);
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
@@ -455,14 +472,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			NegocioDAO dao = new NegocioDAO();
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(negocio,session);
-			fechaSessao(openHere);
 			if(excluiu){
 				limparFormulario(pnPrincipal);
-				openHere = recebeSessao();
 				listarNegocios = (List<Negocio>)dao.listar(Negocio.class, session);
 		    	preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
-		    	fechaSessao(openHere);
-			}
+		    }
+			fechaSessao(openHere);
 		}
     }
 	private void salvarCancelar(){
@@ -471,6 +486,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		btnNovo.setEnabled(true);
 		btnEditar.setEnabled(true);
 		btnExcluir.setEnabled(true);
+		btAddServicosContratados.setEnabled(false);
 		if("".equals(txCodigo.getText()))
 			btnExcluir.setEnabled(false);
 		desbloquerFormulario(false, pnCadastro);
@@ -499,6 +515,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
 		btnExcluir.setEnabled(false);
+		btAddServicosContratados.setEnabled(false);
+		if(this.negocio!=null)
+			negocioBackup=negocio;
 	}
 	@SuppressWarnings("rawtypes")
 	private void limparFormulario(Container container){
@@ -512,13 +531,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			else if(c instanceof JTextArea){
 				((JTextArea)c).setText("");
 			}
+			else if(c instanceof JDateChooser){
+				((JDateChooser)c).setDate(null);
+			}
 			else if(c instanceof JScrollPane){
 				limparFormulario((Container)c);
-			}	
+			}
 		}
 		txCodigo.setText("");
 		txCadastradoPor.setText("");
 		txDataCadastro.setText("");
+		txDescricao.setText("");
+		txCodObjeto.setText("");
+		txNomeObjeto.setText("");
+		cbObject.setSelectedItem("Empresa");
+		rbContato.setSelected(true);
+		cbStatusCad.setSelectedItem("Em Andamento");
 	}
 	@SuppressWarnings("rawtypes")
 	private void desbloquerFormulario(boolean desbloquear,Container container){
@@ -535,9 +563,13 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			else if(c instanceof JDateChooser){
 				((JDateChooser)c).setEnabled(desbloquear);
 			}
+			else if(c instanceof JRadioButton){
+				((JRadioButton)c).setEnabled(desbloquear);
+			}
 			else if(c instanceof JScrollPane){
 				desbloquerFormulario(desbloquear,(Container)c);
 			}
+			//txDescricao.setEditable(desbloquear);
 			
 		}
 	}

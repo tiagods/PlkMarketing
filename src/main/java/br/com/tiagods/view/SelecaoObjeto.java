@@ -31,6 +31,8 @@ import br.com.tiagods.modelDAO.EmpresaDAO;
 import br.com.tiagods.modelDAO.NegocioDAO;
 import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 	@Override
@@ -42,6 +44,7 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 	private JLabel lblNewLabel;
 	private JScrollPane scrollPane;
 	private JTextField textField;
+	private JTextField textField_1;
 /**
 	 * Create the dialog.
 	 */
@@ -93,9 +96,9 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 		}
 	}
 	public void initComponents(JLabel labelId, JLabel labelNome){
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 350);
 		getContentPane().setLayout(null);
-		contentPanel.setBounds(0, 38, 434, 191);
+		contentPanel.setBounds(0, 102, 434, 170);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel);
 		{
@@ -147,7 +150,7 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 		contentPanel.setLayout(gl_contentPanel);
 		{
 			JPanel buttonPane = new JPanel();
-			buttonPane.setBounds(0, 229, 434, 33);
+			buttonPane.setBounds(0, 278, 434, 33);
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane);
 			{
@@ -184,14 +187,45 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 		}
 		{
 			lblNewLabel = new JLabel("Buscar:");
-			lblNewLabel.setBounds(10, 7, 48, 20);
+			lblNewLabel.setBounds(10, 11, 48, 20);
 			getContentPane().add(lblNewLabel);
 		}
 		
 		textField = new JTextField();
-		textField.setBounds(68, 7, 86, 20);
+		textField.setBounds(68, 11, 86, 20);
 		getContentPane().add(textField);
 		textField.setColumns(10);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"ID", "Nome"}));
+		comboBox.setBounds(164, 11, 96, 20);
+		getContentPane().add(comboBox);
+		
+		JButton btnNovo = new JButton("Novo");
+		btnNovo.setBounds(349, 10, 75, 23);
+		getContentPane().add(btnNovo);
+		
+		JPanel pnCadastrar = new JPanel();
+		pnCadastrar.setBounds(10, 42, 414, 58);
+		getContentPane().add(pnCadastrar);
+		pnCadastrar.setLayout(null);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(28, 1, 145, 20);
+		pnCadastrar.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JButton btnSalvar = new JButton("Salvar");
+		btnSalvar.setBounds(256, 1, 63, 23);
+		pnCadastrar.add(btnSalvar);
+		
+		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.setBounds(329, 1, 75, 23);
+		pnCadastrar.add(btnCancelar);
+		
+		JButton btnExcluir = new JButton("Excluir");
+		btnExcluir.setBounds(329, 26, 75, 23);
+		pnCadastrar.add(btnExcluir);
 		setLocationRelativeTo(null);
 	}
 }

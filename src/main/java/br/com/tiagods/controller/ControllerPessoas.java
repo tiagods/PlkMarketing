@@ -44,8 +44,11 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Endereco;
+import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
+import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.modelDAO.ItemsDAO;
 import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -84,13 +87,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
-    	String toolTip = "Essa opção foi liberada porque depende da conclusão de outro modulo, aguarde...";
-    	btnHistorico.setEnabled(false);
-    	btnHistorico.setToolTipText(toolTip);
-    	btnNegocios.setEnabled(false);
-    	btnHistorico.setToolTipText(toolTip);
-    	btnEmpresas.setEnabled(false);
-    	btnEmpresas.setToolTipText(toolTip);
     	definirAcoes();
     }
 	private void definirAcoes(){
@@ -128,10 +124,32 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			telaEmEdicao = false;
 			desbloquerFormulario(false, pnPrincipal);
 			break;
+		case "Historico":
+			pnAuxiliar.setVisible(true);
+			boolean open = recebeSessao();
+			Criterion criterion = Restrictions.eq("pessoa", pessoa);
+			Order order = Order.desc("dataEvento");		
+			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDAO().items(Tarefa.class, session, criterion, order);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
+			fechaSessao(open);
+			break;
+		case "Empresas":
+			pnAuxiliar.setVisible(true);
+			//new AuxiliarTabela(new Pessoa(),tbAuxiliar, pessoas);
+			break;
+		case "Negocios":
+			pnAuxiliar.setVisible(true);
+			open = recebeSessao();
+			criterion = Restrictions.eq("pessoa", pessoa);
+			order = Order.desc("id");		
+			List<Negocio> negocios = (List<Negocio>) new ItemsDAO().items(Negocio.class, session, criterion, order);
+			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
+			fechaSessao(open);
+			break;
+		case "Esconder":
+			pnAuxiliar.setVisible(false);
+			break;
 			default:
-				boolean open = recebeSessao();
-				realizarFiltro();
-				fechaSessao(open);
 				break;
 		}
 	}

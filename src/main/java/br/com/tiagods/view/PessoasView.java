@@ -45,12 +45,12 @@ public class PessoasView extends JInternalFrame {
     public static DefaultComboBox cbAtendenteCad;
     public static DefaultComboBox cbProdServicosCad;
     public static DefaultComboBox cbCidade;
-    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JPanel pnVisao;
     public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
     public static javax.swing.JPanel pnAuxiliar;
     public static javax.swing.JPanel pnPrivacidade;
-    public static javax.swing.JButton btnNegocios, btnHistorico, btnEmpresas;
+    public static javax.swing.JButton btnNegocios, btnHistorico, btnEmpresas, btEsconder;
     public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar;
 	private JPanel contentPane;
 	private JPanel panel;
@@ -70,7 +70,6 @@ public class PessoasView extends JInternalFrame {
 	public static JFormattedTextField txCpf;
 	public static JTextField txEmail;
 	public static JTextField txSite;
-	public static JTextField textField_11;
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
@@ -87,12 +86,12 @@ public class PessoasView extends JInternalFrame {
 
 		txContador = new JLabel("");
 		txContador.setBounds(780, 235, 150, 14);
-		jPanel1.add(txContador);
+		pnVisao.add(txContador);
 		controller.iniciar(pessoa);
 
 	}
 	private void initComponents() {
-        jPanel1 = new javax.swing.JPanel();
+        pnVisao = new javax.swing.JPanel();
         pnCabecalho = new javax.swing.JPanel();
         pnCabecalho.setBounds(0, 0, 1240, 69);
         cbAtendente = new DefaultComboBox();
@@ -103,7 +102,7 @@ public class PessoasView extends JInternalFrame {
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
 
-        jPanel1.setBackground(new java.awt.Color(250, 250, 250));
+        pnVisao.setBackground(new java.awt.Color(250, 250, 250));
 
         pnCabecalho.setBackground(new java.awt.Color(250, 250, 250));
 
@@ -198,20 +197,20 @@ public class PessoasView extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnVisao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnVisao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel1.setLayout(null);
-        jPanel1.add(pnCabecalho);
+        pnVisao.setLayout(null);
+        pnVisao.add(pnCabecalho);
 
         pnPrincipal = new JPanel();
         pnPrincipal.setLayout(null);
         pnPrincipal.setBackground((Color) null);
         pnPrincipal.setBounds(10, 260, 760, 363);
-        jPanel1.add(pnPrincipal);
+        pnVisao.add(pnPrincipal);
 
         JLabel lblEstados = new JLabel();
         lblEstados.setText("Estado:");
@@ -508,7 +507,9 @@ public class PessoasView extends JInternalFrame {
         btnEmpresas = new JButton();
         btnEmpresas.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnEmpresas.setText("Empresas");
+        btnEmpresas.setActionCommand("Empresas");
         btnEmpresas.setBounds(346, 340, 87, 23);
+        btnEmpresas.addActionListener(controller);
         pnPrincipal.add(btnEmpresas);
 
         btnNegocios = new JButton();
@@ -516,12 +517,15 @@ public class PessoasView extends JInternalFrame {
         btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
         btnNegocios.setBounds(249, 340, 90, 23);
+        btnNegocios.addActionListener(controller);
         pnPrincipal.add(btnNegocios);
 
         btnHistorico = new JButton();
         btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnHistorico.setText("Historico");
+        btnHistorico.setActionCommand("Historico");
         btnHistorico.setBounds(153, 340, 90, 23);
+        btnHistorico.addActionListener(controller);
         pnPrincipal.add(btnHistorico);
 
         btnExcluir = new JButton();
@@ -539,76 +543,28 @@ public class PessoasView extends JInternalFrame {
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
         pnAuxiliar.setBounds(780, 260, 460, 363);
-        jPanel1.add(pnAuxiliar);
+        pnVisao.add(pnAuxiliar);
 
         JScrollPane scrolAuxiliar = new JScrollPane();
+        scrolAuxiliar.setBounds(0, 52, 450, 308);
 
-        textField_11 = new JTextField();
-        textField_11.setColumns(10);
-
-        JLabel label_7 = new JLabel("Historico");
-
-        JButton btEsconder = new JButton("Esconder");
-
-        JButton button_9 = new JButton("Novo");
-
-        JButton button_10 = new JButton("Alterar");
-
-        JScrollPane scrollPane_1 = new JScrollPane();
-        GroupLayout gl_pnAuxiliar = new GroupLayout(pnAuxiliar);
-        gl_pnAuxiliar.setHorizontalGroup(
-        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 284, Short.MAX_VALUE)
-        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        				.addComponent(scrolAuxiliar, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
-        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
-        					.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.LEADING)
-        						.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(label_7, GroupLayout.PREFERRED_SIZE, 51, GroupLayout.PREFERRED_SIZE))
-        					.addPreferredGap(ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
-        					.addComponent(btEsconder))
-        				.addGroup(Alignment.LEADING, gl_pnAuxiliar.createSequentialGroup()
-        					.addContainerGap(138, Short.MAX_VALUE)
-        					.addComponent(button_9, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(button_10))
-        				.addComponent(scrollPane_1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))
-        			.addContainerGap())
-        );
-        gl_pnAuxiliar.setVerticalGroup(
-        	gl_pnAuxiliar.createParallelGroup(Alignment.TRAILING)
-        		.addGap(0, 334, Short.MAX_VALUE)
-        		.addGroup(gl_pnAuxiliar.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(label_7)
-        				.addComponent(btEsconder))
-        			.addGap(4)
-        			.addComponent(textField_11, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        			.addGap(7)
-        			.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-        			.addGap(13)
-        			.addGroup(gl_pnAuxiliar.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(button_9)
-        				.addComponent(button_10))
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(scrolAuxiliar, GroupLayout.PREFERRED_SIZE, 171, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap())
-        );
+        btEsconder = new JButton("Esconder");
+        btEsconder.setBounds(369, 11, 83, 23);
+        btEsconder.setActionCommand("Esconder");
+        btEsconder.addActionListener(controller);
+        pnAuxiliar.setLayout(null);
 
         tbAuxiliar = new JTable();
         scrolAuxiliar.setViewportView(tbAuxiliar);
-
-        JTextArea textArea = new JTextArea();
-        scrollPane_1.setViewportView(textArea);
-        pnAuxiliar.setLayout(gl_pnAuxiliar);
+        pnAuxiliar.add(scrolAuxiliar);
+        pnAuxiliar.add(btEsconder);
+        
         ButtonGroup group = new ButtonGroup();
 
 
         JScrollPane scrollPrincipal = new JScrollPane();
         scrollPrincipal.setBounds(10, 107, 760, 142);
-        jPanel1.add(scrollPrincipal);
+        pnVisao.add(scrollPrincipal);
 
         tbPrincipal = new JTable();
         tbPrincipal.addMouseListener(controller);
@@ -619,11 +575,11 @@ public class PessoasView extends JInternalFrame {
         txBuscar.setActionCommand("Buscar");
         txBuscar.addKeyListener(controller);
         txBuscar.setBounds(74, 80, 139, 20);
-        jPanel1.add(txBuscar);
+        pnVisao.add(txBuscar);
 
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 83, 53, 14);
-        jPanel1.add(lbBuscar);
+        pnVisao.add(lbBuscar);
 
         setBounds(0, 0, 1250, 660);
     }

@@ -2,8 +2,13 @@ package br.com.tiagods.modelDAO;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 public class EmpresaDAO implements InterfaceDAO {
 
@@ -22,18 +27,17 @@ public class EmpresaDAO implements InterfaceDAO {
 
 	@Override
 	public boolean excluir(Object object, Session session) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public List listar(Class classe, Session session) {
-		return session.createQuery("from "+classe.getSimpleName()+" e order by e.id").getResultList();
+		return session.createQuery("from "+classe.getSimpleName()+" e order by e.id ").getResultList();
 	}
 
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
 		return session.get(classe, id);
 	}
-
+	
 }
