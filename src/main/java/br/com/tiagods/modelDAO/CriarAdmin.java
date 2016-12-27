@@ -381,6 +381,17 @@ public class CriarAdmin {
 		usuario3.setFuncao(funcao);
 		usuario3.setTotalVendas(new BigDecimal("0.00"));
 		lista.add(usuario3);
+		
+		Usuario usuario4 = new Usuario();
+		usuario4.setLogin("Monary");
+		usuario4.setNome("Monary Torres");
+		usuario4.setSenha("Monary");
+		usuario4.setEmail("suporte.ti@prolinkcontabil.com.br");
+		usuario4.setDepartamento(departamento);
+		usuario4.setFuncao(funcao);
+		usuario4.setTotalVendas(new BigDecimal("0.00"));
+		lista.add(usuario4);
+		
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		lista.forEach(c->{

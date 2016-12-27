@@ -31,8 +31,6 @@ import br.com.tiagods.model.Negocio;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import java.awt.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 public class NegociosView extends JInternalFrame {
     /**
@@ -62,10 +60,10 @@ public class NegociosView extends JInternalFrame {
 	public static DefaultComboBox cbServicos;
 	public static DefaultComboBox cbAtendenteCad;
 	public static DefaultComboBox cbStatusCad;
+	public static DefaultComboBox cbCategoriaCad;
 	public static DefaultComboBox cbNivelCad;
 	public static DefaultComboBox cbOrigemCad;
 	public static DefaultComboBox cbServicosCad;
-	public static DefaultComboBox cbCategoriaCad;
 	public static JPanel pnAuxiliar;
 	private JScrollPane scrollPane;
 	private JButton button;
@@ -87,7 +85,7 @@ public class NegociosView extends JInternalFrame {
 	public static JButton btnCancelar;
 	public static JButton btnHistorico;
 	public static JButton btEsconder;
-	private JLabel label_20;
+	private JLabel lbAtendenteCad;
 	private JPanel pnPrivacidade;
 	public static JCheckBox checkBox;
 	public static JCheckBox checkBox_1;
@@ -351,11 +349,11 @@ public class NegociosView extends JInternalFrame {
         btnCancelar.setBounds(395, 321, 90, 23);
         pnCadastro.add(btnCancelar);
 
-        label_20 = new JLabel();
-        label_20.setBounds(new Rectangle(0, 40, 0, 0));
-        label_20.setText("Atendente:");
-        label_20.setBounds(346, 30, 78, 17);
-        pnCadastro.add(label_20);
+        lbAtendenteCad = new JLabel();
+        lbAtendenteCad.setBounds(new Rectangle(0, 40, 0, 0));
+        lbAtendenteCad.setText("Atendente:");
+        lbAtendenteCad.setBounds(346, 30, 78, 17);
+        pnCadastro.add(lbAtendenteCad);
 
         cbAtendenteCad = new DefaultComboBox();
         cbAtendenteCad.setBounds(new Rectangle(0, 40, 0, 0));
@@ -501,66 +499,74 @@ public class NegociosView extends JInternalFrame {
         cbObject.setName("Objeto");
         pnCadastro.add(cbObject);
         
-        JLabel label_4 = new JLabel();
-        label_4.setText("Categoria:");
-        label_4.setBounds(10, 121, 87, 18);
-        pnCadastro.add(label_4);
-        
-        cbCategoriaCad = new DefaultComboBox();
-        cbCategoriaCad.setName("CategoriaCad");
-        cbCategoriaCad.setBounds(107, 121, 87, 20);
-        pnCadastro.add(cbCategoriaCad);
-        
-        JButton button_4 = new JButton();
-        button_4.setText("ADC");
-        button_4.setBounds(203, 118, 36, 23);
-        pnCadastro.add(button_4);
-        
-        JLabel label_6 = new JLabel();
-        label_6.setText("Produtos/Servi\u00E7os:");
-        label_6.setBounds(317, 121, 109, 17);
-        pnCadastro.add(label_6);
+        JLabel lbServicosCad = new JLabel();
+        lbServicosCad.setText("Produtos/Servi\u00E7os:");
+        lbServicosCad.setBounds(317, 119, 109, 17);
+        pnCadastro.add(lbServicosCad);
         
         cbServicosCad = new DefaultComboBox();
         cbServicosCad.setName("ServicosCad");
-        cbServicosCad.setBounds(438, 121, 116, 20);
+        cbServicosCad.setBounds(438, 119, 116, 20);
         pnCadastro.add(cbServicosCad);
         
-        JButton button_5 = new JButton();
-        button_5.setText("ADC");
-        button_5.setBounds(564, 118, 36, 23);
-        pnCadastro.add(button_5);
+        JButton btnServicosCad = new JButton();
+        btnServicosCad.setText("ADC");
+        btnServicosCad.setActionCommand("CriarServico");
+        btnServicosCad.setBounds(564, 116, 36, 23);
+        btnServicosCad.addActionListener(controller);
+        pnCadastro.add(btnServicosCad);
         
-        JButton button_6 = new JButton();
-        button_6.setText("ADC");
-        button_6.setBounds(564, 90, 36, 23);
-        pnCadastro.add(button_6);
-        
-        cbOrigemCad = new DefaultComboBox();
-        cbOrigemCad.setName("OrigemCad");
-        cbOrigemCad.setBounds(438, 91, 115, 20);
-        pnCadastro.add(cbOrigemCad);
-        
-        JLabel label_8 = new JLabel();
-        label_8.setText("Origem:");
-        label_8.setBounds(346, 91, 78, 18);
-        pnCadastro.add(label_8);
-        
-        JButton button_7 = new JButton();
-        button_7.setText("ADC");
-        button_7.setBounds(203, 88, 36, 23);
-        pnCadastro.add(button_7);
+        JButton btnNivelCad = new JButton();
+        btnNivelCad.setText("ADC");
+        btnNivelCad.setActionCommand("CriarNivel");
+        btnNivelCad.setBounds(564, 88, 36, 23);
+        btnNivelCad.addActionListener(controller);
+        pnCadastro.add(btnNivelCad);
         
         cbNivelCad = new DefaultComboBox();
         cbNivelCad.setName("NivelCad");
-        cbNivelCad.setBounds(107, 91, 87, 20);
+        cbNivelCad.setBounds(438, 89, 116, 20);
         pnCadastro.add(cbNivelCad);
         
-        JLabel lbNivel = new JLabel();
-        lbNivel.setText("Nivel:");
-        lbNivel.setBounds(10, 91, 87, 18);
-        pnCadastro.add(lbNivel);
-
+        JLabel lbNivelCad = new JLabel();
+        lbNivelCad.setText("Nivel:");
+        lbNivelCad.setBounds(346, 89, 89, 18);
+        pnCadastro.add(lbNivelCad);
+        
+        JButton btnOrigemCad = new JButton();
+        btnOrigemCad.setText("ADC");
+        btnOrigemCad.setActionCommand("CriarOrigem");
+        btnOrigemCad.setBounds(203, 116, 36, 23);
+        btnOrigemCad.addActionListener(controller);
+        pnCadastro.add(btnOrigemCad);
+        
+        cbOrigemCad = new DefaultComboBox();
+        cbOrigemCad.setName("OrigemCad");
+        cbOrigemCad.setBounds(107, 119, 87, 20);
+        pnCadastro.add(cbOrigemCad);
+        
+        JLabel lbOrigemCad = new JLabel();
+        lbOrigemCad.setText("Origem:");
+        lbOrigemCad.setBounds(10, 119, 87, 18);
+        pnCadastro.add(lbOrigemCad);
+        
+        JLabel lbCategoriaCad = new JLabel();
+        lbCategoriaCad.setText("Categoria:");
+        lbCategoriaCad.setBounds(10, 89, 87, 18);
+        pnCadastro.add(lbCategoriaCad);
+        
+        cbCategoriaCad = new DefaultComboBox();
+        cbCategoriaCad.setName("CategoriaCad");
+        cbCategoriaCad.setBounds(107, 89, 87, 20);
+        pnCadastro.add(cbCategoriaCad);
+        
+        JButton btnCategoriaCad = new JButton();
+        btnCategoriaCad.setText("ADC");
+        btnCategoriaCad.setActionCommand("CriarCategoria");
+        btnCategoriaCad.setBounds(203, 86, 36, 23);
+        btnCategoriaCad.addActionListener(controller);
+        pnCadastro.add(btnCategoriaCad);
+        
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 65, 53, 14);
         pnVisao.add(lbBuscar);

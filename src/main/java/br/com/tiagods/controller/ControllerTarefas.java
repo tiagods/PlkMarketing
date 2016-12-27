@@ -33,6 +33,7 @@ import java.util.TreeSet;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -121,7 +122,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		lista.add(criterio2);
 		lista.add(criterio3);
 		List<Tarefa> listaTarefas = new TarefaDAO().filtrar(lista, session);
-		preencherTabela(tbPrincipal, listaTarefas, new JTextField());
+		preencherTabela(tbPrincipal, listaTarefas, txContador);
 		long fim = System.currentTimeMillis();
 		session.close();
 		System.out.println("Tarefas : "+(fim-inicio)+" ms");
@@ -273,7 +274,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		TarefaDAO dao = new TarefaDAO();
 		List<Tarefa> lista = dao.filtrar(criterios, session);
 		System.out.println("Tamanho: "+lista.size());
-		preencherTabela(tbPrincipal, lista, new JTextField());
+		preencherTabela(tbPrincipal, lista, txContador);
 		tbPrincipal.addMouseListener(this);
 		session.close();
 		return true;
@@ -315,7 +316,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		LocalDate novaDataFimDeSemana = dataHoje.plusDays(diaDomingo);
 		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1);
 	}
-	public void preencherTabela(JTable table, List<Tarefa> lista, JTextField txContador){
+	public void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
 		if(lista.isEmpty()){
 			new SemRegistrosJTable(table,"Relação de Tarefas");
 		}
@@ -392,7 +393,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
 		}
-		txContador.setText("Total: "+lista.size()+" registros");
+		txContador.setText("Total: "+lista.size()+" tarefa(s) ");
 	}
 	public class AcaoInTable implements ActionListener{
 		@Override
@@ -448,12 +449,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				tbPrincipal.setValueAt(pendente, tbPrincipal.getSelectedRow(), 5);
 			}
 		}
-		
-		try{
-			Thread.sleep(2000);
-			buscar();
-		}catch (InterruptedException e) {
-		}
+		buscar();
 	}
 	public void excluir(Session session){
 		int row = tbPrincipal.getSelectedRow();

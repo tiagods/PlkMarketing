@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
 
+import br.com.tiagods.controller.ControllerSeletor;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
@@ -33,6 +34,7 @@ import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.Font;
 
 public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 	@Override
@@ -40,62 +42,25 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 		return DefaultEnumModel.super.getObject(valor);
 	}
 	private final JPanel contentPanel = new JPanel();
-	private JTable tbRelacao;
-	private JLabel lblNewLabel;
+	public static JPanel pnCadastrar;
+	public static JTable tbRelacao;
+	private JLabel lbBuscar;
 	private JScrollPane scrollPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	public static JTextField txBuscar;
+	public static JTextField txNome;
+	public static JLabel txCodigo;
+	public static JButton btnNovo,btnEditar,btnSalvar,btnExcluir,btnCancelar;
+	public static JComboBox<String> comboFiltro;
+	ControllerSeletor controller = new ControllerSeletor();
 /**
 	 * Create the dialog.
 	 */
-	
-	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome) {
-		initComponents(labelId, labelNome);
-		if(object != null){
-			if(object instanceof Empresa){
-				Session session = HibernateFactory.getSession();
-				session.beginTransaction();
-				List<Empresa> lista = (List<Empresa>)new EmpresaDAO().listar(Empresa.class, session);
-				String[] colunas = {"ID", "Nome"};
-				String[][] linhas = new String[lista.size()][colunas.length];
-				
-				for(int i=0;i<lista.size();i++){
-					linhas[i][0] = String.valueOf(lista.get(i).getId());
-					linhas[i][1] = lista.get(i).getNome();
-				}
-				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
-				session.close();
-			}
-			else if(object instanceof Negocio){
-				Session session = HibernateFactory.getSession();
-				session.beginTransaction();
-				List<Negocio> lista = (List<Negocio>)new NegocioDAO().listar(Negocio.class, session);
-				String[] colunas = {"ID", "Nome"};
-				String[][] linhas = new String[lista.size()][colunas.length];
-				
-				for(int i=0;i<lista.size();i++){
-					linhas[i][0] = String.valueOf(lista.get(i).getId());
-					linhas[i][1] = lista.get(i).getNome();
-				}
-				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
-				session.close();
-			}
-			else if (object instanceof Pessoa){
-				Session session = HibernateFactory.getSession();
-				session.beginTransaction();
-				List<Pessoa> lista = new PessoaDAO().listar(Pessoa.class, session);
-				String[] colunas = {"ID", "Nome"};
-				String[][] linhas = new String[lista.size()][colunas.length];
-				for(int i=0;i<lista.size();i++){
-					linhas[i][0] = String.valueOf(lista.get(i).getId());
-					linhas[i][1] = lista.get(i).getNome();
-				}
-				tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
-				session.close();
-			}
-		}
+	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox) {
+		initComponents();
+		controller.iniciar(labelId,labelNome,this,combobox);
+		controller.processarObjeto(object);
 	}
-	public void initComponents(JLabel labelId, JLabel labelNome){
+	public void initComponents(){
 		setBounds(100, 100, 450, 350);
 		getContentPane().setLayout(null);
 		contentPanel.setBounds(0, 102, 434, 170);
@@ -105,126 +70,102 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 			scrollPane = new JScrollPane();
 			{
 				tbRelacao = new JTable();
-				tbRelacao.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent arg0) {
-						if(tbRelacao.getSelectedColumn()!=-1 && tbRelacao.getSelectedRow()!=-1){
-							int column = tbRelacao.getSelectedColumn();
-							int row = tbRelacao.getSelectedRow();
-							String texto="";
-							texto+=tbRelacao.getModel().getValueAt(row, column)+",";
-						}
-					}
-				});
 				tbRelacao.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				tbRelacao.addMouseListener(controller);
 				tbRelacao.setFillsViewportHeight(true);
 				tbRelacao.setSelectionBackground(Color.ORANGE);
-				tbRelacao.setModel(new DefaultTableModel(
-						new Object[][] {
-						},
-						new String[] {
-
-						}
-						)
-				{
-					boolean[] canEdit = new boolean [] {
-							false, false, false, false, false, false
-					};
-					@Override
-					public boolean isCellEditable(int rowIndex, int columnIndex) {
-						return canEdit [columnIndex];
-					}
-				});
 				scrollPane.setViewportView(tbRelacao);
 			}
 		}
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
-			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-		);
+				);
 		gl_contentPanel.setVerticalGroup(
-			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				gl_contentPanel.createParallelGroup(Alignment.LEADING)
 				.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-		);
+				);
 		contentPanel.setLayout(gl_contentPanel);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setBounds(0, 278, 434, 33);
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane);
-			{
-				JButton btOkDialog = new JButton("OK");
-				btOkDialog.setActionCommand("OK");
-				btOkDialog.addActionListener(new ActionListener(){
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if(tbRelacao.getSelectedRow()!=-1){
-							labelId.setText((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 0));
-							String[] nome = ((String)tbRelacao.getValueAt(tbRelacao.getSelectedRow(), 1)).split(" ");
-							labelNome.setText(nome[0]);
-							labelId.setOpaque(true);
-							labelNome.setOpaque(true);
-							labelId.setForeground(Color.ORANGE);
-							labelNome.setForeground(Color.ORANGE);
-							dispose();
-						}
-					}});
-				buttonPane.add(btOkDialog);
-				getRootPane().setDefaultButton(btOkDialog);
-			}
-			{
-				JButton btCancelDialog = new JButton("Cancel");
-				btCancelDialog.setActionCommand("Cancel");
-				btCancelDialog.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
-				buttonPane.add(btCancelDialog);
-			}
-		}
-		{
-			lblNewLabel = new JLabel("Buscar:");
-			lblNewLabel.setBounds(10, 11, 48, 20);
-			getContentPane().add(lblNewLabel);
-		}
 		
-		textField = new JTextField();
-		textField.setBounds(68, 11, 86, 20);
-		getContentPane().add(textField);
-		textField.setColumns(10);
+		JPanel buttonPane = new JPanel();
+		buttonPane.setBounds(0, 278, 434, 33);
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"ID", "Nome"}));
-		comboBox.setBounds(164, 11, 96, 20);
-		getContentPane().add(comboBox);
+		JButton btOkDialog = new JButton("OK");
+		btOkDialog.setActionCommand("OK");
+		btOkDialog.addActionListener(controller);
+		buttonPane.add(btOkDialog);
+		getRootPane().setDefaultButton(btOkDialog);
+
+		JButton btCancelDialog = new JButton("Cancelar");
+		btCancelDialog.setActionCommand("Desistir");
+		btCancelDialog.addActionListener(controller);
+		buttonPane.add(btCancelDialog);
+
+		lbBuscar = new JLabel("Buscar:");
+		lbBuscar.setBounds(10, 11, 48, 20);
+		getContentPane().add(lbBuscar);
+
+		txBuscar = new JTextField();
+		txBuscar.setBounds(68, 11, 86, 20);
+		getContentPane().add(txBuscar);
+		txBuscar.addKeyListener(controller);
 		
-		JButton btnNovo = new JButton("Novo");
-		btnNovo.setBounds(349, 10, 75, 23);
-		getContentPane().add(btnNovo);
+		comboFiltro = new JComboBox();
+		comboFiltro.setBounds(164, 11, 96, 20);
+		getContentPane().add(comboFiltro);
 		
-		JPanel pnCadastrar = new JPanel();
-		pnCadastrar.setBounds(10, 42, 414, 58);
+		
+		pnCadastrar = new JPanel();
+		pnCadastrar.setBounds(10, 42, 414, 33);
 		getContentPane().add(pnCadastrar);
 		pnCadastrar.setLayout(null);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(28, 1, 145, 20);
-		pnCadastrar.add(textField_1);
-		textField_1.setColumns(10);
+		txCodigo = new JLabel("");
+		txCodigo.setFont(new Font("Tahoma", Font.BOLD, 11));
+		txCodigo.setBounds(0, 5, 21, 14);
+		pnCadastrar.add(txCodigo);
 		
-		JButton btnSalvar = new JButton("Salvar");
-		btnSalvar.setBounds(256, 1, 63, 23);
+		txNome = new JTextField();
+		txNome.setBounds(26, 2, 129, 20);
+		pnCadastrar.add(txNome);
+		txNome.setColumns(10);
+		
+		btnNovo = new JButton("Novo");
+		btnNovo.setActionCommand("Novo");
+		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnNovo.setBounds(349, 10, 75, 23);
+		btnNovo.addActionListener(controller);
+		getContentPane().add(btnNovo);
+		
+		btnEditar = new JButton("Editar");
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnEditar.setBounds(270, 10, 75, 23);
+		btnEditar.setActionCommand("Editar");
+		btnEditar.addActionListener(controller);
+		getContentPane().add(btnEditar);
+		
+		btnSalvar = new JButton("Salvar");
+		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnSalvar.setBounds(169, 1, 75, 23);
+		btnSalvar.setActionCommand("Salvar");
+		btnSalvar.addActionListener(controller);
 		pnCadastrar.add(btnSalvar);
 		
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.setBounds(329, 1, 75, 23);
+		btnCancelar = new JButton("Cancelar");
+		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnCancelar.setBounds(254, 1, 75, 23);
+		btnCancelar.setActionCommand("Cancelar");
+		btnCancelar.addActionListener(controller);
 		pnCadastrar.add(btnCancelar);
 		
-		JButton btnExcluir = new JButton("Excluir");
-		btnExcluir.setBounds(329, 26, 75, 23);
+		btnExcluir = new JButton("Excluir");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnExcluir.setBounds(339, 1, 75, 23);
+		btnExcluir.setActionCommand("Excluir");
+		btnExcluir.addActionListener(controller);
 		pnCadastrar.add(btnExcluir);
 		setLocationRelativeTo(null);
 	}

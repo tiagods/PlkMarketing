@@ -2,29 +2,27 @@ package br.com.tiagods.modelDAO;
 
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 
-import br.com.tiagods.model.Pessoa;
-
-public class EmpresaDAO implements InterfaceDAO {
+public class GenericDAO implements InterfaceDAO{
 
 	@Override
 	public boolean salvar(Object classe, Session session) {
 		try{
 			session.saveOrUpdate(classe);
 			session.getTransaction().commit();
+			
 			return true;
-		}catch (HibernateException e) {
-			e.printStackTrace();
-			session.getTransaction().rollback();
+		}catch (Exception e) {
+			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Não foi salvo!\n"+e.getMessage());
+			return false;
 		}
-		return false;
 	}
 
 	@Override
@@ -32,6 +30,7 @@ public class EmpresaDAO implements InterfaceDAO {
 		try{
 			session.delete(object);
 			session.getTransaction().commit();
+			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Excluido com sucesso!");
 			return true;
 		}catch (HibernateException e) {
 			session.getTransaction().rollback();
@@ -41,12 +40,20 @@ public class EmpresaDAO implements InterfaceDAO {
 
 	@Override
 	public List listar(Class classe, Session session) {
-		return session.createQuery("from "+classe.getSimpleName()+" e order by e.id ").getResultList();
+		return session.createQuery("from "+classe.getSimpleName()).getResultList();
 	}
 
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
 		return session.get(classe, id);
 	}
-	
+	@SuppressWarnings({ "deprecation", "rawtypes" })
+	public List items(Class classe, Session session, List<Criterion> criterion, Order order){
+		Criteria criteria = session.createCriteria(classe);
+		for(Criterion c : criterion){
+			criteria.add(c);
+		}
+		criteria.addOrder(order);
+		return criteria.list();
+	}
 }

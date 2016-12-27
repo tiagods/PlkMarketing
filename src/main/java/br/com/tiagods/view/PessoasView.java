@@ -35,16 +35,16 @@ import java.awt.Font;
 public class PessoasView extends JInternalFrame {
 	public static DefaultComboBox cbAtendente;
     public static DefaultComboBox cbCategoria;
-    public static DefaultComboBox cbCategoriaCad;
     public static DefaultComboBox cbOrigem;
     public static DefaultComboBox cbEmpresa;
     public static DefaultComboBox cbProdServicos;
     public static JComboBox cbLogradouro;
-    public static DefaultComboBox cbOrigemCad;
     public static DefaultComboBox cbEstado;
     public static DefaultComboBox cbAtendenteCad;
-    public static DefaultComboBox cbProdServicosCad;
     public static DefaultComboBox cbCidade;
+    public static DefaultComboBox cbCategoriaCad;
+    public static DefaultComboBox cbOrigemCad;
+    public static DefaultComboBox cbProdServicosCad;
     public static javax.swing.JPanel pnVisao;
     public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
@@ -241,16 +241,6 @@ public class PessoasView extends JInternalFrame {
         lbComplemento.setText("Compl:");
         lbComplemento.setBounds(203, 245, 43, 20);
         pnPrincipal.add(lbComplemento);
-
-        JLabel lbMeio = new JLabel();
-        lbMeio.setText("Origem:");
-        lbMeio.setBounds(385, 96, 50, 18);
-        pnPrincipal.add(lbMeio);
-
-        cbOrigemCad = new DefaultComboBox();
-        cbOrigemCad.setName("OrigemCad");
-        cbOrigemCad.setBounds(438, 96, 92, 20);
-        pnPrincipal.add(cbOrigemCad);
 
         txLogradouro = new JTextField();
         txLogradouro.setBounds(107, 214, 201, 20);
@@ -464,41 +454,6 @@ public class PessoasView extends JInternalFrame {
         txDataNascimento.setBounds(438, 68, 50, 20);
         pnPrincipal.add(txDataNascimento);
 
-        JButton btMeioCad = new JButton();
-        btMeioCad.setText("ADC");
-        btMeioCad.setBounds(540, 94, 36, 23);
-        pnPrincipal.add(btMeioCad);
-
-        JButton btAddProdServicos = new JButton();
-        btAddProdServicos.setText("ADC");
-        btAddProdServicos.setBounds(564, 123, 36, 23);
-        pnPrincipal.add(btAddProdServicos);
-
-        cbProdServicosCad = new DefaultComboBox();
-        cbProdServicosCad.setName("ServicosCad");
-        cbProdServicosCad.setBounds(438, 126, 116, 20);
-        pnPrincipal.add(cbProdServicosCad);
-
-        JLabel lbProdServicosCad = new JLabel();
-        lbProdServicosCad.setText("Produtos/Servi\u00E7os:");
-        lbProdServicosCad.setBounds(317, 126, 109, 17);
-        pnPrincipal.add(lbProdServicosCad);
-
-        JButton button_13 = new JButton();
-        button_13.setText("ADC");
-        button_13.setBounds(203, 123, 36, 23);
-        pnPrincipal.add(button_13);
-
-        cbCategoriaCad = new DefaultComboBox();
-        cbCategoriaCad.setName("CategoriaCad");
-        cbCategoriaCad.setBounds(107, 126, 87, 20);
-        pnPrincipal.add(cbCategoriaCad);
-
-        JLabel lbCategoria = new JLabel();
-        lbCategoria.setText("Categoria:");
-        lbCategoria.setBounds(10, 126, 87, 18);
-        pnPrincipal.add(lbCategoria);
-
         cbCidade = new DefaultComboBox();
         cbCidade.setName("Cidade");
         cbCidade.setBounds(438, 276, 128, 20);
@@ -539,6 +494,57 @@ public class PessoasView extends JInternalFrame {
         txCodigo = new JLabel("");
         txCodigo.setBounds(107, 14, 109, 14);
         pnPrincipal.add(txCodigo);
+        
+        JLabel lbCategoriaCad = new JLabel();
+        lbCategoriaCad.setText("Categoria:");
+        lbCategoriaCad.setBounds(10, 96, 87, 18);
+        pnPrincipal.add(lbCategoriaCad);
+        
+        cbCategoriaCad = new DefaultComboBox();
+        cbCategoriaCad.setName("CategoriaCad");
+        cbCategoriaCad.setBounds(107, 96, 87, 20);
+        pnPrincipal.add(cbCategoriaCad);
+        
+        JButton btnCategoriaCad = new JButton();
+        btnCategoriaCad.setText("ADC");
+        btnCategoriaCad.setActionCommand("CriarCategoria");
+        btnCategoriaCad.setBounds(203, 93, 36, 23);
+        btnCategoriaCad.addActionListener(controller);
+        pnPrincipal.add(btnCategoriaCad);
+        
+        JButton btnOrigemCad = new JButton();
+        btnOrigemCad.setText("ADC");
+        btnOrigemCad.setActionCommand("CriarOrigem");
+        btnOrigemCad.setBounds(203, 123, 36, 23);
+        btnOrigemCad.addActionListener(controller);
+        pnPrincipal.add(btnOrigemCad);
+        
+        cbOrigemCad = new DefaultComboBox();
+        cbOrigemCad.setName("OrigemCad");
+        cbOrigemCad.setBounds(107, 126, 87, 20);
+        pnPrincipal.add(cbOrigemCad);
+        
+        JLabel lbOrigemCad = new JLabel();
+        lbOrigemCad.setText("Origem:");
+        lbOrigemCad.setBounds(10, 126, 87, 18);
+        pnPrincipal.add(lbOrigemCad);
+        
+        JLabel lbServicosCad = new JLabel();
+        lbServicosCad.setText("Produtos/Servi\u00E7os:");
+        lbServicosCad.setBounds(319, 126, 109, 17);
+        pnPrincipal.add(lbServicosCad);
+        
+        cbProdServicosCad = new DefaultComboBox();
+        cbProdServicosCad.setName("ServicosCad");
+        cbProdServicosCad.setBounds(440, 126, 116, 20);
+        pnPrincipal.add(cbProdServicosCad);
+        
+        JButton btnServicosCad = new JButton();
+        btnServicosCad.setText("ADC");
+        btnServicosCad.setActionCommand("CriarServico");
+        btnServicosCad.setBounds(566, 123, 36, 23);
+        btnServicosCad.addActionListener(controller);
+        pnPrincipal.add(btnServicosCad);
 
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
@@ -559,9 +565,6 @@ public class PessoasView extends JInternalFrame {
         pnAuxiliar.add(scrolAuxiliar);
         pnAuxiliar.add(btEsconder);
         
-        ButtonGroup group = new ButtonGroup();
-
-
         JScrollPane scrollPrincipal = new JScrollPane();
         scrollPrincipal.setBounds(10, 107, 760, 142);
         pnVisao.add(scrollPrincipal);
@@ -571,7 +574,6 @@ public class PessoasView extends JInternalFrame {
         scrollPrincipal.setViewportView(tbPrincipal);
 
         txBuscar = new JTextField();
-
         txBuscar.setActionCommand("Buscar");
         txBuscar.addKeyListener(controller);
         txBuscar.setBounds(74, 80, 139, 20);

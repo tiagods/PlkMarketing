@@ -44,7 +44,7 @@ import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
  * Essa classe � invocada pelos controllers de pessoa e empresa
  */
-public class PadraoMap {
+public class AuxiliarComboBox {
 	Map <String,Usuario> atendentes;
 	Map <String,Categoria> categorias;
 	Map <String,Cidade> cidades;
@@ -66,6 +66,15 @@ public class PadraoMap {
 	List<Etapa> listarEtapas;
 	List<Status> listarStatus;
 
+	private static AuxiliarComboBox instance;
+	
+	static AuxiliarComboBox getInstance(){
+		if(instance==null){
+			instance = new AuxiliarComboBox();
+		}
+		return instance;
+	}
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void preencherCombo(JComboBox combo, Session session, JComboBox comboEstado){
     	combo.removeAllItems();

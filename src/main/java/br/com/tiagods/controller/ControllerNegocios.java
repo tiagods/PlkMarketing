@@ -45,11 +45,15 @@ import org.hibernate.criterion.Restrictions;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
+import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Etapa;
 import br.com.tiagods.model.Negocio;
+import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
+import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modelDAO.EmpresaDAO;
@@ -66,7 +70,9 @@ import static br.com.tiagods.view.NegociosView.*;
  * @author Tiago
  */
 public class ControllerNegocios implements ActionListener,ItemListener,MouseListener, PropertyChangeListener{
-	PadraoMap padrao = new PadraoMap();
+	
+	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
+	
 	Session session = null;
 	Negocio negocio = null;
 	Negocio negocioBackup = null;
@@ -183,6 +189,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		JComboBox[] combos = null;
 		switch(e.getActionCommand()){
 		case "Buscar":
 			if(txBuscar.getText().trim().length()>=3){
@@ -234,13 +241,41 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			break;
 		case "VincularObjeto":
 			SelecaoObjeto dialog = null;
-			if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString()))
-				dialog =new SelecaoObjeto(new Empresa(),txCodObjeto,txNomeObjeto);
-			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString()))
-				dialog = new SelecaoObjeto(new Pessoa(),txCodObjeto,txNomeObjeto);
+			if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
+				combos = new JComboBox[]{cbEmpresa};
+				dialog =new SelecaoObjeto(new Empresa(),txCodObjeto,txNomeObjeto,combos);
+			}
+			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
+				combos = new JComboBox[]{cbPessoa};
+				dialog = new SelecaoObjeto(new Pessoa(),txCodObjeto,txNomeObjeto,combos);
+			}
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			txCodObjeto.addPropertyChangeListener(new MudarCliente());
+			break;
+		case "CriarCategoria":
+			combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
+			dialog = new SelecaoObjeto(new Categoria(), new JLabel(), new JLabel(), combos);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarNivel":
+			combos = new JComboBox[]{cbNivel,cbNivelCad};
+			dialog = new SelecaoObjeto(new Nivel(), new JLabel(), new JLabel(), combos);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarOrigem":
+			combos = new JComboBox[]{cbOrigem,cbOrigemCad};
+			dialog = new SelecaoObjeto(new Origem(), new JLabel(), new JLabel(), combos);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarServico":
+			combos = new JComboBox[]{cbServicos,cbServicosCad};
+			dialog = new SelecaoObjeto(new Servico(), new JLabel(), new JLabel(), combos);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
 			break;
 		default:
 			break;

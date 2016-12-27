@@ -252,15 +252,7 @@ public class EmpresasView extends JInternalFrame {
         lbComplemento.setBounds(203, 245, 43, 20);
         pnPrincipal.add(lbComplemento);
 
-        JLabel lbMeio = new JLabel();
-        lbMeio.setText("Origem:");
-        lbMeio.setBounds(385, 96, 50, 18);
-        pnPrincipal.add(lbMeio);
-
-        cbOrigemCad = new DefaultComboBox();
-        cbOrigemCad.setName("OrigemCad");
-        cbOrigemCad.setBounds(438, 96, 92, 20);
-        pnPrincipal.add(cbOrigemCad);
+        
 
         txLogradouro = new JTextField();
         txLogradouro.setBounds(107, 214, 201, 20);
@@ -391,16 +383,7 @@ public class EmpresasView extends JInternalFrame {
         lbSite.setBounds(385, 184, 43, 20);
         pnPrincipal.add(lbSite);
 
-        JLabel lbAtendente = new JLabel();
-        lbAtendente.setText("Atendente:");
-        lbAtendente.setBounds(385, 42, 87, 17);
-        pnPrincipal.add(lbAtendente);
-
-        cbAtendenteCad = new DefaultComboBox();
-        cbAtendenteCad.setName("AtendenteCad");
-        cbAtendenteCad.setBounds(476, 40, 92, 20);
-        pnPrincipal.add(cbAtendenteCad);
-
+        
         pnPrivacidade = new JPanel();
         pnPrivacidade.setBackground((Color) null);
         pnPrivacidade.setBounds(601, 0, 159, 363);
@@ -467,41 +450,84 @@ public class EmpresasView extends JInternalFrame {
         }catch (Exception e) {
 		}
 
-        JButton btMeioCad = new JButton();
-        btMeioCad.setText("ADC");
-        btMeioCad.setBounds(540, 94, 36, 23);
-        pnPrincipal.add(btMeioCad);
+        cbAtendenteCad = new DefaultComboBox();
+        cbAtendenteCad.setName("AtendenteCad");
+        cbAtendenteCad.setBounds(476, 40, 92, 20);
+        pnPrincipal.add(cbAtendenteCad);
 
-        JButton btAddProdServicos = new JButton();
-        btAddProdServicos.setText("ADC");
-        btAddProdServicos.setBounds(564, 123, 36, 23);
-        pnPrincipal.add(btAddProdServicos);
+        JLabel lbAtendente = new JLabel();
+        lbAtendente.setText("Atendente:");
+        lbAtendente.setBounds(385, 42, 87, 17);
+        pnPrincipal.add(lbAtendente);
+
+        cbCategoriaCad = new DefaultComboBox();
+        cbCategoriaCad.setName("CategoriaCad");
+        cbCategoriaCad.setBounds(107, 96, 87, 20);
+        pnPrincipal.add(cbCategoriaCad);
+        
+        JButton btCategoriaAdd = new JButton();
+        btCategoriaAdd.setText("ADC");
+        btCategoriaAdd.setBounds(203, 93, 36, 23);
+        btCategoriaAdd.setActionCommand("CriarCategoria");
+        btCategoriaAdd.addActionListener(controller);
+        pnPrincipal.add(btCategoriaAdd);
+        
+        JLabel lbCategoriaCad = new JLabel();
+        lbCategoriaCad.setText("Categoria:");
+        lbCategoriaCad.setBounds(10, 96, 87, 18);
+        pnPrincipal.add(lbCategoriaCad);
+        
+        cbNivelCad = new DefaultComboBox();
+        cbNivelCad.setName("NivelCad");
+        cbNivelCad.setBounds(438, 96, 116, 20);
+        pnPrincipal.add(cbNivelCad);
+        
+        JButton btnNivelCad = new JButton();
+        btnNivelCad.setText("ADC");
+        btnNivelCad.setBounds(564, 95, 36, 23);
+        btnNivelCad.setActionCommand("CriarNivel");
+        btnNivelCad.addActionListener(controller);
+        pnPrincipal.add(btnNivelCad);
+        
+        JLabel lbNivel = new JLabel();
+        lbNivel.setText("Nivel:");
+        lbNivel.setBounds(384, 96, 51, 18);
+        pnPrincipal.add(lbNivel);
+        
+        cbOrigemCad = new DefaultComboBox();
+        cbOrigemCad.setName("OrigemCad");
+        cbOrigemCad.setBounds(107, 126, 87, 20);
+        pnPrincipal.add(cbOrigemCad);
+        
+        JButton btnOrigemAdd = new JButton();
+        btnOrigemAdd.setText("ADC");
+        btnOrigemAdd.setBounds(203, 123, 36, 23);
+        btnOrigemAdd.setActionCommand("CriarOrigem");
+        btnOrigemAdd.addActionListener(controller);
+        pnPrincipal.add(btnOrigemAdd);
+
+        JLabel lbOrigemCad = new JLabel();
+        lbOrigemCad.setText("Origem:");
+        lbOrigemCad.setBounds(10, 126, 87, 18);
+        pnPrincipal.add(lbOrigemCad);
 
         cbProdServicosCad = new DefaultComboBox();
         cbProdServicosCad.setName("ServicosCad");
         cbProdServicosCad.setBounds(438, 126, 116, 20);
         pnPrincipal.add(cbProdServicosCad);
-
+        
+        JButton btnServicoAdd = new JButton();
+        btnServicoAdd.setText("ADC");
+        btnServicoAdd.setBounds(564, 123, 36, 23);
+        btnServicoAdd.setActionCommand("CriarServico");
+        btnServicoAdd.addActionListener(controller);
+        pnPrincipal.add(btnServicoAdd);
+        
         JLabel lbProdServicosCad = new JLabel();
         lbProdServicosCad.setText("Produtos/Servi\u00E7os:");
         lbProdServicosCad.setBounds(317, 126, 109, 17);
         pnPrincipal.add(lbProdServicosCad);
-
-        JButton button_13 = new JButton();
-        button_13.setText("ADC");
-        button_13.setBounds(203, 123, 36, 23);
-        pnPrincipal.add(button_13);
-
-        cbCategoriaCad = new DefaultComboBox();
-        cbCategoriaCad.setName("CategoriaCad");
-        cbCategoriaCad.setBounds(107, 126, 87, 20);
-        pnPrincipal.add(cbCategoriaCad);
-
-        JLabel lbCategoria = new JLabel();
-        lbCategoria.setText("Categoria:");
-        lbCategoria.setBounds(10, 126, 87, 18);
-        pnPrincipal.add(lbCategoria);
-
+        
         cbCidade = new DefaultComboBox();
         cbCidade.setName("Cidade");
         cbCidade.setBounds(438, 276, 128, 20);
@@ -539,21 +565,6 @@ public class EmpresasView extends JInternalFrame {
         btnExcluir.setBounds(438, 306, 90, 23);
         pnPrincipal.add(btnExcluir);
 
-        cbNivelCad = new DefaultComboBox();
-        cbNivelCad.setName("NivelCad");
-        cbNivelCad.setBounds(107, 96, 87, 20);
-        pnPrincipal.add(cbNivelCad);
-
-        JLabel lblNivel = new JLabel();
-        lblNivel.setText("Nivel:");
-        lblNivel.setBounds(10, 96, 87, 18);
-        pnPrincipal.add(lblNivel);
-
-        JButton btNivelCadNovo = new JButton();
-        btNivelCadNovo.setText("ADC");
-        btNivelCadNovo.setBounds(203, 93, 36, 23);
-        pnPrincipal.add(btNivelCadNovo);
-
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
         pnAuxiliar.setBounds(780, 260, 460, 363);
@@ -584,7 +595,6 @@ public class EmpresasView extends JInternalFrame {
         scrollPrincipal.setViewportView(tbPrincipal);
 
         txBuscar = new JTextField();
-
         txBuscar.setActionCommand("Buscar");
         txBuscar.addKeyListener(controller);
         txBuscar.setBounds(74, 80, 139, 20);

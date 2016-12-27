@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -41,15 +42,20 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
+import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Negocio;
+import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
+import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modelDAO.ItemsDAO;
 import br.com.tiagods.modelDAO.PessoaDAO;
+import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
@@ -57,13 +63,14 @@ import br.com.tiagods.view.interfaces.SemRegistrosJTable;
  * @author Tiago
  */
 public class ControllerPessoas implements ActionListener,KeyListener,ItemListener,MouseListener,PropertyChangeListener{
-	PadraoMap padrao = new PadraoMap();
+	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
+	
 	List<Pessoa> listaPessoas;
-
 	Session session=null;
 	Pessoa pessoa= null;
 	Pessoa pessoaBackup;
 	boolean telaEmEdicao = false;
+	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Pessoa pessoa){
 		cbEmpresa.setEnabled(false);
@@ -95,6 +102,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		JComboBox[] combos = null;
 		switch(e.getActionCommand()){
 		case "Buscar":
 			if(txBuscar.getText().trim().length()>=3){
@@ -149,6 +157,24 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		case "Esconder":
 			pnAuxiliar.setVisible(false);
 			break;
+			case "CriarCategoria":
+				combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
+				SelecaoObjeto dialog = new SelecaoObjeto(new Categoria(), new JLabel(), new JLabel(), combos);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				break;
+			case "CriarOrigem":
+				combos = new JComboBox[]{cbOrigem,cbOrigemCad};
+				dialog = new SelecaoObjeto(new Origem(), new JLabel(), new JLabel(), combos);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				break;
+			case "CriarServico":
+				combos = new JComboBox[]{cbProdServicos,cbProdServicosCad};
+				dialog = new SelecaoObjeto(new Servico(), new JLabel(), new JLabel(), combos);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				break;
 			default:
 				break;
 		}

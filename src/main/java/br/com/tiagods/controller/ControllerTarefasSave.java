@@ -70,7 +70,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	Tarefa tarefaBackup;
 	String item = "";
 	
-	PadraoMap padrao = new PadraoMap();
+	SelecaoObjeto dialog = null;
+	AuxiliarComboBox padrao = new AuxiliarComboBox();
 	
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
 	HashMap<String, Usuario> usuarios = new HashMap<>();  
@@ -124,14 +125,15 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			novoEditar();
 			break;
 		case "ChamarDialog":
-			SelecaoObjeto dialog = null;
+			if(dialog!=null){
+				dialog.dispose();
+			}
 			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
-				dialog =new SelecaoObjeto(new Empresa(),txCodigo,txNome);
+				dialog =new SelecaoObjeto(new Empresa(),txCodigo,txNome,null);
 			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
-				dialog =new SelecaoObjeto(new Pessoa(),txCodigo,txNome);
+				dialog =new SelecaoObjeto(new Pessoa(),txCodigo,txNome,null);
 			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
-				dialog =new SelecaoObjeto(new Negocio(),txCodigo,txNome);
-				
+				dialog =new SelecaoObjeto(new Negocio(),txCodigo,txNome,null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;

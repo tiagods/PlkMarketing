@@ -31,8 +31,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static javax.swing.JCheckBox ckTelefone;
 	public static javax.swing.JCheckBox ckVisita;
 	public static DefaultComboBox cbAtendentes;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel15;
+    public static javax.swing.JLabel txContador;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -74,8 +73,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jScrollPane3 = new javax.swing.JScrollPane();
         jScrollPane3.setBounds(84, 11, 966, 308);
         tbPrincipal = new javax.swing.JTable();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel15.setBounds(5, 273, 69, 45);
         ckPendentes = new javax.swing.JCheckBox();
         ckPendentes.setBounds(420, 95, 93, 23);
         ckFinalizados = new javax.swing.JCheckBox();
@@ -94,8 +91,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         rbDefinirData = new javax.swing.JRadioButton();
         rbDefinirData.setBounds(362, 53, 73, 23);
         group.add(rbDefinirData);
-        jLabel1 = new javax.swing.JLabel();
-        jLabel1.setBounds(669, 10, 90, 23);
+        txContador = new javax.swing.JLabel();
+        txContador.setBounds(615, 10, 144, 23);
         jLabel2 = new javax.swing.JLabel();
         jLabel2.setBounds(782, 10, 30, 23);
         cbAtendentes = new DefaultComboBox();
@@ -107,17 +104,17 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel5 = new javax.swing.JLabel();
         
         ckVisita = new javax.swing.JCheckBox();
-        ckVisita.setBounds(392, 10, 73, 23);
+        ckVisita.setBounds(413, 10, 73, 23);
         jLabel3 = new javax.swing.JLabel();
         jLabel3.setBounds(10, 14, 40, 14);
         ckEmail = new javax.swing.JCheckBox();
         ckEmail.setBounds(56, 10, 73, 23);
         ckProposta = new javax.swing.JCheckBox();
-        ckProposta.setBounds(131, 10, 73, 23);
+        ckProposta.setBounds(131, 10, 90, 23);
         ckReuniao = new javax.swing.JCheckBox();
-        ckReuniao.setBounds(208, 10, 90, 23);
+        ckReuniao.setBounds(229, 10, 90, 23);
         ckTelefone = new javax.swing.JCheckBox();
-        ckTelefone.setBounds(300, 10, 90, 23);
+        ckTelefone.setBounds(321, 10, 90, 23);
         jData1 = new JDateChooser();
         jData2 = new JDateChooser();
         
@@ -129,9 +126,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 
         tbPrincipal.setGridColor(getColor());
         jScrollPane3.setViewportView(tbPrincipal);
-
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setText("{###}");
 
         ckPendentes.setBackground(getColor());
         ckPendentes.setText("Pendentes");
@@ -170,8 +164,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         rbDefinirData.setActionCommand(commandPrazo);
         rbDefinirData.addActionListener(controller);
         
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("{#### Tarefas}");
+        txContador.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         jLabel2.setText("de:");
 
@@ -245,7 +238,6 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         ckVisita.addMouseListener(controller);
         
         jPanel4.setLayout(null);
-        jPanel4.add(jLabel15);
         jPanel4.add(jScrollPane3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -266,7 +258,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.add(ckReuniao);
         jPanel1.add(ckTelefone);
         jPanel1.add(ckVisita);
-        jPanel1.add(jLabel1);
+        jPanel1.add(txContador);
         jPanel1.add(jLabel2);
         jPanel1.add(cbAtendentes);
         jPanel1.add(ckPendentes);

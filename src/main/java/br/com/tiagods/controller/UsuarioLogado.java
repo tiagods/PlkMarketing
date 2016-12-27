@@ -23,13 +23,23 @@ public class UsuarioLogado {
 	public UsuarioLogado(){
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
+		
 		List<Usuario> users = session.createQuery("from Usuario").getResultList();
 		if(users.isEmpty()){
 			CriarAdmin.getInstance().gerarDefault();
 			usuario = CriarAdmin.getInstance().getUsuario();
 		}	
 		else{
-			usuario = users.get(0);
+			boolean encontrado = false;
+			for(Usuario user : users){
+				if(user.getNome().contains(System.getProperty("user.name"))){
+					usuario = user;
+					encontrado = true;
+					break;
+				}
+			}
+			if(!encontrado) 
+				usuario = users.get(0);
 		}
 		session.close();
 	}
