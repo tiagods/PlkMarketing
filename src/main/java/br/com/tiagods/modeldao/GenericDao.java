@@ -17,10 +17,8 @@ public class GenericDao implements InterfaceDao{
 		try{
 			session.saveOrUpdate(classe);
 			session.getTransaction().commit();
-			
 			return true;
 		}catch (Exception e) {
-			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "N�o foi salvo!\n"+e.getMessage());
 			return false;
 		}
 	}
@@ -30,7 +28,6 @@ public class GenericDao implements InterfaceDao{
 		try{
 			session.delete(object);
 			session.getTransaction().commit();
-			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "Excluido com sucesso!");
 			return true;
 		}catch (HibernateException e) {
 			session.getTransaction().rollback();
@@ -50,8 +47,10 @@ public class GenericDao implements InterfaceDao{
 	@SuppressWarnings({ "deprecation", "rawtypes" })
 	public List items(Class classe, Session session, List<Criterion> criterion, Order order){
 		Criteria criteria = session.createCriteria(classe);
-		for(Criterion c : criterion){
-			criteria.add(c);
+		if(!criterion.isEmpty()){
+			for(Criterion c : criterion){
+				criteria.add(c);
+			}
 		}
 		criteria.addOrder(order);
 		return criteria.list();

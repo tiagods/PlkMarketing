@@ -75,7 +75,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings("unchecked")
 	public void iniciar(Empresa empresa){
 		cbEmpresa.setEnabled(false);
-		cbEmpresa.setToolTipText("Filtro n�o criado: Aguardando programa��o");
+		cbEmpresa.setToolTipText("Filtro n�o criado: Aguardando programacao");
 		this.empresa=empresa;
     	session = HibernateFactory.getSession();
     	session.beginTransaction();
@@ -262,7 +262,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContador);
 		}else{
-			JOptionPane.showMessageDialog(jDBody,"N�o foi encontrado registros com o criterio informado",
+			JOptionPane.showMessageDialog(jDBody,"Nao foi encontrado registros com o criterio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -313,7 +313,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			preencherTabela(lista, tbPrincipal, txContador);
 		}
 		else
-			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edi��o ou cancele para poder realizar novas buscas!","Em edi��o...",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	private boolean recebeSessao(){
 		boolean open = false;
@@ -456,9 +456,9 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     }
     @SuppressWarnings("unchecked")
 	private void invocarExclusao(){
-    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Voc� deseja excluir esse registro? "
-				+ "\nTodos os historicos ser�o perdido, lembre-se que essa a��o n�o ter� mais volta!",
-				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
+    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Voce deseja excluir esse registro? "
+				+ "\nTodos os históricos serão perdidos, lembre-se que essa ação não tera mais volta!",
+				"Pedido de Exclusão", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
 			EmpresaDao dao = new EmpresaDao();
 			boolean openHere = recebeSessao();
@@ -490,7 +490,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings({ "serial"})
 	public void preencherTabela(List<Empresa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Rela��o de Empresas");
+			new SemRegistrosJTable(table,"Relatoório de Empresas");
 		}
 		else{
 			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};

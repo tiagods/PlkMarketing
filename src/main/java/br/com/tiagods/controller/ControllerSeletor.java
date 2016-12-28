@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,14 +73,25 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			String[][] linhas = new String[0][2];
 			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"ID", "Nome"}));
 			
-			Order order = Order.asc("id");
-			Criterion criterion;
+			Order order = Order.asc("nome");
+			List<Criterion> criterion = new ArrayList<>();
 			
+			if(!"".equals(buscarValor)){
+				String var = comboFiltro.getSelectedItem().toString().toLowerCase();
+				if("id".equals(var)){
+					try{
+						int valor = Integer.parseInt(buscarValor);
+						criterion.add(Restrictions.like(var, valor));
+					}catch (NumberFormatException e) {
+						JOptionPane.showMessageDialog(MenuView.jDBody, "O valor digitado não é um numero valido, será ignorado na busca!");
+					}
+				}
+				else
+					criterion.add(Restrictions.like(var, buscarValor));
+			}
 			GenericDao dao = new GenericDao();
 			if(object instanceof Empresa){
-				
-				List<Empresa> lista = dao.listar(Empresa.class, session);
-				
+				List<Empresa> lista = dao.items(Empresa.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -87,7 +99,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 			}
 			else if(object instanceof Negocio){
-				List<Negocio> lista = dao.listar(Negocio.class, session);
+				List<Negocio> lista = dao.items(Negocio.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -95,7 +107,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 			}
 			else if (object instanceof Pessoa){
-				List<Pessoa> lista = dao.listar(Pessoa.class, session);
+				List<Pessoa> lista = dao.items(Pessoa.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -103,7 +115,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 			}
 			else if(object instanceof Categoria){
-				List<Categoria> lista = dao.listar(Categoria.class, session);
+				List<Categoria> lista = dao.items(Categoria.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -111,7 +123,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 			}
 			else if(object instanceof Nivel){
-				List<Nivel> lista = dao.listar(Nivel.class, session);
+				List<Nivel> lista = dao.items(Nivel.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -119,7 +131,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 			}
 			else if(object instanceof Origem){
-				List<Origem> lista = dao.listar(Origem.class, session);
+				List<Origem> lista = dao.items(Origem.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -127,7 +139,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 			}
 			else if(object instanceof Servico){
-				List<Servico> lista = dao.listar(Servico.class, session);
+				List<Servico> lista = dao.items(Servico.class, session, criterion, order);
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -386,23 +398,23 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+		new UnsupportedOperationException();
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+		new UnsupportedOperationException();
 	}
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+		new UnsupportedOperationException();
 	}
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+		new UnsupportedOperationException();
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
+		new UnsupportedOperationException();
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -412,7 +424,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
-		
+		new UnsupportedOperationException();
 	}
 
 }

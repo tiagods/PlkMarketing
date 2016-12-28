@@ -295,7 +295,7 @@ public class CriarAdmin {
 		List<Cidade> cidades = new ArrayList<Cidade>();
 
 		scanner.nextLine();
-
+		
 		while(scanner.hasNext()){
 			Cidade c = new Cidade();
 			String[] dados = scanner.nextLine().split(",");

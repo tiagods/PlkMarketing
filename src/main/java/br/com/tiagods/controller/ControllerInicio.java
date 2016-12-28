@@ -71,15 +71,15 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		
 		switch(quant){
 		case 0:
-			String v1 = hey+" "+nome[0]+", voc� n�o tem tarefas pendentes para hoje!";
+			String v1 = hey+" "+nome[0]+", você não tem tarefas pendentes para hoje!";
 			lbInfoTarefas.setText(v1);
 			break;
 		case 1:
-			String v2 = hey+" "+nome[0]+",  voc� tem 1 tarefa pendente para hoje! Clique aqui...";
+			String v2 = hey+" "+nome[0]+",  você tem 1 tarefa pendente para hoje! Clique aqui...";
 			lbInfoTarefas.setText(v2);
 			break;
 		case 3:
-			String v3 = hey+" "+nome[0]+", voc� tem "+quant+" tarefas pendentes para hoje! Clique aqui...";
+			String v3 = hey+" "+nome[0]+", você tem "+quant+" tarefas pendentes para hoje! Clique aqui...";
 			lbInfoTarefas.setText(v3);
 			break;
 		default:
@@ -111,7 +111,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 			calendar2.setTime(jData2.getDate());
 			if(calendar.after(calendar2)){
 				JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
-						"O intervalo entre as datas est� incorreto\n"
+						"O intervalo entre as datas está incorreto\n"
 						+ "A data 1 deve ser igual ou menor que a data 2!",
 						"Intervalo entre datas incorreto!", 
 						JOptionPane.ERROR_MESSAGE);

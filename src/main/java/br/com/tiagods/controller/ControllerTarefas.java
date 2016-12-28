@@ -314,7 +314,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	}
 	public void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Rela��o de Tarefas");
+			new SemRegistrosJTable(table,"Relação de Tarefas");
 		}
 		else{
 			Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
@@ -399,7 +399,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			switch(e.getActionCommand()){
 			case "Finalizar":
 				finalizar(session);
-				//System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
 				break;
 			case "Abrir":
 				abrirCadastro(session);
@@ -452,7 +451,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
 				"Deseja excluir a seguinte tarefa: "+tbPrincipal.getValueAt(row, 0)+" andamento: "+tbPrincipal.getValueAt(row, 2)+
 				" relacionado a :"+tbPrincipal.getValueAt(row, 3)+" de nome:"+tbPrincipal.getValueAt(row, 4)+
-				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remo��o!",JOptionPane.YES_NO_OPTION);
+				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
 		if(i==JOptionPane.OK_OPTION){
 			TarefaDao dao = new TarefaDao();
 			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
