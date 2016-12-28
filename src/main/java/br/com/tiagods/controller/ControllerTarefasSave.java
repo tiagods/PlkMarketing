@@ -136,6 +136,10 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				builder.append("\n");
 			}
 			tarefa.setDescricao(txDetalhes.getText());
+			if(ckFinalizado.isSelected())
+				tarefa.setFinalizado(1);
+			else
+				tarefa.setFinalizado(0);
 			if(continuar){
 				String hora = txHora.getText();
 				if(hora.length()==5){
@@ -165,6 +169,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 						continuar=false;
 					}	
 				}
+				
 				session = HibernateFactory.getSession();
 				session.beginTransaction();
 				setarSelecao();
@@ -264,6 +269,10 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		txNome.setText(nome);
 		cbAtendente.setSelectedItem(tarefa.getAtendente().getLogin());
 		txData.setDate(tarefa.getDataEvento());
+		if(tarefa.getFinalizado()==1)
+			ckFinalizado.setSelected(true);
+		else
+			ckFinalizado.setSelected(false);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		txHora.setText(sdf.format(tarefa.getHoraEvento()));
 	}

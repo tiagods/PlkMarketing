@@ -41,7 +41,7 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox) {
 		initComponents();
 		controller.iniciar(labelId,labelNome,this,combobox);
-		controller.processarObjeto(object,"");
+		controller.processarObjeto(object,"","");
 	}
 	public void initComponents(){
 		setBounds(100, 100, 450, 350);
@@ -70,7 +70,7 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 				.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
 				);
 		contentPanel.setLayout(gl_contentPanel);
-		
+
 		JPanel buttonPane = new JPanel();
 		buttonPane.setBounds(0, 278, 434, 33);
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));

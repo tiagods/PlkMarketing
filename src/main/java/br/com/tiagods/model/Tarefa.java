@@ -20,7 +20,7 @@ public class Tarefa implements Serializable{
 	private Pessoa pessoa;
 	private Empresa empresa;
 	private Negocio negocio;
-	private int finalizado=0;
+	private int finalizado;
 	/**
 	 * @return the id
 	 */

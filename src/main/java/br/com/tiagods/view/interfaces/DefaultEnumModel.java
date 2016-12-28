@@ -11,9 +11,9 @@ public interface DefaultEnumModel {
 	}
 	//classe empresas, pessoas
 	public enum Logradouro{
-		Aeroporto, Alameda, Area, Avenida, Campo, Chácara, Colônia, Condomínio, Conjunto, Distrito, 
-		Esplanada, Estação, Estrada, Favela, Feira, Jardim, Ladeira, Lago, Lagoa, Largo, Loteamento, Morro, 
-		Núcleo, Parque, Passarela, Pátio, Praia, Quadra, Recanto, Residencial, Rodovia, Rua, Setor, Sítio, 
+		Aeroporto, Alameda, Area, Avenida, Campo, ChÃ¡cara, ColÃ´nia, CondomÃ­nio, Conjunto, Distrito, 
+		Esplanada, EstaÃ§Ã£o, Estrada, Favela, Feira, Jardim, Ladeira, Lago, Lagoa, Largo, Loteamento, Morro, 
+		NÃºcleo, Parque, Passarela, PÃ¡tio, Praia, Quadra, Recanto, Residencial, Rodovia, Rua, Setor, SÃ­tio, 
 		Travessa, Trecho, Trevo, Vale, Vereda, Via, Viaduto, Viela, Vila
 	}
 	//empresas, pessoas, negocios

@@ -64,30 +64,28 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		pnCadastrar.setVisible(false);
 	}
 	@SuppressWarnings("unchecked")
-	public void processarObjeto(Object object,String buscarValor){
+	public void processarObjeto(Object object,String atributo, String buscarValor){
 		this.object=object;
 		if(object != null){
 			Session session = HibernateFactory.getSession();
 			session.beginTransaction();
-			String[] colunas = {"ID", "Nome"};
+			String[] colunas = {"ID", "NOME"};
 			String[][] linhas = new String[0][2];
-			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"ID", "Nome"}));
-			
+			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"ID", "NOME"}));
+			comboFiltro.setSelectedItem(atributo.toUpperCase());
 			Order order = Order.asc("nome");
 			List<Criterion> criterion = new ArrayList<>();
-			
 			if(!"".equals(buscarValor)){
-				String var = comboFiltro.getSelectedItem().toString().toLowerCase();
-				if("id".equals(var)){
+				if("id".equals(atributo)){
 					try{
 						int valor = Integer.parseInt(buscarValor);
-						criterion.add(Restrictions.like(var, valor));
+						criterion.add(Restrictions.idEq(valor));
 					}catch (NumberFormatException e) {
-						JOptionPane.showMessageDialog(MenuView.jDBody, "O valor digitado n�o � um numero valido, ser� ignorado na busca!");
+						JOptionPane.showMessageDialog(MenuView.jDBody, "O valor digitado não é um numero valido para ID, será ignorado na busca!");
 					}
 				}
 				else
-					criterion.add(Restrictions.like(var, buscarValor));
+					criterion.add(Restrictions.ilike(atributo, buscarValor+"%"));
 			}
 			GenericDao dao = new GenericDao();
 			if(object instanceof Empresa){
@@ -201,8 +199,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	public void sair(){
 		if(telaEmEdicao){
 			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody,
-					"Um registro encontra-se em edi��o,\n"
-					+ "dados n�o salvos poder�o ser perdidos,\n"
+					"Um registro encontra-se em edição,\n"
+					+ "dados não salvos poderão ser perdidos,\n"
 					+ "mesmo assim deseja sair e abandonar o cadastro? \n"
 					+ "Clique em OK para SAIR", 
 					"Cadastro aberto...", JOptionPane.OK_CANCEL_OPTION);
@@ -288,7 +286,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		}
 		if(dao.salvar(novoObjeto,session)){
 			limparFormulario(pnCadastrar);
-			processarObjeto(this.object,"");
+			processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
 			reprocessarListaCombo(session);
 			salvarCancelar();
 		}
@@ -296,12 +294,12 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	}
 	public void invocarExclusao(){
 		int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody,
-				"Voc� esta tentando deletar um registro,\n"
-				+ "qualquer outro campo que dependa desse registro ser� removido,\n"
-				+ "Cuidado, essa altera��o n�o ter� mais volta!\n"
+				"Você esta tentando deletar um registro,\n"
+				+ "qualquer outro campo que dependa desse registro será removido,\n"
+				+ "Cuidado, essa alteração não terá mais volta!\n"
 				+ "mesmo assim deseja excluir o registro? \n"
 				+ "Clique em OK para excluir!", 
-				"Pedido de remo��o...", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+				"Pedido de remoção...", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
 		if(escolha == JOptionPane.OK_OPTION && !"".equals(txCodigo.getText())){
 			Session session = HibernateFactory.getSession();
 			session.beginTransaction();
@@ -331,7 +329,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			if(dao.excluir(novoObjeto, session)){
 				limparFormulario(pnCadastrar);
-				processarObjeto(this.object,"");
+				processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
 				salvarCancelar();
 				reprocessarListaCombo(session);
 			}
@@ -418,13 +416,12 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		String texto = txBuscar.getText().trim().toUpperCase();
-		processarObjeto(object,texto);
 		
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
-		new UnsupportedOperationException();
+		String texto = txBuscar.getText().trim().toUpperCase();
+		processarObjeto(object,comboFiltro.getSelectedItem().toString().toLowerCase(),texto);
 	}
 
 }

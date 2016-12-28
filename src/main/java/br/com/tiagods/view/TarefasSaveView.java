@@ -27,6 +27,7 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
+import javax.swing.JCheckBox;
 
 public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
 	
@@ -43,6 +44,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	public static JFormattedTextField txHora;
 	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar;
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
+	public static JCheckBox ckFinalizado;
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
 	
 	@Override	public Color getColor() {
@@ -169,6 +171,9 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         btnEditar = new JButton("Editar");
         btnEditar.setActionCommand("Editar");
         btnEditar.addActionListener(controller);
+        
+        ckFinalizado = new JCheckBox("Finalizado");
+        panEscolha.add(ckFinalizado);
         
         btnNovo = new JButton("Novo");
         btnNovo.setActionCommand("Novo");
