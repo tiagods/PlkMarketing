@@ -30,19 +30,11 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Status;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.CategoriaDAO;
-import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.modelDAO.EtapaDAO;
-import br.com.tiagods.modelDAO.NivelDAO;
-import br.com.tiagods.modelDAO.OrigemDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
-import br.com.tiagods.modelDAO.ServicoDAO;
-import br.com.tiagods.modelDAO.StatusDAO;
-import br.com.tiagods.modelDAO.UsuarioDAO;
+import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.interfaces.ComboBoxComplete;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
- * Essa classe � invocada pelos controllers de pessoa e empresa
+ * Essa classe eh invocada pelos controllers de pessoa e empresa
  */
 public class AuxiliarComboBox {
 	Map <String,Usuario> atendentes;
@@ -81,7 +73,7 @@ public class AuxiliarComboBox {
     	combo.addItem(combo.getName());
     	switch(combo.getName()){
     	case "Atendente":
-    		listarUsuarios= new UsuarioDAO().listar(Usuario.class, session);
+    		listarUsuarios= new UsuarioDao().listar(Usuario.class, session);
     		atendentes = new HashMap();
     		if(!listarUsuarios.isEmpty()){
     			listarUsuarios.forEach(c->{
@@ -101,7 +93,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Categoria":
-    		listarCategorias = new CategoriaDAO().listar(Categoria.class, session);
+    		listarCategorias = new CategoriaDao().listar(Categoria.class, session);
     		categorias = new HashMap();
     		if(!listarCategorias.isEmpty()){
     			listarCategorias.forEach(c->{
@@ -121,7 +113,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Empresa":
-    		listarEmpresas = new EmpresaDAO().listar(Empresa.class, session);
+    		listarEmpresas = new EmpresaDao().listar(Empresa.class, session);
     		empresas = new HashMap();
     		if(!listarEmpresas.isEmpty()){
     			listarEmpresas.forEach(c->{
@@ -132,7 +124,7 @@ public class AuxiliarComboBox {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Etapa":
-    		listarEtapas = new EtapaDAO().listar(Etapa.class, session);
+    		listarEtapas = new EtapaDao().listar(Etapa.class, session);
     		etapas = new HashMap();
     		if(!listarEtapas.isEmpty()){
     			listarEtapas.forEach(c->{
@@ -149,7 +141,7 @@ public class AuxiliarComboBox {
     		combo.setSelectedItem(DefaultEnumModel.Logradouro.valueOf("Rua"));
     		break;
     	case "Nivel":
-    		listarNiveis =	new NivelDAO().listar(Nivel.class, session);
+    		listarNiveis =	new NivelDao().listar(Nivel.class, session);
     		niveis = new HashMap();
     		if(!listarNiveis.isEmpty()){
     			listarNiveis.forEach(c->{
@@ -169,7 +161,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Origem":
-    		listarOrigens =	new OrigemDAO().listar(Origem.class, session);
+    		listarOrigens =	new OrigemDao().listar(Origem.class, session);
     		origens = new HashMap();
     		if(!listarOrigens.isEmpty()){
     			listarOrigens.forEach(c->{
@@ -189,7 +181,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Pessoa":
-    		listarPessoas = new PessoaDAO().listar(Pessoa.class, session);
+    		listarPessoas = new PessoaDao().listar(Pessoa.class, session);
     		pessoas = new HashMap();
     		if(!listarPessoas.isEmpty()){
     			listarPessoas.forEach(c->{
@@ -199,7 +191,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Produtos/Servicos":
-    		listarServicos = new ServicoDAO().listar(Servico.class,session);
+    		listarServicos = new ServicoDao().listar(Servico.class,session);
     		servicos = new HashMap();
     		if(!listarServicos.isEmpty()){
     			listarServicos.forEach(c->{
@@ -219,7 +211,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Status":
-    		listarStatus = new StatusDAO().listar(Status.class, session);
+    		listarStatus = new StatusDao().listar(Status.class, session);
     		statusMapa = new HashMap<>();
     		if(!listarStatus.isEmpty()){
     			listarStatus.forEach(c->{

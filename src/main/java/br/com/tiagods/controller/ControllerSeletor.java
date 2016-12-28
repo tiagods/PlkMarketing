@@ -33,7 +33,7 @@ import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.modelDAO.GenericDAO;
+import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoObjeto;
 
@@ -75,7 +75,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			Order order = Order.asc("id");
 			Criterion criterion;
 			
-			GenericDAO dao = new GenericDAO();
+			GenericDao dao = new GenericDao();
 			if(object instanceof Empresa){
 				
 				List<Empresa> lista = dao.listar(Empresa.class, session);
@@ -189,8 +189,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	public void sair(){
 		if(telaEmEdicao){
 			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody,
-					"Um registro encontra-se em edição,\n"
-					+ "dados não salvos poderão ser perdidos,\n"
+					"Um registro encontra-se em ediï¿½ï¿½o,\n"
+					+ "dados nï¿½o salvos poderï¿½o ser perdidos,\n"
 					+ "mesmo assim deseja sair e abandonar o cadastro? \n"
 					+ "Clique em OK para SAIR", 
 					"Cadastro aberto...", JOptionPane.OK_CANCEL_OPTION);
@@ -201,7 +201,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			view.dispose();
 	}
 	public void invocarSalvamento(){
-		GenericDAO dao = new GenericDAO();
+		GenericDao dao = new GenericDao();
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		Object novoObjeto = null;
@@ -284,16 +284,16 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	}
 	public void invocarExclusao(){
 		int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody,
-				"Você esta tentando deletar um registro,\n"
-				+ "qualquer outro campo que dependa desse registro será removido,\n"
-				+ "Cuidado, essa alteração não terá mais volta!\n"
+				"Vocï¿½ esta tentando deletar um registro,\n"
+				+ "qualquer outro campo que dependa desse registro serï¿½ removido,\n"
+				+ "Cuidado, essa alteraï¿½ï¿½o nï¿½o terï¿½ mais volta!\n"
 				+ "mesmo assim deseja excluir o registro? \n"
 				+ "Clique em OK para excluir!", 
-				"Pedido de remoção...", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
+				"Pedido de remoï¿½ï¿½o...", JOptionPane.OK_CANCEL_OPTION,JOptionPane.WARNING_MESSAGE);
 		if(escolha == JOptionPane.OK_OPTION && !"".equals(txCodigo.getText())){
 			Session session = HibernateFactory.getSession();
 			session.beginTransaction();
-			GenericDAO dao = new GenericDAO();
+			GenericDao dao = new GenericDao();
 			Object novoObjeto = null;
 			int id = Integer.parseInt(txCodigo.getText());
 			if(object instanceof Empresa){

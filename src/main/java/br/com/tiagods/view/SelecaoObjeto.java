@@ -2,12 +2,6 @@ package br.com.tiagods.view;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -19,21 +13,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-
-import org.hibernate.Session;
 
 import br.com.tiagods.controller.ControllerSeletor;
-import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.Negocio;
-import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.modelDAO.NegocioDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
 import java.awt.Font;
 
 public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
@@ -58,7 +41,7 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox) {
 		initComponents();
 		controller.iniciar(labelId,labelNome,this,combobox);
-		controller.processarObjeto(object);
+		controller.processarObjeto(object,"");
 	}
 	public void initComponents(){
 		setBounds(100, 100, 450, 350);

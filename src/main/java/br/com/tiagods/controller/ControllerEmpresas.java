@@ -53,8 +53,7 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.modelDAO.ItemsDAO;
+import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -76,7 +75,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings("unchecked")
 	public void iniciar(Empresa empresa){
 		cbEmpresa.setEnabled(false);
-		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programação");
+		cbEmpresa.setToolTipText("Filtro nï¿½o criado: Aguardando programaï¿½ï¿½o");
 		this.empresa=empresa;
     	session = HibernateFactory.getSession();
     	session.beginTransaction();
@@ -84,7 +83,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	for(JPanel panel : panels){
     		preencherComboBox(panel);
     	}
-    	listaEmpresas = (List<Empresa>)(new EmpresaDAO().listar(Empresa.class, session));
+    	listaEmpresas = (List<Empresa>)(new EmpresaDao().listar(Empresa.class, session));
     	preencherTabela(listaEmpresas, tbPrincipal,txContador);
     	if(!listaEmpresas.isEmpty() && empresa==null){
     		this.empresa = listaEmpresas.get(0);
@@ -135,7 +134,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			boolean open = recebeSessao();
 			Criterion criterion = Restrictions.eq("empresa", empresa);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDAO().items(Tarefa.class, session, criterion, order);
+			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDao().items(Tarefa.class, session, criterion, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
 			fechaSessao(open);
 			break;
@@ -148,7 +147,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			open = recebeSessao();
 			criterion = Restrictions.eq("empresa", empresa);
 			order = Order.desc("id");		
-			List<Negocio> negocios = (List<Negocio>) new ItemsDAO().items(Negocio.class, session, criterion, order);
+			List<Negocio> negocios = (List<Negocio>) new ItemsDao().items(Negocio.class, session, criterion, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
 			fechaSessao(open);
 			break;
@@ -263,7 +262,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContador);
 		}else{
-			JOptionPane.showMessageDialog(jDBody,"Não foi encontrado registros com o criterio informado",
+			JOptionPane.showMessageDialog(jDBody,"Nï¿½o foi encontrado registros com o criterio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -314,7 +313,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			preencherTabela(lista, tbPrincipal, txContador);
 		}
 		else
-			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edição ou cancele para poder realizar novas buscas!","Em edição...",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em ediï¿½ï¿½o ou cancele para poder realizar novas buscas!","Em ediï¿½ï¿½o...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	private boolean recebeSessao(){
 		boolean open = false;
@@ -373,7 +372,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 		if(valor>0){
 			boolean open = recebeSessao();
-			EmpresaDAO dao = new EmpresaDAO();
+			EmpresaDao dao = new EmpresaDao();
 			empresa = (Empresa)dao.receberObjeto(Empresa.class, valor, session);
 			preencherFormulario(empresa);
 			fechaSessao(open);
@@ -442,13 +441,13 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		}
 		empresa.setEndereco(endereco);
 		empresa.setPessoaJuridica(pessoaJuridica);
-		EmpresaDAO dao = new EmpresaDAO();
+		EmpresaDao dao = new EmpresaDao();
 		boolean openHere = recebeSessao();
 		boolean salvo = dao.salvar(empresa, session);
 		fechaSessao(openHere);
 		if(salvo) {
 			openHere = recebeSessao();
-			listaEmpresas = (List<Empresa>)new EmpresaDAO().listar(Empresa.class, session);
+			listaEmpresas = (List<Empresa>)new EmpresaDao().listar(Empresa.class, session);
 			preencherFormulario(empresa);
 	    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
@@ -457,11 +456,11 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     }
     @SuppressWarnings("unchecked")
 	private void invocarExclusao(){
-    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Você deseja excluir esse registro? "
-				+ "\nTodos os historicos serão perdido, lembre-se que essa ação não terá mais volta!",
+    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Vocï¿½ deseja excluir esse registro? "
+				+ "\nTodos os historicos serï¿½o perdido, lembre-se que essa aï¿½ï¿½o nï¿½o terï¿½ mais volta!",
 				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
-			EmpresaDAO dao = new EmpresaDAO();
+			EmpresaDao dao = new EmpresaDao();
 			boolean openHere = recebeSessao();
 			
 			boolean excluiu = dao.excluir(empresa,session);
@@ -491,7 +490,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings({ "serial"})
 	public void preencherTabela(List<Empresa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Relação de Empresas");
+			new SemRegistrosJTable(table,"Relaï¿½ï¿½o de Empresas");
 		}
 		else{
 			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};

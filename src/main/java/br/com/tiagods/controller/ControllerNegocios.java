@@ -56,10 +56,7 @@ import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.modelDAO.ItemsDAO;
-import br.com.tiagods.modelDAO.NegocioDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
+import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -88,7 +85,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
 		}
-		listarNegocios = (List<Negocio>)new NegocioDAO().listar(Negocio.class, session);
+		listarNegocios = (List<Negocio>)new NegocioDao().listar(Negocio.class, session);
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		if(this.negocio==null && !listarNegocios.isEmpty()){
 			this.negocio=listarNegocios.get(0);
@@ -232,7 +229,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			boolean open = recebeSessao();
 			Criterion criterion = Restrictions.eq("negocio", negocio);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDAO().items(Tarefa.class, session, criterion, order);
+			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDao().items(Tarefa.class, session, criterion, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
 			fechaSessao(open);
 			break;
@@ -331,7 +328,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			Criterion c = Restrictions.like("nome", txBuscar.getText().trim()+"%");
 			criterios.add(c);
 		}
-		listarNegocios = new NegocioDAO().filtrar(criterios, session);
+		listarNegocios = new NegocioDao().filtrar(criterios, session);
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 	}
 	public class MudarCliente implements PropertyChangeListener{
@@ -349,12 +346,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		session.beginTransaction();
 		String nome = "";
 		if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-			Empresa empresa = (Empresa)new EmpresaDAO().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
+			Empresa empresa = (Empresa)new EmpresaDao().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			nome = empresa.getNome();
 			pfpj = empresa.getPessoaJuridica();
 		}
 		else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-			Pessoa pessoa = (Pessoa)new PessoaDAO().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
+			Pessoa pessoa = (Pessoa)new PessoaDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			nome = pessoa.getNome();
 			pfpj = pessoa.getPessoaFisica();
 		}
@@ -382,13 +379,13 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
 		if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-			Object o = new EmpresaDAO().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
+			Object o = new EmpresaDao().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			negocio.setClasse("Empresa");
 			negocio.setEmpresa((Empresa)o);
 			negocio.setPessoa(null);
 		}
 		else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-			Object o = new PessoaDAO().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
+			Object o = new PessoaDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			negocio.setClasse("Pessoa");
 			negocio.setPessoa((Pessoa)o);
 			negocio.setEmpresa(null);
@@ -417,7 +414,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		negocio.setPessoaFisicaOrJuridica(pessoaFisicaOrJuridica);
 		negocio.setStatus(padrao.getStatus((String)cbStatusCad.getSelectedItem()));
-		NegocioDAO dao = new NegocioDAO();
+		NegocioDao dao = new NegocioDao();
 		if(dao.salvar(negocio, session)){
 			listarNegocios = dao.listar(Negocio.class,session);
 			preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
@@ -480,19 +477,19 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			return false;
 		}
 		else if(dataInicio.getDate()==null){
-			builder.append("A data de inicio não pode ficar em branco ou não esta correta!");
+			builder.append("A data de inicio nï¿½o pode ficar em branco ou nï¿½o esta correta!");
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
 			return false;
 		}
 		else if(dataFim.getDate()!=null && dataInicio.getDate().compareTo(dataFim.getDate())>0){
-			builder.append("Data de Fim não pode ser superior a Data de Inicio!\n");
+			builder.append("Data de Fim nï¿½o pode ser superior a Data de Inicio!\n");
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
 			return false;
 		}
 		try{
 			Double.parseDouble(txHonorario.getText().trim().replace(".","").replace(",", "."));
 		}catch (NumberFormatException e) {
-			builder.append("O valor do honorário informado está incorreto!\n");
+			builder.append("O valor do honorï¿½rio informado estï¿½ incorreto!\n");
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
 			return false;
 		}
@@ -500,11 +497,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@SuppressWarnings("unchecked")
 	private void invocarExclusao(){
-    	int escolha = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, "Você deseja excluir esse registro? "
-				+ "\nTodos os historicos serão perdidos, lembre-se que essa ação não terá mais volta!",
+    	int escolha = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, "Vocï¿½ deseja excluir esse registro? "
+				+ "\nTodos os historicos serï¿½o perdidos, lembre-se que essa aï¿½ï¿½o nï¿½o terï¿½ mais volta!",
 				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
-			NegocioDAO dao = new NegocioDAO();
+			NegocioDao dao = new NegocioDao();
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(negocio,session);
 			if(excluiu){
@@ -538,7 +535,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContadorRegistros);
 		}else{
-			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody,"Não foi encontrado registros com o critério informado",
+			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody,"Nï¿½o foi encontrado registros com o critï¿½rio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -624,7 +621,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	public void preencherTabela(List<Negocio> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Relação de Negócios");
+			new SemRegistrosJTable(table,"Relaï¿½ï¿½o de Negï¿½cios");
 		}
 		else{
 			String [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","TEMPO","CRIADO EM","ATENDENTE","ABRIR"};
@@ -700,7 +697,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 && tbPrincipal.getColumnCount()>1){
 			boolean open = recebeSessao();
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
-			this.negocio = (Negocio) new NegocioDAO().receberObjeto(Negocio.class, id, session);
+			this.negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class, id, session);
 			preencherFormulario(this.negocio);
 			if(open)
 				fechaSessao(open);

@@ -1,22 +1,6 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.TarefasSaveView.btnCancelar;
-import static br.com.tiagods.view.TarefasSaveView.btnEditar;
-import static br.com.tiagods.view.TarefasSaveView.btnNovo;
-import static br.com.tiagods.view.TarefasSaveView.btnSalvar;
-import static br.com.tiagods.view.TarefasSaveView.cbAtendente;
-import static br.com.tiagods.view.TarefasSaveView.cbObject;
-import static br.com.tiagods.view.TarefasSaveView.panel;
-import static br.com.tiagods.view.TarefasSaveView.rdbtnEmail;
-import static br.com.tiagods.view.TarefasSaveView.rdbtnProposta;
-import static br.com.tiagods.view.TarefasSaveView.rdbtnReuniao;
-import static br.com.tiagods.view.TarefasSaveView.rdbtnTelefone;
-import static br.com.tiagods.view.TarefasSaveView.rdbtnVisita;
-import static br.com.tiagods.view.TarefasSaveView.txCodigo;
-import static br.com.tiagods.view.TarefasSaveView.txData;
-import static br.com.tiagods.view.TarefasSaveView.txDetalhes;
-import static br.com.tiagods.view.TarefasSaveView.txHora;
-import static br.com.tiagods.view.TarefasSaveView.txNome;
+import static br.com.tiagods.view.TarefasSaveView.*;
 import static br.com.tiagods.view.MenuView.jDBody;
 
 import java.awt.Component;
@@ -51,12 +35,7 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.modelDAO.NegocioDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
-import br.com.tiagods.modelDAO.TarefaDAO;
-import br.com.tiagods.modelDAO.TipoTarefaDAO;
-import br.com.tiagods.modelDAO.UsuarioDAO;
+import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
@@ -101,11 +80,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			session.close();
 		}
 		private void carregarTipoTarefasEAtendentes(){
-			List<TipoTarefa> listTiposTarefas = new TipoTarefaDAO().listar(TipoTarefa.class, session);
+			List<TipoTarefa> listTiposTarefas = new TipoTarefaDao().listar(TipoTarefa.class, session);
 			listTiposTarefas.forEach(t->{
 				tipoTarefas.put(t.getNome(), t);
 			});
-			List<Usuario> listUsuarios = new UsuarioDAO().listar(Usuario.class, session);
+			List<Usuario> listUsuarios = new UsuarioDao().listar(Usuario.class, session);
 			listUsuarios.forEach(u->{
 				usuarios.put(u.getLogin(), u);
 			});
@@ -198,21 +177,21 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				else{
 					Object object = getObject(cbObject.getSelectedItem().toString());
 					if(object instanceof Empresa){
-						Empresa empresa = (Empresa) new EmpresaDAO().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
+						Empresa empresa = (Empresa) new EmpresaDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setEmpresa(empresa);
 					}
 					else if(object instanceof Negocio){
-						Negocio negocio = (Negocio) new NegocioDAO().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
+						Negocio negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setNegocio(negocio);
 					}
 					else if(object instanceof Pessoa){
-						Pessoa pessoa = (Pessoa) new PessoaDAO().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
+						Pessoa pessoa = (Pessoa) new PessoaDao().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setPessoa(pessoa);
 					}
 				}
 				
 				if(continuar){
-					boolean salvou = new TarefaDAO().salvar(tarefa,session);
+					boolean salvou = new TarefaDao().salvar(tarefa,session);
 					if(salvou){
 						salvarCancelar();
 						 TarefasView tView = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
@@ -238,7 +217,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	}
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
-		List<Usuario> lista = new UsuarioDAO().listar(Usuario.class, session);
+		List<Usuario> lista = new UsuarioDao().listar(Usuario.class, session);
 		cbAtendente.removeAllItems();
 		lista.forEach(c->{
 			cbAtendente.addItem(c.getLogin());

@@ -57,11 +57,7 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelDAO.EmpresaDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
-import br.com.tiagods.modelDAO.TarefaDAO;
-import br.com.tiagods.modelDAO.TipoTarefaDAO;
-import br.com.tiagods.modelDAO.UsuarioDAO;
+import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
@@ -121,7 +117,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		lista.add(criterio);
 		lista.add(criterio2);
 		lista.add(criterio3);
-		List<Tarefa> listaTarefas = new TarefaDAO().filtrar(lista, session);
+		List<Tarefa> listaTarefas = new TarefaDao().filtrar(lista, session);
 		preencherTabela(tbPrincipal, listaTarefas, txContador);
 		long fim = System.currentTimeMillis();
 		session.close();
@@ -205,7 +201,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	}
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes(){
-		List<Usuario> lista = new UsuarioDAO().listar(Usuario.class,session);
+		List<Usuario> lista = new UsuarioDao().listar(Usuario.class,session);
 		cbAtendentes.removeAllItems();
 		cbAtendentes.addItem("Todos");
 		Set<String> arvore = new TreeSet<>();
@@ -218,7 +214,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		arvore.forEach(c->{cbAtendentes.addItem(c);});
 	}
 	private void carregarTipoTarefas(){
-		List<TipoTarefa> lista = new TipoTarefaDAO().listar(TipoTarefa.class, session);
+		List<TipoTarefa> lista = new TipoTarefaDao().listar(TipoTarefa.class, session);
 		lista.forEach(c->{
 			tipoTarefas.add(c);
 			tipoTarefasMapa.put(c.getNome(), c);
@@ -271,7 +267,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		TarefaDAO dao = new TarefaDAO();
+		TarefaDao dao = new TarefaDao();
 		List<Tarefa> lista = dao.filtrar(criterios, session);
 		System.out.println("Tamanho: "+lista.size());
 		preencherTabela(tbPrincipal, lista, txContador);
@@ -318,7 +314,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	}
 	public void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Relação de Tarefas");
+			new SemRegistrosJTable(table,"Relaï¿½ï¿½o de Tarefas");
 		}
 		else{
 			Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
@@ -411,7 +407,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				break;
 			case "Editar":
 				int valor = (int) tbPrincipal.getModel().getValueAt(tbPrincipal.getSelectedRow(), 0);
-				Tarefa tarefa = (Tarefa)new TarefaDAO().receberObjeto(Tarefa.class, valor, session);
+				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
 				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa);
 				ControllerMenu.getInstance().abrirCorpo(viewTarefas);
 				System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
@@ -433,7 +429,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		String status = (String)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 5);
 
 		if(!value && pendente.equals(status)){
-			TarefaDAO dao = new TarefaDAO();
+			TarefaDao dao = new TarefaDao();
 			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
 			thisTar.setFinalizado(1);
 			if(dao.salvar(thisTar, session)){
@@ -442,7 +438,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 
 		}
 		else if(value && fechado.equals(status)){
-			TarefaDAO dao = new TarefaDAO();
+			TarefaDao dao = new TarefaDao();
 			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
 			thisTar.setFinalizado(0);
 			if(dao.salvar(thisTar, session)){
@@ -456,9 +452,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
 				"Deseja excluir a seguinte tarefa: "+tbPrincipal.getValueAt(row, 0)+" andamento: "+tbPrincipal.getValueAt(row, 2)+
 				" relacionado a :"+tbPrincipal.getValueAt(row, 3)+" de nome:"+tbPrincipal.getValueAt(row, 4)+
-				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
+				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remoï¿½ï¿½o!",JOptionPane.YES_NO_OPTION);
 		if(i==JOptionPane.OK_OPTION){
-			TarefaDAO dao = new TarefaDAO();
+			TarefaDao dao = new TarefaDao();
 			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
 			Tarefa tRemove = (Tarefa)dao.receberObjeto(Tarefa.class, id, session);
 			if(dao.excluir(tRemove, session))
@@ -468,7 +464,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	public void abrirCadastro(Session session){
 		String value = (String)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 3);
 		int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
-		Tarefa transfer = (Tarefa) new TarefaDAO().receberObjeto(Tarefa.class, id, session);
+		Tarefa transfer = (Tarefa) new TarefaDao().receberObjeto(Tarefa.class, id, session);
 		if("Empresa".equals(value)){
 			Empresa empresa = transfer.getEmpresa();
 			EmpresasView viewEmpresas = new EmpresasView(empresa);

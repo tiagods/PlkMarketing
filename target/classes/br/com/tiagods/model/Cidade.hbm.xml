@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Cidade" table="CIDADE">
+	<id name="id" column="CID_COD" type="int">
+	<generator class="identity" />
+	</id>
+	<property name="nome" column="CID_NOME" length="150" />
+	<property name="estado" column="CID_ESTADO" length="2"/>
+	<property name="idExtra" column="CID_COD_EXTRA" />
+	</class>
+</hibernate-mapping>
+

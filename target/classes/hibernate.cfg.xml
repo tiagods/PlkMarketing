@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory>
+  	<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+	<property name="hibernate.connection.url">jdbc:postgresql://192.168.0.202/marketing</property>
+	<property name="hibernate.connection.username">developer</property>
+	<property name="hibernate.connection.password">02986731</property>
+	<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+<!-- 	<property name="hibernate.show_sql">true</property> -->
+<!-- 	<property name="hibernate.format_sql">true</property> -->
+	<property name="hibernate.hbm2ddl.auto">update</property>
+	<property name="current_session_context_class">thread</property>
+	<property name="c3p0.acquire_increment">1</property>
+	<property name="c3p0.idle_test_period">10</property>
+	<property name="c3p0.max_size">10</property>
+	<property name="c3p0.max_statements">0</property>
+	<property name="c3p0.min_size">10</property>
+	<property name="c3p0.timeout">100</property>
+  <mapping resource="br/com/tiagods/model/Categoria.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Cidade.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Departamento.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Empresa.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Etapa.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Funcao.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Negocio.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Nivel.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Origem.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Pessoa.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Servico.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/ServicoContratado.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/ServicoAgregado.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Status.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Tarefa.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/TipoTarefa.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Usuario.hbm.xml"/>
+ </session-factory>
+</hibernate-configuration>

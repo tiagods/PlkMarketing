@@ -53,8 +53,8 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.modelDAO.ItemsDAO;
-import br.com.tiagods.modelDAO.PessoaDAO;
+import br.com.tiagods.modeldao.ItemsDao;
+import br.com.tiagods.modeldao.PessoaDao;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -74,7 +74,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	@SuppressWarnings("unchecked")
 	public void iniciar(Pessoa pessoa){
 		cbEmpresa.setEnabled(false);
-		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programação");
+		cbEmpresa.setToolTipText("Filtro nï¿½o criado: Aguardando programaï¿½ï¿½o");
 		this.pessoa=pessoa;
     	session = HibernateFactory.getSession();
     	session.beginTransaction();
@@ -82,7 +82,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	for(JPanel panel : panels){
     		preencherComboBox(panel);
     	}
-    	listaPessoas = (List<Pessoa>)(new PessoaDAO().listar(Pessoa.class, session));
+    	listaPessoas = (List<Pessoa>)(new PessoaDao().listar(Pessoa.class, session));
     	preencherTabela(listaPessoas, tbPrincipal,txContador);
     	if(!listaPessoas.isEmpty() && this.pessoa==null){
     		this.pessoa = listaPessoas.get(0);
@@ -137,7 +137,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			boolean open = recebeSessao();
 			Criterion criterion = Restrictions.eq("pessoa", pessoa);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDAO().items(Tarefa.class, session, criterion, order);
+			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDao().items(Tarefa.class, session, criterion, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
 			fechaSessao(open);
 			break;
@@ -150,7 +150,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			open = recebeSessao();
 			criterion = Restrictions.eq("pessoa", pessoa);
 			order = Order.desc("id");		
-			List<Negocio> negocios = (List<Negocio>) new ItemsDAO().items(Negocio.class, session, criterion, order);
+			List<Negocio> negocios = (List<Negocio>) new ItemsDao().items(Negocio.class, session, criterion, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
 			fechaSessao(open);
 			break;
@@ -259,7 +259,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContador);
 		}else{
-			JOptionPane.showMessageDialog(jDBody,"Não foi encontrado registros com o criterio informado",
+			JOptionPane.showMessageDialog(jDBody,"Nï¿½o foi encontrado registros com o criterio informado",
 					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
@@ -368,7 +368,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 		if(valor>0){
 			boolean open = recebeSessao();
-			PessoaDAO dao = new PessoaDAO();
+			PessoaDao dao = new PessoaDao();
 			pessoa = (Pessoa)dao.receberObjeto(Pessoa.class, valor, session);
 			preencherFormulario(pessoa);
 			fechaSessao(open);
@@ -437,13 +437,13 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 		pessoa.setEndereco(endereco);
 		pessoa.setPessoaFisica(pessoaFisica);
-		PessoaDAO dao = new PessoaDAO();
+		PessoaDao dao = new PessoaDao();
 		boolean openHere = recebeSessao();
 		boolean salvo = dao.salvar(pessoa, session);
 		fechaSessao(openHere);
 		if(salvo) {
 			openHere = recebeSessao();
-			listaPessoas = (List<Pessoa>)new PessoaDAO().listar(Pessoa.class, session);
+			listaPessoas = (List<Pessoa>)new PessoaDao().listar(Pessoa.class, session);
 	    	preencherFormulario(pessoa);
 			preencherTabela(listaPessoas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
@@ -452,11 +452,11 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     }
     @SuppressWarnings("unchecked")
 	private void invocarExclusao(){
-    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Você deseja excluir esse registro? "
-				+ "\nTodos os historicos serãoo perdidos, lembre-se que essa ação não terá mais volta!",
-				"Pedido de Exclusão", JOptionPane.YES_NO_OPTION);
+    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Vocï¿½ deseja excluir esse registro? "
+				+ "\nTodos os historicos serï¿½oo perdidos, lembre-se que essa aï¿½ï¿½o nï¿½o terï¿½ mais volta!",
+				"Pedido de Exclusï¿½o", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
-			PessoaDAO dao = new PessoaDAO();
+			PessoaDao dao = new PessoaDao();
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(pessoa,session);
 			fechaSessao(openHere);
@@ -485,7 +485,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	}
 	public void preencherTabela(List<Pessoa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Relação de Pessoas");
+			new SemRegistrosJTable(table,"Relaï¿½ï¿½o de Pessoas");
 		}
 		else{
 			String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
