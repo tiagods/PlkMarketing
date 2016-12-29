@@ -146,6 +146,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
 			tbRelacao.setAutoCreateRowSorter(true);
+			tbRelacao.getColumnModel().getColumn(0).setPreferredWidth(40);
 			session.close();
 		}
 	}

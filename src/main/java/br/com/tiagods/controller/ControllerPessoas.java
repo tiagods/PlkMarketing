@@ -520,6 +520,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
+			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		}
 		
 

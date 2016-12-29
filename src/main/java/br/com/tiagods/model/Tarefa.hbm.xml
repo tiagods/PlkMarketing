@@ -9,8 +9,7 @@
 	<generator class="identity" />
 	</id>
 	<property name="descricao" column="TAR_NOME" type="text"/>
-	<property name="dataEvento" column="TAR_DATAEVENTO" type="date"/>
-	<property name="horaEvento" column="TAR_HORAEVENTO" type="time"/>
+	<property name="dataEvento" column="TAR_DATAEVENTO" type="timestamp"/>
 	<property name="classe" column="TAR_CLASSE" length="100"/>
 	<property name="criadoEm" column="TAR_CRIADOEM" type="timestamp"/>
 	

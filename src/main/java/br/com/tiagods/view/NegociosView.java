@@ -31,6 +31,7 @@ import br.com.tiagods.model.Negocio;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import java.awt.Rectangle;
+import javax.swing.table.DefaultTableModel;
 
 public class NegociosView extends JInternalFrame {
     /**
@@ -472,7 +473,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(btAddServicosContratados);
 
         scrollServicos = new JScrollPane();
-        scrollServicos.setBounds(395, 193, 290, 117);
+        scrollServicos.setBounds(395, 193, 290, 110);
         pnCadastro.add(scrollServicos);
         scrollServicos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //scrollServicos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);

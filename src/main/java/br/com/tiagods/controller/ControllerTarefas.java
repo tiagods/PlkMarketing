@@ -335,13 +335,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			};
 			for(int i=0;i<lista.size();i++){
 				Tarefa t = lista.get(i);
-				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				SimpleDateFormat sdH = new SimpleDateFormat("HH:mm");
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				Object[] o = new Object[12];
 				o[0] = t.getId();
-				String hora = sdf.format(t.getDataEvento())+" "+sdH.format(t.getHoraEvento());
-				
-				o[1] = hora;
+				o[1] = sdf.format(t.getDataEvento());
 				o[2] = t.getTipoTarefa().getNome();
 				o[3] = t.getClasse();
 				if(Empresa.class.getSimpleName().equals(t.getClasse()))
@@ -388,6 +385,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
+			table.getColumnModel().getColumn(0).setPreferredWidth(40);
+			table.getColumnModel().getColumn(9).setPreferredWidth(90);
 		}
 		txContador.setText("Total: "+lista.size()+" tarefa(s) ");
 	}
@@ -409,11 +408,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
 				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa);
 				ControllerMenu.getInstance().abrirCorpo(viewTarefas);
-				System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
 				break;
 			case "Excluir":
 				excluir(session);
-				System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
 				break;
 			default:
 				break;

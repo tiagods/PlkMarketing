@@ -11,7 +11,6 @@ public class Tarefa implements Serializable{
 	private int id;
 	private String descricao="";
 	private Date dataEvento;
-	private Date horaEvento;
 	private String classe="";
 	private Date criadoEm;
 	private Usuario criadoPor;
@@ -56,18 +55,6 @@ public class Tarefa implements Serializable{
 	 */
 	public void setDataEvento(Date dataEvento) {
 		this.dataEvento = dataEvento;
-	}
-	/**
-	 * @return the horaEvento
-	 */
-	public Date getHoraEvento() {
-		return horaEvento;
-	}
-	/**
-	 * @param horaEvento the horaEvento to set
-	 */
-	public void setHoraEvento(Date horaEvento) {
-		this.horaEvento = horaEvento;
 	}
 	/**
 	 * @return the classe

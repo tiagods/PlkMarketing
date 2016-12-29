@@ -21,6 +21,9 @@ public class UsuarioLogado {
 		return instance;
 	}
 	public UsuarioLogado(){
+		receberUsuario();
+	}
+	private void receberUsuario(){
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		
@@ -31,8 +34,9 @@ public class UsuarioLogado {
 		}	
 		else{
 			boolean encontrado = false;
+			String[] username = System.getProperty("user.name").split(" ");
 			for(Usuario user : users){
-				if(user.getNome().contains(System.getProperty("user.name"))){
+				if(user.getNome().toUpperCase().contains(username[0].toUpperCase())){
 					usuario = user;
 					encontrado = true;
 					break;
@@ -43,6 +47,7 @@ public class UsuarioLogado {
 		}
 		session.close();
 	}
+	
 	public void setUsuario(Usuario usuario){
 		this.usuario=usuario;
 	}

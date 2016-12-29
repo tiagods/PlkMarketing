@@ -525,6 +525,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
+			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		}
 		
 	}
