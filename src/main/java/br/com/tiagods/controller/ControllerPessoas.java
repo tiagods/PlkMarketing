@@ -295,7 +295,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
 			criteria.add(Restrictions.eq("pessoaFisica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
 		if(!"".equals(txBuscar.getText().trim()))
-			criteria.add(Restrictions.like("nome", txBuscar.getText().trim()+"%"));
+			criteria.add(Restrictions.ilike("nome", txBuscar.getText().trim()+"%"));
 		try{
 			Date data01 = data1.getDate();
 			Date data02 = data2.getDate();

@@ -57,6 +57,7 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.*;
+import br.com.tiagods.view.PerdaNegocio;
 import br.com.tiagods.view.SelecaoObjeto;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -75,6 +76,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	Negocio negocioBackup = null;
 	boolean telaEmEdicao = false;
 	List<Negocio> listarNegocios;
+	PerdaNegocio dialogPerda;
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Negocio negocio){
@@ -113,7 +115,23 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		cbPessoa.addItemListener(this);
 		cbAtendente.addItemListener(this);
 		cbObject.addItemListener(this);
+		cbStatusCad.addItemListener(new InvocarDialogPerda());
 	}
+	public class InvocarDialogPerda implements ItemListener{
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			if(e.getStateChange()==ItemEvent.DESELECTED && telaEmEdicao && "Perdido".equals(cbStatusCad.getSelectedItem())){
+				if(dialogPerda!=null) 
+					dialogPerda.dispose();
+				dialogPerda = new PerdaNegocio(negocio);
+				dialogPerda.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialogPerda.setVisible(true);
+			}
+		}
+		
+	}
+	
 	public void preencherFormulario(Negocio n){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		enviarEtapa(n.getEtapa());
@@ -196,12 +214,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		case "Novo":
 			limparFormulario(pnCadastro);
 			novoEditar();
-			
-			if("".equals(txHonorario.getText().trim().replace(",", "")))
-				negocio.setHonorario(new BigDecimal("0.00"));
 			dataInicio.setDate(new Date());
 			telaEmEdicao = true;
-			negocio = null;
+			negocio = new Negocio();
+			negocio.setHonorario(new BigDecimal("0.00"));
 			break;
 		case "Editar":
 			telaEmEdicao = true;
@@ -325,7 +341,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}catch(NullPointerException e){
 		}
 		if("".equals(txBuscar.getText().trim())){
-			Criterion c = Restrictions.like("nome", txBuscar.getText().trim()+"%");
+			Criterion c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
 			criterios.add(c);
 		}
 		listarNegocios = new NegocioDao().filtrar(criterios, session);
@@ -366,7 +382,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@SuppressWarnings("unchecked")
 	public void invocarSalvamento(){
 		if("".equals(txCodigo.getText())){	
-			negocio = new Negocio();
 			negocio.setCriadoEm(new Date());
 			negocio.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		}

@@ -70,8 +70,8 @@ import br.com.tiagods.view.interfaces.SemRegistrosJTable;
  * @author Tiago
  */
 public class ControllerTarefas implements ActionListener, MouseListener,PropertyChangeListener,ItemListener {
-	Calendar data1 = Calendar.getInstance();
-	Calendar data2 = Calendar.getInstance();
+	Calendar data1;
+	Calendar data2;
 	Usuario userSessao;
 	Session session;
 	int finalizado=0;
@@ -110,9 +110,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		carregarAtendentes();
 		cbAtendentes.setSelectedItem(usuario.getLogin());
 		carregarTipoTarefas();
+		
 		List<Criterion> lista = new ArrayList();
 		Criterion criterio =  Restrictions.eq("atendente", usuario);
-		Criterion criterio2 = Restrictions.between("dataEvento", data1, data2);
+		Criterion criterio2 = Restrictions.between("dataEvento", jData1.getDate(), jData2.getDate());
 		Criterion criterio3 = Restrictions.eq("finalizado", 0);
 		lista.add(criterio);
 		lista.add(criterio2);
@@ -121,7 +122,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		preencherTabela(tbPrincipal, listaTarefas, txContador);
 		long fim = System.currentTimeMillis();
 		session.close();
-		System.out.println("Tarefas : "+(fim-inicio)+" ms");
 		definirAcoes();
 	}
 	private void definirAcoes(){
@@ -231,7 +231,22 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			criterios.add(criterion);
 		}
 		if(rbHoje.isSelected()){
-			Criterion criterion = Restrictions.between("dataEvento", new Date(), new Date());
+			Date hoje = new Date();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(hoje);
+			calendar.set(Calendar.HOUR_OF_DAY, 0);
+			calendar.set(Calendar.MINUTE, 0);
+			calendar.set(Calendar.SECOND, 0);
+			calendar.set(Calendar.MILLISECOND, 0);
+			
+			Calendar calendar2 = Calendar.getInstance();
+			calendar2.setTime(hoje);
+			calendar2.set(Calendar.HOUR_OF_DAY, 23);
+			calendar2.set(Calendar.MINUTE, 59);
+			calendar.set(Calendar.SECOND, 59);
+			calendar.set(Calendar.MILLISECOND, 999);
+			
+			Criterion criterion = Restrictions.between("dataEvento",calendar.getTime(), calendar2.getTime());
 			criterios.add(criterion);
 		}
 		else if(rbEssaSemana.isSelected()){
@@ -308,6 +323,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	private void processarSemana(int diaSegunda, int diaDomingo){
 		LocalDate dataHoje = LocalDate.now();
 		LocalDate novaDataHoje = dataHoje.plusDays(diaSegunda);
+		data1 = Calendar.getInstance();
+		data2 = Calendar.getInstance();
 		data1.set(novaDataHoje.getYear(), novaDataHoje.getMonthValue()-1, novaDataHoje.getDayOfMonth()-1);
 		LocalDate novaDataFimDeSemana = dataHoje.plusDays(diaDomingo);
 		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1);
@@ -386,6 +403,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
+			table.getColumnModel().getColumn(1).setPreferredWidth(100);
 			table.getColumnModel().getColumn(9).setPreferredWidth(90);
 		}
 		txContador.setText("Total: "+lista.size()+" tarefa(s) ");
@@ -447,7 +465,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		int row = tbPrincipal.getSelectedRow();
 		int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
 				"Deseja excluir a seguinte tarefa: "+tbPrincipal.getValueAt(row, 0)+" andamento: "+tbPrincipal.getValueAt(row, 2)+
-				" relacionado a :"+tbPrincipal.getValueAt(row, 3)+" de nome:"+tbPrincipal.getValueAt(row, 4)+
+				" relacionado a "+tbPrincipal.getValueAt(row, 3)+" de nome:"+tbPrincipal.getValueAt(row, 4)+
 				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
 		if(i==JOptionPane.OK_OPTION){
 			TarefaDao dao = new TarefaDao();

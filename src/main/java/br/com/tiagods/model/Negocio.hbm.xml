@@ -43,6 +43,8 @@
 		<many-to-one name="nivel" column="NEG_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
     </component>
     <property name="descricao" column="NEG_DESCRICAO" type="text"></property>
+	<property name="motivoPerda" column="NEG_MOTIVOPERDA" type="text"></property>
+	<property name="dataPerda" column="NEG_DATAPERDA" type="date"></property>
 	</class>
 </hibernate-mapping>
 

@@ -176,7 +176,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel4.setText("de:");
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("até");
+        jLabel5.setText("atÃ©");
 
         javax.swing.GroupLayout grLayout = new javax.swing.GroupLayout(pnData);
         grLayout.setHorizontalGroup(

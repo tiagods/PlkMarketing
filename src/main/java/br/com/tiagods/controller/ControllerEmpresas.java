@@ -299,7 +299,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
 				criteria.add(Restrictions.eq("pessoaJuridica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
 			if(!"".equals(txBuscar.getText().trim()))
-				criteria.add(Restrictions.like("nome", txBuscar.getText().trim()+"%"));
+				criteria.add(Restrictions.ilike("nome", txBuscar.getText().trim()+"%"));
 			try{
 				Date data01 = data1.getDate();
 				Date data02 = data2.getDate();

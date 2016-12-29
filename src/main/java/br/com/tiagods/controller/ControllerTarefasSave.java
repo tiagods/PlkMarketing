@@ -10,8 +10,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -127,8 +130,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			tarefa.setAtendente(usuarios.get(cbAtendente.getSelectedItem()));
 			tarefa.setClasse(cbObject.getSelectedItem().toString());
 			try{
-				Date data = txData.getDate();
-				tarefa.setDataEvento(data);//validar data
+				Date dataEvento = txData.getDate();
 				continuar=true;
 			}catch(Exception e){
 				continuar=false;
@@ -141,18 +143,24 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			else
 				tarefa.setFinalizado(0);
 			if(continuar){
+				
+				
 				String hora = txHora.getText();
 				if(hora.length()==5){
 					String horas = hora.substring(0, 2);
 					String minutos = hora.substring(3);
-					System.out.println(horas+":"+minutos);
 					try{
 						if(Integer.parseInt(horas)>0 && Integer.parseInt(horas)<24){
 							if(Integer.parseInt(minutos)>0 && Integer.parseInt(minutos)<60){
 								continuar=true;
+								LocalTime lt = LocalTime.of(Integer.parseInt(horas), Integer.parseInt(minutos));
 								Calendar calendar = Calendar.getInstance();
-								calendar.set(1900, 01, 01, Integer.parseInt(horas), Integer.parseInt(minutos));
-								tarefa.setHoraEvento(calendar.getTime());
+								calendar.setTime(txData.getDate());
+								
+								Calendar calendar2 = Calendar.getInstance();
+								calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
+										lt.getHour(), lt.getMinute());
+								tarefa.setDataEvento(calendar2.getTime());
 							}else{
 								builder.append("Valor da Hora incorreta");
 								builder.append("\n");
@@ -184,14 +192,20 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 					if(object instanceof Empresa){
 						Empresa empresa = (Empresa) new EmpresaDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setEmpresa(empresa);
+						tarefa.setNegocio(null);
+						tarefa.setPessoa(null);
 					}
 					else if(object instanceof Negocio){
 						Negocio negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setNegocio(negocio);
+						tarefa.setEmpresa(null);
+						tarefa.setPessoa(null);
 					}
 					else if(object instanceof Pessoa){
 						Pessoa pessoa = (Pessoa) new PessoaDao().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
 						tarefa.setPessoa(pessoa);
+						tarefa.setEmpresa(null);
+						tarefa.setNegocio(null);
 					}
 				}
 				
@@ -274,7 +288,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		else
 			ckFinalizado.setSelected(false);
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-		txHora.setText(sdf.format(tarefa.getHoraEvento()));
+		txHora.setText(sdf.format(tarefa.getDataEvento()));
 	}
 	private void salvarCancelar(){
 		btnSalvar.setEnabled(false);

@@ -33,7 +33,8 @@ public class Negocio implements Serializable{
 	private BigDecimal honorario;
 	private PfPj pessoaFisicaOrJuridica;
 	private String descricao;
-	
+	private String motivoPerda;
+	private Date dataPerda;
 	/**
 	 * @return the id
 	 */
@@ -291,6 +292,30 @@ public class Negocio implements Serializable{
 	}
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	/**
+	 * @return the motivoPerda
+	 */
+	public String getMotivoPerda() {
+		return motivoPerda;
+	}
+	/**
+	 * @param motivoPerda the motivoPerda to set
+	 */
+	public void setMotivoPerda(String motivoPerda) {
+		this.motivoPerda = motivoPerda;
+	}
+	/**
+	 * @return the dataPerda
+	 */
+	public Date getDataPerda() {
+		return dataPerda;
+	}
+	/**
+	 * @param dataPerda the dataPerda to set
+	 */
+	public void setDataPerda(Date dataPerda) {
+		this.dataPerda = dataPerda;
 	}
 		
 }
