@@ -38,7 +38,7 @@
     <property name="honorario" column="NEG_HONORARIO" type="big_decimal"/>
     <component name="pessoaFisicaOrJuridica">
 	  	<many-to-one name="origem" column="NEG_ORIGEM_COD" foreign-key="FK_NEG_ORIGEM_COD"/>
-		<many-to-one name="servico" column="NEG_SERVICO_COD" foreign-key="FK_NEG_EMPRESA_COD"/>
+		<many-to-one name="servico" column="NEG_SERVICO_COD" foreign-key="FK_NEG_SERVICO_COD"/>
 		<many-to-one name="categoria" column="NEG_CATEGORIA_COD" foreign-key="FK_NEG_CATEGORIA_COD"/>
 		<many-to-one name="nivel" column="NEG_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
     </component>

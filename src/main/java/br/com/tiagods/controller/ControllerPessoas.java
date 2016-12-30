@@ -514,7 +514,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				}
 				linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getLogin();
 				model.addRow(linha);
-				
 			}
 			txContadorRegistros.setText("Total: "+lista.size()+" registros");
 			table.setModel(model);
@@ -522,7 +521,5 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			table.setSelectionBackground(Color.orange);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		}
-		
-
 	}
 }

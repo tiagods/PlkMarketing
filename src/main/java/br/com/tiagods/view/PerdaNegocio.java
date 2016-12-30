@@ -33,14 +33,14 @@ public class PerdaNegocio extends JDialog{
 	 */
 	public PerdaNegocio(Negocio negocio) {
 		initComponents();
-		controller.iniciar(this);
+		controller.iniciar(negocio,this);
 	}
 	public void initComponents(){
-		setBounds(100, 100, 450, 280);
+		setBounds(100, 100, 450, 330);
 		getContentPane().setLayout(null);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 100, 414, 97);
+		scrollPane.setBounds(10, 148, 414, 89);
 		getContentPane().add(scrollPane);
 		
 		txDescricao = new JTextArea();
@@ -48,7 +48,7 @@ public class PerdaNegocio extends JDialog{
 		scrollPane.setViewportView(txDescricao);
 
 		JPanel buttonPane = new JPanel();
-		buttonPane.setBounds(10, 208, 414, 33);
+		buttonPane.setBounds(10, 248, 414, 33);
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane);
 		
@@ -58,19 +58,27 @@ public class PerdaNegocio extends JDialog{
 		getContentPane().add(lbMotivo);
 				
 		rbPreco = new JRadioButton("Preço");
-		rbPreco.setBounds(6, 38, 90, 23);
+		rbPreco.setOpaque(false);
+		rbPreco.setName("Preco");
+		rbPreco.setBounds(6, 38, 70, 23);
 		getContentPane().add(rbPreco);
 		
 		rbPrazo = new JRadioButton("Prazo");
-		rbPrazo.setBounds(104, 38, 90, 23);
+		rbPrazo.setOpaque(false);
+		rbPrazo.setName("Prazo");
+		rbPrazo.setBounds(99, 38, 70, 23);
 		getContentPane().add(rbPrazo);
 		
 		rbProdServico = new JRadioButton("Produto/Serviço");
-		rbProdServico.setBounds(207, 38, 109, 23);
+		rbProdServico.setOpaque(false);
+		rbProdServico.setName("Produto/Servico");
+		rbProdServico.setBounds(196, 38, 120, 23);
 		getContentPane().add(rbProdServico);
 		
 		rbDesistencia = new JRadioButton("Desistência");
-		rbDesistencia.setBounds(334, 38, 90, 23);
+		rbDesistencia.setOpaque(false);
+		rbDesistencia.setName("Desistencia");
+		rbDesistencia.setBounds(324, 38, 100, 23);
 		getContentPane().add(rbDesistencia);
 		
 		ButtonGroup group = new ButtonGroup();
@@ -95,9 +103,14 @@ public class PerdaNegocio extends JDialog{
 		getRootPane().setDefaultButton(btDefinir);
 
 		JButton btCancel = new JButton("Cancelar");
-		btCancel.setActionCommand("Desistir");
+		btCancel.setActionCommand("Cancelar");
 		btCancel.addActionListener(controller);
 		buttonPane.add(btCancel);
+		
+		JLabel lbObservacao = new JLabel("Descreva abaixo uma breve observação.");
+		lbObservacao.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lbObservacao.setBounds(10, 117, 414, 20);
+		getContentPane().add(lbObservacao);
 		
 		setLocationRelativeTo(null);
 	}

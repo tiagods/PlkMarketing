@@ -469,7 +469,7 @@ public class NegociosView extends JInternalFrame {
 
         btAddServicosContratados = new JButton();
         btAddServicosContratados.setText("Incluir Servi\u00E7os");
-        btAddServicosContratados.setBounds(395, 152, 118, 23);
+        btAddServicosContratados.setBounds(395, 152, 157, 23);
         pnCadastro.add(btAddServicosContratados);
 
         scrollServicos = new JScrollPane();

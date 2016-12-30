@@ -636,7 +636,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	public void preencherTabela(List<Negocio> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Rela��o de Neg�cios");
+			new SemRegistrosJTable(table,"Relação de Negócios");
 		}
 		else{
 			String [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","TEMPO","CRIADO EM","ATENDENTE","ABRIR"};
@@ -687,6 +687,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.ORANGE);
+			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		}
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
