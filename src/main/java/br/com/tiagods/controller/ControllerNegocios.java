@@ -214,10 +214,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		case "Novo":
 			limparFormulario(pnCadastro);
 			novoEditar();
-			dataInicio.setDate(new Date());
 			telaEmEdicao = true;
 			negocio = new Negocio();
 			negocio.setHonorario(new BigDecimal("0.00"));
+			txHonorario.setText("0,00");
+			dataInicio.setDate(new Date());
 			break;
 		case "Editar":
 			telaEmEdicao = true;

@@ -75,7 +75,6 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			comboFiltro.setSelectedItem(atributo.toUpperCase());
 			Order order = Order.asc("nome");
 			List<Criterion> criterion = new ArrayList<>();
-			
 			if(!"".equals(buscarValor)){
 				if("id".equals(atributo)){
 					try{

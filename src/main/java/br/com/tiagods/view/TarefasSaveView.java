@@ -85,6 +85,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         
         panItem = new JPanel();
         panItem.setBounds(94, 148, 1037, 33);
+        panItem.setBackground(getColor());
         panel.add(panItem);
         
         ButtonGroup group = new ButtonGroup();
@@ -122,6 +123,7 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         JPanel panEscolha = new JPanel();
         FlowLayout fl_panEscolha = (FlowLayout) panEscolha.getLayout();
         panEscolha.setBounds(94, 332, 1037, 33);
+        panEscolha.setBackground(getColor());
         panel.add(panEscolha);
         
         JLabel lblTipo = new JLabel("Tipo:");
