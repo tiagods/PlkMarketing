@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
@@ -25,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -57,17 +60,21 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.*;
+import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.PerdaNegocio;
+import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.SelecaoObjeto;
+import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 
+import static br.com.tiagods.view.MenuView.jDBody;
 import static br.com.tiagods.view.NegociosView.*;
 /**
  *
  * @author Tiago
  */
-public class ControllerNegocios implements ActionListener,ItemListener,MouseListener, PropertyChangeListener{
+public class ControllerNegocios implements ActionListener,ItemListener,MouseListener, PropertyChangeListener, KeyListener{
 	
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
 	
@@ -116,6 +123,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		cbAtendente.addItemListener(this);
 		cbObject.addItemListener(this);
 		cbStatusCad.addItemListener(new InvocarDialogPerda());
+		txBuscar.addKeyListener(this);
 	}
 	public class InvocarDialogPerda implements ItemListener{
 
@@ -167,6 +175,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		if(n.getDataFim()!=null){
 			dataFim.setDate(n.getDataFim());
 		}
+		else
+			dataFim.setDate(null);
 		String honorario = ""+n.getHonorario();
 		txHonorario.setText(honorario.replace(".", ","));
 		txDescricao.setText(n.getDescricao());
@@ -408,10 +418,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		negocio.setEtapa(receberEtapa(negocio));
 		negocio.setDataInicio(dataInicio.getDate());
-		
 		if(dataFim.getDate()!=null)
 			negocio.setDataFim(dataFim.getDate());
-		
 		negocio.setHonorario(new BigDecimal(txHonorario.getText().replace(".","").replace(",", ".")));
 		negocio.setDescricao(txDescricao.getText().trim());
 		
@@ -513,8 +521,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@SuppressWarnings("unchecked")
 	private void invocarExclusao(){
-    	int escolha = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, "Voc� deseja excluir esse registro? "
-				+ "\nTodos os historicos ser�o perdidos, lembre-se que essa a��o n�o ter� mais volta!",
+    	int escolha = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, "Você deseja excluir esse registro? "
+				+ "\nTodos os historicos serão perdidos, lembre-se que essa ação não terá mais volta!",
 				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
 			NegocioDao dao = new NegocioDao();
@@ -550,9 +558,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContadorRegistros);
-		}else{
-			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody,"N�o foi encontrado registros com o crit�rio informado",
-					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	private void novoEditar(){
@@ -617,7 +622,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			else if(c instanceof JScrollPane){
 				desbloquerFormulario(desbloquear,(Container)c);
 			}
-			//txDescricao.setEditable(desbloquear);
+			txDescricao.setEditable(desbloquear);
 			
 		}
 	}
@@ -640,14 +645,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			new SemRegistrosJTable(table,"Relação de Negócios");
 		}
 		else{
-			String [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","TEMPO","CRIADO EM","ATENDENTE","ABRIR"};
+			Object [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","TEMPO","CRIADO EM","ATENDENTE","ABRIR"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 				/**
 				 * 
 				 */
 				private static final long serialVersionUID = -8716692364710569296L;
 				boolean[] canEdit = new boolean[]{
-						false,false,false,false,false,false,false,false,false,false
+						false,false,false,false,false,false,false,false,false,true
 				};
 				@Override
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -689,8 +694,37 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.ORANGE);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
+			
+			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
+			btAbrir.setActionCommand("Abrir");
+			btAbrir.addActionListener(new AcaoInTable());
+			table.getColumnModel().getColumn(9).setPreferredWidth(90);
 		}
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
+	}
+	public class AcaoInTable implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+
+			String value = ((JButton)arg0.getSource()).getText();
+			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
+			Negocio neg = (Negocio) new NegocioDao().receberObjeto(Negocio.class, id, session);
+			if("Empresa".equals(value)){
+				Empresa empresa = neg.getEmpresa();
+				EmpresasView viewEmpresas = new EmpresasView(empresa);
+				ControllerMenu.getInstance().abrirCorpo(viewEmpresas);
+			}
+			else if("Pessoa".equals(value)){
+				Pessoa pessoa = neg.getPessoa();
+				PessoasView viewPessoa = new PessoasView(pessoa);
+				ControllerMenu.getInstance().abrirCorpo(viewPessoa);
+			}
+			session.close();
+		}
+
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
@@ -711,7 +745,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 && tbPrincipal.getColumnCount()>1){
+		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 && 
+				tbPrincipal.getColumnCount()>1 && !telaEmEdicao){
 			boolean open = recebeSessao();
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 			this.negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class, id, session);
@@ -719,6 +754,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			if(open)
 				fechaSessao(open);
 		}
+		else
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
+					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -748,6 +786,19 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 		}catch (NullPointerException e) {
 		}
+	}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		pesquisar();
+		
+	}
+	@Override
+	public void keyReleased(KeyEvent e) {
+		new UnsupportedOperationException();
+	}
+	@Override
+	public void keyTyped(KeyEvent e) {
+		new UnsupportedOperationException();
 	}
 
 	

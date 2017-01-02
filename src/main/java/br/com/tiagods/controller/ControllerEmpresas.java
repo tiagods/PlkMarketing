@@ -261,9 +261,6 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		}
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContador);
-		}else{
-			JOptionPane.showMessageDialog(jDBody,"Nao foi encontrado registros com o criterio informado",
-					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	//atualizador de combo box
@@ -370,13 +367,16 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
-		if(valor>0){
+		if(valor>0 && !telaEmEdicao){
 			boolean open = recebeSessao();
 			EmpresaDao dao = new EmpresaDao();
 			empresa = (Empresa)dao.receberObjeto(Empresa.class, valor, session);
 			preencherFormulario(empresa);
 			fechaSessao(open);
 		}
+		else
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
+					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {

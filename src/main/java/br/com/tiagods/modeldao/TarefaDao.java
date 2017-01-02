@@ -39,18 +39,19 @@ public class TarefaDao implements InterfaceDao{
 			return true;
 		}catch (Exception e) {
 			session.getTransaction().rollback();
+			return false;
 		}
-		return false;
 	}
 	@Override
 	public boolean excluir(Object object,Session session) {
 		try{
 			session.delete(object);
 			session.getTransaction().commit();
+			return true;
 		}catch (Exception e) {
 			e.getMessage();
+			return false;
 		}
-		return false;
 	}
 	@Override
 	public List listar(Class classe, Session session) {

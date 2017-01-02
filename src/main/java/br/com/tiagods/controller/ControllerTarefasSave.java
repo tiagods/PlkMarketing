@@ -143,8 +143,6 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			else
 				tarefa.setFinalizado(0);
 			if(continuar){
-				
-				
 				String hora = txHora.getText();
 				if(hora.length()==5){
 					String horas = hora.substring(0, 2);

@@ -30,10 +30,11 @@ public class NegocioDao implements InterfaceDao {
 		try{
 			session.delete(object);
 			session.getTransaction().commit();
+			return true;
 		}catch(Exception e){
 			e.printStackTrace();
+			return false;
 		}
-		return false;
 	}
 
 	@SuppressWarnings("rawtypes")

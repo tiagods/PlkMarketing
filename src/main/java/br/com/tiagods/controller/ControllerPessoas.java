@@ -258,9 +258,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 		if(!lista.isEmpty()){
 			preencherTabela(lista, tbPrincipal,txContador);
-		}else{
-			JOptionPane.showMessageDialog(jDBody,"N�o foi encontrado registros com o criterio informado",
-					"Nenhum registro!", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	//atualizador de combo box
@@ -366,13 +363,15 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
-		if(valor>0){
+		if(valor>0 && !telaEmEdicao){
 			boolean open = recebeSessao();
 			PessoaDao dao = new PessoaDao();
 			pessoa = (Pessoa)dao.receberObjeto(Pessoa.class, valor, session);
 			preencherFormulario(pessoa);
 			fechaSessao(open);
 		}
+		else
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {

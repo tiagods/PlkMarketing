@@ -95,6 +95,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relação de Empresas");
 			}
 			else if(object instanceof Negocio){
 				List<Negocio> lista = dao.items(Negocio.class, session, criterion, order);
@@ -103,6 +104,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relação de Negócios");
 			}
 			else if (object instanceof Pessoa){
 				List<Pessoa> lista = dao.items(Pessoa.class, session, criterion, order);
@@ -111,6 +113,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relação de Pessoas");
 			}
 			else if(object instanceof Categoria){
 				List<Categoria> lista = dao.items(Categoria.class, session, criterion, order);
@@ -119,6 +122,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relacao de Categorias");
 			}
 			else if(object instanceof Nivel){
 				List<Nivel> lista = dao.items(Nivel.class, session, criterion, order);
@@ -127,6 +131,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relacao de Niveis");
 			}
 			else if(object instanceof Origem){
 				List<Origem> lista = dao.items(Origem.class, session, criterion, order);
@@ -135,6 +140,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relacao de Origens");
 			}
 			else if(object instanceof Servico){
 				List<Servico> lista = dao.items(Servico.class, session, criterion, order);
@@ -143,6 +149,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
+				view.setTitle("Relacao de Produtos/Serviços");
 			}
 			tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
 			tbRelacao.setAutoCreateRowSorter(true);
@@ -165,21 +172,31 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					view.dispose();
 				}
 			}
+			else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
 			break;
 		case "Desistir":
 			sair();
 			break;
 		case "Novo":
-			pnCadastrar.setVisible(true);
-			txCodigo.setText("");
-			txNome.setText("");
-			novoEditar();
+			if(object instanceof Negocio){
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar ou editar um registro de um  NEGOCIO diretamente. \nClique sobre o menu Negocios","Acesso proibido",JOptionPane.WARNING_MESSAGE);
+			}
+			else{
+				pnCadastrar.setVisible(true);
+				txCodigo.setText("");
+				txNome.setText("");
+				novoEditar();
+			}
 			break;
 		case "Editar":
-			if(!"".equals(txCodigo.getText())){
+			if(object instanceof Negocio){
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar ou editar um registro de um  NEGOCIO diretamente. \nClique sobre o menu Negocios","Acesso proibido",JOptionPane.WARNING_MESSAGE);
+			}
+			else if(!"".equals(txCodigo.getText())){
 				pnCadastrar.setVisible(true);
 				novoEditar();
-			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
+			}
+			else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
 			break;
 		case "Salvar":
 			if(txNome.getText().trim().length()>=3)
@@ -191,7 +208,10 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			salvarCancelar();
 			break;
 		case "Excluir":
-			invocarExclusao();
+			if(object instanceof Negocio){
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar ou editar um registro de um  NEGOCIO diretamente. \nClique sobre o menu Negocios","Acesso proibido",JOptionPane.WARNING_MESSAGE);
+			}
+			else invocarExclusao();
 			break;
 		default:
 			break;

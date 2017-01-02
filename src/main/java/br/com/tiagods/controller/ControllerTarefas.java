@@ -255,8 +255,12 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			criterios.add(criterion);
 		}
 		else if(rbDefinirData.isSelected() && validarDatas()){
-				Criterion criterion = Restrictions.between("dataEvento", jData1.getDate(), jData2.getDate());
-				criterios.add(criterion);
+			data2.setTime(jData2.getDate());
+			data2.set(Calendar.HOUR_OF_DAY,23);
+			data2.set(Calendar.MINUTE, 59);
+			data2.set(Calendar.SECOND, 59);
+			Criterion criterion = Restrictions.between("dataEvento", jData1.getDate(), data2.getTime());
+			criterios.add(criterion);
 		}
 		else if(!validarDatas()){
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody,
@@ -284,7 +288,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		session.beginTransaction();
 		TarefaDao dao = new TarefaDao();
 		List<Tarefa> lista = dao.filtrar(criterios, session);
-		System.out.println("Tamanho: "+lista.size());
 		preencherTabela(tbPrincipal, lista, txContador);
 		tbPrincipal.addMouseListener(this);
 		session.close();
@@ -325,9 +328,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		LocalDate novaDataHoje = dataHoje.plusDays(diaSegunda);
 		data1 = Calendar.getInstance();
 		data2 = Calendar.getInstance();
-		data1.set(novaDataHoje.getYear(), novaDataHoje.getMonthValue()-1, novaDataHoje.getDayOfMonth()-1);
+		
+		data1.set(novaDataHoje.getYear(), novaDataHoje.getMonthValue()-1, novaDataHoje.getDayOfMonth()-1,0,0,0);
 		LocalDate novaDataFimDeSemana = dataHoje.plusDays(diaDomingo);
-		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1);
+		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1,23,59,59);
 	}
 	public void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
 		if(lista.isEmpty()){
@@ -419,7 +423,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				break;
 			case "Abrir":
 				abrirCadastro(session);
-				System.out.println( e.getActionCommand() + " : " + tbPrincipal.getSelectedRow());
 				break;
 			case "Editar":
 				int valor = (int) tbPrincipal.getModel().getValueAt(tbPrincipal.getSelectedRow(), 0);
