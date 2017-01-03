@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 
 import br.com.tiagods.model.Negocio;
+import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class NegocioDao implements InterfaceDao {
 

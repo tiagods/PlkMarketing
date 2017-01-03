@@ -8,6 +8,7 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class TipoTarefaDao implements InterfaceDao{
 

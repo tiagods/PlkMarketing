@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 
+import br.com.tiagods.view.interfaces.InterfaceDao;
+
 public class GenericDao implements InterfaceDao{
 
 	@Override

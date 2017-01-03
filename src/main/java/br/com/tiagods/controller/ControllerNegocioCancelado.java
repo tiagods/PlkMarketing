@@ -1,7 +1,6 @@
 package br.com.tiagods.controller;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
@@ -68,7 +67,7 @@ public class ControllerNegocioCancelado implements ActionListener{
 	public void preencherFormulario(){
 		if(!"".equals(negocio.getMotivoPerda()) || !negocio.getMotivoPerda().equals(null))
 			setarRadio(negocio.getMotivoPerda());
-		txDescricao.setText(negocio.getDetalhesPerda());
+		txDescricao.setText(negocio.getDetalhesPerda()==null?"":negocio.getDetalhesPerda());
 		if(negocio.getDataPerda()!=null)
 			txData.setDate(negocio.getDataPerda());
 	}

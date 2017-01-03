@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Session;
 
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class UsuarioDao implements InterfaceDao{
 	public Usuario getLogin(String login, Session session){

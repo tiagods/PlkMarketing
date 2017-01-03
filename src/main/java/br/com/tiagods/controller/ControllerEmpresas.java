@@ -132,9 +132,11 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		case "Historico":
 			pnAuxiliar.setVisible(true);
 			boolean open = recebeSessao();
+			List<Criterion> criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("empresa", empresa);
+			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDao().items(Tarefa.class, session, criterion, order);
+			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
 			fechaSessao(open);
 			break;
@@ -145,9 +147,11 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		case "Negocios":
 			pnAuxiliar.setVisible(true);
 			open = recebeSessao();
+			criterios = new ArrayList<>();
 			criterion = Restrictions.eq("empresa", empresa);
+			criterios.add(criterion);
 			order = Order.desc("id");		
-			List<Negocio> negocios = (List<Negocio>) new ItemsDao().items(Negocio.class, session, criterion, order);
+			List<Negocio> negocios = (List<Negocio>) new GenericDao().items(Negocio.class, session, criterios, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
 			fechaSessao(open);
 			break;

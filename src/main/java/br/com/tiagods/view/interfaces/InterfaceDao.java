@@ -1,4 +1,4 @@
-package br.com.tiagods.modeldao;
+package br.com.tiagods.view.interfaces;
 
 import java.util.List;
 

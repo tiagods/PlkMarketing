@@ -16,6 +16,7 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class TarefaDao implements InterfaceDao{
 	//Quantidade de tarefas de acordo com o usuario

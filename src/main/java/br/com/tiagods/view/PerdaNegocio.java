@@ -93,7 +93,7 @@ public class PerdaNegocio extends JDialog{
 		getContentPane().add(lblQuandoONegcio);
 		
 		txData = new JDateChooser();
-		txData.setBounds(229, 68, 87, 20);
+		txData.setBounds(229, 68, 100, 20);
 		getContentPane().add(txData);
 		
 		JButton btDefinir = new JButton("Definir");

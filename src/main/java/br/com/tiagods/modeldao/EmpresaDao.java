@@ -11,6 +11,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class EmpresaDao implements InterfaceDao {
 

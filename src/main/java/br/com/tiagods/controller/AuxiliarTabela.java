@@ -102,7 +102,7 @@ public class AuxiliarTabela {
 	}
 	@SuppressWarnings("serial")
 	private DefaultTableModel gerarModel(Tarefa tarefas){
-		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","CONCLUIDO"},0){
+		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","ANDAMENTO"},0){
 			boolean[] canEdit = new boolean[]{
 					false,false,false,false,true
 			};

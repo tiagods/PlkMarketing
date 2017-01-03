@@ -363,11 +363,11 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				o[2] = t.getTipoTarefa().getNome();
 				o[3] = t.getClasse();
 				if(Empresa.class.getSimpleName().equals(t.getClasse()))
-					o[4] = t.getEmpresa().getNome();
+					o[4] = t.getEmpresa()==null?"Erro: Empresa desassociada":t.getEmpresa().getNome();
 				else if(Negocio.class.getSimpleName().equals(t.getClasse()))
-					o[4] = t.getNegocio().getNome();
+					o[4] = t.getNegocio()==null?"Erro: Negocio desassociado":t.getNegocio().getNome();
 				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
-					o[4] = t.getPessoa().getNome();
+					o[4] = t.getPessoa()==null?"Erro: Pessoa desassociada":t.getPessoa().getNome();
 				else
 					o[4] = "Erro";
 				if(t.getFinalizado()==0)

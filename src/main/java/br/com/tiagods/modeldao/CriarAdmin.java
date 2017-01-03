@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
@@ -26,9 +28,11 @@ import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.Status;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.view.MenuView;
 
 public class CriarAdmin {
 
@@ -73,9 +77,8 @@ public class CriarAdmin {
 		criarPessoa();
 
 		criarStatus();
+		criarServicoAgregado();
 		//criarNegocio();
-
-		//criarServicoContratado();
 	}
 	private void criarPessoa() {
 		PfPj pj = new PfPj();
@@ -285,12 +288,15 @@ public class CriarAdmin {
 	@SuppressWarnings("resource")
 	private void criarCidade() {
 		Scanner scanner = null;
+		
+		int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, "Cadastro de Municipios! Coloque o arquivo munic.csv na pasta do programa e clique em OK","Importação de Cidades!",JOptionPane.OK_OPTION);
+		
+		if(escolha==JOptionPane.OK_OPTION){
 		try{
 		scanner = new Scanner(new InputStreamReader(
-				new FileInputStream(System.getProperty("user.home")+"/Desktop/munic.csv"),"UTF-8"))
+				new FileInputStream(System.getProperty("user.dir")+"/munic.csv"),"UTF-8"))
                 .useDelimiter("\n");
 		}catch (IOException e) {
-			// TODO: handle exception
 		}
 		List<Cidade> cidades = new ArrayList<Cidade>();
 
@@ -313,7 +319,6 @@ public class CriarAdmin {
 			try{
 				session.save(cidades.get(i));
 			}catch (Exception e) {
-				// TODO: handle exception
 				e.printStackTrace();
 				session.getTransaction().rollback();
 			}
@@ -327,6 +332,7 @@ public class CriarAdmin {
 		session.getTransaction().commit();
 		session.close();
 		receberCidade();
+		}
 	}
 	private void receberCidade(){
 		Session session = HibernateFactory.getSession();
@@ -428,6 +434,27 @@ public class CriarAdmin {
 			session.save(funcao);
 			session.getTransaction().commit();
 
+		}catch (HibernateException e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}
+		session.close();
+	}
+	private void criarServicoAgregado(){
+		Session session = HibernateFactory.getSession();
+		session.beginTransaction();
+		
+		ServicoAgregado sa1 = new ServicoAgregado();
+		sa1.setNome("Abertura");
+		
+		ServicoAgregado sa2 = new ServicoAgregado();
+		sa2.setNome("Implantação");
+		
+		session.save(sa1);
+		session.save(sa2);
+		
+		try{
+			session.getTransaction().commit();
 		}catch (HibernateException e) {
 			e.printStackTrace();
 			session.getTransaction().rollback();

@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class PessoaDao implements InterfaceDao {
 

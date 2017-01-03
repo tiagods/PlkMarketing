@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hibernate.Session;
 
+import br.com.tiagods.view.interfaces.InterfaceDao;
+
 public class OrigemDao implements InterfaceDao {
 
 	@Override

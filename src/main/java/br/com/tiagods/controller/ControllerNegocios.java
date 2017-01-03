@@ -254,9 +254,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			pnAuxiliar.setVisible(true);
 			if(negocio==null) System.out.println("is null");
 			boolean open = recebeSessao();
+			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", negocio);
+			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new ItemsDao().items(Tarefa.class, session, criterion, order);
+			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
 			fechaSessao(open);
 			break;
