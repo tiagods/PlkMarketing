@@ -367,6 +367,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		btnEditar.setEnabled(true);
 		btnExcluir.setEnabled(true);
 		desbloquerFormulario(false, pnCadastrar);
+		txBuscar.setText("");
 		if("".equals(txCodigo.getText()))
 			btnExcluir.setEnabled(false);
 		telaEmEdicao = false;
@@ -377,6 +378,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		btnEditar.setEnabled(false);
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
+		txBuscar.setText("");
 		if(!"".equals(txCodigo.getText()))
 			btnExcluir.setEnabled(true);
 		telaEmEdicao = true;

@@ -236,7 +236,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			break;
 		case "Historico":
 			pnAuxiliar.setVisible(true);
-			if(negocio==null) System.out.println("is null");
 			boolean open = recebeSessao();
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", negocio);
@@ -313,6 +312,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				tbServicosContratados.setModel(model);
 				cbServicosAgregados.setSelectedItem("");
 				txValorServico.setText("0,00");
+				txIdServicoContratado.setText("");
 			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteção!");
 			break;
 		case "NovoServicoContratado":
@@ -527,6 +527,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	private boolean verificarCondicao(){
 		StringBuilder builder = new StringBuilder();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				
 		if("".equals(txCodObjeto.getText())){
 			builder.append("Primeiro vincule uma Pessoa ou uma Empresa e tente salvar novamente!");
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
@@ -537,7 +539,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
 			return false;
 		}
-		else if(dataFim.getDate()!=null && dataInicio.getDate().compareTo(dataFim.getDate())>0){
+		else if(dataFim.getDate()!=null && !sdf.format(dataInicio.getDate()).equals(sdf.format(dataFim.getDate()))
+				&& dataInicio.getDate().after(dataFim.getDate())){
 			builder.append("Data de Fim não pode ser superior a Data de Inicio!\n");
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
 			return false;
@@ -601,6 +604,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
 		btnExcluir.setEnabled(false);
+		DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
+		while(model.getRowCount()>0){
+			model.removeRow(0);
+		}
+		tbServicosContratados.setModel(model);
 		if(this.negocio!=null)
 			negocioBackup=negocio;
 	}
@@ -618,10 +626,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 			else if(c instanceof JTable){
 				DefaultTableModel model = (DefaultTableModel)((JTable)c).getModel();
-				int row=0;
-				while(row<model.getRowCount()){
-					model.removeRow(row);
-					row++;
+				while(model.getRowCount()>0){
+					model.removeRow(0);
 				}
 				((JTable)c).setModel(model);
 			}
@@ -796,16 +802,16 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		public void actionPerformed(ActionEvent e) {
 			if(telaEmEdicao){
 				int row = tbServicosContratados.getSelectedRow();
-				String value = (String) tbServicosContratados.getValueAt(row, 0);
+				Object value = tbServicosContratados.getValueAt(row, 0);
 				int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
 						"Deseja excluir o seguinte serviço: \n"+tbServicosContratados.getValueAt(row, 0)+" \nNome: "+tbServicosContratados.getValueAt(row, 1)+
 						"\nValor: "+tbServicosContratados.getValueAt(row, 2)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
 				if(i==JOptionPane.OK_OPTION){
-					if(!"".equals(value)){
+					if(!"".equals(value.toString())){
 						session = HibernateFactory.getSession();
 						session.beginTransaction();
 						GenericDao dao = new GenericDao();
-						ServicoContratado sec = (ServicoContratado) dao.receberObjeto(ServicoContratado.class, Integer.parseInt(value), session);
+						ServicoContratado sec = (ServicoContratado) dao.receberObjeto(ServicoContratado.class, Integer.parseInt(value.toString()), session);
 						if(dao.excluir(sec, session)){
 							removerServico(row);
 						}
@@ -815,6 +821,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 						removerServico(row);
 					}
 				}
+				cbServicosAgregados.setSelectedItem("");
+				txValorServico.setText("0,00");
+				txIdServicoContratado.setText("");
 			}
 			else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteção!");
 		}
