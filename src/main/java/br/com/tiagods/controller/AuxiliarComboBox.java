@@ -28,6 +28,7 @@ import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.Status;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
@@ -47,6 +48,7 @@ public class AuxiliarComboBox {
 	Map <String, Pessoa> pessoas;
 	Map <String,Servico> servicos;
 	Map <String,Status> statusMapa;
+	Map <String,ServicoAgregado> servicosAgregados;
 	
 	List<Usuario> listarUsuarios;
 	List<Categoria> listarCategorias;
@@ -57,6 +59,7 @@ public class AuxiliarComboBox {
 	List<Pessoa> listarPessoas;
 	List<Etapa> listarEtapas;
 	List<Status> listarStatus;
+	List<ServicoAgregado> listaServicosAgregados;
 
 	private static AuxiliarComboBox instance;
 	
@@ -201,6 +204,18 @@ public class AuxiliarComboBox {
     		}
         	combo.setSelectedItem(combo.getName());
     		break;
+    	case "ServicoAgregadoCad":
+    		combo.removeAllItems();
+    		combo.addItem("");
+    		listaServicosAgregados = new GenericDao().listar(ServicoAgregado.class, session);
+    		servicosAgregados = new HashMap();
+    		if(!listaServicosAgregados.isEmpty()){
+    			listaServicosAgregados.forEach(c->{
+    				servicosAgregados.put(c.getNome(), c);
+    				combo.addItem(c.getNome());
+    			});
+    		}
+    		break;
     	case "ServicosCad":
     		combo.removeAllItems();
     		combo.addItem("");
@@ -336,4 +351,11 @@ public class AuxiliarComboBox {
 	public Pessoa getPessoas(String key){
 		return pessoas.get(key);
 	}
+	/**
+	 * @return the servicos agregados
+	 * 
+	 */
+	 public ServicoAgregado getServicosAgregados(String key){
+		 return servicosAgregados.get(key);
+	 }
 }

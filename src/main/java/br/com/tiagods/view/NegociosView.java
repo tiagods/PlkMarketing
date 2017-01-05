@@ -46,6 +46,7 @@ public class NegociosView extends JInternalFrame {
     private javax.swing.JPanel pnVisao;
     public static JPanel pnPrincipal;
     public static JPanel pnAndamento;
+    public static JPanel pnServicosContratados;
     public static JComboBox cbObject;
 	private JPanel panel;
 	private JLabel label;
@@ -65,6 +66,7 @@ public class NegociosView extends JInternalFrame {
 	public static DefaultComboBox cbNivelCad;
 	public static DefaultComboBox cbOrigemCad;
 	public static DefaultComboBox cbServicosCad;
+	public static DefaultComboBox cbServicosAgregados;
 	public static JPanel pnAuxiliar;
 	private JScrollPane scrollPane;
 	private JButton button;
@@ -77,7 +79,7 @@ public class NegociosView extends JInternalFrame {
 	private JLabel label_16;
 	public static JLabel txDataCadastro;
 	public static JLabel txContadorRegistros;
-	public static JFormattedTextField txHonorario;
+	public static JFormattedTextField txHonorario,txValorServico;
 	public static JRadioButton rbContato, rbEnvioProposta, rbFollowup, rbFechamento, rbIndefinida;
 	public static JButton btnNovo;
 	public static JButton btnEditar;
@@ -86,6 +88,7 @@ public class NegociosView extends JInternalFrame {
 	public static JButton btnCancelar;
 	public static JButton btnHistorico;
 	public static JButton btEsconder;
+	public static JButton btAddServicoAgregado;
 	private JLabel lbAtendenteCad;
 	private JPanel pnPrivacidade;
 	public static JCheckBox checkBox;
@@ -96,7 +99,6 @@ public class NegociosView extends JInternalFrame {
 	private JTable table;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal, tbAuxiliar;
-	public static JButton btAddServicosContratados;
 	public static JButton btAddEmpresaPessoa;
 	private JPanel panel_5;
 	private JLabel lblValorTotalDe;
@@ -105,6 +107,8 @@ public class NegociosView extends JInternalFrame {
 	public static JScrollPane scrollServicos;
 	ControllerNegocios controller = new ControllerNegocios();
 	public static JTable tbServicosContratados;
+	public static JLabel txIdServicoContratado;
+	private JButton btReturn;
 	/**
 	 * Create the frame.
 	 */
@@ -466,14 +470,9 @@ public class NegociosView extends JInternalFrame {
         lbInicio.setHorizontalAlignment(SwingConstants.LEFT);
         lbInicio.setBounds(8, 150, 87, 20);
         pnCadastro.add(lbInicio);
-
-        btAddServicosContratados = new JButton();
-        btAddServicosContratados.setText("Incluir Servi\u00E7os");
-        btAddServicosContratados.setBounds(395, 152, 157, 23);
-        pnCadastro.add(btAddServicosContratados);
-
+        
         scrollServicos = new JScrollPane();
-        scrollServicos.setBounds(395, 193, 290, 110);
+        scrollServicos.setBounds(395, 197, 365, 113);
         pnCadastro.add(scrollServicos);
         scrollServicos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //scrollServicos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -567,6 +566,47 @@ public class NegociosView extends JInternalFrame {
         btnCategoriaCad.setBounds(203, 86, 36, 23);
         btnCategoriaCad.addActionListener(controller);
         pnCadastro.add(btnCategoriaCad);
+        
+        pnServicosContratados = new JPanel();
+        pnServicosContratados.setBackground(new Color(250,250,250));
+        pnServicosContratados.setBounds(395, 153, 365, 33);
+        pnCadastro.add(pnServicosContratados);
+        pnServicosContratados.setLayout(null);
+        
+        JLabel lblServio = new JLabel("Serviço: ");
+        lblServio.setBounds(37, 9, 52, 14);
+        pnServicosContratados.add(lblServio);
+        
+        cbServicosAgregados = new DefaultComboBox();
+        cbServicosAgregados.setBounds(99, 6, 62, 20);
+        cbServicosAgregados.setName("ServicoAgregadoCad");
+        pnServicosContratados.add(cbServicosAgregados);
+        
+        JLabel lblValor_1 = new JLabel("Valor:");
+        lblValor_1.setBounds(171, 9, 38, 14);
+        pnServicosContratados.add(lblValor_1);
+        
+        txValorServico = new JFormattedTextField();
+        txValorServico.setHorizontalAlignment(SwingConstants.CENTER);
+        txValorServico.setBounds(212, 6, 41, 20);
+        txValorServico.setText("0,00");
+        pnServicosContratados.add(txValorServico);
+        
+        btAddServicoAgregado = new JButton("+");
+        btAddServicoAgregado.setBounds(318, 5, 45, 23);
+        pnServicosContratados.add(btAddServicoAgregado);
+        btAddServicoAgregado.setActionCommand("AdicionarServicoAgregado"); 
+        btAddServicoAgregado.addActionListener(controller);
+        
+        txIdServicoContratado = new JLabel("");
+        txIdServicoContratado.setBounds(10, 9, 16, 14);
+        pnServicosContratados.add(txIdServicoContratado);
+        
+        btReturn = new JButton("Novo");
+        btReturn.setActionCommand("NovoServicoContratado");
+        btReturn.addActionListener(controller);
+        btReturn.setBounds(263, 5, 45, 23);
+        pnServicosContratados.add(btReturn);
         
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 65, 53, 14);
