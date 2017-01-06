@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Todos direitos reservados a Tiago Dias de Souza.
  */
 package br.com.tiagods.controller;
@@ -74,7 +74,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	@SuppressWarnings("unchecked")
 	public void iniciar(Pessoa pessoa){
 		cbEmpresa.setEnabled(false);
-		cbEmpresa.setToolTipText("Filtro n�o criado: Aguardando programa��o");
+		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programação");
 		this.pessoa=pessoa;
     	session = HibernateFactory.getSession();
     	session.beginTransaction();
@@ -82,7 +82,9 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	for(JPanel panel : panels){
     		preencherComboBox(panel);
     	}
-    	listaPessoas = (List<Pessoa>)(new PessoaDao().listar(Pessoa.class, session));
+    	List<Criterion> criterion = new ArrayList<>();
+    	Order order = Order.desc("id");
+    	listaPessoas = (List<Pessoa>)(new GenericDao().items(Pessoa.class, session, criterion, order));
     	preencherTabela(listaPessoas, tbPrincipal,txContador);
     	if(!listaPessoas.isEmpty() && this.pessoa==null){
     		this.pessoa = listaPessoas.get(0);
@@ -210,13 +212,15 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txSite.setText(pessoa.getPessoaFisica().getSite());
 
 		Endereco end = pessoa.getEndereco();
-		cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
-		txLogradouro.setText(end.getNome());
-		txNum.setText(end.getNumero());
-		txComplemento.setText(end.getComplemento());
+		if(end!=null){
+			cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
+			txLogradouro.setText(end.getNome());
+			txNum.setText(end.getNumero());
+			txComplemento.setText(end.getComplemento());
 
-		cbEstado.setSelectedItem(end.getCidade()==null?"":end.getCidade().getEstado());
-		cbCidade.setSelectedItem(end.getCidade()==null?"":end.getCidade().getNome());
+			cbEstado.setSelectedItem(end.getCidade()==null?"":end.getCidade().getEstado());
+			cbCidade.setSelectedItem(end.getCidade()==null?"":end.getCidade().getNome());
+		}
 	}
 	private void salvarCancelar(){
 		btnSalvar.setEnabled(false);
@@ -286,7 +290,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	private void realizarFiltro(){
 		if(!telaEmEdicao){
 		Criteria criteria = session.createCriteria(Pessoa.class);
-		criteria.addOrder(Order.asc("id"));
+		criteria.addOrder(Order.desc("id"));
 		if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
 			criteria.add(Restrictions.eq("pessoaFisica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
 		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))
@@ -375,7 +379,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			fechaSessao(open);
 		}
 		else
-			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edição...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
@@ -446,7 +450,9 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		fechaSessao(openHere);
 		if(salvo) {
 			openHere = recebeSessao();
-			listaPessoas = (List<Pessoa>)new PessoaDao().listar(Pessoa.class, session);
+			List<Criterion> criterion = new ArrayList<>();
+	    	Order order = Order.desc("id");
+	    	listaPessoas = (List<Pessoa>)(new GenericDao().items(Pessoa.class, session, criterion, order));
 	    	preencherFormulario(pessoa);
 			preencherTabela(listaPessoas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
@@ -455,9 +461,9 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     }
     @SuppressWarnings("unchecked")
 	private void invocarExclusao(){
-    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Voc� deseja excluir esse registro? "
-				+ "\nTodos os historicos ser�oo perdidos, lembre-se que essa a��o n�o ter� mais volta!",
-				"Pedido de Exclus�o", JOptionPane.YES_NO_OPTION);
+    	int escolha = JOptionPane.showConfirmDialog(jDBody, "Você deseja excluir esse registro? "
+				+ "\nTodos os históricos serão perdidos, lembre-se que essa ação não terá mais volta!",
+				"Pedido de Exclusão", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
 			PessoaDao dao = new PessoaDao();
 			boolean openHere = recebeSessao();
@@ -466,7 +472,9 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			if(excluiu){
 				limparFormulario(pnPrincipal);
 				openHere = recebeSessao();
-				listaPessoas = (List<Pessoa>)dao.listar(Pessoa.class, session);
+				List<Criterion> criterion = new ArrayList<>();
+		    	Order order = Order.desc("id");
+		    	listaPessoas = (List<Pessoa>)(new GenericDao().items(Pessoa.class, session, criterion, order));
 		    	preencherTabela(listaPessoas, tbPrincipal, txContador);
 		    	fechaSessao(openHere);
 			}
@@ -488,7 +496,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	}
 	public void preencherTabela(List<Pessoa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Rela��o de Pessoas");
+			new SemRegistrosJTable(table,"Relação de Pessoas");
 		}
 		else{
 			String[] tableHeader = {"ID","NOME","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};

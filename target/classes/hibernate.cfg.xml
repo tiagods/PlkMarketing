@@ -4,7 +4,7 @@
 <hibernate-configuration>
  <session-factory>
   	<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-	<property name="hibernate.connection.url">jdbc:postgresql://192.168.0.202/marketing</property>
+	<property name="hibernate.connection.url">jdbc:postgresql://192.168.0.202/negocios</property>
 	<property name="hibernate.connection.username">developer</property>
 	<property name="hibernate.connection.password">02986731</property>
 	<property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
@@ -14,7 +14,7 @@
 	<property name="current_session_context_class">thread</property>
 	<property name="c3p0.acquire_increment">1</property>
 	<property name="c3p0.idle_test_period">10</property>
-	<property name="c3p0.max_size">10</property>
+	<property name="c3p0.max_size">20</property>
 	<property name="c3p0.max_statements">0</property>
 	<property name="c3p0.min_size">10</property>
 	<property name="c3p0.timeout">100</property>

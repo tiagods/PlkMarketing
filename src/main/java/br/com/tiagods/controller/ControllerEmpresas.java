@@ -83,7 +83,11 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	for(JPanel panel : panels){
     		preencherComboBox(panel);
     	}
-    	listaEmpresas = (List<Empresa>)(new EmpresaDao().listar(Empresa.class, session));
+    	
+    	List<Criterion> criterion = new ArrayList<>();
+    	Order order = Order.desc("id");
+    	
+    	listaEmpresas = (List<Empresa>)(new GenericDao().items(Empresa.class, session, criterion, order));
     	preencherTabela(listaEmpresas, tbPrincipal,txContador);
     	if(!listaEmpresas.isEmpty() && empresa==null){
     		this.empresa = listaEmpresas.get(0);
@@ -213,13 +217,15 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		txSite.setText(empresa.getPessoaJuridica().getSite());
 		
 		Endereco end = empresa.getEndereco();
-		cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
-		txLogradouro.setText(end.getNome());
-		txNum.setText(end.getNumero());
-		txComplemento.setText(end.getComplemento());
-		
-		cbEstado.setSelectedItem(end.getCidade()==null?"":end.getCidade().getEstado());
-		cbCidade.setSelectedItem(end.getCidade()==null?"":end.getCidade().getNome());
+		if(end!=null){
+			cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
+			txLogradouro.setText(end.getNome());
+			txNum.setText(end.getNumero());
+			txComplemento.setText(end.getComplemento());
+
+			cbEstado.setSelectedItem(end.getCidade()==null?"":end.getCidade().getEstado());
+			cbCidade.setSelectedItem(end.getCidade()==null?"":end.getCidade().getNome());
+		}
 	}
 	private void salvarCancelar(){
 		btnSalvar.setEnabled(false);
@@ -288,7 +294,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	private void realizarFiltro(){
 		if(!telaEmEdicao){
 			Criteria criteria = session.createCriteria(Empresa.class);
-			criteria.addOrder(Order.asc("id"));
+			criteria.addOrder(Order.desc("id"));
 			if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
 				criteria.add(Restrictions.eq("pessoaJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
 			if(!cbNivel.getSelectedItem().equals(cbNivel.getName()))
@@ -464,15 +470,17 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				+ "\nTodos os históricos serão perdidos, lembre-se que essa ação não tera mais volta!",
 				"Pedido de Exclusão", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
-			EmpresaDao dao = new EmpresaDao();
 			boolean openHere = recebeSessao();
 			
-			boolean excluiu = dao.excluir(empresa,session);
+			boolean excluiu = new GenericDao().excluir(empresa,session);
 			fechaSessao(openHere);
 			if(excluiu){
 				limparFormulario(pnPrincipal);
 				openHere = recebeSessao();
-				listaEmpresas = (List<Empresa>)dao.listar(Empresa.class, session);
+				
+				List<Criterion> criterion = new ArrayList<>();
+		    	Order order = Order.desc("id");
+		    	listaEmpresas = (List<Empresa>)(new GenericDao().items(Empresa.class, session, criterion, order));
 		    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 		    	fechaSessao(openHere);
 			}
@@ -494,7 +502,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings({ "serial"})
 	public void preencherTabela(List<Empresa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
-			new SemRegistrosJTable(table,"Relatoório de Empresas");
+			new SemRegistrosJTable(table,"Relação de Empresas");
 		}
 		else{
 			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};

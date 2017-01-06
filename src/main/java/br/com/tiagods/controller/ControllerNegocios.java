@@ -787,7 +787,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				EmpresasView viewEmpresas = new EmpresasView(empresa);
 				ControllerMenu.getInstance().abrirCorpo(viewEmpresas);
 			}
-			else if("Pessoa".equals(value)){
+			else if("Pessoa".equalsIgnoreCase(value)){
 				Pessoa pessoa = neg.getPessoa();
 				PessoasView viewPessoa = new PessoasView(pessoa);
 				ControllerMenu.getInstance().abrirCorpo(viewPessoa);

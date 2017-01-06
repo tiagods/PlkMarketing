@@ -80,6 +80,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	Map<String,Usuario> atendentes = new HashMap<>();
 	Map<String,TipoTarefa> tipoTarefasMapa = new HashMap<>();
 	
+	List<Tarefa> listaTarefas;
+	
 	String pendente = "Aberto";
 	String fechado = "Finalizado";
 	
@@ -111,14 +113,15 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		cbAtendentes.setSelectedItem(usuario.getLogin());
 		carregarTipoTarefas();
 		
-		List<Criterion> lista = new ArrayList();
+		List<Criterion> criterion = new ArrayList();
 		Criterion criterio =  Restrictions.eq("atendente", usuario);
 		Criterion criterio2 = Restrictions.between("dataEvento", jData1.getDate(), jData2.getDate());
 		Criterion criterio3 = Restrictions.eq("finalizado", 0);
-		lista.add(criterio);
-		lista.add(criterio2);
-		lista.add(criterio3);
-		List<Tarefa> listaTarefas = new TarefaDao().filtrar(lista, session);
+		criterion.add(criterio);
+		criterion.add(criterio2);
+		criterion.add(criterio3);
+		Order order = Order.desc("id");
+		listaTarefas = (List<Tarefa>)(new GenericDao().items(Tarefa.class, session, criterion, order));
 		preencherTabela(tbPrincipal, listaTarefas, txContador);
 		long fim = System.currentTimeMillis();
 		session.close();
@@ -286,9 +289,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		TarefaDao dao = new TarefaDao();
-		List<Tarefa> lista = dao.filtrar(criterios, session);
-		preencherTabela(tbPrincipal, lista, txContador);
+		Order order = Order.desc("dataEvento");
+		listaTarefas = (List<Tarefa>)(new GenericDao().items(Tarefa.class, session, criterios, order));
+		preencherTabela(tbPrincipal, listaTarefas, txContador);
 		tbPrincipal.addMouseListener(this);
 		session.close();
 		return true;
@@ -328,7 +331,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		LocalDate novaDataHoje = dataHoje.plusDays(diaSegunda);
 		data1 = Calendar.getInstance();
 		data2 = Calendar.getInstance();
-		
 		data1.set(novaDataHoje.getYear(), novaDataHoje.getMonthValue()-1, novaDataHoje.getDayOfMonth()-1,0,0,0);
 		LocalDate novaDataFimDeSemana = dataHoje.plusDays(diaDomingo);
 		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1,23,59,59);

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
 
@@ -65,16 +67,16 @@ public class CriarAdmin {
 		criarTipoTarefa();
 		criarCidade();
 
-		criarNivel();
-		criarOrigem();
+		//criarNivel();
+		//criarOrigem();
 		criarCategoria();
 		criarEtapa();
 
-		criarServico();
+		//criarServico();
 
 		//criarTarefa();
-		criarEmpresa();
-		criarPessoa();
+		//criarEmpresa();
+		//criarPessoa();
 
 		criarStatus();
 		criarServicoAgregado();
@@ -240,27 +242,21 @@ public class CriarAdmin {
 		session.close();
 	}
 	private void criarNivel() {
-		List<Nivel> niveis = new ArrayList<Nivel>();
-		nivel = new Nivel();
-		nivel.setNome("Ouro");
-
-		Nivel n2 = new Nivel();
-		n2.setNome("Prata");
-
-		Nivel n3 = new Nivel();
-		n3.setNome("Platina");
-
-		niveis.add(nivel);
-		niveis.add(n2);
-		niveis.add(n3);
-
+		String[] niveis = {"PLATINA","Advocacia/Outros","Proponente","PRATA 2","OURO 3","OURO 2","Consultoria","PRATA 3","CONJUR","OURO 1","BRONZE","PRATA 1","Exceção","Inativa","Desligada","Jurídico","Em andamento","DIAMANTE","Regularização","SUSPENSA","Extinta"};
+		
+		Set<String> lista = new TreeSet<>();
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
-
-		niveis.forEach(c->{
+		for(String s : niveis)
+			lista.add(s.toLowerCase());
+		lista.forEach(c->{
 			try{
-				session.save(c);
+				Nivel nivel1 = new Nivel();
+				nivel1.setNome(c);
+				this.nivel = nivel1;
+				session.save(nivel1);
 			}catch(HibernateException e){
+				e.printStackTrace();
 			}
 		});
 		session.getTransaction().commit();
@@ -358,17 +354,8 @@ public class CriarAdmin {
 		session.close();
 	}
 	public void criarUsuario(){
+		Date data = new Date();
 		List<Usuario> lista = new ArrayList<>();
-		usuario = new Usuario();
-		usuario.setLogin("Isabelle");
-		usuario.setNome("Isabelle Souza");
-		usuario.setSenha("isabelle");
-		usuario.setEmail("suporte.ti@prolinkcontabil.com.br");
-		usuario.setDepartamento(departamento);
-		usuario.setFuncao(funcao);
-		usuario.setTotalVendas(new BigDecimal("0.00"));
-		lista.add(usuario);
-
 		Usuario usuario2 = new Usuario();
 		usuario2.setLogin("Tiago");
 		usuario2.setNome("Tiago");
@@ -377,25 +364,44 @@ public class CriarAdmin {
 		usuario2.setDepartamento(departamento);
 		usuario2.setFuncao(funcao);
 		usuario2.setTotalVendas(new BigDecimal("0.00"));
+		usuario2.setCriadoEm(data);
 		lista.add(usuario2);
+		
+		usuario = new Usuario();
+		usuario.setLogin("Isabelle");
+		usuario.setNome("Isabelle Souza");
+		usuario.setSenha("isabelle");
+		usuario.setEmail("suporte.ti@prolinkcontabil.com.br");
+		usuario.setDepartamento(departamento);
+		usuario.setFuncao(funcao);
+		usuario.setTotalVendas(new BigDecimal("0.00"));
+		usuario.setCriadoEm(data);
+		usuario.setCriadoPor(usuario2);
+		lista.add(usuario);
+
+		
 		Usuario usuario3 = new Usuario();
-		usuario3.setLogin("usuario");
-		usuario3.setNome("Usuario");
-		usuario3.setSenha("usuario");
+		usuario3.setLogin("Victor");
+		usuario3.setNome("Victor");
+		usuario3.setSenha("victor");
 		usuario3.setEmail("suporte.ti@prolinkcontabil.com.br");
 		usuario3.setDepartamento(departamento);
 		usuario3.setFuncao(funcao);
 		usuario3.setTotalVendas(new BigDecimal("0.00"));
+		usuario3.setCriadoEm(data);
+		usuario3.setCriadoPor(usuario2);
 		lista.add(usuario3);
 		
 		Usuario usuario4 = new Usuario();
 		usuario4.setLogin("Monary");
 		usuario4.setNome("Monary Torres");
-		usuario4.setSenha("Monary");
+		usuario4.setSenha("monary");
 		usuario4.setEmail("suporte.ti@prolinkcontabil.com.br");
 		usuario4.setDepartamento(departamento);
 		usuario4.setFuncao(funcao);
 		usuario4.setTotalVendas(new BigDecimal("0.00"));
+		usuario4.setCriadoEm(data);
+		usuario4.setCriadoPor(usuario2);
 		lista.add(usuario4);
 		
 		Session session = HibernateFactory.getSession();
@@ -448,10 +454,15 @@ public class CriarAdmin {
 		sa1.setNome("Abertura");
 		
 		ServicoAgregado sa2 = new ServicoAgregado();
-		sa2.setNome("ImplantaÃ§Ã£o");
+		sa2.setNome("Implantação");
+		
+
+		ServicoAgregado sa3 = new ServicoAgregado();
+		sa3.setNome("Folha de Pagamento");
 		
 		session.save(sa1);
 		session.save(sa2);
+		session.save(sa3);
 		
 		try{
 			session.getTransaction().commit();

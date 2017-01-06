@@ -118,6 +118,8 @@ public class NegociosView extends JInternalFrame {
 		pnPrivacidade.setVisible(false);
 		pnAuxiliar.setVisible(false);
 		rbContato.setSelected(true);
+		panel_5.setVisible(false);
+        
 	}
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
@@ -573,7 +575,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(pnServicosContratados);
         pnServicosContratados.setLayout(null);
         
-        JLabel lblServio = new JLabel("Serviço: ");
+        JLabel lblServio = new JLabel("Servi\u00E7o:");
         lblServio.setBounds(37, 9, 52, 14);
         pnServicosContratados.add(lblServio);
         
@@ -662,7 +664,7 @@ public class NegociosView extends JInternalFrame {
         panel_5.setBackground(new Color(250,250,250));
         panel_5.setBounds(980, 90, 260, 142);
         pnVisao.add(panel_5);
-
+        
         lblValorTotalDe = new JLabel("Valor total dos seus neg\u00F3cios");
         lblValorTotalDe.setHorizontalAlignment(SwingConstants.CENTER);
 

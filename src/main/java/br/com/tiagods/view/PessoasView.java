@@ -308,7 +308,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(lblCadastro);
 
         txDataCadastro = new JLabel();
-        txDataCadastro.setText("{Date###}");
+        txDataCadastro.setText("");
         txDataCadastro.setBounds(463, 14, 73, 14);
         pnPrincipal.add(txDataCadastro);
 
