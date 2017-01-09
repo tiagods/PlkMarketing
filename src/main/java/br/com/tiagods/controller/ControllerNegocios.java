@@ -97,7 +97,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
 		}
-		listarNegocios = (List<Negocio>)new NegocioDao().listar(Negocio.class, session);
+		List<Criterion> criterion = new ArrayList<>();
+		listarNegocios = new GenericDao().items(Negocio.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		if(this.negocio==null && !listarNegocios.isEmpty()){
 			this.negocio=listarNegocios.get(0);
@@ -326,6 +327,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	private void realizarFiltro() {
 		List<Criterion> criterios = new ArrayList<>();
+		Order order = Order.desc("id");
 		if(!"Status".equals(cbStatus.getSelectedItem())){
 			Criterion c = Restrictions.eq("status", padrao.getStatus((String)cbStatus.getSelectedItem()));
 			criterios.add(c);
@@ -374,7 +376,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			Criterion c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
 			criterios.add(c);
 		}
-		listarNegocios = new NegocioDao().filtrar(criterios, session);
+		listarNegocios = new GenericDao().items(Negocio.class, session, criterios, order);
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 	}
 	public class MudarCliente implements PropertyChangeListener{
