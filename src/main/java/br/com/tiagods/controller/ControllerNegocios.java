@@ -750,7 +750,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
 	private void preencherServicos(Set<ServicoContratado> servicos){
-		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR","REMOVER"},0){
+		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
 					false,false,false,true
 			};

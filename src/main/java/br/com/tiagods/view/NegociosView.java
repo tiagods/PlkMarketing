@@ -32,6 +32,7 @@ import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import java.awt.Rectangle;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Font;
 
 public class NegociosView extends JInternalFrame {
     /**
@@ -55,7 +56,6 @@ public class NegociosView extends JInternalFrame {
 	public static JDateChooser data1;
 	public static JDateChooser dataInicio;
 	public static JDateChooser dataFim;
-	public static JButton button_1;
 	public static DefaultComboBox cbOrigem;
 	public static DefaultComboBox cbCategoria;
 	public static DefaultComboBox cbNivel;
@@ -176,10 +176,6 @@ public class NegociosView extends JInternalFrame {
         data1 = new JDateChooser();
         data1.setBounds(36, 11, 100, 20);
 
-        button_1 = new JButton();
-        button_1.setBounds(142, 37, 51, 20);
-        button_1.setText("OK");
-
         cbOrigem = new DefaultComboBox();
         cbOrigem.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
         cbOrigem.setName("Origem");
@@ -250,7 +246,6 @@ public class NegociosView extends JInternalFrame {
         panel.add(label);
         panel.add(data2);
         panel.add(data1);
-        panel.add(button_1);
         pnPrincipal.setLayout(gl_pnPrincipal);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -275,6 +270,7 @@ public class NegociosView extends JInternalFrame {
         scrolAuxiliar.setBounds(0, 52, 450, 308);
 
         btEsconder = new JButton("Esconder");
+        btEsconder.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btEsconder.setBounds(369, 11, 83, 23);
         btEsconder.setActionCommand("Esconder");
         btEsconder.addActionListener(controller);

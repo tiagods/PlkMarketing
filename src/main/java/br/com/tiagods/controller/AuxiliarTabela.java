@@ -124,6 +124,7 @@ public class AuxiliarTabela {
 			model.addRow(o);
 		}
 		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 	}
 	private void popularTabela(List<Negocio> lista, Negocio negocio, DefaultTableModel model){
 		Iterator<Negocio> iterator = lista.iterator();
@@ -143,6 +144,7 @@ public class AuxiliarTabela {
 			model.addRow(o);
 		}
 		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 	}
 	private void popularTabela(List<Pessoa> lista, Pessoa pessoa, DefaultTableModel model){
 		Iterator<Pessoa> iterator = lista.iterator();
@@ -156,6 +158,7 @@ public class AuxiliarTabela {
 			model.addRow(o);
 		}
 		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 	}
 	private void popularTabela(List<Tarefa> lista, Tarefa tarefa, DefaultTableModel model){
 		Iterator<Tarefa> iterator = lista.iterator();
@@ -173,6 +176,7 @@ public class AuxiliarTabela {
 			model.addRow(o);
 		}
 		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 	}
 
 }

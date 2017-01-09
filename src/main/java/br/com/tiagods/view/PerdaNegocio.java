@@ -57,7 +57,7 @@ public class PerdaNegocio extends JDialog{
 		lbMotivo.setBounds(10, 11, 414, 20);
 		getContentPane().add(lbMotivo);
 				
-		rbPreco = new JRadioButton("Preço");
+		rbPreco = new JRadioButton("Pre\u00E7o");
 		rbPreco.setOpaque(false);
 		rbPreco.setName("Preco");
 		rbPreco.setBounds(6, 38, 70, 23);
@@ -69,13 +69,13 @@ public class PerdaNegocio extends JDialog{
 		rbPrazo.setBounds(99, 38, 70, 23);
 		getContentPane().add(rbPrazo);
 		
-		rbProdServico = new JRadioButton("Produto/Serviço");
+		rbProdServico = new JRadioButton("Produto/Servi\u00E7o");
 		rbProdServico.setOpaque(false);
 		rbProdServico.setName("Produto/Servico");
 		rbProdServico.setBounds(196, 38, 120, 23);
 		getContentPane().add(rbProdServico);
 		
-		rbDesistencia = new JRadioButton("Desistência");
+		rbDesistencia = new JRadioButton("Desist\u00EAncia");
 		rbDesistencia.setOpaque(false);
 		rbDesistencia.setName("Desistencia");
 		rbDesistencia.setBounds(324, 38, 100, 23);
@@ -87,7 +87,7 @@ public class PerdaNegocio extends JDialog{
 		group.add(rbPrazo);
 		group.add(rbPreco);
 		
-		JLabel lblQuandoONegcio = new JLabel("Quando o negócio foi perdido?");
+		JLabel lblQuandoONegcio = new JLabel("Quando o neg\u00F3cio foi perdido?");
 		lblQuandoONegcio.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblQuandoONegcio.setBounds(10, 68, 210, 20);
 		getContentPane().add(lblQuandoONegcio);
@@ -107,7 +107,7 @@ public class PerdaNegocio extends JDialog{
 		btCancel.addActionListener(controller);
 		buttonPane.add(btCancel);
 		
-		JLabel lbObservacao = new JLabel("Descreva abaixo uma breve observação.");
+		JLabel lbObservacao = new JLabel("Descreva abaixo uma breve observa\u00E7\u00E3o.");
 		lbObservacao.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lbObservacao.setBounds(10, 117, 414, 20);
 		getContentPane().add(lbObservacao);

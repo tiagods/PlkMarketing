@@ -37,8 +37,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -65,6 +68,7 @@ import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumn;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.CentralizarColumnJTable;
+import br.com.tiagods.view.interfaces.JTableCelulaColor;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /*
  * @author Tiago
@@ -149,10 +153,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 && tbPrincipal.getSelectedColumn()==6){
-			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
-					tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), tbPrincipal.getSelectedColumn()), 
-					"Detalhes", 
-					JOptionPane.DEFAULT_OPTION);
+//			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
+//					tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), tbPrincipal.getSelectedColumn()), 
+//					"Detalhes", 
+//					JOptionPane.DEFAULT_OPTION);
 		}
 		else if(e.getComponent() instanceof JCheckBox){
 			JCheckBox ck = (JCheckBox)e.getComponent();
@@ -340,11 +344,11 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			new SemRegistrosJTable(table,"Relação de Tarefas");
 		}
 		else{
-			Object[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
+			String[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
 					"DETALHES","ATENDENTE", "FINALIZADO","ABRIR","EDITAR","EXCLUIR"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 				boolean[] canEdit = new boolean[]{
-						false,false,false,false,false,false,false,false,true,true,true,true
+						false,true,false,false,false,false,true,false,true,true,true,true
 				};
 				@Override
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -359,6 +363,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			for(int i=0;i<lista.size();i++){
 				Tarefa t = lista.get(i);
 				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				
 				Object[] o = new Object[12];
 				o[0] = t.getId();
 				o[1] = sdf.format(t.getDataEvento());
@@ -388,12 +393,21 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				model.addRow(o);
 			}
 			table.setModel(model);
+			
 			JCheckBox ckFinalize = new JCheckBox();
 			TableColumn col = table.getColumnModel().getColumn(8);
 			col.setCellEditor(new DefaultCellEditor(ckFinalize));
 			ckFinalize.setActionCommand("Finalizar");
 			ckFinalize.addActionListener(new AcaoInTable());
-
+			
+//			TableCellRenderer tcv = new JTableCelulaColor(ckFinalize.isSelected());
+//			TableColumn column1 = table.getColumnModel().getColumn(1);
+//			column1.setCellRenderer(tcv);
+			
+			table.getColumnModel().getColumn(6).setCellRenderer(new TextAreaRenderer());
+			table.getColumnModel().getColumn(6).setCellEditor(new TextAreaEditor());
+			table.setRowHeight(40);
+			
 			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new AcaoInTable());
@@ -410,6 +424,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			table.setSelectionBackground(Color.orange);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 			table.getColumnModel().getColumn(1).setPreferredWidth(100);
+			table.getColumnModel().getColumn(6).setPreferredWidth(100);
 			table.getColumnModel().getColumn(9).setPreferredWidth(90);
 		}
 		txContador.setText("Total: "+lista.size()+" tarefa(s) ");
@@ -517,5 +532,64 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	}
 	public void mostrarDatas(JPanel panel, boolean esconder){
 		panel.setVisible(esconder);
+	}
+	
+	public class TextAreaRenderer extends JScrollPane implements TableCellRenderer
+	{
+		JTextArea textarea;
+
+		public TextAreaRenderer() {
+			textarea = new JTextArea();
+			textarea.setLineWrap(true);
+			textarea.setWrapStyleWord(true);
+			//textarea.setBorder(new TitledBorder("This is a JTextArea"));
+			getViewport().add(textarea);
+		}
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value,
+				boolean isSelected, boolean hasFocus,
+				int row, int column)
+		{
+			if (isSelected) {
+				setForeground(table.getSelectionForeground());
+				setBackground(table.getSelectionBackground());
+				textarea.setForeground(table.getSelectionForeground());
+				textarea.setBackground(table.getSelectionBackground());
+			}else {
+				setForeground(table.getForeground());
+				setBackground(table.getBackground());
+				textarea.setForeground(table.getForeground());
+				textarea.setBackground(table.getBackground());
+			}
+
+			textarea.setText((String) value); 
+			textarea.setCaretPosition(0);
+			return this;
+		}
+	}
+	public class TextAreaEditor extends DefaultCellEditor {
+		protected JScrollPane scrollpane;
+		protected JTextArea textarea; 
+
+		public TextAreaEditor() {
+			super(new JCheckBox());
+			scrollpane = new JScrollPane();
+			textarea = new JTextArea();
+			textarea.setLineWrap(true);
+			textarea.setWrapStyleWord(true);
+			//textarea.setBorder(new TitledBorder("This is a JTextArea"));
+			scrollpane.getViewport().add(textarea);
+		}
+
+		public Component getTableCellEditorComponent(JTable table, Object value,
+				boolean isSelected, int row, int column) {
+			textarea.setText((String) value);
+
+			return scrollpane;
+		}
+
+		public Object getCellEditorValue() {
+			return textarea.getText();
+		}
 	}
 }

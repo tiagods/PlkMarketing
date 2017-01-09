@@ -574,6 +574,7 @@ public class EmpresasView extends JInternalFrame {
         scrolAuxiliar.setBounds(0, 52, 450, 308);
 
         btEsconder = new JButton("Esconder");
+        btEsconder.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btEsconder.setBounds(369, 11, 83, 23);
         btEsconder.setActionCommand("Esconder");
         btEsconder.addActionListener(controller);
