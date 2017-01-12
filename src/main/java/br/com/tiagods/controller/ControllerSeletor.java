@@ -36,9 +36,9 @@ import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.view.MenuView;
-import br.com.tiagods.view.SelecaoObjeto;
+import br.com.tiagods.view.SelecaoObjetoDialog;
 
-import static br.com.tiagods.view.SelecaoObjeto.*;
+import static br.com.tiagods.view.SelecaoObjetoDialog.*;
 
 public class ControllerSeletor implements ActionListener,MouseListener,KeyListener {
 	
@@ -47,19 +47,21 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	private JLabel labelId;
 	private JLabel labelNome;
 	private JComboBox<String>[] combobox;
-	private SelecaoObjeto view;
+	private SelecaoObjetoDialog view;
 	
 	private boolean telaEmEdicao = false;
 	Object object;
 	
-	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoObjeto view,JComboBox[] combobox){
-		this.labelId=labelId;
-		this.labelNome=labelNome;
+	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoObjetoDialog view,JComboBox[] combobox){
+		if(labelId!=null && labelNome!=null){
+			this.labelId=labelId;
+			this.labelNome=labelNome;
+			this.labelId.setOpaque(true);
+			this.labelNome.setOpaque(true);
+			this.labelId.setForeground(Color.ORANGE);
+			this.labelNome.setForeground(Color.ORANGE);
+		}
 		this.view=view;
-		this.labelId.setOpaque(true);
-		this.labelNome.setOpaque(true);
-		this.labelId.setForeground(Color.ORANGE);
-		this.labelNome.setForeground(Color.ORANGE);
 		this.combobox = combobox;
 		pnCadastrar.setVisible(false);
 	}
@@ -71,7 +73,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			session.beginTransaction();
 			String[] colunas = {"ID", "NOME"};
 			String[][] linhas = new String[0][2];
-			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"ID", "NOME"}));
+			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"NOME", "ID"}));
 			comboFiltro.setSelectedItem(atributo.toUpperCase());
 			Order order = Order.asc("nome");
 			List<Criterion> criterion = new ArrayList<>();
@@ -81,7 +83,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 						int valor = Integer.parseInt(buscarValor);
 						criterion.add(Restrictions.idEq(valor));
 					}catch (NumberFormatException e) {
-						JOptionPane.showMessageDialog(MenuView.jDBody, "O valor digitado não é um numero valido para ID, será ignorado na busca!");
+						JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, "O valor digitado não é um numero valido para ID, será ignorado na busca!");
 					}
 				}
 				else
@@ -161,18 +163,19 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "OK":
-			if(!"".equals(txCodigo.getText())){
-				int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, 
-						"Registro escolhido: \nCodigo: "
-				+txCodigo.getText()+" \nNome: "+txNome.getText()+"\nConfirmar?","Aviso...",JOptionPane.OK_CANCEL_OPTION);
-				if(escolha==JOptionPane.OK_OPTION){
-					labelId.setText(txCodigo.getText());
-					String[] nome = (txNome.getText()).split(" ");
-					labelNome.setText(nome[0]);
-					view.dispose();
-				}
+			if(labelId!=null){
+				if(!"".equals(txCodigo.getText())){
+					int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, 
+							"Registro escolhido: \nCodigo: "
+									+txCodigo.getText()+" \nNome: "+txNome.getText()+"\nConfirmar?","Aviso...",JOptionPane.OK_CANCEL_OPTION);
+					if(escolha==JOptionPane.OK_OPTION){
+						labelId.setText(txCodigo.getText());
+						String[] nome = (txNome.getText()).split(" ");
+						labelNome.setText(nome[0]);
+					}
+				}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
 			}
-			else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
+			view.dispose();
 			break;
 		case "Desistir":
 			sair();
@@ -308,6 +311,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		if(dao.salvar(novoObjeto,session)){
 			limparFormulario(pnCadastrar);
 			processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
+			
 			reprocessarListaCombo(session);
 			salvarCancelar();
 		}
@@ -359,7 +363,38 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		else
 			JOptionPane.showMessageDialog(MenuView.jDBody, "Nenhum registro selecionado para exclusao");
 	}
-	
+	private void enviarFiltros(Object novoObjeto){
+		int id=0;
+		String value="";
+		if(object instanceof Empresa){
+			id=((Empresa) object).getId();
+			value=((Empresa) object).getNome();
+		}
+		else if(object instanceof Negocio){
+			id=((Negocio) object).getId();
+			value=((Negocio) object).getNome();
+		}
+		else if(object instanceof Pessoa){
+			id=((Pessoa) object).getId();
+			value=((Pessoa) object).getNome();
+		}
+		else if(object instanceof Categoria){
+			id=((Categoria) object).getId();
+			value=((Categoria) object).getNome();
+		}
+		else if(object instanceof Nivel){
+			id=((Nivel) object).getId();
+			value=((Nivel) object).getNome();
+		}
+		else if(object instanceof Origem){
+			id=((Origem) object).getId();
+			value=((Origem) object).getNome();
+		}
+		else if(object instanceof Servico){
+			id=((Servico) object).getId();
+			value=((Servico) object).getNome();
+		}
+	}
 	private void salvarCancelar(){
 		btnSalvar.setEnabled(false);
 		btnCancelar.setEnabled(false);

@@ -55,7 +55,8 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.PessoaDao;
-import br.com.tiagods.view.SelecaoObjeto;
+import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.SelecaoObjetoDialog;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
@@ -165,19 +166,19 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			break;
 			case "CriarCategoria":
 				combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
-				SelecaoObjeto dialog = new SelecaoObjeto(new Categoria(), new JLabel(), new JLabel(), combos);
+				SelecaoObjetoDialog dialog = new SelecaoObjetoDialog(new Categoria(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				break;
 			case "CriarOrigem":
 				combos = new JComboBox[]{cbOrigem,cbOrigemCad};
-				dialog = new SelecaoObjeto(new Origem(), new JLabel(), new JLabel(), combos);
+				dialog = new SelecaoObjetoDialog(new Origem(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				break;
 			case "CriarServico":
 				combos = new JComboBox[]{cbProdServicos,cbProdServicosCad};
-				dialog = new SelecaoObjeto(new Servico(), new JLabel(), new JLabel(), combos);
+				dialog = new SelecaoObjetoDialog(new Servico(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 				break;
@@ -260,7 +261,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		List<Pessoa> lista = new ArrayList<>();
 		for(int i =0;i<listaPessoas.size();i++){
 			String texto = txBuscar.getText().trim().toUpperCase();
-			if(listaPessoas.get(i).getNome().substring(0,texto.length()).equalsIgnoreCase(texto)){
+			if(listaPessoas.get(i).getNome().trim().length()>texto.length() && listaPessoas.get(i).getNome().substring(0,texto.length()).equalsIgnoreCase(texto)){
 				lista.add(listaPessoas.get(i));
 			}
 		}

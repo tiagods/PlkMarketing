@@ -433,6 +433,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(lblValor);
 
         JLabel lblEmppessoa = new JLabel();
+        lblEmppessoa.setFont(new Font("Tahoma", Font.PLAIN, 9));
         lblEmppessoa.setText("Empresa/Pessoa:");
         lblEmppessoa.setBounds(10, 58, 87, 17);
         pnCadastro.add(lblEmppessoa);
@@ -492,6 +493,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(btnExcluir);
 
         cbObject = new JComboBox();
+        cbObject.setFont(new Font("Tahoma", Font.PLAIN, 10));
         cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
         cbObject.setBounds(107, 58, 87, 20);
         cbObject.setName("Objeto");

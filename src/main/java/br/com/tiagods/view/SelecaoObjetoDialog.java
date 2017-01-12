@@ -6,6 +6,7 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,8 +19,9 @@ import br.com.tiagods.controller.ControllerSeletor;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import javax.swing.JComboBox;
 import java.awt.Font;
+import java.awt.Frame;
 
-public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
+public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 	@Override
 	public Object getObject(String valor) {
 		return DefaultEnumModel.super.getObject(valor);
@@ -38,7 +40,8 @@ public class SelecaoObjeto extends JDialog implements DefaultEnumModel{
 /**
 	 * Create the dialog.
 	 */
-	public SelecaoObjeto(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox) {
+	public SelecaoObjetoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JFrame parent,boolean modal ) {
+		super(parent,modal);
 		initComponents();
 		controller.iniciar(labelId,labelNome,this,combobox);
 		controller.processarObjeto(object,"","");

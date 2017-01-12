@@ -25,6 +25,12 @@ public class MenuView extends JFrame implements DefaultUtilities{
     public static javax.swing.JDesktopPane jDBody;
     private javax.swing.JPanel pnPrincipal;
     
+    static MenuView instance;
+    
+    public static MenuView getInstance(){
+    	return instance;
+    }
+    
     @Override
     public Color getColor() {
     	return DefaultUtilities.super.getColor();
@@ -37,7 +43,8 @@ public class MenuView extends JFrame implements DefaultUtilities{
 			@Override
 			public void run() {
 				try {
-					new MenuView().setVisible(true);
+					instance = new MenuView();
+					instance.setVisible(true);
 				} catch (RuntimeException e) {e.getMessage();}
 			}
 		});

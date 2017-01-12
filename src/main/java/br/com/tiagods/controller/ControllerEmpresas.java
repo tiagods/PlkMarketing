@@ -54,7 +54,8 @@ import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.*;
-import br.com.tiagods.view.SelecaoObjeto;
+import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.SelecaoObjetoDialog;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
@@ -164,25 +165,25 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			break;
 		case "CriarCategoria":
 			combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
-			SelecaoObjeto dialog = new SelecaoObjeto(new Categoria(), new JLabel(), new JLabel(), combos);
+			SelecaoObjetoDialog dialog = new SelecaoObjetoDialog(new Categoria(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarNivel":
 			combos = new JComboBox[]{cbNivel,cbNivelCad};
-			dialog = new SelecaoObjeto(new Nivel(), new JLabel(), new JLabel(), combos);
+			dialog = new SelecaoObjetoDialog(new Nivel(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarOrigem":
 			combos = new JComboBox[]{cbOrigem,cbOrigemCad};
-			dialog = new SelecaoObjeto(new Origem(), new JLabel(), new JLabel(), combos);
+			dialog = new SelecaoObjetoDialog(new Origem(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarServico":
 			combos = new JComboBox[]{cbProdServicos,cbProdServicosCad};
-			dialog = new SelecaoObjeto(new Servico(), new JLabel(), new JLabel(), combos);
+			dialog = new SelecaoObjetoDialog(new Servico(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -265,7 +266,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		List<Empresa> lista = new ArrayList<>();
 		for(int i =0;i<listaEmpresas.size();i++){
 			String texto = txBuscar.getText().trim().toUpperCase();
-			if(listaEmpresas.get(i).getNome().substring(0,texto.length()).equalsIgnoreCase(texto)){
+			if(listaEmpresas.get(i).getNome().trim().length()>texto.length() && listaEmpresas.get(i).getNome().substring(0,texto.length()).equalsIgnoreCase(texto)){
 				lista.add(listaEmpresas.get(i));
 			}
 		}

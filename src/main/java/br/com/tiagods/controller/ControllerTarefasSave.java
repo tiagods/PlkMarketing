@@ -39,7 +39,8 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
-import br.com.tiagods.view.SelecaoObjeto;
+import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.SelecaoObjetoDialog;
 import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
@@ -52,7 +53,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	Tarefa tarefaBackup;
 	String item = "";
 	
-	SelecaoObjeto dialog = null;
+	SelecaoObjetoDialog dialog = null;
 	AuxiliarComboBox padrao = new AuxiliarComboBox();
 	
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
@@ -111,11 +112,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				dialog.dispose();
 			}
 			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
-				dialog =new SelecaoObjeto(new Empresa(),txCodigo,txNome,null);
+				dialog =new SelecaoObjetoDialog(new Empresa(),txCodigo,txNome,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
-				dialog =new SelecaoObjeto(new Pessoa(),txCodigo,txNome,null);
+				dialog =new SelecaoObjetoDialog(new Pessoa(),txCodigo,txNome,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
-				dialog =new SelecaoObjeto(new Negocio(),txCodigo,txNome,null);
+				dialog =new SelecaoObjetoDialog(new Negocio(),txCodigo,txNome,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;

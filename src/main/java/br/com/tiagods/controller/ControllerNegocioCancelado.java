@@ -8,16 +8,16 @@ import java.util.Date;
 import javax.swing.JRadioButton;
 
 import br.com.tiagods.model.Negocio;
-import br.com.tiagods.view.PerdaNegocio;
+import br.com.tiagods.view.NegocioPerdaDialog;
 
-import static br.com.tiagods.view.PerdaNegocio.*;
+import static br.com.tiagods.view.NegocioPerdaDialog.*;
 
 public class ControllerNegocioCancelado implements ActionListener{
 
-	private PerdaNegocio jdialog;
+	private NegocioPerdaDialog jdialog;
 	private Negocio negocio;
 	
-	public void iniciar(Negocio negocio,PerdaNegocio dialog){
+	public void iniciar(Negocio negocio,NegocioPerdaDialog dialog){
 		this.jdialog=dialog;
 		this.negocio = negocio;
 		txData.setDate(new Date());

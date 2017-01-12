@@ -18,7 +18,7 @@ import java.awt.Font;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 
-public class PerdaNegocio extends JDialog{
+public class NegocioPerdaDialog extends JDialog{
 	/**
 	 * 
 	 */
@@ -31,7 +31,7 @@ public class PerdaNegocio extends JDialog{
 /**
 	 * Create the dialog.
 	 */
-	public PerdaNegocio(Negocio negocio) {
+	public NegocioPerdaDialog(Negocio negocio) {
 		initComponents();
 		controller.iniciar(negocio,this);
 	}
