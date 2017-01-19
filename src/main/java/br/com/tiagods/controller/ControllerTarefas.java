@@ -62,6 +62,7 @@ import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.EmpresasView;
+import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.TarefasSaveView;
@@ -185,8 +186,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "CriarTarefa":
-			TarefasSaveView view = new TarefasSaveView(null);
-			ControllerMenu.getInstance().abrirCorpo(view);
+			TarefasSaveView view = new TarefasSaveView(null,null,MenuView.getInstance(),true);
+			view.setVisible(true);
 			break;
 		case "Status":
 			buscar();
@@ -444,8 +445,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			case "Editar":
 				int valor = (int) tbPrincipal.getModel().getValueAt(tbPrincipal.getSelectedRow(), 0);
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
-				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa);
-				ControllerMenu.getInstance().abrirCorpo(viewTarefas);
+				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,null,MenuView.getInstance(),true);
+				viewTarefas.setVisible(true);
 				break;
 			case "Excluir":
 				excluir(session);

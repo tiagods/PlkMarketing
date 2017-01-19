@@ -17,6 +17,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.InicioView;
+import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.TarefasSaveView;
@@ -55,8 +56,8 @@ public class ControllerMenu implements ActionListener, MouseListener{
     		abrirCorpo(tarefas);
     		break;
     	case "TarefasSave":
-    		tarefasSave = new TarefasSaveView(null);
-    		abrirCorpo(tarefasSave);
+    		tarefasSave = new TarefasSaveView(null,null,MenuView.getInstance(),true);
+    		tarefasSave.setVisible(true);
     		break;
     	default:
     		break;
@@ -78,8 +79,8 @@ public class ControllerMenu implements ActionListener, MouseListener{
             abrirCorpo(tarefas);
             break;
         case "TarefasSave":
-        	tarefasSave = new TarefasSaveView(null);
-        	abrirCorpo(tarefasSave);
+        	tarefasSave = new TarefasSaveView(null,null,MenuView.getInstance(),true);
+        	tarefasSave.setVisible(true);
         	break;
         case "Negocios":
         	negocios = new NegociosView(null);

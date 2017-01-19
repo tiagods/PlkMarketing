@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -52,6 +54,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	Tarefa tarefa = null;
 	Tarefa tarefaBackup;
 	String item = "";
+	Object object;
 	
 	SelecaoObjetoDialog dialog = null;
 	AuxiliarComboBox padrao = new AuxiliarComboBox();
@@ -61,14 +64,14 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	
 	Session session = null;
 	//se for null o formulario nao sera preenchido
-		public void iniciar(Tarefa tarefa){
+		public void iniciar(Tarefa tarefa, Object object){
 			this.tarefa = tarefa;
+			this.object = object;
 			session = HibernateFactory.getSession();
 			session.beginTransaction();
 			carregarAtendentes();
 			carregarTipoTarefasEAtendentes();
 			if(tarefa==null){
-				limparCampos(panel);
 				novoEditar();
 				cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
 				rdbtnEmail.setSelected(true);
@@ -81,7 +84,24 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				preencherFormulario(tarefa);
 				novoEditar();
 			}
+			verificarObjeto();
 			session.close();
+			txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
+			txDetalhes.addKeyListener(new contadorDigitos());
+		}
+		
+		
+		public class contadorDigitos implements KeyListener{
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
+			}
 		}
 		private void carregarTipoTarefasEAtendentes(){
 			List<TipoTarefa> listTiposTarefas = new TipoTarefaDao().listar(TipoTarefa.class, session);
@@ -95,16 +115,24 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
 		switch(arg0.getActionCommand()){
 		case "Novo":
 			if(tarefa!=null){
 				this.tarefaBackup=tarefa;
+			}
+			for(JPanel p : panels){
+				limparCampos(p);
+				desbloquearCampos(p, true);
 			}
 			novoEditar();
 			break;
 		case "Editar":
 			if(tarefa!=null)
 				this.tarefaBackup=tarefa;
+			for(JPanel p : panels){
+				desbloquearCampos(p, true);
+			}
 			novoEditar();
 			break;
 		case "ChamarDialog":
@@ -112,11 +140,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				dialog.dispose();
 			}
 			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
-				dialog =new SelecaoObjetoDialog(new Empresa(),txCodigo,txNome,null,MenuView.getInstance(),true);
+				dialog =new SelecaoObjetoDialog(new Empresa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
-				dialog =new SelecaoObjetoDialog(new Pessoa(),txCodigo,txNome,null,MenuView.getInstance(),true);
+				dialog =new SelecaoObjetoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
-				dialog =new SelecaoObjetoDialog(new Negocio(),txCodigo,txNome,null,MenuView.getInstance(),true);
+				dialog =new SelecaoObjetoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -144,88 +172,16 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			else
 				tarefa.setFinalizado(0);
 			if(continuar){
-				String hora = txHora.getText();
-				if(hora.length()==5){
-					String horas = hora.substring(0, 2);
-					String minutos = hora.substring(3);
-					try{
-						if(Integer.parseInt(horas)>0 && Integer.parseInt(horas)<24){
-							if(Integer.parseInt(minutos)>0 && Integer.parseInt(minutos)<60){
-								continuar=true;
-								LocalTime lt = LocalTime.of(Integer.parseInt(horas), Integer.parseInt(minutos));
-								Calendar calendar = Calendar.getInstance();
-								calendar.setTime(txData.getDate());
-								
-								Calendar calendar2 = Calendar.getInstance();
-								calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
-										lt.getHour(), lt.getMinute());
-								tarefa.setDataEvento(calendar2.getTime());
-							}else{
-								builder.append("Valor da Hora incorreta");
-								builder.append("\n");
-								continuar=false;
-							}
-						}else{
-							builder.append("Hora incorreta");
-							builder.append("\n");
-							continuar=false;
-						}
-					}catch (NumberFormatException e) {
-						builder.append("Hora incorreta");
-						builder.append("\n");
-						continuar=false;
-					}	
-				}
-				
-				session = HibernateFactory.getSession();
-				session.beginTransaction();
-				setarSelecao();
-				tarefa.setTipoTarefa(tipoTarefas.get(item));
-				if("".equals(txCodigo.getText())){
-					continuar=false;
-					builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
-					builder.append("\n");
-				}
-				else{
-					Object object = getObject(cbObject.getSelectedItem().toString());
-					if(object instanceof Empresa){
-						Empresa empresa = (Empresa) new EmpresaDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigo.getText()),session);
-						tarefa.setEmpresa(empresa);
-						tarefa.setNegocio(null);
-						tarefa.setPessoa(null);
-					}
-					else if(object instanceof Negocio){
-						Negocio negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigo.getText()),session);
-						tarefa.setNegocio(negocio);
-						tarefa.setEmpresa(null);
-						tarefa.setPessoa(null);
-					}
-					else if(object instanceof Pessoa){
-						Pessoa pessoa = (Pessoa) new PessoaDao().receberObjeto(Pessoa.class,Integer.parseInt(txCodigo.getText()),session);
-						tarefa.setPessoa(pessoa);
-						tarefa.setEmpresa(null);
-						tarefa.setNegocio(null);
-					}
-				}
-				
-				if(continuar){
-					boolean salvou = new TarefaDao().salvar(tarefa,session);
-					if(salvou){
-						salvarCancelar();
-						 TarefasView tView = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
-						 ControllerMenu.getInstance().abrirCorpo(tView);
-					}
-				}else{
-					JOptionPane.showMessageDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
-				}
-
-				session.close();
+				invocarSalvamento(tarefa,builder.toString());
 			}
 			break;
 		case "Cancelar":
 			if(tarefaBackup!=null){
 				preencherFormulario(tarefa);
 				salvarCancelar();
+				for(JPanel p : panels){
+					desbloquearCampos(p, false);
+				}
 			}
 			break;
 		default:
@@ -233,6 +189,86 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			break;
 		}
 	}
+	private void invocarSalvamento(Tarefa tarefa,String texto){
+		StringBuilder builder = new StringBuilder();
+		builder.append(texto);
+		String hora = txHora.getText();
+		boolean continuar = true;
+		if(hora.length()==5){
+			String horas = hora.substring(0, 2);
+			String minutos = hora.substring(3);
+			try{
+				if(Integer.parseInt(horas)>=0 && Integer.parseInt(horas)<24){
+					if(Integer.parseInt(minutos)>=0 && Integer.parseInt(minutos)<60){
+						continuar=true;
+						LocalTime lt = LocalTime.of(Integer.parseInt(horas), Integer.parseInt(minutos));
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(txData.getDate());
+						
+						Calendar calendar2 = Calendar.getInstance();
+						calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
+								lt.getHour(), lt.getMinute());
+						tarefa.setDataEvento(calendar2.getTime());
+					}else{
+						builder.append("Valor da Hora incorreta");
+						builder.append("\n");
+						continuar=false;
+					}
+				}else{
+					builder.append("Hora incorreta");
+					builder.append("\n");
+					continuar=false;
+				}
+			}catch (NumberFormatException e) {
+				builder.append("Hora incorreta");
+				builder.append("\n");
+				continuar=false;
+			}	
+		}
+		session = HibernateFactory.getSession();
+		session.beginTransaction();
+		setarSelecao();
+		tarefa.setTipoTarefa(tipoTarefas.get(item));
+		if("".equals(txCodigoObjeto.getText())){
+			continuar=false;
+			builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
+			builder.append("\n");
+		}
+		else{
+			Object object = getObject(cbObject.getSelectedItem().toString());
+			if(object instanceof Empresa){
+				Empresa empresa = (Empresa) new EmpresaDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				tarefa.setEmpresa(empresa);
+				tarefa.setNegocio(null);
+				tarefa.setPessoa(null);
+			}
+			else if(object instanceof Negocio){
+				Negocio negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				tarefa.setNegocio(negocio);
+				tarefa.setEmpresa(null);
+				tarefa.setPessoa(null);
+			}
+			else if(object instanceof Pessoa){
+				Pessoa pessoa = (Pessoa) new PessoaDao().receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				tarefa.setPessoa(pessoa);
+				tarefa.setEmpresa(null);
+				tarefa.setNegocio(null);
+			}
+		}
+		if(continuar){
+			if(new TarefaDao().salvar(tarefa,session)){
+				salvarCancelar();
+				JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
+				for(JPanel p : panels){
+					desbloquearCampos(p, false);
+				}
+			}
+		}else{
+			JOptionPane.showMessageDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
+		}
+		session.close();
+	}
+	
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
 		List<Usuario> lista = new UsuarioDao().listar(Usuario.class, session);
@@ -278,8 +314,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		rb.setSelected(true);
 		txDetalhes.setText(tarefa.getDescricao());
 		cbObject.setSelectedItem(getEnumModelos(tarefa.getClasse()));
-		txCodigo.setText(id);
-		txNome.setText(nome);
+		txCodigoObjeto.setText(id);
+		txNomeObjeto.setText(nome);
 		cbAtendente.setSelectedItem(tarefa.getAtendente().getLogin());
 		txData.setDate(tarefa.getDataEvento());
 		if(tarefa.getFinalizado()==1)
@@ -300,7 +336,31 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		btnEditar.setEnabled(false);
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
+		JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
+		verificarObjeto();
 	}
+	private void verificarObjeto(){
+		if(object!=null){
+			if(object instanceof Empresa){
+				cbObject.setSelectedItem(Modelos.Empresa);
+				txCodigoObjeto.setText(((Empresa)object).getId()+"");
+				txNomeObjeto.setText(((Empresa)object).getNome());
+			}
+			else if(object instanceof Negocio){
+				cbObject.setSelectedItem(Modelos.Negocio);
+				txCodigoObjeto.setText(((Negocio)object).getId()+"");
+				txNomeObjeto.setText(((Negocio)object).getNome());
+			}
+			else if(object instanceof Pessoa){
+				cbObject.setSelectedItem(Modelos.Pessoa);
+				txCodigoObjeto.setText(((Pessoa)object).getId()+"");
+				txNomeObjeto.setText(((Pessoa)object).getNome());
+			}
+			cbObject.setEnabled(false);
+			btnAssociacao.setEnabled(false);
+		}
+	}
+	
 	@SuppressWarnings("rawtypes")
 	private void limparCampos(Object painel){
 		Container container = null;
@@ -339,6 +399,43 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
         	}
         }
 	}
+	private void desbloquearCampos(Object painel,boolean bloquear){
+		Container container = null;
+        if (painel instanceof JPanel) {
+            container = (JPanel) painel;
+        }
+        if (painel instanceof JScrollPane) {
+            container = (JScrollPane) painel;
+        }
+        if (painel instanceof JViewport) {
+            container = (JViewport) painel;
+        }
+        if(container!=null){
+        	for(int i=0;i<container.getComponentCount();i++){
+        		Component c = container.getComponent(i);
+        		if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
+        			limparCampos(c);
+        			continue;
+        		}
+        		if (c instanceof JTextField) {
+        			JTextField field = (JTextField) c;
+        			field.setEditable(bloquear);
+        		}
+        		if (c instanceof JFormattedTextField) {
+        			JFormattedTextField field = (JFormattedTextField) c;
+        			field.setEditable(bloquear);
+        		}
+        		if (c instanceof JTextArea) {
+        			JTextArea field = (JTextArea) c;
+        			field.setEditable(bloquear);
+        		}
+        		if (c instanceof JComboBox) {
+        			JComboBox field = (JComboBox) c;
+        			field.setEnabled(bloquear);
+        		}
+        	}
+        }
+	}
 	//pegar radioButton selecionado
 	private void setarSelecao(){
 		if(rdbtnEmail.isSelected()){
@@ -355,7 +452,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		txCodigo.setText("");
-		txNome.setText("");
+		txCodigoObjeto.setText("");
+		txNomeObjeto.setText("");
 	}
 }

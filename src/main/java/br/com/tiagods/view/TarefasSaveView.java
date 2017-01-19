@@ -9,7 +9,9 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,21 +30,24 @@ import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import java.awt.GridLayout;
 
-public class TarefasSaveView extends JInternalFrame implements DefaultUtilities {
-	
+public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static JPanel panItem, panel;
+	public static JPanel pnItem,pnRelacionamento,pnDetalhes, pnBotoes;
+	private JPanel panel;
 	public static JDateChooser txData;
 	public static JComboBox cbObject; 
 	public static DefaultComboBox cbAtendente;
 	public static JTextArea txDetalhes;
-	public static JLabel txCodigo, txNome;
+	public static JLabel txCodigoObjeto, txNomeObjeto, txQuantidade ;
 	public static JFormattedTextField txHora;
-	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar;
+	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar, btnAssociacao;
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
 	public static JCheckBox ckFinalizado;
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
@@ -59,98 +64,146 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
 	/**
 	 * Create the frame.
 	 */
-	public TarefasSaveView(Tarefa tarefa) {
+	public TarefasSaveView(Tarefa tarefa,Object object, JFrame frame, boolean modal) {
+		super(frame,modal);
 		initComponents();
-		controller.iniciar(tarefa);
+		controller.iniciar(tarefa, object);
 		
 	}
 	private void initComponents(){
 		panel = new JPanel();
         
-		setBounds(0, 0, 1250, 660);
-        setBorder(null);
+		setBounds(0, 0, 600, 450);
         getContentPane().add(panel, BorderLayout.CENTER);
         panel.setBackground(getColor());
         panel.setLayout(null);
         
         txData = new JDateChooser();
+        txData.setOpaque(false);
         txData.setPreferredSize(new Dimension(100, 20));
         
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(94, 192, 1037, 118);
-        panel.add(scrollPane);
+        JTextArea txtrDescrevaUmBreve = new JTextArea();
+        txtrDescrevaUmBreve.setEditable(false);
+        txtrDescrevaUmBreve.setLineWrap(true);
+        txtrDescrevaUmBreve.setWrapStyleWord(true);
+        txtrDescrevaUmBreve.setTabSize(10);
+        txtrDescrevaUmBreve.setRows(3);
+        txtrDescrevaUmBreve.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        txtrDescrevaUmBreve.setText("Descreva um breve resumo da tarefa com data e hora que voc\u00EA fez ou ir\u00E1 realizar para um Negocio, ou apenas um contato e o sistema enviar\u00E1 um alerta para o seu e-mail.");
+        txtrDescrevaUmBreve.setBounds(10, 11, 560, 46);
+        panel.add(txtrDescrevaUmBreve);
         
-        txDetalhes = new JTextArea();
-        scrollPane.setViewportView(txDetalhes);
-        
-        panItem = new JPanel();
-        panItem.setBounds(94, 148, 1037, 33);
-        panItem.setBackground(getColor());
-        panel.add(panItem);
+        pnItem = new JPanel();
+        pnItem.setBounds(10, 68, 560, 33);
+        pnItem.setBackground(getColor());
+        panel.add(pnItem);
         
         ButtonGroup group = new ButtonGroup();
         
         rdbtnEmail = new JRadioButton("E-mail");
+        rdbtnEmail.setOpaque(false);
         rdbtnEmail.setActionCommand("Email");
         rdbtnEmail.addActionListener(controller);
         group.add(rdbtnEmail);
-        panItem.add(rdbtnEmail);
+        pnItem.add(rdbtnEmail);
         
         rdbtnProposta = new JRadioButton("Proposta");
+        rdbtnProposta.setOpaque(false);
         rdbtnProposta.setActionCommand("Proposta");
         rdbtnProposta.addActionListener(controller);
         group.add(rdbtnProposta);
-        panItem.add(rdbtnProposta);
+        pnItem.add(rdbtnProposta);
         
         rdbtnReuniao = new JRadioButton("Reuni\u00E3o");
+        rdbtnReuniao.setOpaque(false);
         rdbtnReuniao.setActionCommand("Reuniao");
         rdbtnReuniao.addActionListener(controller);
         group.add(rdbtnReuniao);
-        panItem.add(rdbtnReuniao);
+        pnItem.add(rdbtnReuniao);
         
         rdbtnTelefone = new JRadioButton("Telefone");
+        rdbtnTelefone.setOpaque(false);
         rdbtnTelefone.setActionCommand("Telefone");
         rdbtnTelefone.addActionListener(controller);
         group.add(rdbtnTelefone);
-        panItem.add(rdbtnTelefone);
+        pnItem.add(rdbtnTelefone);
         
         rdbtnVisita = new JRadioButton("Visita");
+        rdbtnVisita.setOpaque(false);
         rdbtnVisita.setActionCommand("Visita");
         rdbtnVisita.addActionListener(controller);
         group.add(rdbtnVisita);
-        panItem.add(rdbtnVisita);
+        pnItem.add(rdbtnVisita);
+        
+        txQuantidade = new JLabel("");
+        txQuantidade.setFont(new Font("Tahoma", Font.BOLD, 11));
+        txQuantidade.setForeground(Color.BLUE);
+        txQuantidade.setHorizontalAlignment(SwingConstants.RIGHT);
+        txQuantidade.setBounds(449, 231, 121, 14);
+        panel.add(txQuantidade);
+        
+        pnDetalhes = new JPanel();
+        pnDetalhes.setBounds(10, 112, 560, 108);
+        panel.add(pnDetalhes);
+        pnDetalhes.setLayout(new GridLayout(0, 1, 0, 0));
+        
+        txDetalhes = new JTextArea();
+        txDetalhes.setLineWrap(true);
+        
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(txDetalhes);
+        pnDetalhes.add(scrollPane);
+        
+        pnRelacionamento = new JPanel();
+        FlowLayout flowLayout = (FlowLayout) pnRelacionamento.getLayout();
+        flowLayout.setAlignment(FlowLayout.LEADING);
+        pnRelacionamento.setOpaque(false);
+        pnRelacionamento.setBounds(10, 271, 560, 33);
+        panel.add(pnRelacionamento);
+        
+        JLabel lblTipo = new JLabel("Tipo:");
+        pnRelacionamento.add(lblTipo);
+        
+        cbObject = new JComboBox();
+        pnRelacionamento.add(cbObject);
+        cbObject.setOpaque(false);
+        cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
+        
+        btnAssociacao = new JButton("+");
+        pnRelacionamento.add(btnAssociacao);
+        btnAssociacao.setOpaque(false);
+        btnAssociacao.setActionCommand("ChamarDialog");
+        
+        txCodigoObjeto = new JLabel("");
+        txCodigoObjeto.setBackground(Color.WHITE);
+        txCodigoObjeto.setOpaque(true);
+        txCodigoObjeto.setForeground(Color.BLUE);
+        txCodigoObjeto.setFont(new Font("Tahoma", Font.BOLD, 11));
+        pnRelacionamento.add(txCodigoObjeto);
+        
+        txNomeObjeto = new JLabel("");
+        txNomeObjeto.setBackground(Color.WHITE);
+        txNomeObjeto.setOpaque(true);
+        txNomeObjeto.setForeground(Color.BLUE);
+        txNomeObjeto.setFont(new Font("Tahoma", Font.BOLD, 11));
+        pnRelacionamento.add(txNomeObjeto);
+        btnAssociacao.addActionListener(controller);
+        cbObject.addItemListener(controller);
         
         JPanel panEscolha = new JPanel();
         FlowLayout fl_panEscolha = (FlowLayout) panEscolha.getLayout();
-        panEscolha.setBounds(94, 332, 1037, 33);
+        fl_panEscolha.setAlignment(FlowLayout.LEADING);
+        panEscolha.setBounds(10, 315, 560, 33);
         panEscolha.setBackground(getColor());
         panel.add(panEscolha);
-        
-        JLabel lblTipo = new JLabel("Tipo:");
-        panEscolha.add(lblTipo);
-        
-        cbObject = new JComboBox();
-        cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
-        cbObject.addItemListener(controller);
-        panEscolha.add(cbObject);
-        
-        JButton button = new JButton("+");
-        button.setActionCommand("ChamarDialog");
-        button.addActionListener(controller);
-        panEscolha.add(button);
-        
-        txCodigo = new JLabel("");
-        panEscolha.add(txCodigo);
-        
-        txNome = new JLabel("");
-        panEscolha.add(txNome);
         
         JLabel lblResponsavel = new JLabel("Responsavel:");
         panEscolha.add(lblResponsavel);
         
         cbAtendente = new DefaultComboBox();
-        cbAtendente.setPreferredSize(new Dimension(100,20));
         panEscolha.add(cbAtendente);
+        cbAtendente.setOpaque(false);
+        cbAtendente.setPreferredSize(new Dimension(100,20));
         
         JLabel lblData = new JLabel("Data:");
         panEscolha.add(lblData);
@@ -167,31 +220,44 @@ public class TarefasSaveView extends JInternalFrame implements DefaultUtilities 
         	e.printStackTrace();
         }
         txHora = new JFormattedTextField(hora);
+        txHora.setOpaque(false);
         txHora.setColumns(5);
         panEscolha.add(txHora);
         
-        btnEditar = new JButton("Editar");
-        btnEditar.setActionCommand("Editar");
-        btnEditar.addActionListener(controller);
-        
         ckFinalizado = new JCheckBox("Finalizado");
+        ckFinalizado.setOpaque(false);
         panEscolha.add(ckFinalizado);
         
+        pnBotoes = new JPanel();
+        pnBotoes.setOpaque(false);
+        pnBotoes.setBounds(10, 359, 560, 33);
+        panel.add(pnBotoes);
+        
         btnNovo = new JButton("Novo");
+        btnNovo.setOpaque(false);
+        pnBotoes.add(btnNovo);
         btnNovo.setActionCommand("Novo");
-        panEscolha.add(btnNovo);
-        panEscolha.add(btnEditar);
+        
+        btnEditar = new JButton("Editar");
+        btnEditar.setOpaque(false);
+        pnBotoes.add(btnEditar);
+        btnEditar.setActionCommand("Editar");
         
         btnSalvar = new JButton("Salvar");
+        btnSalvar.setOpaque(false);
+        pnBotoes.add(btnSalvar);
         btnSalvar.setActionCommand("Salvar");
-        btnSalvar.addActionListener(controller);
-        panEscolha.add(btnSalvar);
         
         btnCancelar = new JButton("Cancelar");
+        btnCancelar.setOpaque(false);
+        pnBotoes.add(btnCancelar);
+        
         btnCancelar.setActionCommand("Cancelar");
         btnCancelar.addActionListener(controller);
-        panEscolha.add(btnCancelar);
+        btnSalvar.addActionListener(controller);
+        btnEditar.addActionListener(controller);
+        btnNovo.addActionListener(controller);
         
-
+        setLocationRelativeTo(null);
 	}
 }

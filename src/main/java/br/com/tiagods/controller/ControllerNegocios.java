@@ -67,6 +67,7 @@ import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegocioPerdaDialog;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -87,6 +88,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	boolean telaEmEdicao = false;
 	List<Negocio> listarNegocios;
 	NegocioPerdaDialog dialogPerda;
+	
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Negocio negocio){
@@ -251,17 +253,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			break;
 		case "VincularObjeto":
 			SelecaoObjetoDialog dialog = null;
-			if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-				combos = new JComboBox[]{cbEmpresa};
-				dialog =new SelecaoObjetoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+			if(!telaEmEdicao){
+				JOptionPane.showMessageDialog(jDBody, "Para selecionar uma Empresa ou Pessoa, clique em Novo ou Editar para uma nova associação!","Somente em edição...",JOptionPane.INFORMATION_MESSAGE);
 			}
-			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-				combos = new JComboBox[]{cbPessoa};
-				dialog = new SelecaoObjetoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+			else{
+				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
+					combos = new JComboBox[]{cbEmpresa};
+					dialog =new SelecaoObjetoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+				}
+				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
+					combos = new JComboBox[]{cbPessoa};
+					dialog = new SelecaoObjetoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+				}
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+				txCodObjeto.addPropertyChangeListener(new MudarCliente());
 			}
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			txCodObjeto.addPropertyChangeListener(new MudarCliente());
 			break;
 		case "CriarCategoria":
 			dialog = new SelecaoObjetoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},MenuView.getInstance(),true);
@@ -315,100 +322,122 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			cbServicosAgregados.setSelectedItem("");
 			txValorServico.setText("0,00");
 			break;
+		case "Nova Tarefa":
+			if("".equals(txCodigo.getText())){
+				String valor;
+				if(telaEmEdicao){
+					valor="Salve o registro atual e depois clique no Botao Nova Tarefa para criar uma nova tarefa para esse negocio!\nOu selecione um registro da tabela!";
+				}
+				else
+					valor="Selecione um registro da tabela ou crie um Novo Negocio";
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não pode criar uma tarefa para um negocio que ainda não existe!\n"
+						+ valor);
+			}
+			else{
+				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, MenuView.getInstance(),true);
+				taskView.setVisible(true);
+			}
+			break;
 		default:
 			break;
 		}
 	}
 	private void realizarFiltro() {
-		List<Criterion> criterios = new ArrayList<>();
-		Order order = Order.desc("id");
-		if(!"Status".equals(cbStatus.getSelectedItem())){
-			Criterion c = Restrictions.eq("status", padrao.getStatus((String)cbStatus.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Etapa".equals(cbEtapa.getSelectedItem())){
-			Criterion c = Restrictions.eq("etapa", padrao.getEtapa((String)cbEtapa.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Categoria".equals(cbCategoria.getSelectedItem())){
-			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Origem".equals(cbOrigem.getSelectedItem())){
-			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Nivel".equals(cbNivel.getSelectedItem())){
-			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.nivel", padrao.getNiveis((String)cbNivel.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Produtos/Servicos".equals(cbServicos.getSelectedItem())){
-			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.servico", padrao.getServicos((String)cbServicos.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Empresa".equals(cbEmpresa.getSelectedItem())){
-			Criterion c = Restrictions.eq("empresa", padrao.getEmpresas((String)cbEmpresa.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Pessoa".equals(cbPessoa.getSelectedItem())){
-			Criterion c = Restrictions.eq("pessoa", padrao.getPessoas((String)cbPessoa.getSelectedItem()));
-			criterios.add(c);
-		}
-		if(!"Atendente".equals(cbAtendente.getSelectedItem())){
-			Criterion c = Restrictions.eq("atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
-			criterios.add(c);
-		}
-		try{
-			Date data01 = data1.getDate();
-			Date data02 = data2.getDate();
-			if(data02.compareTo(data01)>=0){
-				criterios.add(Restrictions.between("criadoEm", data01, data02));
+		if(!telaEmEdicao){
+			List<Criterion> criterios = new ArrayList<>();
+			Order order = Order.desc("id");
+			if(!"Status".equals(cbStatus.getSelectedItem())){
+				Criterion c = Restrictions.eq("status", padrao.getStatus((String)cbStatus.getSelectedItem()));
+				criterios.add(c);
 			}
-		}catch(NullPointerException e){
+			if(!"Etapa".equals(cbEtapa.getSelectedItem())){
+				Criterion c = Restrictions.eq("etapa", padrao.getEtapa((String)cbEtapa.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Categoria".equals(cbCategoria.getSelectedItem())){
+				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Origem".equals(cbOrigem.getSelectedItem())){
+				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Nivel".equals(cbNivel.getSelectedItem())){
+				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.nivel", padrao.getNiveis((String)cbNivel.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Produtos/Servicos".equals(cbServicos.getSelectedItem())){
+				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.servico", padrao.getServicos((String)cbServicos.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Empresa".equals(cbEmpresa.getSelectedItem())){
+				Criterion c = Restrictions.eq("empresa", padrao.getEmpresas((String)cbEmpresa.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Pessoa".equals(cbPessoa.getSelectedItem())){
+				Criterion c = Restrictions.eq("pessoa", padrao.getPessoas((String)cbPessoa.getSelectedItem()));
+				criterios.add(c);
+			}
+			if(!"Atendente".equals(cbAtendente.getSelectedItem())){
+				Criterion c = Restrictions.eq("atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
+				criterios.add(c);
+			}
+			try{
+				Date data01 = data1.getDate();
+				Date data02 = data2.getDate();
+				if(data02.compareTo(data01)>=0){
+					criterios.add(Restrictions.between("criadoEm", data01, data02));
+				}
+			}catch(NullPointerException e){
+			}
+			if("".equals(txBuscar.getText().trim())){
+				Criterion c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
+				criterios.add(c);
+			}
+			listarNegocios = new GenericDao().items(Negocio.class, session, criterios, order);
+			preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		}
-		if("".equals(txBuscar.getText().trim())){
-			Criterion c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
-			criterios.add(c);
-		}
-		listarNegocios = new GenericDao().items(Negocio.class, session, criterios, order);
-		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
+		else
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	public class MudarCliente implements PropertyChangeListener{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			if(!evt.getOldValue().equals(evt.getNewValue()))
+			//if(!evt.getOldValue().equals(evt.getNewValue()))
 				receberObjeto();
 		}
-		
 	}
 	public void receberObjeto(){
-		int option = JOptionPane.showConfirmDialog(MenuView.jDBody,
-				"Deseja vincular os dados da "+cbObject.getSelectedItem().toString()+" "+txNomeObjeto.getText()+"?"+
-				"Se clicar em SIM, CATEGORIA, ORIGEM, NIVEL E SERVICO da "+cbObject.getSelectedItem().toString()+
-				" serão usados no cadastro do negócio? Deseja sobrescrever os valores?"
-				,"Substituir classificações do Negócio", JOptionPane.YES_NO_OPTION);
-		if(option==JOptionPane.YES_OPTION){
-			PfPj pfpj = new PfPj();
-			session = HibernateFactory.getSession();
-			session.beginTransaction();
-			if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-				Empresa empresa = (Empresa)new EmpresaDao().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
-				pfpj = empresa.getPessoaJuridica();
+		if(telaEmEdicao && !txCodObjeto.getText().equals("")){
+			int option = JOptionPane.showConfirmDialog(MenuView.jDBody,
+					"Deseja vincular os dados da "+cbObject.getSelectedItem().toString()+" "+txNomeObjeto.getText()+"?"+
+							"Se clicar em SIM, CATEGORIA, ORIGEM, NIVEL E SERVICO da "+cbObject.getSelectedItem().toString()+
+							" serão usados no cadastro do negócio? Deseja sobrescrever os valores?"
+							,"Substituir classificações do Negócio", JOptionPane.YES_NO_OPTION);
+			if(option==JOptionPane.YES_OPTION){
+				PfPj pfpj = new PfPj();
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
+					Empresa empresa = (Empresa)new EmpresaDao().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
+					pfpj = empresa.getPessoaJuridica();
+				}
+				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
+					Pessoa pessoa = (Pessoa)new PessoaDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
+					pfpj = pessoa.getPessoaFisica();
+				}
+				if(pfpj!=null){
+					cbCategoriaCad.setSelectedItem(pfpj.getCategoria()==null?"":pfpj.getCategoria().getNome());
+					cbOrigemCad.setSelectedItem(pfpj.getOrigem()==null?"":pfpj.getOrigem().getNome());
+					cbNivelCad.setSelectedItem(pfpj.getNivel()==null?"":pfpj.getNivel().getNome());
+					cbServicosCad.setSelectedItem(pfpj.getServico()==null?"":pfpj.getServico().getNome());
+				}
+				session.close();
+				if("".equals(txNome.getText().trim()))
+					txNome.setText(txNomeObjeto.getText());
 			}
-			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-				Pessoa pessoa = (Pessoa)new PessoaDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
-				pfpj = pessoa.getPessoaFisica();
-			}
-			if(pfpj!=null){
-				cbCategoriaCad.setSelectedItem(pfpj.getCategoria()==null?"":pfpj.getCategoria().getNome());
-				cbOrigemCad.setSelectedItem(pfpj.getOrigem()==null?"":pfpj.getOrigem().getNome());
-				cbNivelCad.setSelectedItem(pfpj.getNivel()==null?"":pfpj.getNivel().getNome());
-				cbServicosCad.setSelectedItem(pfpj.getServico()==null?"":pfpj.getServico().getNome());
-			}
-			session.close();
 		}
-		if("".equals(txNome.getText().trim()))
-			txNome.setText(txNomeObjeto.getText());
+		
 	}
 	@SuppressWarnings("unchecked")
 	public void invocarSalvamento(){
@@ -721,7 +750,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 						&& n.getDataFim()!=null 
 						&& new Date().compareTo(n.getDataFim())==1){
 					long diferenca = (new Date().getTime() - n.getDataFim().getTime()) + 3600000;
-					linha[6]=(diferenca / 86400000L)+" dias atrasados";
+					long qtd = (diferenca / 86400000L);
+					if(qtd>0)
+					linha[6]=qtd+" dia(s) atrasado(s)";
+					
 				}
 				try{
 					Date criadoEm = n.getCriadoEm();
@@ -824,7 +856,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				txValorServico.setText("0,00");
 				txIdServicoContratado.setText("");
 			}
-			else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteção!");
+			else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de realizar qualquer alteração!");
 		}
 	}
 	public void removerServico(int row){

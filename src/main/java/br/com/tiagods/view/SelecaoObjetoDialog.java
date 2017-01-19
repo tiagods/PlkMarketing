@@ -47,9 +47,9 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 		controller.processarObjeto(object,"","");
 	}
 	public void initComponents(){
-		setBounds(100, 100, 450, 350);
+		setBounds(100, 100, 600, 400);
 		getContentPane().setLayout(null);
-		contentPanel.setBounds(0, 102, 434, 170);
+		contentPanel.setBounds(0, 102, 574, 204);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel);
 		{
@@ -65,17 +65,19 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 		}
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
-				gl_contentPanel.createParallelGroup(Alignment.LEADING)
-				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
-				);
+			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPanel.createSequentialGroup()
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 567, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
 		gl_contentPanel.setVerticalGroup(
-				gl_contentPanel.createParallelGroup(Alignment.LEADING)
-				.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-				);
+			gl_contentPanel.createParallelGroup(Alignment.LEADING)
+				.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+		);
 		contentPanel.setLayout(gl_contentPanel);
 
 		JPanel buttonPane = new JPanel();
-		buttonPane.setBounds(0, 278, 434, 33);
+		buttonPane.setBounds(0, 317, 574, 33);
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane);
 		
@@ -105,7 +107,7 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 		
 		
 		pnCadastrar = new JPanel();
-		pnCadastrar.setBounds(10, 42, 414, 33);
+		pnCadastrar.setBounds(10, 42, 564, 33);
 		getContentPane().add(pnCadastrar);
 		pnCadastrar.setLayout(null);
 		

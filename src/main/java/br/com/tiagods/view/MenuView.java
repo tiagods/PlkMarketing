@@ -25,9 +25,13 @@ public class MenuView extends JFrame implements DefaultUtilities{
     public static javax.swing.JDesktopPane jDBody;
     private javax.swing.JPanel pnPrincipal;
     
-    static MenuView instance;
+    private static MenuView instance;
     
     public static MenuView getInstance(){
+    	if(instance == null){
+    		instance = new MenuView();
+    		instance.setVisible(true);
+    	}
     	return instance;
     }
     
@@ -35,20 +39,20 @@ public class MenuView extends JFrame implements DefaultUtilities{
     public Color getColor() {
     	return DefaultUtilities.super.getColor();
     }
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					instance = new MenuView();
-					instance.setVisible(true);
-				} catch (RuntimeException e) {e.getMessage();}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				try {
+//					
+//					instance.setVisible(true);
+//				} catch (RuntimeException e) {e.getMessage();}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.

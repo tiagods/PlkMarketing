@@ -321,35 +321,39 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(txDataCadastro);
 
         btnNovo = new JButton();
+        btnNovo.setFont(new Font("Dialog", Font.PLAIN, 10));
         btnNovo.setActionCommand("Novo");
         btnNovo.setName("Novo");
         btnNovo.setText("Novo");
         btnNovo.addActionListener(controller);
-        btnNovo.setBounds(107, 321, 90, 23);
+        btnNovo.setBounds(179, 321, 90, 23);
         pnCadastro.add(btnNovo);
 
         btnEditar = new JButton();
+        btnEditar.setFont(new Font("Dialog", Font.PLAIN, 10));
         btnEditar.setActionCommand("Editar");
         btnEditar.setName("Editar");
         btnEditar.setText("Editar");
         btnEditar.addActionListener(controller);
-        btnEditar.setBounds(203, 321, 90, 23);
+        btnEditar.setBounds(275, 321, 90, 23);
         pnCadastro.add(btnEditar);
 
         btnSalvar = new JButton();
+        btnSalvar.setFont(new Font("Dialog", Font.PLAIN, 10));
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.setName("Salvar");
         btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(controller);
-        btnSalvar.setBounds(299, 321, 90, 23);
+        btnSalvar.setBounds(371, 321, 90, 23);
         pnCadastro.add(btnSalvar);
 
         btnCancelar = new JButton();
+        btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 10));
         btnCancelar.setActionCommand("Cancelar");
         btnCancelar.setName("Cancelar");
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(controller);
-        btnCancelar.setBounds(395, 321, 90, 23);
+        btnCancelar.setBounds(467, 321, 90, 23);
         pnCadastro.add(btnCancelar);
 
         lbAtendenteCad = new JLabel();
@@ -410,9 +414,10 @@ public class NegociosView extends JInternalFrame {
         pnPrivacidade.setLayout(gl_panel_3);
 
         btnHistorico = new JButton();
+        btnHistorico.setFont(new Font("Dialog", Font.PLAIN, 10));
         btnHistorico.setActionCommand("Historico");
         btnHistorico.setText("Historico");
-        btnHistorico.setBounds(588, 321, 90, 23);
+        btnHistorico.setBounds(660, 321, 90, 23);
         btnHistorico.addActionListener(controller);
         pnCadastro.add(btnHistorico);
 
@@ -485,10 +490,11 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(txNomeObjeto);
 
         btnExcluir = new JButton();
+        btnExcluir.setFont(new Font("Dialog", Font.PLAIN, 10));
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.setName("Excluir");
         btnExcluir.setText("Excluir");
-        btnExcluir.setBounds(491, 321, 90, 23);
+        btnExcluir.setBounds(563, 321, 90, 23);
         btnExcluir.addActionListener(controller);
         pnCadastro.add(btnExcluir);
 
@@ -607,6 +613,15 @@ public class NegociosView extends JInternalFrame {
         btReturn.addActionListener(controller);
         btReturn.setBounds(263, 5, 45, 23);
         pnServicosContratados.add(btReturn);
+        
+        JButton btTarefa = new JButton();
+        btTarefa.setFont(new Font("Dialog", Font.PLAIN, 10));
+        btTarefa.setText("Nova Tarefa");
+        btTarefa.setName("Nova Tarefa");
+        btTarefa.setActionCommand("Nova Tarefa");
+        btTarefa.setBounds(60, 321, 115, 23);
+        btTarefa.addActionListener(controller);
+        pnCadastro.add(btTarefa);
         
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 65, 53, 14);

@@ -173,9 +173,10 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 						String[] nome = (txNome.getText()).split(" ");
 						labelNome.setText(nome[0]);
 					}
+					view.dispose();
 				}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
 			}
-			view.dispose();
+			
 			break;
 		case "Desistir":
 			sair();
@@ -197,7 +198,13 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			else if(!"".equals(txCodigo.getText())){
 				pnCadastrar.setVisible(true);
-				novoEditar();
+				int o = JOptionPane.showConfirmDialog(MenuView.jDBody, 
+						"Fique ciente que qualquer alteração irá interferir diretamente nos cadastros e relatorios de outras tabelas,\n"
+						+ "Se você mudar o nome desse registro, as outras tabelas que também dependendem desse registro também terão seus atributos nomeados!\n"
+						+ "Você pode nomear desde que aceite essas regras"
+						+ "","Leia-me...",JOptionPane.YES_NO_OPTION);
+				if(o==JOptionPane.OK_OPTION)
+					novoEditar();
 			}
 			else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
 			break;

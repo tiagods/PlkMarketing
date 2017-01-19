@@ -22,6 +22,7 @@ import org.hibernate.Session;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
+import br.com.tiagods.view.Initialize;
 import br.com.tiagods.view.TarefasView;
 
 public class ControllerInicio implements ActionListener,MouseListener{
@@ -51,6 +52,8 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		long fim = System.currentTimeMillis();
 		System.out.println("Tempo de execucao: "+(fim-inicio));
 		session.close();
+		Initialize in = Initialize.getInstance();
+		in.fechar();
 	}
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario usuario) {
