@@ -245,7 +245,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
 			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
 			fechaSessao(open);
 			break;
 		case "Esconder":
@@ -896,6 +896,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			preencherFormulario(this.negocio);
 			if(open)
 				fechaSessao(open);
+			pnAuxiliar.setVisible(false);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",

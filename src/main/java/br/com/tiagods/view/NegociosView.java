@@ -426,6 +426,8 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(scrollPane_2);
 
         txDescricao = new JTextArea();
+        txDescricao.setWrapStyleWord(true);
+        txDescricao.setLineWrap(true);
         scrollPane_2.setViewportView(txDescricao);
 
         txHonorario = new JFormattedTextField();
@@ -616,10 +618,10 @@ public class NegociosView extends JInternalFrame {
         
         JButton btTarefa = new JButton();
         btTarefa.setFont(new Font("Dialog", Font.PLAIN, 10));
+        btTarefa.setBounds(60, 321, 115, 23);
         btTarefa.setText("Nova Tarefa");
         btTarefa.setName("Nova Tarefa");
         btTarefa.setActionCommand("Nova Tarefa");
-        btTarefa.setBounds(60, 321, 115, 23);
         btTarefa.addActionListener(controller);
         pnCadastro.add(btTarefa);
         

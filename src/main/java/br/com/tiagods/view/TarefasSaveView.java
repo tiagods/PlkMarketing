@@ -51,6 +51,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
 	public static JCheckBox ckFinalizado;
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
+	private JButton btnExcluir;
 	
 	@Override	public Color getColor() {
 		// TODO Auto-generated method stub
@@ -67,7 +68,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public TarefasSaveView(Tarefa tarefa,Object object, JFrame frame, boolean modal) {
 		super(frame,modal);
 		initComponents();
-		controller.iniciar(tarefa, object);
+		controller.iniciar(this,tarefa, object);
 		
 	}
 	private void initComponents(){
@@ -250,9 +251,9 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         
         btnCancelar = new JButton("Cancelar");
         btnCancelar.setOpaque(false);
+        btnCancelar.setActionCommand("Cancelar");
         pnBotoes.add(btnCancelar);
         
-        btnCancelar.setActionCommand("Cancelar");
         btnCancelar.addActionListener(controller);
         btnSalvar.addActionListener(controller);
         btnEditar.addActionListener(controller);

@@ -43,6 +43,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
@@ -55,64 +56,65 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	Tarefa tarefaBackup;
 	String item = "";
 	Object object;
-	
+	TarefasSaveView view;
 	SelecaoObjetoDialog dialog = null;
 	AuxiliarComboBox padrao = new AuxiliarComboBox();
-	
+
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
 	HashMap<String, Usuario> usuarios = new HashMap<>();  
-	
+
 	Session session = null;
 	//se for null o formulario nao sera preenchido
-		public void iniciar(Tarefa tarefa, Object object){
-			this.tarefa = tarefa;
-			this.object = object;
-			session = HibernateFactory.getSession();
-			session.beginTransaction();
-			carregarAtendentes();
-			carregarTipoTarefasEAtendentes();
-			if(tarefa==null){
-				novoEditar();
-				cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
-				rdbtnEmail.setSelected(true);
-				Date data = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-				txData.setDate(data);
-				txHora.setText(sdf.format(data));
-			}
-			else{
-				preencherFormulario(tarefa);
-				novoEditar();
-			}
-			verificarObjeto();
-			session.close();
+	public void iniciar(TarefasSaveView view,Tarefa tarefa, Object object){
+		this.tarefa = tarefa;
+		this.object = object;
+		this.view = view;
+		session = HibernateFactory.getSession();
+		session.beginTransaction();
+		carregarAtendentes();
+		carregarTipoTarefasEAtendentes();
+		if(tarefa==null){
+			novoEditar();
+			cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
+			rdbtnEmail.setSelected(true);
+			Date data = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+			txData.setDate(data);
+			txHora.setText(sdf.format(data));
+		}
+		else{
+			preencherFormulario(tarefa);
+			novoEditar();
+		}
+		verificarObjeto();
+		session.close();
+		txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
+		txDetalhes.addKeyListener(new contadorDigitos());
+	}
+
+
+	public class contadorDigitos implements KeyListener{
+		@Override
+		public void keyTyped(KeyEvent e) {
+		}
+		@Override
+		public void keyPressed(KeyEvent e) {
+		}
+		@Override
+		public void keyReleased(KeyEvent e) {
 			txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
-			txDetalhes.addKeyListener(new contadorDigitos());
 		}
-		
-		
-		public class contadorDigitos implements KeyListener{
-			@Override
-			public void keyTyped(KeyEvent e) {
-			}
-			@Override
-			public void keyPressed(KeyEvent e) {
-			}
-			@Override
-			public void keyReleased(KeyEvent e) {
-				txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
-			}
-		}
-		private void carregarTipoTarefasEAtendentes(){
-			List<TipoTarefa> listTiposTarefas = new TipoTarefaDao().listar(TipoTarefa.class, session);
-			listTiposTarefas.forEach(t->{
-				tipoTarefas.put(t.getNome(), t);
-			});
-			List<Usuario> listUsuarios = new UsuarioDao().listar(Usuario.class, session);
-			listUsuarios.forEach(u->{
-				usuarios.put(u.getLogin(), u);
-			});
-		}
+	}
+	private void carregarTipoTarefasEAtendentes(){
+		List<TipoTarefa> listTiposTarefas = new TipoTarefaDao().listar(TipoTarefa.class, session);
+		listTiposTarefas.forEach(t->{
+			tipoTarefas.put(t.getNome(), t);
+		});
+		List<Usuario> listUsuarios = new UsuarioDao().listar(Usuario.class, session);
+		listUsuarios.forEach(u->{
+			usuarios.put(u.getLogin(), u);
+		});
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
@@ -183,6 +185,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 					desbloquearCampos(p, false);
 				}
 			}
+			else
+				view.dispose();
 			break;
 		default:
 			setarSelecao();
@@ -204,7 +208,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 						LocalTime lt = LocalTime.of(Integer.parseInt(horas), Integer.parseInt(minutos));
 						Calendar calendar = Calendar.getInstance();
 						calendar.setTime(txData.getDate());
-						
+
 						Calendar calendar2 = Calendar.getInstance();
 						calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
 								lt.getHour(), lt.getMinute());
@@ -268,7 +272,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 		session.close();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
 		List<Usuario> lista = new UsuarioDao().listar(Usuario.class, session);
@@ -286,17 +290,20 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			if("Empresa".equals(tarefa.getClasse())){
 				id = tarefa.getEmpresa().getId();
 				nome = tarefa.getEmpresa().getNome().split(" ");
+				cbObject.setSelectedItem(Modelos.valueOf("Empresa"));
 			}
 			else if("Negocio".equals(tarefa.getClasse())){
 				id = tarefa.getNegocio().getId();
 				nome = tarefa.getNegocio().getNome().split(" ");
+				cbObject.setSelectedItem(Modelos.valueOf("Negocio"));
 			}
 			else if("Pessoa".equals(tarefa.getClasse())){
 				id = tarefa.getPessoa().getId();
 				nome = tarefa.getPessoa().getNome().split(" ");
+				cbObject.setSelectedItem(Modelos.valueOf("Pessoa"));
 			}
 			enviarDados(radio, tarefa, nome[0],String.valueOf(id));
-			}
+		}
 	}
 	private JRadioButton recuperaRadio(String item){
 		if("Email".equals(item))
@@ -342,17 +349,17 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	private void verificarObjeto(){
 		if(object!=null){
 			if(object instanceof Empresa){
-				cbObject.setSelectedItem(Modelos.Empresa);
+				cbObject.setSelectedItem(Modelos.valueOf("Empresa"));
 				txCodigoObjeto.setText(((Empresa)object).getId()+"");
 				txNomeObjeto.setText(((Empresa)object).getNome());
 			}
 			else if(object instanceof Negocio){
-				cbObject.setSelectedItem(Modelos.Negocio);
+				cbObject.setSelectedItem(Modelos.valueOf("Negocio"));
 				txCodigoObjeto.setText(((Negocio)object).getId()+"");
 				txNomeObjeto.setText(((Negocio)object).getNome());
 			}
 			else if(object instanceof Pessoa){
-				cbObject.setSelectedItem(Modelos.Pessoa);
+				cbObject.setSelectedItem(Modelos.valueOf("Pessoa"));
 				txCodigoObjeto.setText(((Pessoa)object).getId()+"");
 				txNomeObjeto.setText(((Pessoa)object).getNome());
 			}
@@ -360,81 +367,81 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			btnAssociacao.setEnabled(false);
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	private void limparCampos(Object painel){
 		Container container = null;
-        if (painel instanceof JPanel) {
-            container = (JPanel) painel;
-        }
-        if (painel instanceof JScrollPane) {
-            container = (JScrollPane) painel;
-        }
-        if (painel instanceof JViewport) {
-            container = (JViewport) painel;
-        }
-        if(container!=null){
-        	for(int i=0;i<container.getComponentCount();i++){
-        		Component c = container.getComponent(i);
-        		if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
-        			limparCampos(c);
-        			continue;
-        		}
-        		if (c instanceof JTextField) {
-        			JTextField field = (JTextField) c;
-        			field.setText("");
-        		}
-        		if (c instanceof JFormattedTextField) {
-        			JFormattedTextField field = (JFormattedTextField) c;
-        			field.setText("");
-        		}
-        		if (c instanceof JTextArea) {
-        			JTextArea field = (JTextArea) c;
-        			field.setText("");
-        		}
-        		if (c instanceof JComboBox) {
-        			JComboBox field = (JComboBox) c;
-        			field.setSelectedItem("");
-        		}
-        	}
-        }
+		if (painel instanceof JPanel) {
+			container = (JPanel) painel;
+		}
+		if (painel instanceof JScrollPane) {
+			container = (JScrollPane) painel;
+		}
+		if (painel instanceof JViewport) {
+			container = (JViewport) painel;
+		}
+		if(container!=null){
+			for(int i=0;i<container.getComponentCount();i++){
+				Component c = container.getComponent(i);
+				if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
+					limparCampos(c);
+					continue;
+				}
+				if (c instanceof JTextField) {
+					JTextField field = (JTextField) c;
+					field.setText("");
+				}
+				if (c instanceof JFormattedTextField) {
+					JFormattedTextField field = (JFormattedTextField) c;
+					field.setText("");
+				}
+				if (c instanceof JTextArea) {
+					JTextArea field = (JTextArea) c;
+					field.setText("");
+				}
+				if (c instanceof JComboBox) {
+					JComboBox field = (JComboBox) c;
+					field.setSelectedItem("");
+				}
+			}
+		}
 	}
 	private void desbloquearCampos(Object painel,boolean bloquear){
 		Container container = null;
-        if (painel instanceof JPanel) {
-            container = (JPanel) painel;
-        }
-        if (painel instanceof JScrollPane) {
-            container = (JScrollPane) painel;
-        }
-        if (painel instanceof JViewport) {
-            container = (JViewport) painel;
-        }
-        if(container!=null){
-        	for(int i=0;i<container.getComponentCount();i++){
-        		Component c = container.getComponent(i);
-        		if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
-        			limparCampos(c);
-        			continue;
-        		}
-        		if (c instanceof JTextField) {
-        			JTextField field = (JTextField) c;
-        			field.setEditable(bloquear);
-        		}
-        		if (c instanceof JFormattedTextField) {
-        			JFormattedTextField field = (JFormattedTextField) c;
-        			field.setEditable(bloquear);
-        		}
-        		if (c instanceof JTextArea) {
-        			JTextArea field = (JTextArea) c;
-        			field.setEditable(bloquear);
-        		}
-        		if (c instanceof JComboBox) {
-        			JComboBox field = (JComboBox) c;
-        			field.setEnabled(bloquear);
-        		}
-        	}
-        }
+		if (painel instanceof JPanel) {
+			container = (JPanel) painel;
+		}
+		if (painel instanceof JScrollPane) {
+			container = (JScrollPane) painel;
+		}
+		if (painel instanceof JViewport) {
+			container = (JViewport) painel;
+		}
+		if(container!=null){
+			for(int i=0;i<container.getComponentCount();i++){
+				Component c = container.getComponent(i);
+				if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
+					limparCampos(c);
+					continue;
+				}
+				if (c instanceof JTextField) {
+					JTextField field = (JTextField) c;
+					field.setEditable(bloquear);
+				}
+				if (c instanceof JFormattedTextField) {
+					JFormattedTextField field = (JFormattedTextField) c;
+					field.setEditable(bloquear);
+				}
+				if (c instanceof JTextArea) {
+					JTextArea field = (JTextArea) c;
+					field.setEditable(bloquear);
+				}
+				if (c instanceof JComboBox) {
+					JComboBox field = (JComboBox) c;
+					field.setEnabled(bloquear);
+				}
+			}
+		}
 	}
 	//pegar radioButton selecionado
 	private void setarSelecao(){

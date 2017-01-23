@@ -57,6 +57,7 @@ import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.PessoaDao;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
@@ -143,7 +144,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
 			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas,criterios,order);
 			fechaSessao(open);
 			break;
 		case "Empresas":
@@ -158,32 +159,54 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			criterios.add(criterion);
 			order = Order.desc("id");		
 			List<Negocio> negocios = (List<Negocio>) new GenericDao().items(Negocio.class, session, criterios, order);
-			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
+			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios, criterios,order);
 			fechaSessao(open);
 			break;
 		case "Esconder":
 			pnAuxiliar.setVisible(false);
 			break;
-			case "CriarCategoria":
-				combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
-				SelecaoObjetoDialog dialog = new SelecaoObjetoDialog(new Categoria(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
-				break;
-			case "CriarOrigem":
-				combos = new JComboBox[]{cbOrigem,cbOrigemCad};
-				dialog = new SelecaoObjetoDialog(new Origem(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
-				break;
-			case "CriarServico":
-				combos = new JComboBox[]{cbProdServicos,cbProdServicosCad};
-				dialog = new SelecaoObjetoDialog(new Servico(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
-				break;
-			default:
-				break;
+		case "CriarCategoria":
+			combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
+			SelecaoObjetoDialog dialog = new SelecaoObjetoDialog(new Categoria(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarOrigem":
+			combos = new JComboBox[]{cbOrigem,cbOrigemCad};
+			dialog = new SelecaoObjetoDialog(new Origem(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarServico":
+			combos = new JComboBox[]{cbProdServicos,cbProdServicosCad};
+			dialog = new SelecaoObjetoDialog(new Servico(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarNivel":
+			combos = new JComboBox[]{cbNivel,cbNivelCad};
+			dialog = new SelecaoObjetoDialog(new Nivel(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "Nova Tarefa":
+			if("".equals(txCodigo.getText())){
+				String valor;
+				if(telaEmEdicao){
+					valor="Salve o registro atual e depois clique no Botao Nova Tarefa para criar uma nova tarefa para essa Pessoa!\nOu selecione um registro da tabela!";
+				}
+				else
+					valor="Selecione um registro da tabela ou crie uma Nova Pessoa";
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não pode criar uma tarefa para uma pessoa que ainda não existe!\n"
+						+ valor);
+			}
+			else{
+				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, MenuView.getInstance(),true);
+				taskView.setVisible(true);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 	@SuppressWarnings("rawtypes")
@@ -206,12 +229,13 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txDataNascimento.setText(pessoa.getDataNascimento());
 		cbOrigemCad.setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
 		cbCategoriaCad.setSelectedItem(pessoa.getPessoaFisica().getCategoria()==null?"":pessoa.getPessoaFisica().getCategoria().getNome());
+		cbNivelCad.setSelectedItem(pessoa.getPessoaFisica().getNivel()==null?"":pessoa.getPessoaFisica().getNivel().getNome());
 		cbProdServicosCad.setSelectedItem(pessoa.getPessoaFisica().getServico()==null?"":pessoa.getPessoaFisica().getServico().getNome());
 		txTelefone.setText(pessoa.getPessoaFisica().getTelefone());
 		txCelular.setText(pessoa.getPessoaFisica().getCelular());
 		txEmail.setText(pessoa.getPessoaFisica().getEmail());
 		txSite.setText(pessoa.getPessoaFisica().getSite());
-
+		
 		Endereco end = pessoa.getEndereco();
 		if(end!=null){
 			cbLogradouro.setSelectedItem(DefaultEnumModel.Logradouro.valueOf(end.getLogradouro()));
@@ -378,6 +402,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			pessoa = (Pessoa)dao.receberObjeto(Pessoa.class, valor, session);
 			preencherFormulario(pessoa);
 			fechaSessao(open);
+			pnAuxiliar.setVisible(false);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edição...",JOptionPane.INFORMATION_MESSAGE);

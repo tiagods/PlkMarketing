@@ -89,7 +89,10 @@ public class EmpresasView extends JInternalFrame {
 		txContador.setBounds(780, 235, 150, 14);
 		jPanel1.add(txContador);
 		controller.iniciar(empresa);
-
+		btnPessoas.setEnabled(false);
+		
+		
+		
 	}
 	private void initComponents() {
         jPanel1 = new javax.swing.JPanel();
@@ -537,7 +540,7 @@ public class EmpresasView extends JInternalFrame {
         btnPessoas.setActionCommand("Pessoas");
         btnPessoas.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnPessoas.setText("Pessoas");
-        btnPessoas.setBounds(346, 340, 87, 23);
+        btnPessoas.setBounds(442, 340, 87, 23);
         btnPessoas.addActionListener(controller);
         pnPrincipal.add(btnPessoas);
 
@@ -545,15 +548,24 @@ public class EmpresasView extends JInternalFrame {
         btnNegocios.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
-        btnNegocios.setBounds(249, 340, 90, 23);
+        btnNegocios.setBounds(345, 340, 90, 23);
         btnNegocios.addActionListener(controller);
         pnPrincipal.add(btnNegocios);
 
+        JButton btTarefa = new JButton();
+        btTarefa.setFont(new Font("Dialog", Font.PLAIN, 10));
+        btTarefa.setBounds(59, 340, 115, 23);
+		btTarefa.setText("Nova Tarefa");
+        btTarefa.setName("Nova Tarefa");
+        btTarefa.setActionCommand("Nova Tarefa");
+        btTarefa.addActionListener(controller);
+		pnPrincipal.add(btTarefa);
+        
         btnHistorico = new JButton();
         btnHistorico.setActionCommand("Historico");
         btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnHistorico.setText("Historico");
-        btnHistorico.setBounds(153, 340, 90, 23);
+        btnHistorico.setBounds(249, 340, 90, 23);
         btnHistorico.addActionListener(controller);
         pnPrincipal.add(btnHistorico);
 

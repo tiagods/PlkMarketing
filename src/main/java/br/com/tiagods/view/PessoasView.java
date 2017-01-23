@@ -45,6 +45,8 @@ public class PessoasView extends JInternalFrame {
     public static DefaultComboBox cbCategoriaCad;
     public static DefaultComboBox cbOrigemCad;
     public static DefaultComboBox cbProdServicosCad;
+    public static DefaultComboBox cbNivel;
+    public static DefaultComboBox cbNivelCad;
     public static javax.swing.JPanel pnVisao;
     public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
@@ -88,7 +90,8 @@ public class PessoasView extends JInternalFrame {
 		txContador.setBounds(780, 235, 150, 14);
 		pnVisao.add(txContador);
 		controller.iniciar(pessoa);
-
+		btnEmpresas.setEnabled(false);
+		
 	}
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
@@ -98,6 +101,7 @@ public class PessoasView extends JInternalFrame {
         cbCategoria = new DefaultComboBox();
         cbOrigem = new DefaultComboBox();
         cbEmpresa = new DefaultComboBox();
+        cbEmpresa.setEnabled(false);
         setBorder(null);
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
@@ -152,6 +156,11 @@ public class PessoasView extends JInternalFrame {
         data2 = new JDateChooser();
         //data2.addPropertyChangeListener(controller);
         data2.setBounds(36, 37, 100, 20);
+        
+    	cbNivel = new DefaultComboBox();
+        cbNivel.setModel(new DefaultComboBoxModel(new String[] {"Nivel"}));
+        cbNivel.setName("Nivel");
+        cbNivel.setBackground(new Color(250, 250, 250));
 
         javax.swing.GroupLayout gl_pnCabecalho = new javax.swing.GroupLayout(pnCabecalho);
         gl_pnCabecalho.setHorizontalGroup(
@@ -159,7 +168,9 @@ public class PessoasView extends JInternalFrame {
         		.addGroup(gl_pnCabecalho.createSequentialGroup()
         			.addContainerGap()
         			.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addGap(10)
+        			.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
         			.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
@@ -169,7 +180,7 @@ public class PessoasView extends JInternalFrame {
         			.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addGap(148)
         			.addComponent(panel, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(138, Short.MAX_VALUE))
+        			.addContainerGap(314, Short.MAX_VALUE))
         );
         gl_pnCabecalho.setVerticalGroup(
         	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
@@ -183,7 +194,8 @@ public class PessoasView extends JInternalFrame {
         						.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
+        						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
         			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panel.setLayout(null);
@@ -463,7 +475,7 @@ public class PessoasView extends JInternalFrame {
         btnEmpresas.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnEmpresas.setText("Empresas");
         btnEmpresas.setActionCommand("Empresas");
-        btnEmpresas.setBounds(346, 340, 87, 23);
+        btnEmpresas.setBounds(441, 340, 87, 23);
         btnEmpresas.addActionListener(controller);
         pnPrincipal.add(btnEmpresas);
 
@@ -471,15 +483,24 @@ public class PessoasView extends JInternalFrame {
         btnNegocios.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
-        btnNegocios.setBounds(249, 340, 90, 23);
+        btnNegocios.setBounds(344, 340, 90, 23);
         btnNegocios.addActionListener(controller);
         pnPrincipal.add(btnNegocios);
 
+        JButton btTarefa = new JButton();
+        btTarefa.setFont(new Font("Dialog", Font.PLAIN, 10));
+        btTarefa.setBounds(59, 340, 115, 23);
+        btTarefa.setText("Nova Tarefa");
+        btTarefa.setName("Nova Tarefa");
+        btTarefa.setActionCommand("Nova Tarefa");
+        btTarefa.addActionListener(controller);
+        pnPrincipal.add(btTarefa);
+        
         btnHistorico = new JButton();
         btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
         btnHistorico.setText("Historico");
         btnHistorico.setActionCommand("Historico");
-        btnHistorico.setBounds(153, 340, 90, 23);
+        btnHistorico.setBounds(248, 340, 90, 23);
         btnHistorico.addActionListener(controller);
         pnPrincipal.add(btnHistorico);
 
@@ -545,6 +566,23 @@ public class PessoasView extends JInternalFrame {
         btnServicosCad.setBounds(566, 123, 36, 23);
         btnServicosCad.addActionListener(controller);
         pnPrincipal.add(btnServicosCad);
+        
+        cbNivelCad = new DefaultComboBox();
+        cbNivelCad.setName("NivelCad");
+        cbNivelCad.setBounds(440, 94, 116, 20);
+        pnPrincipal.add(cbNivelCad);
+        
+        JLabel lbNivelCad = new JLabel();
+        lbNivelCad.setText("Nivel:");
+        lbNivelCad.setBounds(348, 94, 89, 18);
+        pnPrincipal.add(lbNivelCad);
+        
+        JButton btnNivelCad = new JButton();
+        btnNivelCad.setText("ADC");
+        btnNivelCad.setActionCommand("CriarNivel");
+        btnNivelCad.setBounds(566, 93, 36, 23);
+        btnNivelCad.addActionListener(controller);
+        pnPrincipal.add(btnNivelCad);
 
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));

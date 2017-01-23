@@ -56,6 +56,7 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /**
@@ -76,7 +77,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings("unchecked")
 	public void iniciar(Empresa empresa){
 		cbEmpresa.setEnabled(false);
-		cbEmpresa.setToolTipText("Filtro n�o criado: Aguardando programacao");
+		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programacao");
 		this.empresa=empresa;
     	session = HibernateFactory.getSession();
     	session.beginTransaction();
@@ -142,7 +143,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
 			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios, order);
 			fechaSessao(open);
 			break;
 		case "Pessoas":
@@ -157,7 +158,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			criterios.add(criterion);
 			order = Order.desc("id");		
 			List<Negocio> negocios = (List<Negocio>) new GenericDao().items(Negocio.class, session, criterios, order);
-			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios);
+			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios,criterios, order);
 			fechaSessao(open);
 			break;
 		case "Esconder":
@@ -186,6 +187,22 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			dialog = new SelecaoObjetoDialog(new Servico(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
+			break;
+		case "Nova Tarefa":
+			if("".equals(txCodigo.getText())){
+				String valor;
+				if(telaEmEdicao){
+					valor="Salve o registro atual e depois clique no Botao Nova Tarefa para criar uma nova tarefa para essa Empresa!\nOu selecione um registro da tabela!";
+				}
+				else
+					valor="Selecione um registro da tabela ou crie uma Nova Empresa";
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não pode criar uma tarefa para uma empresa que ainda não existe!\n"
+						+ valor);
+			}
+			else{
+				TarefasSaveView taskView = new TarefasSaveView(null, this.empresa, MenuView.getInstance(),true);
+				taskView.setVisible(true);
+			}
 			break;
 		default:
 			break;
@@ -384,6 +401,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			empresa = (Empresa)dao.receberObjeto(Empresa.class, valor, session);
 			preencherFormulario(empresa);
 			fechaSessao(open);
+			pnAuxiliar.setVisible(false);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",

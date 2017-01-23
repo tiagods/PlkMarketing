@@ -1,17 +1,37 @@
 package br.com.tiagods.controller;
 
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
+import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+
+import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.TarefaDao;
+import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.TarefasSaveView;
+import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 
 public class AuxiliarTabela {
@@ -19,13 +39,17 @@ public class AuxiliarTabela {
 	JTable table;
 	@SuppressWarnings("rawtypes")
 	List lista;
+	List<Criterion> criterios;
+	Order order;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
 	
 	@SuppressWarnings("rawtypes")
-	public AuxiliarTabela(Object classe, JTable tabela, List lista){
+	public AuxiliarTabela(Object classe, JTable tabela, List lista,List<Criterion> criterios, Order order){
 		this.object=classe;
 		this.table=tabela;
 		this.lista=lista;
+		this.criterios = criterios;
+		this.order = order;
 		analizarEntidades();
 	}
 	@SuppressWarnings("unchecked")
@@ -102,13 +126,17 @@ public class AuxiliarTabela {
 	}
 	@SuppressWarnings("serial")
 	private DefaultTableModel gerarModel(Tarefa tarefas){
-		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","ANDAMENTO"},0){
+		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","STATUS","ANDAMENTO","EDITAR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
-					false,false,false,false,true
+					false,false,false,false,false,true,true,true
 			};
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
+			}
+			@Override
+			public Class getColumnClass(int columnIndex) {
+				return getValueAt(0, columnIndex).getClass();
 			}
 		};
 	}
@@ -169,14 +197,106 @@ public class AuxiliarTabela {
 			o[1]=sdf.format(t.getDataEvento());
 			o[2]=t.getTipoTarefa().getNome();
 			o[3]=t.getAtendente().getNome();
-			if(t.getFinalizado()==1)
-				o[4]="Fechado";
+			o[4]=t.getFinalizado()==0?"Aberto":"Fechado";
+			if(t.getFinalizado()==0)
+				o[5]=Boolean.FALSE;
 			else
-				o[4]="Aberto";
+				o[5]=Boolean.TRUE;
+			o[6] = "Editar";
+			o[7] = "Excluir";
 			model.addRow(o);
 		}
 		table.setModel(model);
-		table.getColumnModel().getColumn(0).setPreferredWidth(40);
+		table.getColumnModel().getColumn(0).setPreferredWidth(30);
+		table.getColumnModel().getColumn(1).setPreferredWidth(60);
+		table.getColumnModel().getColumn(2).setPreferredWidth(60);
+		table.getColumnModel().getColumn(3).setPreferredWidth(60);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		table.setRowHeight(30);
+		
+		JCheckBox ckFinalizar = new JCheckBox();
+		TableColumn col = table.getColumnModel().getColumn(5);
+		col.setCellEditor(new DefaultCellEditor(ckFinalizar));
+		ckFinalizar.setActionCommand("Finalizar");
+		ckFinalizar.addActionListener(new AcaoInTable());
+		
+		JButton btEdit = new ButtonColumnModel(table,6).getButton();
+		btEdit.setActionCommand("Editar");
+		btEdit.addActionListener(new AcaoInTable());
+
+		JButton btExcluir =new ButtonColumnModel(table,7).getButton();
+		btExcluir.setActionCommand("Excluir");
+		btExcluir.addActionListener(new AcaoInTable());
+	}
+	
+	public class AcaoInTable implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Session session = HibernateFactory.getSession();
+			session.beginTransaction();
+			switch(e.getActionCommand()){
+			case "Finalizar":
+				finalizar(session);
+				break;
+			case "Editar":
+				int valor = (int)table.getModel().getValueAt(table.getSelectedRow(), 0);
+				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
+				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,object,MenuView.getInstance(),true);
+				viewTarefas.setVisible(true);
+				break;
+			case "Excluir":
+				excluir(session);
+				break;
+			default:
+				break;
+			}
+			session.close();
+		}
+	}
+	public void excluir(Session session){
+		int row = table.getSelectedRow();
+		int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
+				"Deseja excluir a seguinte tarefa: "+table.getValueAt(row, 0)+"?",
+				"Pedido de remoção!",JOptionPane.YES_NO_OPTION);
+		if(i==JOptionPane.OK_OPTION){
+			TarefaDao dao = new TarefaDao();
+			int id = (int)table.getValueAt(table.getSelectedRow(), 0);
+			Tarefa tRemove = (Tarefa)dao.receberObjeto(Tarefa.class, id, session);
+			if(dao.excluir(tRemove, session))
+				buscar(session);
+		}
+	}
+	static String fechado;
+	static String pendente;
+	
+	public void finalizar(Session session){
+		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 5);
+		int id = (int)table.getValueAt(table.getSelectedRow(), 0);
+		String status = (String)table.getValueAt(table.getSelectedRow(), 4);
+		if(!value && pendente.equals(status)){
+			TarefaDao dao = new TarefaDao();
+			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
+			thisTar.setFinalizado(1);
+			if(dao.salvar(thisTar, session)){
+				table.setValueAt(fechado, table.getSelectedRow(), 4);
+			}
+
+		}
+		else if(value && fechado.equals(status)){
+			TarefaDao dao = new TarefaDao();
+			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
+			thisTar.setFinalizado(0);
+			if(dao.salvar(thisTar, session)){
+				table.setValueAt(pendente, table.getSelectedRow(), 4);
+			}
+		}
+		buscar(session);
 	}
 
+	private void buscar(Session session){
+		List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
+		AuxiliarTabela aux = new AuxiliarTabela(object, table, tarefas, criterios, order);
+		aux.analizarEntidades();
+	}
+	
 }
