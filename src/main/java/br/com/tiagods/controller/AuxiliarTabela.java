@@ -197,7 +197,7 @@ public class AuxiliarTabela {
 			o[1]=sdf.format(t.getDataEvento());
 			o[2]=t.getTipoTarefa().getNome();
 			o[3]=t.getAtendente().getNome();
-			o[4]=t.getFinalizado()==0?"Aberto":"Fechado";
+			o[4]=t.getFinalizado()==0?"Aberto":"Finalizado";
 			if(t.getFinalizado()==0)
 				o[5]=Boolean.FALSE;
 			else
@@ -266,8 +266,8 @@ public class AuxiliarTabela {
 				buscar(session);
 		}
 	}
-	static String fechado;
-	static String pendente;
+	String pendente = "Aberto";
+	String fechado = "Finalizado";
 	
 	public void finalizar(Session session){
 		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 5);
@@ -290,7 +290,7 @@ public class AuxiliarTabela {
 				table.setValueAt(pendente, table.getSelectedRow(), 4);
 			}
 		}
-		buscar(session);
+		//buscar(session);
 	}
 
 	private void buscar(Session session){

@@ -58,8 +58,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			this.labelNome=labelNome;
 			this.labelId.setOpaque(true);
 			this.labelNome.setOpaque(true);
-			this.labelId.setForeground(Color.ORANGE);
-			this.labelNome.setForeground(Color.ORANGE);
+			this.labelId.setForeground(Color.BLUE);
+			this.labelNome.setForeground(Color.BLUE);
 		}
 		this.view=view;
 		this.combobox = combobox;

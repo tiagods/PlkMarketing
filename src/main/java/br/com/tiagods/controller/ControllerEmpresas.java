@@ -49,7 +49,6 @@ import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;

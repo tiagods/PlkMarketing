@@ -81,7 +81,7 @@ public class Initialize extends JFrame{
 		this.dispose();
 	}
 	
-	public static void main(String[] args) {
+	public static void inicializar(){
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getDefaultScreenDevice();
 		final boolean isTranslucencySupported = gd.isWindowTranslucencySupported(TRANSLUCENT);
@@ -105,6 +105,10 @@ public class Initialize extends JFrame{
 				instance.openMenu();
 			}
 		});
+	}
+	
+	public static void main(String[] args) {
+		inicializar();
 	}
 	
 	public void openMenu(){

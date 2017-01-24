@@ -78,6 +78,7 @@ public class EmpresasView extends JInternalFrame {
 	public static JTable tbPrincipal;
 	
 	ControllerEmpresas controller = new ControllerEmpresas();
+	private JLabel lbTitulo;
 	/**
 	 * Create the frame.
 	 */
@@ -140,7 +141,7 @@ public class EmpresasView extends JInternalFrame {
         panel.setBackground(new Color(250, 250, 250));
 
         label = new JLabel();
-        label.setBounds(10, 37, 22, 20);
+        label.setBounds(158, 11, 22, 20);
         label.setText("at\u00E9");
         label.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -155,48 +156,54 @@ public class EmpresasView extends JInternalFrame {
         data1.addPropertyChangeListener(controller);
         data2 = new JDateChooser();
         data2.addPropertyChangeListener(controller);
-        data2.setBounds(36, 37, 100, 20);
+        data2.setBounds(184, 11, 100, 20);
 
         cbNivel = new DefaultComboBox();
         cbNivel.setModel(new DefaultComboBoxModel(new String[] {"Nivel"}));
         cbNivel.setName("Nivel");
         cbNivel.setBackground(new Color(250, 250, 250));
+        
+        lbTitulo = new JLabel("Cadastro de Empresas");
+        lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        lbTitulo.setFont(new Font("Tahoma", Font.BOLD, 20));
 
         javax.swing.GroupLayout gl_pnCabecalho = new javax.swing.GroupLayout(pnCabecalho);
         gl_pnCabecalho.setHorizontalGroup(
         	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_pnCabecalho.createSequentialGroup()
         			.addContainerGap()
-        			.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addGap(33)
-        			.addComponent(panel, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(314, Short.MAX_VALUE))
+        			.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
+        				.addComponent(lbTitulo, GroupLayout.PREFERRED_SIZE, 1230, GroupLayout.PREFERRED_SIZE)
+        				.addGroup(gl_pnCabecalho.createSequentialGroup()
+        					.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addGap(77)
+        					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 304, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         gl_pnCabecalho.setVerticalGroup(
         	gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_pnCabecalho.createSequentialGroup()
-        			.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.LEADING)
-        				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 65, GroupLayout.PREFERRED_SIZE)
-        				.addGroup(gl_pnCabecalho.createSequentialGroup()
-        					.addGap(23)
-        					.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.BASELINE)
-        						.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))))
-        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        			.addComponent(lbTitulo, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+        			.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.TRAILING)
+        				.addGroup(gl_pnCabecalho.createParallelGroup(Alignment.BASELINE)
+        					.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(cbProdServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)))
         );
         panel.setLayout(null);
         panel.add(label_1);

@@ -1,8 +1,10 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -13,6 +15,7 @@ import javax.swing.JMenuItem;
 
 import br.com.tiagods.controller.ControllerMenu;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
+import javax.swing.ImageIcon;
 
 public class MenuView extends JFrame implements DefaultUtilities{
 	/**
@@ -23,6 +26,8 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	ControllerMenu controller = ControllerMenu.getInstance();
 	
     public static javax.swing.JDesktopPane jDBody;
+    public static JMenu mnInicio, mnTarefas, mnEmpresas,mnPessoas,mnNegocios,mnRelatorios,mnExtra;
+    public static JMenuItem itemNovaTarefa, itemListarTarefa;
     private javax.swing.JPanel pnPrincipal;
     
     private static MenuView instance;
@@ -58,14 +63,14 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	 * Create the frame.
 	 */
 	public MenuView() {
+		setTitle("Novos Negocios");
 		initComponents();
 		controller.iniciar();
+		
 	}
 	public void initComponents(){
 		getContentPane().setBackground(getColor());
-		//setBounds(100, 100, 450, 300);
-
-        pnPrincipal = new javax.swing.JPanel();
+		pnPrincipal = new javax.swing.JPanel();
         jDBody = new javax.swing.JDesktopPane();
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -104,48 +109,52 @@ public class MenuView extends JFrame implements DefaultUtilities{
         menuBar.setBackground(getColor());
         setJMenuBar(menuBar);
         
-        JMenu mnInicio = new JMenu("Inicio");
+        mnInicio = new JMenu("Inicio");
         mnInicio.setName("Inicio");
         mnInicio.addMouseListener(controller);
         menuBar.add(mnInicio);
         
         
-        JMenu mnTarefas = new JMenu("Tarefas");
+        mnTarefas = new JMenu("Tarefas");
         menuBar.add(mnTarefas);
         
-        JMenuItem itemNovaTarefa = new JMenuItem("Nova Tarefa");
+        itemNovaTarefa = new JMenuItem("Nova Tarefa");
         itemNovaTarefa.setActionCommand("TarefasSave");
         itemNovaTarefa.addActionListener(controller);
         mnTarefas.add(itemNovaTarefa);
         
-        JMenuItem itemListarTarefa = new JMenuItem("Listar Tarefas");
+        itemListarTarefa = new JMenuItem("Listar Tarefas");
         itemListarTarefa.setActionCommand("Tarefas");
         itemListarTarefa.addActionListener(controller);
         mnTarefas.add(itemListarTarefa);
         
-        JMenu mnEmpresas = new JMenu("Empresas");
+        mnEmpresas = new JMenu("Empresas");
         mnEmpresas.setName("Empresas");
         mnEmpresas.addMouseListener(controller);
         menuBar.add(mnEmpresas);
         
-        JMenu mnNegocios = new JMenu("Neg\u00F3cios");
+        mnNegocios = new JMenu("Neg\u00F3cios");
         mnNegocios.setName("Negocios");
         mnNegocios.addMouseListener(controller);
         
-        JMenu mnPessoas = new JMenu("Pessoas");
+        mnPessoas = new JMenu("Pessoas");
         mnPessoas.setName("Pessoas");
         mnPessoas.addMouseListener(controller);
         menuBar.add(mnPessoas);
         menuBar.add(mnNegocios);
         
-        JMenu mnRelatorios = new JMenu("Relat\u00F3rios");
+        mnRelatorios = new JMenu("Relat\u00F3rios");
         mnRelatorios.setName("Relatorios");
         mnRelatorios.addMouseListener(controller);
         menuBar.add(mnRelatorios);
         
-        JMenu mnExtra = new JMenu("Extra");
+        mnExtra = new JMenu("Extra");
         mnExtra.setName("Extra");
         mnExtra.addMouseListener(controller);
         menuBar.add(mnExtra);
+        
+        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize((int)d.getWidth(), getHeight());
+        setLocationRelativeTo(null);
 	}
 }

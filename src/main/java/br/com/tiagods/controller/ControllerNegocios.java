@@ -154,9 +154,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		cbObject.setSelectedItem(n.getClasse());
 		
 		txCodObjeto.setOpaque(true);
-		txCodObjeto.setForeground(Color.ORANGE);
+		txCodObjeto.setForeground(Color.BLUE);
 		txNomeObjeto.setOpaque(true);
-		txNomeObjeto.setForeground(Color.ORANGE);
+		txNomeObjeto.setForeground(Color.BLUE);
 		if(n.getClasse().equals(Empresa.class.getSimpleName())){
 			txCodObjeto.setText(""+n.getEmpresa().getId());
 			txNomeObjeto.setText(n.getEmpresa().getNome());

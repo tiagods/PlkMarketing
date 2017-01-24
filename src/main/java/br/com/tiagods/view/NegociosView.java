@@ -100,7 +100,7 @@ public class NegociosView extends JInternalFrame {
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal, tbAuxiliar;
 	public static JButton btAddEmpresaPessoa;
-	private JPanel panel_5;
+	private JPanel pnTotalizador;
 	private JLabel lblValorTotalDe;
 	public static JLabel txNomeObjeto;
 	public static JTextArea txDescricao;
@@ -109,6 +109,7 @@ public class NegociosView extends JInternalFrame {
 	public static JTable tbServicosContratados;
 	public static JLabel txIdServicoContratado;
 	private JButton btReturn;
+	private JLabel lbTitulo;
 	/**
 	 * Create the frame.
 	 */
@@ -118,8 +119,7 @@ public class NegociosView extends JInternalFrame {
 		pnPrivacidade.setVisible(false);
 		pnAuxiliar.setVisible(false);
 		rbContato.setSelected(true);
-		panel_5.setVisible(false);
-        
+		pnTotalizador.setVisible(false);
 	}
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
@@ -161,20 +161,20 @@ public class NegociosView extends JInternalFrame {
         panel.setBackground(new Color(250, 250, 250));
 
         label = new JLabel();
-        label.setBounds(10, 37, 22, 20);
+        label.setBounds(10, 26, 22, 20);
         label.setText("at\u00E9");
         label.setHorizontalAlignment(SwingConstants.LEFT);
 
         data2 = new JDateChooser();
-        data2.setBounds(36, 37, 100, 20);
+        data2.setBounds(36, 26, 100, 20);
 
         label_1 = new JLabel();
         label_1.setHorizontalAlignment(SwingConstants.LEFT);
-        label_1.setBounds(10, 11, 22, 20);
+        label_1.setBounds(10, 0, 22, 20);
         label_1.setText("de:");
 
         data1 = new JDateChooser();
-        data1.setBounds(36, 11, 100, 20);
+        data1.setBounds(36, 0, 100, 20);
 
         cbOrigem = new DefaultComboBox();
         cbOrigem.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
@@ -195,39 +195,51 @@ public class NegociosView extends JInternalFrame {
         cbServicos.setModel(new DefaultComboBoxModel(new String[] {"Produtos/Servicos"}));
         cbServicos.setName("Produtos/Servicos");
         cbServicos.setBackground(new Color(250, 250, 250));
+        
+        lbTitulo = new JLabel("Cadastro de Negocios");
+        lbTitulo.setHorizontalAlignment(SwingConstants.RIGHT);
+        lbTitulo.setFont(new Font("Tahoma", Font.BOLD, 20));
 
         javax.swing.GroupLayout gl_pnPrincipal = new javax.swing.GroupLayout(pnPrincipal);
         gl_pnPrincipal.setHorizontalGroup(
         	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_pnPrincipal.createSequentialGroup()
-        			.addContainerGap()
-        			.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addGap(10)
-        			.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbPessoa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+        			.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.TRAILING)
+        				.addGroup(gl_pnPrincipal.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(lbTitulo, GroupLayout.PREFERRED_SIZE, 758, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED, 8, Short.MAX_VALUE))
+        				.addGroup(gl_pnPrincipal.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addGap(10)
+        					.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbPessoa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)))
         			.addComponent(panel, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
         );
         gl_pnPrincipal.setVerticalGroup(
-        	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+        	gl_pnPrincipal.createParallelGroup(Alignment.TRAILING)
         		.addGroup(gl_pnPrincipal.createSequentialGroup()
         			.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
         				.addGroup(gl_pnPrincipal.createSequentialGroup()
-        					.addGap(23)
+        					.addGap(2)
+        					.addComponent(lbTitulo, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
         					.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.BASELINE)
         						.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -238,7 +250,7 @@ public class NegociosView extends JInternalFrame {
         						.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         						.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-        				.addComponent(panel, GroupLayout.PREFERRED_SIZE, 58, Short.MAX_VALUE))
+        				.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         			.addContainerGap())
         );
         panel.setLayout(null);
@@ -501,7 +513,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(btnExcluir);
 
         cbObject = new JComboBox();
-        cbObject.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        cbObject.setFont(new Font("Tahoma", Font.PLAIN, 11));
         cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
         cbObject.setBounds(107, 58, 87, 20);
         cbObject.setName("Objeto");
@@ -675,10 +687,10 @@ public class NegociosView extends JInternalFrame {
         pnAndamento.add(cbStatusCad);
         cbStatusCad.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
 
-        panel_5 = new JPanel();
-        panel_5.setBackground(new Color(250,250,250));
-        panel_5.setBounds(980, 90, 260, 142);
-        pnVisao.add(panel_5);
+        pnTotalizador = new JPanel();
+        pnTotalizador.setBackground(new Color(250,250,250));
+        pnTotalizador.setBounds(980, 90, 260, 142);
+        pnVisao.add(pnTotalizador);
         
         lblValorTotalDe = new JLabel("Valor total dos seus neg\u00F3cios");
         lblValorTotalDe.setHorizontalAlignment(SwingConstants.CENTER);
@@ -688,20 +700,20 @@ public class NegociosView extends JInternalFrame {
 
         JLabel lblNegcios = new JLabel("[#] Neg\u00F3cios");
         lblNegcios.setHorizontalAlignment(SwingConstants.CENTER);
-        GroupLayout gl_panel_5 = new GroupLayout(panel_5);
-        gl_panel_5.setHorizontalGroup(
-        	gl_panel_5.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel_5.createSequentialGroup()
+        GroupLayout gl_pnTotalizador = new GroupLayout(pnTotalizador);
+        gl_pnTotalizador.setHorizontalGroup(
+        	gl_pnTotalizador.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnTotalizador.createSequentialGroup()
         			.addContainerGap()
-        			.addGroup(gl_panel_5.createParallelGroup(Alignment.LEADING)
+        			.addGroup(gl_pnTotalizador.createParallelGroup(Alignment.LEADING)
         				.addComponent(lblR, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE)
         				.addComponent(lblValorTotalDe, GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
         				.addComponent(lblNegcios, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE))
         			.addContainerGap())
         );
-        gl_panel_5.setVerticalGroup(
-        	gl_panel_5.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel_5.createSequentialGroup()
+        gl_pnTotalizador.setVerticalGroup(
+        	gl_pnTotalizador.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnTotalizador.createSequentialGroup()
         			.addGap(8)
         			.addComponent(lblValorTotalDe, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
         			.addGap(18)
@@ -710,7 +722,7 @@ public class NegociosView extends JInternalFrame {
         			.addComponent(lblNegcios, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        panel_5.setLayout(gl_panel_5);
+        pnTotalizador.setLayout(gl_pnTotalizador);
         
         txContadorRegistros = new JLabel("");
         txContadorRegistros.setBounds(780, 218, 152, 14);

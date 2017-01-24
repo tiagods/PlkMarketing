@@ -3,7 +3,7 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.MenuView.jDBody;
+import static br.com.tiagods.view.MenuView.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -45,8 +46,9 @@ public class ControllerMenu implements ActionListener, MouseListener{
     }
     
     public void iniciar(){
+    	setarIcones();
     	inicio = new InicioView();
-        abrirCorpo(inicio);
+    	abrirCorpo(inicio);
     }
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -119,5 +121,26 @@ public class ControllerMenu implements ActionListener, MouseListener{
         jframe.setVisible(true);
     }
 
-    
+    public void setarIcones(){
+    	ImageIcon iconHome = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_home.png"));
+    	mnInicio.setIcon(recalculate(iconHome));
+    	
+    	ImageIcon iconTask = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_task.png"));
+    	mnTarefas.setIcon(recalculate(iconTask));
+    	
+    	ImageIcon iconEmpresas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
+    	ImageIcon iconPessoas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
+    	ImageIcon iconNegocios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
+    	ImageIcon iconRelatorios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
+        
+    	ImageIcon iconExtra = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
+        mnExtra.setIcon(recalculate(iconExtra));
+        //https://icons8.com/web-app/category/all/User-Interface
+        //https://icons8.com/web-app/category/all/Business
+        //https://icons8.com/web-app/category/all/Time-And-Date
+    }
+    public ImageIcon recalculate(ImageIcon icon){
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 }

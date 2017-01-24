@@ -1,5 +1,6 @@
 package br.com.tiagods.modeldao;
 
+import java.awt.Image;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -10,6 +11,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 
+import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.SubmeterErroView;
 import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class GenericDao implements InterfaceDao{
@@ -21,6 +24,7 @@ public class GenericDao implements InterfaceDao{
 			session.getTransaction().commit();
 			return true;
 		}catch (Exception e) {
+			
 			return false;
 		}
 	}
@@ -33,6 +37,7 @@ public class GenericDao implements InterfaceDao{
 			return true;
 		}catch (HibernateException e) {
 			session.getTransaction().rollback();
+			//relatarErro(object.getClass().getSimpleName(),"Excluir",e.getMessage());
 		}
 		return false;
 	}
@@ -56,5 +61,13 @@ public class GenericDao implements InterfaceDao{
 		}
 		criteria.addOrder(order);
 		return criteria.list();
+	}
+	private void relatarErro(String classe, String tipo, String erro){
+		CapturarTela cap = new CapturarTela();
+		cap.gerarFoto();
+		java.io.File file = cap.getFile();
+		String message = classe+"\n"+tipo+"\n"+erro;
+		new SubmeterErroView(message,file);
+		
 	}
 }
