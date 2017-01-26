@@ -46,7 +46,10 @@ public class ControllerMenu implements ActionListener, MouseListener{
     }
     
     public void iniciar(){
-    	setarIcones();
+    	try{
+    		setarIcones();
+    	}catch (NullPointerException e) {
+		}
     	inicio = new InicioView();
     	abrirCorpo(inicio);
     }
@@ -121,25 +124,38 @@ public class ControllerMenu implements ActionListener, MouseListener{
         jframe.setVisible(true);
     }
 
-    public void setarIcones(){
+    public void setarIcones() throws NullPointerException{
     	ImageIcon iconHome = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_home.png"));
     	mnInicio.setIcon(recalculate(iconHome));
     	
     	ImageIcon iconTask = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_task.png"));
     	mnTarefas.setIcon(recalculate(iconTask));
     	
-    	ImageIcon iconEmpresas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
-    	ImageIcon iconPessoas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
-    	ImageIcon iconNegocios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
-    	ImageIcon iconRelatorios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
-        
+    	ImageIcon iconEmpresas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_empresas.png"));
+    	mnEmpresas.setIcon(recalculate(iconEmpresas));
+    	
+    	ImageIcon iconPessoas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_people.png"));
+    	mnPessoas.setIcon(recalculate(iconPessoas));
+    	
+    	ImageIcon iconNegocios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_negocios.png"));
+    	mnNegocios.setIcon(recalculate(iconNegocios));
+    	
+    	ImageIcon iconRelatorios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_report.png"));
+        mnRelatorios.setIcon(recalculate(iconRelatorios));
+    	
     	ImageIcon iconExtra = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
         mnExtra.setIcon(recalculate(iconExtra));
+        
+        ImageIcon iconTaskList = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menuitem_list.png"));
+        itemListarTarefa.setIcon(recalculate(iconTaskList));;
+        
+        ImageIcon iconTaskNew = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menuitem_add.png"));
+        itemNovaTarefa.setIcon(recalculate(iconTaskNew));
         //https://icons8.com/web-app/category/all/User-Interface
         //https://icons8.com/web-app/category/all/Business
         //https://icons8.com/web-app/category/all/Time-And-Date
     }
-    public ImageIcon recalculate(ImageIcon icon){
+    public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
     }

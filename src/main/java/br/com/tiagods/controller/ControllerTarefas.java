@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -66,6 +67,7 @@ import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.TarefasSaveView;
+import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.ButtonColumn;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.CentralizarColumnJTable;
@@ -131,6 +133,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		long fim = System.currentTimeMillis();
 		session.close();
 		definirAcoes();
+		try{
+			setarIcons();
+		}catch (NullPointerException e) {
+		}
 	}
 	private void definirAcoes(){
 		jData1.addPropertyChangeListener(this);
@@ -164,10 +170,13 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			if(ck.isSelected()){
 				tipoTarefas.add(tipoTarefasMapa.get(ck.getName()));
 				buscar();
+//				ck.setOpaque(true);
+//				ck.setBackground(Color.orange);
 			}
 			else{
 				tipoTarefas.remove(tipoTarefasMapa.get(ck.getName()));
 				buscar();
+//				ck.setOpaque(false);
 			}
 		}
 
@@ -195,11 +204,13 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		case "Prazo":
 			boolean value =false;
 			if(rbDefinirData.isSelected()){
-				jData1.setDate(new Date());
-				jData2.setDate(new Date());
 				value = true;
 			}
 			mostrarDatas(pnData,value);
+			if(rbDefinirData.isSelected()){
+				jData1.setDate(new Date());
+				jData2.setDate(new Date());
+			}
 			buscar();
 			break;
 		default:
@@ -593,4 +604,48 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			return textarea.getText();
 		}
 	}
+	public void setarIcons() throws NullPointerException {
+		ImageIcon iconEmail = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_email.png"));
+        ckEmail.setIcon(recalculate(iconEmail));
+        ckEmail.setBorderPainted(true);
+        ImageIcon iconProposta = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_proposta.png"));
+        ckProposta.setIcon(recalculate(iconProposta));
+        ckProposta.setBorderPainted(true);
+        ImageIcon iconReuniao = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_reuniao.png"));
+        ckReuniao.setIcon(recalculate(iconReuniao));
+        ckReuniao.setBorderPainted(true);
+        ImageIcon iconPhone = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_fone.png"));
+        ckTelefone.setIcon(recalculate(iconPhone));
+        ckTelefone.setBorderPainted(true);
+        ImageIcon iconVisita = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_visita.png"));
+        ckVisita.setIcon(recalculate(iconVisita));  
+        ckVisita.setBorderPainted(true);
+        
+        ImageIcon iconTaskNew = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/add.png"));
+        btNovaTarefa.setIcon(recalculate(iconTaskNew));
+        
+        ImageIcon iconFin = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/ok.png"));
+        ckFinalizados.setIcon(recalculate(iconFin));
+        ckFinalizados.setBorderPainted(true);
+        ImageIcon iconPe = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/no.png"));
+        ckPendentes.setIcon(recalculate(iconPe));
+        ckPendentes.setBorderPainted(true);
+        ImageIcon iconTudo = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_tudo.png"));
+        rbTudo.setIcon(recalculate(iconTudo));
+        rbTudo.setBorderPainted(true);
+        ImageIcon iconHoje = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_hoje.png"));
+        rbHoje.setIcon(recalculate(iconHoje));
+        rbHoje.setBorderPainted(true);
+        ImageIcon iconSemana = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_semana.png"));
+        rbEssaSemana.setIcon(recalculate(iconSemana));
+        rbEssaSemana.setBorderPainted(true);
+        ImageIcon iconDefinir = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_person.png"));
+        rbDefinirData.setIcon(recalculate(iconDefinir));
+        rbDefinirData.setBorderPainted(true);
+        
+	}
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 }

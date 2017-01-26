@@ -84,6 +84,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         txData.setPreferredSize(new Dimension(100, 20));
         
         JTextArea txtrDescrevaUmBreve = new JTextArea();
+        txtrDescrevaUmBreve.setOpaque(false);
         txtrDescrevaUmBreve.setEditable(false);
         txtrDescrevaUmBreve.setLineWrap(true);
         txtrDescrevaUmBreve.setWrapStyleWord(true);
@@ -225,7 +226,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         txHora.setColumns(5);
         panEscolha.add(txHora);
         
-        ckFinalizado = new JCheckBox("Finalizado");
+        ckFinalizado = new JCheckBox("J\u00E1 foi realizado?");
         ckFinalizado.setOpaque(false);
         panEscolha.add(ckFinalizado);
         

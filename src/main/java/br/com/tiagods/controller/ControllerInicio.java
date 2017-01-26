@@ -1,9 +1,6 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.InicioView.cbAtendentes;
-import static br.com.tiagods.view.InicioView.jData1;
-import static br.com.tiagods.view.InicioView.jData2;
-import static br.com.tiagods.view.InicioView.lbInfoTarefas;
+import static br.com.tiagods.view.InicioView.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import org.hibernate.Session;
@@ -22,6 +20,7 @@ import org.hibernate.Session;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
+import br.com.tiagods.view.InicioView;
 import br.com.tiagods.view.Initialize;
 import br.com.tiagods.view.TarefasView;
 
@@ -54,6 +53,10 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		session.close();
 		Initialize in = Initialize.getInstance();
 		in.fechar();
+		try{
+			setarIcons();
+		}catch (NullPointerException e) {
+		}
 	}
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario usuario) {
@@ -161,5 +164,14 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
+	public void setarIcons() throws NullPointerException {
+		ImageIcon iconOk = new ImageIcon(InicioView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
+        btnOk.setIcon(recalculate(iconOk));
+        
+	}
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 
 }

@@ -1,9 +1,7 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 import javax.swing.GroupLayout;
@@ -12,6 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import br.com.tiagods.controller.ControllerMenu;
 import br.com.tiagods.view.interfaces.DefaultUtilities;

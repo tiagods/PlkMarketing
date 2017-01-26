@@ -19,7 +19,10 @@ import br.com.tiagods.view.interfaces.DefaultUtilities;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ActionEvent;
+import java.awt.Font;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static JDateChooser jData1;
@@ -74,22 +77,23 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jScrollPane3.setBounds(10, 11, 1040, 308);
         tbPrincipal = new javax.swing.JTable();
         ckPendentes = new javax.swing.JCheckBox();
-        ckPendentes.setBounds(476, 95, 93, 23);
+        ckPendentes.setBounds(476, 95, 105, 23);
         ckFinalizados = new javax.swing.JCheckBox();
-        ckFinalizados.setBounds(571, 95, 93, 23);
+        ckFinalizados.setBounds(605, 95, 105, 23);
         btNovaTarefa = new javax.swing.JButton();
-        btNovaTarefa.setBounds(89, 52, 105, 24);
+        btNovaTarefa.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btNovaTarefa.setBounds(89, 52, 126, 24);
         rbTudo = new javax.swing.JRadioButton();
-        rbTudo.setBounds(200, 53, 60, 23);
+        rbTudo.setBounds(221, 52, 73, 23);
         group.add(rbTudo);
         rbEssaSemana = new javax.swing.JRadioButton();
-        rbEssaSemana.setBounds(330, 53, 105, 23);
+        rbEssaSemana.setBounds(380, 52, 105, 23);
         group.add(rbEssaSemana);
         rbHoje = new javax.swing.JRadioButton();
-        rbHoje.setBounds(262, 53, 60, 23);
+        rbHoje.setBounds(300, 52, 78, 23);
         group.add(rbHoje);
         rbDefinirData = new javax.swing.JRadioButton();
-        rbDefinirData.setBounds(441, 53, 73, 23);
+        rbDefinirData.setBounds(487, 52, 73, 23);
         group.add(rbDefinirData);
         txContador = new javax.swing.JLabel();
         txContador.setBounds(832, 14, 144, 23);
@@ -99,7 +103,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         cbAtendentes.setBounds(1041, 15, 105, 20);
         pnData = new javax.swing.JPanel();
         pnData.setVisible(false);
-        pnData.setBounds(520, 52, 331, 23);
+        pnData.setBounds(566, 53, 331, 23);
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         
@@ -176,7 +180,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel4.setText("de:");
 
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("até");
+        jLabel5.setText("at\u00E9");
 
         javax.swing.GroupLayout grLayout = new javax.swing.GroupLayout(pnData);
         grLayout.setHorizontalGroup(
@@ -186,8 +190,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         			.addComponent(jLabel4)
         			.addGap(4)
         			.addComponent(jData1, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-        			.addGap(18)
-        			.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+        			.addGap(13)
+        			.addComponent(jLabel5)
         			.addGap(8)
         			.addComponent(jData2, GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
         			.addGap(53))
@@ -198,9 +202,11 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         			.addGroup(grLayout.createParallelGroup(Alignment.TRAILING)
         				.addComponent(jData1, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
         				.addComponent(jData2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
-        				.addComponent(jLabel5, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
         				.addComponent(jLabel4, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE))
         			.addGap(11))
+        		.addGroup(Alignment.LEADING, grLayout.createSequentialGroup()
+        			.addComponent(jLabel5, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
         );
         pnData.setLayout(grLayout);
         

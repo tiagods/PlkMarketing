@@ -161,20 +161,20 @@ public class NegociosView extends JInternalFrame {
         panel.setBackground(new Color(250, 250, 250));
 
         label = new JLabel();
-        label.setBounds(10, 26, 22, 20);
+        label.setBounds(10, 33, 22, 20);
         label.setText("at\u00E9");
         label.setHorizontalAlignment(SwingConstants.LEFT);
 
         data2 = new JDateChooser();
-        data2.setBounds(36, 26, 100, 20);
+        data2.setBounds(36, 33, 100, 20);
 
         label_1 = new JLabel();
         label_1.setHorizontalAlignment(SwingConstants.LEFT);
-        label_1.setBounds(10, 0, 22, 20);
+        label_1.setBounds(10, 11, 22, 20);
         label_1.setText("de:");
 
         data1 = new JDateChooser();
-        data1.setBounds(36, 0, 100, 20);
+        data1.setBounds(36, 11, 100, 20);
 
         cbOrigem = new DefaultComboBox();
         cbOrigem.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));

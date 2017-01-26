@@ -3,6 +3,7 @@ package br.com.tiagods.controller;
 import static br.com.tiagods.view.TarefasSaveView.*;
 import static br.com.tiagods.view.MenuView.jDBody;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -20,6 +21,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -88,8 +90,13 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 		verificarObjeto();
 		session.close();
+		setarSelecao();
 		txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
 		txDetalhes.addKeyListener(new contadorDigitos());
+		try{
+			setarIcons();
+		}catch (NullPointerException e) {
+		}
 	}
 
 
@@ -117,24 +124,16 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
 		switch(arg0.getActionCommand()){
 		case "Novo":
 			if(tarefa!=null){
 				this.tarefaBackup=tarefa;
-			}
-			for(JPanel p : panels){
-				limparCampos(p);
-				desbloquearCampos(p, true);
 			}
 			novoEditar();
 			break;
 		case "Editar":
 			if(tarefa!=null)
 				this.tarefaBackup=tarefa;
-			for(JPanel p : panels){
-				desbloquearCampos(p, true);
-			}
 			novoEditar();
 			break;
 		case "ChamarDialog":
@@ -181,9 +180,6 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			if(tarefaBackup!=null){
 				preencherFormulario(tarefa);
 				salvarCancelar();
-				for(JPanel p : panels){
-					desbloquearCampos(p, false);
-				}
 			}
 			else
 				view.dispose();
@@ -212,6 +208,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 						Calendar calendar2 = Calendar.getInstance();
 						calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
 								lt.getHour(), lt.getMinute());
+						calendar2.set(Calendar.SECOND, 0);
+						calendar2.set(Calendar.MILLISECOND, 0);
 						tarefa.setDataEvento(calendar2.getTime());
 					}else{
 						builder.append("Valor da Hora incorreta");
@@ -262,10 +260,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		if(continuar){
 			if(new TarefaDao().salvar(tarefa,session)){
 				salvarCancelar();
-				JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
-				for(JPanel p : panels){
-					desbloquearCampos(p, false);
-				}
+				view.dispose();
 			}
 		}else{
 			JOptionPane.showMessageDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
@@ -343,7 +338,6 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		btnEditar.setEnabled(false);
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
-		JPanel[] panels = new JPanel[]{pnBotoes, pnDetalhes,pnItem,pnRelacionamento};
 		verificarObjeto();
 	}
 	private void verificarObjeto(){
@@ -368,93 +362,49 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private void limparCampos(Object painel){
-		Container container = null;
-		if (painel instanceof JPanel) {
-			container = (JPanel) painel;
-		}
-		if (painel instanceof JScrollPane) {
-			container = (JScrollPane) painel;
-		}
-		if (painel instanceof JViewport) {
-			container = (JViewport) painel;
-		}
-		if(container!=null){
-			for(int i=0;i<container.getComponentCount();i++){
-				Component c = container.getComponent(i);
-				if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
-					limparCampos(c);
-					continue;
-				}
-				if (c instanceof JTextField) {
-					JTextField field = (JTextField) c;
-					field.setText("");
-				}
-				if (c instanceof JFormattedTextField) {
-					JFormattedTextField field = (JFormattedTextField) c;
-					field.setText("");
-				}
-				if (c instanceof JTextArea) {
-					JTextArea field = (JTextArea) c;
-					field.setText("");
-				}
-				if (c instanceof JComboBox) {
-					JComboBox field = (JComboBox) c;
-					field.setSelectedItem("");
-				}
-			}
-		}
-	}
-	private void desbloquearCampos(Object painel,boolean bloquear){
-		Container container = null;
-		if (painel instanceof JPanel) {
-			container = (JPanel) painel;
-		}
-		if (painel instanceof JScrollPane) {
-			container = (JScrollPane) painel;
-		}
-		if (painel instanceof JViewport) {
-			container = (JViewport) painel;
-		}
-		if(container!=null){
-			for(int i=0;i<container.getComponentCount();i++){
-				Component c = container.getComponent(i);
-				if (c instanceof JScrollPane || c instanceof JPanel || c instanceof JViewport) {
-					limparCampos(c);
-					continue;
-				}
-				if (c instanceof JTextField) {
-					JTextField field = (JTextField) c;
-					field.setEditable(bloquear);
-				}
-				if (c instanceof JFormattedTextField) {
-					JFormattedTextField field = (JFormattedTextField) c;
-					field.setEditable(bloquear);
-				}
-				if (c instanceof JTextArea) {
-					JTextArea field = (JTextArea) c;
-					field.setEditable(bloquear);
-				}
-				if (c instanceof JComboBox) {
-					JComboBox field = (JComboBox) c;
-					field.setEnabled(bloquear);
-				}
-			}
-		}
-	}
+	
 	//pegar radioButton selecionado
 	private void setarSelecao(){
+		Color color = Color.orange;
 		if(rdbtnEmail.isSelected()){
 			item = "Email";
-		}else if(rdbtnProposta.isSelected()){
+			rdbtnEmail.setOpaque(true);
+			rdbtnEmail.setBackground(color);
+		}
+		else{
+			rdbtnEmail.setOpaque(false);
+		}
+		if(rdbtnProposta.isSelected()){
 			item = "Proposta";
-		}else if(rdbtnReuniao.isSelected()){
+			rdbtnProposta.setOpaque(true);
+			rdbtnProposta.setBackground(color);
+		}
+		else{
+			rdbtnProposta.setOpaque(false);
+		}
+		if(rdbtnReuniao.isSelected()){
 			item = "Reuniao";
-		}else if(rdbtnTelefone.isSelected()){
+			rdbtnReuniao.setOpaque(true);
+			rdbtnReuniao.setBackground(color);
+		}
+		else{
+			rdbtnReuniao.setOpaque(false);
+		}
+		if(rdbtnTelefone.isSelected()){
 			item = "Telefone";
-		}else if(rdbtnVisita.isSelected()){
+			rdbtnTelefone.setOpaque(true);
+			rdbtnTelefone.setBackground(color);
+		}
+		else{
+			rdbtnTelefone.setOpaque(false);
+		}
+		if(rdbtnVisita.isSelected()){
 			item = "Visita";
+			rdbtnVisita.setOpaque(true);
+			rdbtnVisita.setBackground(color);
+		}
+		else{
+			rdbtnVisita.setOpaque(false);
 		}
 	}
 	@Override
@@ -462,4 +412,25 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		txCodigoObjeto.setText("");
 		txNomeObjeto.setText("");
 	}
+	public void setarIcons() throws NullPointerException {
+		ImageIcon iconEmail = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_email.png"));
+        rdbtnEmail.setIcon(recalculate(iconEmail));
+        rdbtnEmail.setBorderPainted(true);
+        ImageIcon iconProposta = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_proposta.png"));
+        rdbtnProposta.setIcon(recalculate(iconProposta));
+        rdbtnProposta.setBorderPainted(true);
+        ImageIcon iconReuniao = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_reuniao.png"));
+        rdbtnReuniao.setIcon(recalculate(iconReuniao));
+        rdbtnReuniao.setBorderPainted(true);
+        ImageIcon iconPhone = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_fone.png"));
+        rdbtnTelefone.setIcon(recalculate(iconPhone));
+        rdbtnTelefone.setBorderPainted(true);
+        ImageIcon iconVisita = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_visita.png"));
+        rdbtnVisita.setIcon(recalculate(iconVisita));        
+        rdbtnVisita.setBorderPainted(true);
+	}
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 }
