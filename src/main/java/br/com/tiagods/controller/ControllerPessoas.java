@@ -9,6 +9,7 @@ import static br.com.tiagods.view.PessoasView.*;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -19,11 +20,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -98,6 +103,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	salvarCancelar();
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
+    	setarIcones();
     	definirAcoes();
     }
 	private void definirAcoes(){
@@ -203,6 +209,28 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			else{
 				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, MenuView.getInstance(),true);
 				taskView.setVisible(true);
+			}
+			break;
+		case "MailTo":
+			URI urlMail = null;
+			try{
+				if(txEmail.getText().trim().length()>0){
+					urlMail = new URI("mailto", txEmail.getText(), null);
+					Desktop.getDesktop().mail(urlMail);
+				}
+				else
+					Desktop.getDesktop().mail();
+			}catch(IOException | URISyntaxException ex){
+				ex.printStackTrace();
+			}
+			break;
+		case "OpenURL":
+			URI browser = null;
+			try{
+				browser = new URI(txSite.getText());
+				Desktop.getDesktop().browse(browser);;
+			}catch(IOException | URISyntaxException ex){
+				ex.printStackTrace();
 			}
 			break;
 		default:
@@ -553,10 +581,50 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				model.addRow(linha);
 			}
 			txContadorRegistros.setText("Total: "+lista.size()+" registros");
+			table.setRowHeight(25);
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 		}
 	}
+	
+	public void setarIcones() throws NullPointerException{
+    	ImageIcon iconNovo = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
+    	btnNovo.setIcon(recalculate(iconNovo));
+    	btnCategoriaCad.setIcon(iconNovo);
+    	btnNivelCad.setIcon(iconNovo);
+    	btnOrigemCad.setIcon(iconNovo);
+    	btnServicosCad.setIcon(iconNovo);
+    	
+    	ImageIcon iconEdit = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
+    	btnEditar.setIcon(recalculate(iconEdit));
+    	ImageIcon iconSave = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
+    	btnSalvar.setIcon(recalculate(iconSave));
+    	ImageIcon iconCancel = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
+    	btnCancelar.setIcon(recalculate(iconCancel));
+    	ImageIcon iconTrash = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
+    	btnExcluir.setIcon(recalculate(iconTrash));
+    	
+    	ImageIcon iconNewTask = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_addtask.png"));
+    	btnNovaTarefa.setIcon(recalculate(iconNewTask));
+    	ImageIcon iconTask = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_task.png"));
+    	btnHistorico.setIcon(recalculate(iconTask));
+    	ImageIcon iconNegocios = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_negocios.png"));
+    	btnNegocios.setIcon(recalculate(iconNegocios));
+    	ImageIcon iconEmpresas = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_empresas.png"));
+    	btnEmpresas.setIcon(recalculate(iconEmpresas));
+    	ImageIcon iconEsconder = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_nofixar.png"));
+    	btEsconder.setIcon(recalculate(iconEsconder));
+    	
+    	ImageIcon iconMail = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_mail.png"));
+    	btnEmail.setIcon(recalculate(iconMail));
+    	ImageIcon iconURL = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
+    	btnLink.setIcon(recalculate(iconURL));
+    	
+    }
+    public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 }

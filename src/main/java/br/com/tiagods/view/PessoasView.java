@@ -53,7 +53,8 @@ public class PessoasView extends JInternalFrame {
     public static javax.swing.JPanel pnAuxiliar;
     public static javax.swing.JPanel pnPrivacidade;
     public static javax.swing.JButton btnNegocios, btnHistorico, btnEmpresas, btEsconder;
-    public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar;
+    public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar,btnNovaTarefa;
+    public static javax.swing.JButton btnNivelCad,btnCategoriaCad,btnOrigemCad,btnServicosCad;
 	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
@@ -78,11 +79,13 @@ public class PessoasView extends JInternalFrame {
 	public static JLabel txCodigo;
 	int i = 0 ;
 	ControllerPessoas controller = new ControllerPessoas();
+	public static JButton btnLink,btnEmail;
 	/**
 	 * Create the frame.
 	 */
 	public PessoasView(Pessoa pessoa) {
 		initComponents();
+		
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
 
@@ -91,6 +94,8 @@ public class PessoasView extends JInternalFrame {
 		pnVisao.add(txContador);
 		controller.iniciar(pessoa);
 		btnEmpresas.setEnabled(false);
+		
+		
 		
 	}
 	private void initComponents() {
@@ -340,34 +345,42 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(txCpf);
 
         btnNovo = new JButton();
-        btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnNovo.setToolTipText("Novo");
+        btnNovo.setHorizontalAlignment(SwingConstants.LEADING);
+        btnNovo.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnNovo.setText("Novo");
         btnNovo.setActionCommand("Novo");
-        btnNovo.setBounds(59, 306, 90, 23);
+        btnNovo.setBounds(59, 306, 90, 25);
         btnNovo.addActionListener(controller);
         pnPrincipal.add(btnNovo);
 
         btnEditar = new JButton();
-        btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnEditar.setToolTipText("Editar");
+        btnEditar.setHorizontalAlignment(SwingConstants.LEADING);
+        btnEditar.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnEditar.setText("Editar");
         btnEditar.setActionCommand("Editar");
         btnEditar.addActionListener(controller);
-        btnEditar.setBounds(153, 306, 90, 23);
+        btnEditar.setBounds(153, 306, 90, 25);
         pnPrincipal.add(btnEditar);
 
         btnSalvar = new JButton();
-        btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnSalvar.setToolTipText("Salvar");
+        btnSalvar.setHorizontalAlignment(SwingConstants.LEADING);
+        btnSalvar.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnSalvar.setText("Salvar");
-        btnSalvar.setBounds(249, 306, 90, 23);
+        btnSalvar.setBounds(249, 306, 90, 25);
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.addActionListener(controller);
         pnPrincipal.add(btnSalvar);
 
         btnCancelar = new JButton();
-        btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnCancelar.setToolTipText("Cancelar");
+        btnCancelar.setHorizontalAlignment(SwingConstants.LEADING);
+        btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(controller);
-        btnCancelar.setBounds(345, 306, 90, 23);
+        btnCancelar.setBounds(345, 306, 90, 25);
         pnPrincipal.add(btnCancelar);
 
         txEmail = new JTextField();
@@ -380,7 +393,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(lbEmail1);
 
         txSite = new JTextField();
-        txSite.setBounds(440, 184, 126, 20);
+        txSite.setBounds(440, 184, 116, 20);
         pnPrincipal.add(txSite);
 
         JLabel lbSite = new JLabel();
@@ -478,44 +491,43 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(cbCidade);
 
         btnEmpresas = new JButton();
-        btnEmpresas.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnEmpresas.setToolTipText("Empresas");
+        btnEmpresas.setHorizontalAlignment(SwingConstants.LEADING);
+        btnEmpresas.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnEmpresas.setText("Empresas");
         btnEmpresas.setActionCommand("Empresas");
-        btnEmpresas.setBounds(441, 340, 87, 23);
+        btnEmpresas.setBounds(441, 338, 87, 25);
         btnEmpresas.addActionListener(controller);
         pnPrincipal.add(btnEmpresas);
 
         btnNegocios = new JButton();
-        btnNegocios.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnNegocios.setToolTipText("Neg\u00F3cios");
+        btnNegocios.setHorizontalAlignment(SwingConstants.LEADING);
+        btnNegocios.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
-        btnNegocios.setBounds(344, 340, 90, 23);
+        btnNegocios.setBounds(344, 338, 90, 25);
         btnNegocios.addActionListener(controller);
         pnPrincipal.add(btnNegocios);
-
-        JButton btTarefa = new JButton();
-        btTarefa.setFont(new Font("Dialog", Font.PLAIN, 10));
-        btTarefa.setBounds(59, 340, 115, 23);
-        btTarefa.setText("Nova Tarefa");
-        btTarefa.setName("Nova Tarefa");
-        btTarefa.setActionCommand("Nova Tarefa");
-        btTarefa.addActionListener(controller);
-        pnPrincipal.add(btTarefa);
         
         btnHistorico = new JButton();
-        btnHistorico.setFont(new Font("Tahoma", Font.PLAIN, 10));
-        btnHistorico.setText("Historico");
+        btnHistorico.setToolTipText("Tarefas");
+        btnHistorico.setHorizontalAlignment(SwingConstants.LEADING);
+        btnHistorico.setFont(new Font("Dialog", Font.PLAIN, 9));
+        btnHistorico.setText("Tarefas");
         btnHistorico.setActionCommand("Historico");
-        btnHistorico.setBounds(248, 340, 90, 23);
+        btnHistorico.setBounds(248, 338, 90, 25);
         btnHistorico.addActionListener(controller);
         pnPrincipal.add(btnHistorico);
 
         btnExcluir = new JButton();
-        btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 10));
+        btnExcluir.setToolTipText("Excluir");
+        btnExcluir.setHorizontalAlignment(SwingConstants.LEADING);
+        btnExcluir.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnExcluir.setText("Excluir");
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.addActionListener(controller);
-        btnExcluir.setBounds(438, 306, 90, 23);
+        btnExcluir.setBounds(438, 306, 90, 25);
         pnPrincipal.add(btnExcluir);
         
         txCodigo = new JLabel("");
@@ -532,17 +544,15 @@ public class PessoasView extends JInternalFrame {
         cbCategoriaCad.setBounds(107, 96, 87, 20);
         pnPrincipal.add(cbCategoriaCad);
         
-        JButton btnCategoriaCad = new JButton();
-        btnCategoriaCad.setText("ADC");
+        btnCategoriaCad = new JButton();
         btnCategoriaCad.setActionCommand("CriarCategoria");
-        btnCategoriaCad.setBounds(203, 93, 36, 23);
+        btnCategoriaCad.setBounds(203, 93, 36, 25);
         btnCategoriaCad.addActionListener(controller);
         pnPrincipal.add(btnCategoriaCad);
         
-        JButton btnOrigemCad = new JButton();
-        btnOrigemCad.setText("ADC");
+        btnOrigemCad = new JButton();
         btnOrigemCad.setActionCommand("CriarOrigem");
-        btnOrigemCad.setBounds(203, 123, 36, 23);
+        btnOrigemCad.setBounds(203, 123, 36, 25);
         btnOrigemCad.addActionListener(controller);
         pnPrincipal.add(btnOrigemCad);
         
@@ -566,10 +576,9 @@ public class PessoasView extends JInternalFrame {
         cbProdServicosCad.setBounds(440, 126, 116, 20);
         pnPrincipal.add(cbProdServicosCad);
         
-        JButton btnServicosCad = new JButton();
-        btnServicosCad.setText("ADC");
+        btnServicosCad = new JButton();
         btnServicosCad.setActionCommand("CriarServico");
-        btnServicosCad.setBounds(566, 123, 36, 23);
+        btnServicosCad.setBounds(566, 123, 36, 25);
         btnServicosCad.addActionListener(controller);
         pnPrincipal.add(btnServicosCad);
         
@@ -583,10 +592,9 @@ public class PessoasView extends JInternalFrame {
         lbNivelCad.setBounds(348, 94, 89, 18);
         pnPrincipal.add(lbNivelCad);
         
-        JButton btnNivelCad = new JButton();
-        btnNivelCad.setText("ADC");
+        btnNivelCad = new JButton();
         btnNivelCad.setActionCommand("CriarNivel");
-        btnNivelCad.setBounds(566, 93, 36, 23);
+        btnNivelCad.setBounds(566, 93, 36, 25);
         btnNivelCad.addActionListener(controller);
         pnPrincipal.add(btnNivelCad);
 
@@ -599,8 +607,8 @@ public class PessoasView extends JInternalFrame {
         scrolAuxiliar.setBounds(0, 52, 450, 308);
 
         btEsconder = new JButton("Esconder");
-        btEsconder.setFont(new Font("Tahoma", Font.PLAIN, 10));
-        btEsconder.setBounds(369, 11, 83, 23);
+        btEsconder.setFont(new Font("Tahoma", Font.PLAIN, 9));
+        btEsconder.setBounds(330, 11, 120, 25);
         btEsconder.setActionCommand("Esconder");
         btEsconder.addActionListener(controller);
         pnAuxiliar.setLayout(null);
@@ -609,7 +617,17 @@ public class PessoasView extends JInternalFrame {
         scrolAuxiliar.setViewportView(tbAuxiliar);
         pnAuxiliar.add(scrolAuxiliar);
         pnAuxiliar.add(btEsconder);
-        
+
+        btnNovaTarefa = new JButton();
+        btnNovaTarefa.setBounds(10, 11, 130, 25);
+        pnAuxiliar.add(btnNovaTarefa);
+        btnNovaTarefa.setHorizontalAlignment(SwingConstants.LEADING);
+        btnNovaTarefa.setFont(new Font("Tahoma", Font.PLAIN, 9));
+        btnNovaTarefa.setText("Nova Tarefa");
+        btnNovaTarefa.setName("Nova Tarefa");
+        btnNovaTarefa.setActionCommand("Nova Tarefa");
+        btnNovaTarefa.addActionListener(controller);
+
         JScrollPane scrollPrincipal = new JScrollPane();
         scrollPrincipal.setBounds(10, 107, 760, 142);
         pnVisao.add(scrollPrincipal);
@@ -627,7 +645,23 @@ public class PessoasView extends JInternalFrame {
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 83, 53, 14);
         pnVisao.add(lbBuscar);
-
+        
+        btnEmail = new JButton();
+		btnEmail.setToolTipText("Enviar e-mail");
+		btnEmail.setBounds(318, 181, 35, 25);
+		pnPrincipal.add(btnEmail);
+		btnEmail.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		btnEmail.setActionCommand("MailTo");
+		btnEmail.addActionListener(controller);
+		
+		btnLink = new JButton();
+		btnLink.setToolTipText("Abrir P\u00E1gina");
+		btnLink.setBounds(567, 182, 35, 25);
+		pnPrincipal.add(btnLink);
+		btnLink.setFont(new Font("Tahoma", Font.PLAIN, 9));
+		btnLink.setActionCommand("OpenURL");
+		btnLink.addActionListener(controller);
+        
         setBounds(0, 0, 1250, 660);
     }
 }

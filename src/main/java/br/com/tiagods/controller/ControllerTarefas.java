@@ -150,6 +150,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(validarDatas())
 			buscar();
+			
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
@@ -428,7 +429,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			btEdit.setActionCommand("Editar");
 			btEdit.addActionListener(new AcaoInTable());
 
-			JButton btExcluir  =new ButtonColumnModel(table,11).getButton();
+			JButton btExcluir = new ButtonColumnModel(table,11).getButton();
 			btExcluir.setActionCommand("Excluir");
 			btExcluir.addActionListener(new AcaoInTable());
 			
@@ -535,6 +536,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			calendar2.setTime(jData2.getDate());
 			return calendar2.compareTo(calendar)>=0;
 		}catch(NullPointerException e){
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -573,7 +575,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				textarea.setForeground(table.getForeground());
 				textarea.setBackground(table.getBackground());
 			}
-
 			textarea.setText((String) value); 
 			textarea.setCaretPosition(0);
 			return this;
@@ -621,7 +622,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
         ckVisita.setIcon(recalculate(iconVisita));  
         ckVisita.setBorderPainted(true);
         
-        ImageIcon iconTaskNew = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/add.png"));
+        ImageIcon iconTaskNew = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
         btNovaTarefa.setIcon(recalculate(iconTaskNew));
         
         ImageIcon iconFin = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/ok.png"));
@@ -642,6 +643,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
         ImageIcon iconDefinir = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_person.png"));
         rbDefinirData.setIcon(recalculate(iconDefinir));
         rbDefinirData.setBorderPainted(true);
+        
         
 	}
 	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{

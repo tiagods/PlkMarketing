@@ -2,6 +2,7 @@ package br.com.tiagods.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.GroupLayout;
@@ -28,7 +29,6 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	
     public static javax.swing.JDesktopPane jDBody;
     public static JMenu mnInicio, mnTarefas, mnEmpresas,mnPessoas,mnNegocios,mnRelatorios,mnExtra;
-    public static JMenuItem itemNovaTarefa, itemListarTarefa;
     private javax.swing.JPanel pnPrincipal;
     
     private static MenuView instance;
@@ -65,8 +65,15 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	 */
 	public MenuView() {
 		setTitle("Novos Negocios");
+		try{
+		ImageIcon ion = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
+		ion.setImage(ion.getImage().getScaledInstance(50, 50, 100));
+		this.setIconImage(ion.getImage());
+		}catch (NullPointerException e) {
+		}
 		initComponents();
 		controller.iniciar();
+		
 		
 	}
 	public void initComponents(){
@@ -117,17 +124,9 @@ public class MenuView extends JFrame implements DefaultUtilities{
         
         
         mnTarefas = new JMenu("Tarefas");
+        mnTarefas.setName("Tarefas");
+        mnTarefas.addMouseListener(controller);
         menuBar.add(mnTarefas);
-        
-        itemNovaTarefa = new JMenuItem("Nova Tarefa");
-        itemNovaTarefa.setActionCommand("TarefasSave");
-        itemNovaTarefa.addActionListener(controller);
-        mnTarefas.add(itemNovaTarefa);
-        
-        itemListarTarefa = new JMenuItem("Listar Tarefas");
-        itemListarTarefa.setActionCommand("Tarefas");
-        itemListarTarefa.addActionListener(controller);
-        mnTarefas.add(itemListarTarefa);
         
         mnEmpresas = new JMenu("Empresas");
         mnEmpresas.setName("Empresas");

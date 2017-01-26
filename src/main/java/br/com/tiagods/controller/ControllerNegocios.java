@@ -6,6 +6,7 @@ package br.com.tiagods.controller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -16,7 +17,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -28,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -89,6 +94,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	List<Negocio> listarNegocios;
 	NegocioPerdaDialog dialogPerda;
 	
+	String email;
+	String site;
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Negocio negocio){
@@ -110,6 +117,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			preencherFormulario(this.negocio);
 		tbPrincipal.addMouseListener(this);
 		session.close();
+		setarIcones();
 		definirAcoes();
 //		desbloquerFormulario(false, pnCadastro);
 //		desbloquerFormulario(false, pnAndamento);
@@ -160,10 +168,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		if(n.getClasse().equals(Empresa.class.getSimpleName())){
 			txCodObjeto.setText(""+n.getEmpresa().getId());
 			txNomeObjeto.setText(n.getEmpresa().getNome());
+			email = n.getEmpresa().getPessoaJuridica().getEmail();
+			site = n.getEmpresa().getPessoaJuridica().getSite();
 		}
 		else if(n.getClasse().equals(Pessoa.class.getSimpleName())){
 			txCodObjeto.setText(""+n.getPessoa().getId());
 			txNomeObjeto.setText(n.getPessoa().getNome());
+			email = n.getPessoa().getPessoaFisica().getEmail();
+			site = n.getPessoa().getPessoaFisica().getSite();
 		}
 		txCodigo.setText(""+n.getId());
 		txNome.setText(n.getNome());
@@ -209,6 +221,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}			
 			break;
 		case "Novo":
+			email="";
+			site="";
 			limparFormulario(pnCadastro);
 			novoEditar();
 			telaEmEdicao = true;
@@ -315,7 +329,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				cbServicosAgregados.setSelectedItem("");
 				txValorServico.setText("0,00");
 				txIdServicoContratado.setText("");
-			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteção!");
+			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteração!");
 			break;
 		case "NovoServicoContratado":
 			txIdServicoContratado.setText("");
@@ -330,12 +344,39 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				}
 				else
 					valor="Selecione um registro da tabela ou crie um Novo Negocio";
-				JOptionPane.showMessageDialog(MenuView.jDBody, "Não pode criar uma tarefa para um negocio que ainda não existe!\n"
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não pode criar uma tarefa para um negócio que ainda não existe!\n"
 						+ valor);
 			}
 			else{
 				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, MenuView.getInstance(),true);
 				taskView.setVisible(true);
+			}
+			break;
+		case "MailTo":
+			URI urlMail = null;
+			try{
+				if(email.trim().length()>0){
+					urlMail = new URI("mailto", email, null);
+					Desktop.getDesktop().mail(urlMail);
+				}
+				else
+					Desktop.getDesktop().mail();
+			}catch(IOException | URISyntaxException ex){
+				ex.printStackTrace();
+			}
+			break;
+		case "OpenURL":
+			URI browser = null;
+			try{
+				if(site.trim().length()>0){
+					browser = new URI(site);
+					Desktop.getDesktop().browse(browser);
+				}
+				else
+					JOptionPane.showMessageDialog(MenuView.jDBody, "Não possui site",
+							"Nenhuma Pagina foi encontrada",JOptionPane.INFORMATION_MESSAGE);
+			}catch(IOException | URISyntaxException ex){
+				ex.printStackTrace();
 			}
 			break;
 		default:
@@ -766,6 +807,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				linha[9] = n.getClasse();
 				model.addRow(linha);
 			}
+			table.setRowHeight(25);
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.ORANGE);
@@ -798,6 +840,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			o[3] = "Excluir";
 			model.addRow(o);
 		}
+		tbServicosContratados.setRowHeight(25);
 		tbServicosContratados.setModel(model);
 		JButton btRem  = new ButtonColumnModel(tbServicosContratados,3).getButton();
 		btRem.addActionListener(new AcaoInTableServicosContratados());
@@ -966,5 +1009,65 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		
 	}
+	public void setarIcones() throws NullPointerException{
+    	ImageIcon iconNovo = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
+    	btnNovo.setIcon(recalculate(iconNovo));
+    	btnCategoriaAdd.setIcon(iconNovo);
+    	btnNivelAdd.setIcon(iconNovo);
+    	btnOrigemAdd.setIcon(iconNovo);
+    	btnServicoAdd.setIcon(iconNovo);
+    	
+    	ImageIcon iconEdit = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
+    	btnEditar.setIcon(recalculate(iconEdit));
+    	ImageIcon iconSave = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
+    	btnSalvar.setIcon(recalculate(iconSave));
+    	ImageIcon iconCancel = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
+    	btnCancelar.setIcon(recalculate(iconCancel));
+    	ImageIcon iconTrash = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
+    	btnExcluir.setIcon(recalculate(iconTrash));
+    	
+    	ImageIcon iconNewTask = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_addtask.png"));
+    	btnNovaTarefa.setIcon(recalculate(iconNewTask));
+    	ImageIcon iconTask = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_task.png"));
+    	btnHistorico.setIcon(recalculate(iconTask));
+    	
+    	btAddServicoAgregado.setIcon(iconSave);
+    	btnNovoServicoAgregado.setIcon(iconNovo);
+    	
+    	ImageIcon iconEsconder = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_nofixar.png"));
+    	btEsconder.setIcon(recalculate(iconEsconder));
+    	
+    	ImageIcon iconPhone = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_fone.png"));
+        rbContato.setIcon(recalculate(iconPhone));
+        rbContato.setBorderPainted(true);
+        ImageIcon iconProposta = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_proposta.png"));
+        rbEnvioProposta.setIcon(recalculate(iconProposta));
+        rbEnvioProposta.setBorderPainted(true);
+        ImageIcon iconFollowup = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_followup.png"));
+        rbFollowup.setIcon(recalculate(iconFollowup));
+        rbFollowup.setBorderPainted(true);
+        
+        ImageIcon iconClose = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_fechamento.png"));
+        rbFechamento.setIcon(recalculate(iconClose));
+        rbFechamento.setBorderPainted(true);
+        
+        ImageIcon iconIndefinida = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_question.png"));
+        rbIndefinida.setIcon(recalculate(iconIndefinida));
+        rbIndefinida.setBorderPainted(true);
+        
+        ImageIcon iconImportant = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/exclamation.png"));
+        btAddEmpresaPessoa.setIcon(recalculate(iconImportant));
+        btAddEmpresaPessoa.setBorderPainted(true);
+        
+    	ImageIcon iconMail = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_mail.png"));
+    	btnEmail.setIcon(recalculate(iconMail));
+    	ImageIcon iconURL = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
+    	btnLink.setIcon(recalculate(iconURL));
+    	
+    }
+    public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 	
 }

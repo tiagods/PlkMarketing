@@ -59,8 +59,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.plaf.LayerUI;
 
-public class Initialize extends JFrame{
-
+public class LoadingView extends JFrame{
 	/**
 	 * 
 	 */
@@ -69,11 +68,11 @@ public class Initialize extends JFrame{
 	private Color cor;
 	final WaitLayerUI layerUI = new WaitLayerUI();
 	
-	private static Initialize instance;
+	private static LoadingView instance;
 	private boolean mIsRunning;
 	private boolean mIsFadingOut;
 	
-	public static Initialize getInstance(){
+	public static LoadingView getInstance(){
 		return instance;
 	}
 	public void fechar(){
@@ -95,7 +94,7 @@ public class Initialize extends JFrame{
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				instance = new Initialize();
+				instance = new LoadingView();
 				
 				// Set the window to 70% translucency, if supported.
 				if (isTranslucencySupported) {
@@ -124,7 +123,7 @@ public class Initialize extends JFrame{
 		
 	}
 	
-	public Initialize(){
+	public LoadingView(){
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {

@@ -5,8 +5,6 @@ package br.com.tiagods.controller;
 
 import static br.com.tiagods.view.MenuView.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
@@ -28,7 +26,7 @@ import br.com.tiagods.view.TarefasView;
  *
  * @author User
  */
-public class ControllerMenu implements ActionListener, MouseListener{
+public class ControllerMenu implements MouseListener{
     InicioView inicio;
     EmpresasView empresas;
     PessoasView pessoas;
@@ -53,21 +51,7 @@ public class ControllerMenu implements ActionListener, MouseListener{
     	inicio = new InicioView();
     	abrirCorpo(inicio);
     }
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    	switch(e.getActionCommand()){
-    	case "Tarefas":
-    		tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
-    		abrirCorpo(tarefas);
-    		break;
-    	case "TarefasSave":
-    		tarefasSave = new TarefasSaveView(null,null,MenuView.getInstance(),true);
-    		tarefasSave.setVisible(true);
-    		break;
-    	default:
-    		break;
-    	}
-    }
+    
     @Override
     public void mouseClicked(MouseEvent e) {
     	switch(e.getComponent().getName()){
@@ -146,11 +130,6 @@ public class ControllerMenu implements ActionListener, MouseListener{
     	ImageIcon iconExtra = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_chave.png"));
         mnExtra.setIcon(recalculate(iconExtra));
         
-        ImageIcon iconTaskList = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menuitem_list.png"));
-        itemListarTarefa.setIcon(recalculate(iconTaskList));;
-        
-        ImageIcon iconTaskNew = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menuitem_add.png"));
-        itemNovaTarefa.setIcon(recalculate(iconTaskNew));
         //https://icons8.com/web-app/category/all/User-Interface
         //https://icons8.com/web-app/category/all/Business
         //https://icons8.com/web-app/category/all/Time-And-Date
