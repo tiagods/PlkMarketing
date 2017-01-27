@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -64,6 +65,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		this.view=view;
 		this.combobox = combobox;
 		pnCadastrar.setVisible(false);
+		setarIcones();
 	}
 	@SuppressWarnings("unchecked")
 	public void processarObjeto(Object object,String atributo, String buscarValor){
@@ -488,5 +490,28 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		String texto = txBuscar.getText().trim().toUpperCase();
 		processarObjeto(object,comboFiltro.getSelectedItem().toString().toLowerCase(),texto);
 	}
-
+	public void setarIcones() throws NullPointerException{
+		ImageIcon iconNovo = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
+		btnNovo.setIcon(recalculate(iconNovo));
+		ImageIcon iconEdit = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
+		btnEditar.setIcon(recalculate(iconEdit));
+		ImageIcon iconSave = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
+		btnSalvar.setIcon(recalculate(iconSave));
+		ImageIcon iconCancel = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
+		btnCancelar.setIcon(recalculate(iconCancel));
+		ImageIcon iconTrash = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
+		btnExcluir.setIcon(recalculate(iconTrash));
+		
+		ImageIcon iconImport= new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
+		btnImportarCadastro.setIcon(recalculate(iconImport));
+		
+		ImageIcon iconOK = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
+		btOkDialog.setIcon(recalculate(iconOK));
+		ImageIcon iconExit = new ImageIcon(ControllerSeletor.class.getResource("/br/com/tiagods/utilitarios/button_exit.png"));
+		btCancelDialog.setIcon(recalculate(iconExit));
+	}
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+		icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+		return icon;
+	}
 }

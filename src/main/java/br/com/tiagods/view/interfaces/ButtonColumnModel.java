@@ -19,8 +19,7 @@ public class ButtonColumnModel extends AbstractCellEditor
 		JTable table;
         JButton renderButton;
         JButton editButton;
-        String text;
-        String imagePath = "/br/com/tiagods/utilitarios/";
+        Object text;
         public ButtonColumnModel(JTable table, int column)
         {
             super();
@@ -35,33 +34,35 @@ public class ButtonColumnModel extends AbstractCellEditor
         public Component getTableCellRendererComponent(
             JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
         {
-            if (hasFocus)
-            {
-                renderButton.setForeground(table.getForeground());
-                renderButton.setBackground(UIManager.getColor("Button.background"));
-            }
-            else if (isSelected)
-            {
-                renderButton.setForeground(table.getSelectionForeground());
-                renderButton.setBackground(table.getSelectionBackground());
-            }
-            else
-            {
-                renderButton.setForeground(table.getForeground());
-                renderButton.setBackground(UIManager.getColor("Button.background"));
-            }
-            renderButton.setText( (value == null) ? "" : value.toString() );
+//            if(isSelected){
+//                renderButton.setForeground(table.getSelectionForeground());
+//                renderButton.setBackground(table.getSelectionBackground());
+//            }
+//            else{
+//                renderButton.setForeground(table.getForeground());
+//                renderButton.setBackground(UIManager.getColor("Button.background"));
+//            }
+        	if(value instanceof String){
+        		renderButton.setText( (value == null) ? "" : value.toString() );
+        	}
+        	else if(value instanceof ImageIcon){
+        		renderButton.setIcon((ImageIcon)value);
+        	}
             return renderButton;
         }
         public Component getTableCellEditorComponent(
-            JTable table, Object value, boolean isSelected, int row, int column)
-        {
-            text = (value == null) ? "" : value.toString();
-            editButton.setText( text );
-            return editButton;
+            JTable table, Object value, boolean isSelected, int row, int column){
+        	if(value instanceof String){
+        		text = (value == null) ? "" : value;
+        		editButton.setText(text.toString());
+        	}
+        	else if(value instanceof ImageIcon){
+        		text = value;
+        		editButton.setIcon((ImageIcon)text);
+        	}
+        	return editButton;
         }
-        public Object getCellEditorValue()
-        {
+        public Object getCellEditorValue(){
             return text;
         }
 //        public void actionPerformed(ActionEvent e)
@@ -73,35 +74,5 @@ public class ButtonColumnModel extends AbstractCellEditor
         	return this.editButton;
         }
         
-        public JButton getButtonIcon(JButton button) throws NullPointerException{
-        	String imageName = "";
-        	switch(text){
-        	case "Editar":
-        		imageName="edit.png";
-        		break;
-        	case "Excluir":
-        		imageName="remove.png";
-        		break;
-        	case "Pessoa":
-        		imageName="people.png";
-        		break;
-        	case "Empresa":
-        		imageName="empresas.png";
-        		break;
-        	case "Negocio":
-        		imageName="negocios.png";
-        		break;
-        	default:
-        		break;
-        	}
-        	ImageIcon icon = new ImageIcon(ButtonColumnModel.class.getResource(imagePath+imageName));
-        	button.setIcon(icon);
-        	return button;
-        }
-        
-        public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
-        	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
-        	return icon;
-        }
     }
 

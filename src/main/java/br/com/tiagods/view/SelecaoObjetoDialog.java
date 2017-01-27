@@ -34,7 +34,7 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 	public static JTextField txBuscar;
 	public static JTextField txNome;
 	public static JLabel txCodigo;
-	public static JButton btnNovo,btnEditar,btnSalvar,btnExcluir,btnCancelar;
+	public static JButton btnNovo,btnEditar,btnSalvar,btnExcluir,btnCancelar,btOkDialog,btCancelDialog,btnImportarCadastro;
 	public static JComboBox<String> comboFiltro;
 	ControllerSeletor controller = new ControllerSeletor();
 /**
@@ -77,17 +77,19 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 		contentPanel.setLayout(gl_contentPanel);
 
 		JPanel buttonPane = new JPanel();
-		buttonPane.setBounds(0, 317, 574, 33);
+		buttonPane.setBounds(0, 309, 574, 41);
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane);
 		
-		JButton btOkDialog = new JButton("OK");
+		btOkDialog = new JButton("");
+		btOkDialog.setToolTipText("OK");
 		btOkDialog.setActionCommand("OK");
 		btOkDialog.addActionListener(controller);
 		buttonPane.add(btOkDialog);
 		getRootPane().setDefaultButton(btOkDialog);
 
-		JButton btCancelDialog = new JButton("Cancelar");
+		btCancelDialog = new JButton("");
+		btCancelDialog.setToolTipText("Cancelar e Sair");
 		btCancelDialog.setActionCommand("Desistir");
 		btCancelDialog.addActionListener(controller);
 		buttonPane.add(btCancelDialog);
@@ -97,12 +99,12 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 		getContentPane().add(lbBuscar);
 
 		txBuscar = new JTextField();
-		txBuscar.setBounds(68, 11, 86, 20);
+		txBuscar.setBounds(68, 11, 86, 25);
 		getContentPane().add(txBuscar);
 		txBuscar.addKeyListener(controller);
 		
 		comboFiltro = new JComboBox();
-		comboFiltro.setBounds(164, 11, 96, 20);
+		comboFiltro.setBounds(164, 11, 96, 25);
 		getContentPane().add(comboFiltro);
 		
 		
@@ -117,44 +119,57 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 		pnCadastrar.add(txCodigo);
 		
 		txNome = new JTextField();
-		txNome.setBounds(26, 2, 129, 20);
+		txNome.setBounds(26, 2, 129, 25);
 		pnCadastrar.add(txNome);
 		txNome.setColumns(10);
 		
-		btnNovo = new JButton("Novo");
+		btnNovo = new JButton("");
+		btnNovo.setToolTipText("Novo");
 		btnNovo.setActionCommand("Novo");
 		btnNovo.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnNovo.setBounds(349, 10, 75, 23);
+		btnNovo.setBounds(270, 11, 75, 25);
 		btnNovo.addActionListener(controller);
 		getContentPane().add(btnNovo);
 		
-		btnEditar = new JButton("Editar");
-		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnEditar.setBounds(270, 10, 75, 23);
-		btnEditar.setActionCommand("Editar");
-		btnEditar.addActionListener(controller);
-		getContentPane().add(btnEditar);
-		
-		btnSalvar = new JButton("Salvar");
+		btnSalvar = new JButton("");
+		btnSalvar.setToolTipText("Salvar");
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnSalvar.setBounds(169, 1, 75, 23);
+		btnSalvar.setBounds(174, 1, 75, 25);
 		btnSalvar.setActionCommand("Salvar");
 		btnSalvar.addActionListener(controller);
 		pnCadastrar.add(btnSalvar);
 		
-		btnCancelar = new JButton("Cancelar");
+		btnCancelar = new JButton("");
+		btnCancelar.setToolTipText("Cancelar");
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnCancelar.setBounds(254, 1, 75, 23);
+		btnCancelar.setBounds(260, 2, 75, 25);
 		btnCancelar.setActionCommand("Cancelar");
 		btnCancelar.addActionListener(controller);
 		pnCadastrar.add(btnCancelar);
 		
-		btnExcluir = new JButton("Excluir");
+		btnExcluir = new JButton("");
+		btnExcluir.setToolTipText("Excluir");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnExcluir.setBounds(339, 1, 75, 23);
+		btnExcluir.setBounds(342, 1, 75, 25);
 		btnExcluir.setActionCommand("Excluir");
 		btnExcluir.addActionListener(controller);
 		pnCadastrar.add(btnExcluir);
+		
+		btnImportarCadastro = new JButton("Importar Cadastro");
+		btnImportarCadastro.setToolTipText("Aguarde...em breve ser\u00E1 possivel importar seus contatos atraves da base de clientes Prolink (Cadastro). Previs\u00E3o de entrega em 05/01/2017.");
+		btnImportarCadastro.setEnabled(false);
+		btnImportarCadastro.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnImportarCadastro.setActionCommand("");
+		btnImportarCadastro.setBounds(436, 11, 138, 25);
+		getContentPane().add(btnImportarCadastro);
+		
+		btnEditar = new JButton("");
+		btnEditar.setBounds(351, 11, 75, 25);
+		getContentPane().add(btnEditar);
+		btnEditar.setToolTipText("Editar");
+		btnEditar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnEditar.setActionCommand("Editar");
+		btnEditar.addActionListener(controller);
 		setLocationRelativeTo(null);
 	}
 }

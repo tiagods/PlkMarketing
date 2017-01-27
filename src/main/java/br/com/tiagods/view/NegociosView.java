@@ -347,7 +347,6 @@ public class NegociosView extends JInternalFrame {
         btnNovo.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnNovo.setActionCommand("Novo");
         btnNovo.setName("Novo");
-        btnNovo.setText("Novo");
         btnNovo.addActionListener(controller);
         btnNovo.setBounds(179, 321, 90, 25);
         pnCadastro.add(btnNovo);
@@ -357,7 +356,6 @@ public class NegociosView extends JInternalFrame {
         btnEditar.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnEditar.setActionCommand("Editar");
         btnEditar.setName("Editar");
-        btnEditar.setText("Editar");
         btnEditar.addActionListener(controller);
         btnEditar.setBounds(275, 321, 90, 25);
         pnCadastro.add(btnEditar);
@@ -367,7 +365,6 @@ public class NegociosView extends JInternalFrame {
         btnSalvar.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.setName("Salvar");
-        btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(controller);
         btnSalvar.setBounds(371, 321, 90, 25);
         pnCadastro.add(btnSalvar);
@@ -377,7 +374,6 @@ public class NegociosView extends JInternalFrame {
         btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnCancelar.setActionCommand("Cancelar");
         btnCancelar.setName("Cancelar");
-        btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(467, 321, 90, 25);
         pnCadastro.add(btnCancelar);
@@ -443,7 +439,6 @@ public class NegociosView extends JInternalFrame {
         btnHistorico.setToolTipText("Tarefas");
         btnHistorico.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnHistorico.setActionCommand("Historico");
-        btnHistorico.setText("Tarefas");
         btnHistorico.setBounds(660, 321, 90, 25);
         btnHistorico.addActionListener(controller);
         pnCadastro.add(btnHistorico);
@@ -522,7 +517,6 @@ public class NegociosView extends JInternalFrame {
         btnExcluir.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.setName("Excluir");
-        btnExcluir.setText("Excluir");
         btnExcluir.setBounds(563, 321, 90, 25);
         btnExcluir.addActionListener(controller);
         pnCadastro.add(btnExcluir);

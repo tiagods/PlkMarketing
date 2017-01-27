@@ -428,6 +428,18 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
         ImageIcon iconVisita = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_visita.png"));
         rdbtnVisita.setIcon(recalculate(iconVisita));        
         rdbtnVisita.setBorderPainted(true);
+        
+        ImageIcon iconNew = new ImageIcon(ControllerTarefasSave.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
+        btnNovo.setIcon(recalculate(iconNew));
+        ImageIcon iconEdit = new ImageIcon(ControllerTarefasSave.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
+    	btnEditar.setIcon(recalculate(iconEdit));
+    	ImageIcon iconSave = new ImageIcon(ControllerTarefasSave.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
+    	btnSalvar.setIcon(recalculate(iconSave));
+    	ImageIcon iconCancel = new ImageIcon(ControllerTarefasSave.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
+    	btnCancelar.setIcon(recalculate(iconCancel));
+    	
+    	ImageIcon iconAdd = new ImageIcon(ControllerTarefasSave.class.getResource("/br/com/tiagods/utilitarios/arrow_rigth.png"));
+    	btnAssociacao.setIcon(recalculate(iconAdd));
 	}
 	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

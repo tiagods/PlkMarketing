@@ -346,9 +346,7 @@ public class PessoasView extends JInternalFrame {
 
         btnNovo = new JButton();
         btnNovo.setToolTipText("Novo");
-        btnNovo.setHorizontalAlignment(SwingConstants.LEADING);
         btnNovo.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnNovo.setText("Novo");
         btnNovo.setActionCommand("Novo");
         btnNovo.setBounds(59, 306, 90, 25);
         btnNovo.addActionListener(controller);
@@ -356,9 +354,7 @@ public class PessoasView extends JInternalFrame {
 
         btnEditar = new JButton();
         btnEditar.setToolTipText("Editar");
-        btnEditar.setHorizontalAlignment(SwingConstants.LEADING);
         btnEditar.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnEditar.setText("Editar");
         btnEditar.setActionCommand("Editar");
         btnEditar.addActionListener(controller);
         btnEditar.setBounds(153, 306, 90, 25);
@@ -366,9 +362,7 @@ public class PessoasView extends JInternalFrame {
 
         btnSalvar = new JButton();
         btnSalvar.setToolTipText("Salvar");
-        btnSalvar.setHorizontalAlignment(SwingConstants.LEADING);
         btnSalvar.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnSalvar.setText("Salvar");
         btnSalvar.setBounds(249, 306, 90, 25);
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.addActionListener(controller);
@@ -376,9 +370,7 @@ public class PessoasView extends JInternalFrame {
 
         btnCancelar = new JButton();
         btnCancelar.setToolTipText("Cancelar");
-        btnCancelar.setHorizontalAlignment(SwingConstants.LEADING);
         btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(345, 306, 90, 25);
         pnPrincipal.add(btnCancelar);
@@ -492,9 +484,7 @@ public class PessoasView extends JInternalFrame {
 
         btnEmpresas = new JButton();
         btnEmpresas.setToolTipText("Empresas");
-        btnEmpresas.setHorizontalAlignment(SwingConstants.LEADING);
         btnEmpresas.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnEmpresas.setText("Empresas");
         btnEmpresas.setActionCommand("Empresas");
         btnEmpresas.setBounds(441, 338, 87, 25);
         btnEmpresas.addActionListener(controller);
@@ -502,9 +492,7 @@ public class PessoasView extends JInternalFrame {
 
         btnNegocios = new JButton();
         btnNegocios.setToolTipText("Neg\u00F3cios");
-        btnNegocios.setHorizontalAlignment(SwingConstants.LEADING);
         btnNegocios.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
         btnNegocios.setBounds(344, 338, 90, 25);
         btnNegocios.addActionListener(controller);
@@ -512,9 +500,7 @@ public class PessoasView extends JInternalFrame {
         
         btnHistorico = new JButton();
         btnHistorico.setToolTipText("Tarefas");
-        btnHistorico.setHorizontalAlignment(SwingConstants.LEADING);
         btnHistorico.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnHistorico.setText("Tarefas");
         btnHistorico.setActionCommand("Historico");
         btnHistorico.setBounds(248, 338, 90, 25);
         btnHistorico.addActionListener(controller);
@@ -522,9 +508,7 @@ public class PessoasView extends JInternalFrame {
 
         btnExcluir = new JButton();
         btnExcluir.setToolTipText("Excluir");
-        btnExcluir.setHorizontalAlignment(SwingConstants.LEADING);
         btnExcluir.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnExcluir.setText("Excluir");
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.addActionListener(controller);
         btnExcluir.setBounds(438, 306, 90, 25);

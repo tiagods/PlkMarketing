@@ -3,7 +3,24 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.TarefasView.*;
+import static br.com.tiagods.view.TarefasView.btNovaTarefa;
+import static br.com.tiagods.view.TarefasView.cbAtendentes;
+import static br.com.tiagods.view.TarefasView.ckEmail;
+import static br.com.tiagods.view.TarefasView.ckFinalizados;
+import static br.com.tiagods.view.TarefasView.ckPendentes;
+import static br.com.tiagods.view.TarefasView.ckProposta;
+import static br.com.tiagods.view.TarefasView.ckReuniao;
+import static br.com.tiagods.view.TarefasView.ckTelefone;
+import static br.com.tiagods.view.TarefasView.ckVisita;
+import static br.com.tiagods.view.TarefasView.jData1;
+import static br.com.tiagods.view.TarefasView.jData2;
+import static br.com.tiagods.view.TarefasView.pnData;
+import static br.com.tiagods.view.TarefasView.rbDefinirData;
+import static br.com.tiagods.view.TarefasView.rbEssaSemana;
+import static br.com.tiagods.view.TarefasView.rbHoje;
+import static br.com.tiagods.view.TarefasView.rbTudo;
+import static br.com.tiagods.view.TarefasView.tbPrincipal;
+import static br.com.tiagods.view.TarefasView.txContador;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -18,7 +35,6 @@ import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -37,18 +53,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -61,17 +72,17 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.*;
+import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.TarefaDao;
+import br.com.tiagods.modeldao.TipoTarefaDao;
+import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
-import br.com.tiagods.view.interfaces.ButtonColumn;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
-import br.com.tiagods.view.interfaces.CentralizarColumnJTable;
-import br.com.tiagods.view.interfaces.JTableCelulaColor;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 /*
  * @author Tiago
@@ -92,9 +103,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	String pendente = "Aberto";
 	String fechado = "Finalizado";
 	
+	@SuppressWarnings("unchecked")
 	public void iniciar(Date data1, Date data2, Usuario usuario){
 		this.userSessao=usuario;
-		long inicio = System.currentTimeMillis();
 		ativarBotao(ckVisita);
 		ativarBotao(ckReuniao);
 		ativarBotao(ckProposta);
@@ -120,7 +131,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		cbAtendentes.setSelectedItem(usuario.getLogin());
 		carregarTipoTarefas();
 		
-		List<Criterion> criterion = new ArrayList();
+		List<Criterion> criterion = new ArrayList<>();
 		Criterion criterio =  Restrictions.eq("atendente", usuario);
 		Criterion criterio2 = Restrictions.between("dataEvento", jData1.getDate(), jData2.getDate());
 		Criterion criterio3 = Restrictions.eq("finalizado", 0);
@@ -130,7 +141,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		Order order = Order.desc("id");
 		listaTarefas = (List<Tarefa>)(new GenericDao().items(Tarefa.class, session, criterion, order));
 		preencherTabela(tbPrincipal, listaTarefas, txContador);
-		long fim = System.currentTimeMillis();
 		session.close();
 		definirAcoes();
 		try{
@@ -191,7 +201,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	@Override
 	public void mouseExited(MouseEvent e) {}
 
-	@SuppressWarnings("static-access")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
@@ -233,13 +242,15 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 		arvore.forEach(c->{cbAtendentes.addItem(c);});
 	}
+	@SuppressWarnings("unchecked")
 	private void carregarTipoTarefas(){
-		List<TipoTarefa> lista = new TipoTarefaDao().listar(TipoTarefa.class, session);
+		List<TipoTarefa> lista = (List<TipoTarefa>)new TipoTarefaDao().listar(TipoTarefa.class, session);
 		lista.forEach(c->{
 			tipoTarefas.add(c);
 			tipoTarefasMapa.put(c.getNome(), c);
 		});
 	}
+	@SuppressWarnings("unchecked")
 	public boolean buscar(){
 		List<Criterion> criterios = new ArrayList<>();
 		if(!tipoTarefas.isEmpty()){
@@ -352,6 +363,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		LocalDate novaDataFimDeSemana = dataHoje.plusDays(diaDomingo);
 		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1,23,59,59);
 	}
+	@SuppressWarnings("serial")
 	public void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
 		if(lista.isEmpty()){
 			new SemRegistrosJTable(table,"Relação de Tarefas");
@@ -367,6 +379,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
 					return canEdit [columnIndex];
 				}
+				@SuppressWarnings({ "unchecked", "rawtypes" })
 				@Override
 				public Class getColumnClass(int columnIndex) {
 					return getValueAt(0, columnIndex).getClass();
@@ -400,9 +413,22 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 					o[8] =Boolean.FALSE;
 				else
 					o[8]=Boolean.TRUE;
-				o[9]= t.getClasse();
-				o[10] ="Editar";
-				o[11] ="Excluir";
+				
+				String imageName ="";
+				if("Empresa".equals(t.getClasse())){
+					imageName ="button_empresas.png";
+				}
+				else if("Negocio".equals(t.getClasse())){
+					imageName ="button_negocios.png";
+				}
+				else
+					imageName ="button_people.png";
+				o[9]= recalculate(new ImageIcon(ControllerTarefas.class
+						.getResource("/br/com/tiagods/utilitarios/"+imageName)));
+				o[10] = recalculate(new ImageIcon(ControllerTarefas.class
+						.getResource("/br/com/tiagods/utilitarios/button_edit.png")));//"Editar";
+				o[11] = recalculate(new ImageIcon(ControllerTarefas.class
+						.getResource("/br/com/tiagods/utilitarios/button_trash.png")));//"Excluir";
 				model.addRow(o);
 			}
 			table.setModel(model);
@@ -508,6 +534,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				buscar();
 		}
 	}
+	@SuppressWarnings("static-access")
 	public void abrirCadastro(Session session){
 		String value = (String)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 3);
 		int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
@@ -550,6 +577,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	
 	public class TextAreaRenderer extends JScrollPane implements TableCellRenderer
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		JTextArea textarea;
 
 		public TextAreaRenderer() {

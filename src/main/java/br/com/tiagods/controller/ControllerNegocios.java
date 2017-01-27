@@ -804,7 +804,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					linha[7] = "";
 				}
 				linha[8] = n.getAtendente()==null?"":n.getAtendente().getLogin();
-				linha[9] = n.getClasse();
+				String imageName ="";
+				if("Empresa".equals(n.getClasse())){
+					imageName ="button_empresas.png";
+				}
+				else
+					imageName ="button_people.png";
+				linha[9]= recalculate(new ImageIcon(ControllerTarefas.class
+						.getResource("/br/com/tiagods/utilitarios/"+imageName)));
 				model.addRow(linha);
 			}
 			table.setRowHeight(25);
@@ -837,7 +844,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			o[0] = s.getId();
 			o[1] = s.getServicosAgregados().getNome();
 			o[2] = s.getValor().toString().replace(".", ",");
-			o[3] = "Excluir";
+			o[3] = recalculate(new ImageIcon(ControllerNegocios.class
+					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
 		tbServicosContratados.setRowHeight(25);

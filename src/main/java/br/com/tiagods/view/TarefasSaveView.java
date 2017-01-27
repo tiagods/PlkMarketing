@@ -160,7 +160,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         FlowLayout flowLayout = (FlowLayout) pnRelacionamento.getLayout();
         flowLayout.setAlignment(FlowLayout.LEADING);
         pnRelacionamento.setOpaque(false);
-        pnRelacionamento.setBounds(10, 271, 560, 33);
+        pnRelacionamento.setBounds(10, 263, 560, 41);
         panel.add(pnRelacionamento);
         
         JLabel lblTipo = new JLabel("Tipo:");
@@ -171,7 +171,8 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         cbObject.setOpaque(false);
         cbObject.setModel(new DefaultComboBoxModel(Modelos.values()));
         
-        btnAssociacao = new JButton("+");
+        btnAssociacao = new JButton("");
+        btnAssociacao.setToolTipText("Selecionar um cadastro");
         pnRelacionamento.add(btnAssociacao);
         btnAssociacao.setOpaque(false);
         btnAssociacao.setActionCommand("ChamarDialog");
@@ -232,25 +233,29 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         
         pnBotoes = new JPanel();
         pnBotoes.setOpaque(false);
-        pnBotoes.setBounds(10, 359, 560, 33);
+        pnBotoes.setBounds(10, 359, 560, 42);
         panel.add(pnBotoes);
         
-        btnNovo = new JButton("Novo");
+        btnNovo = new JButton("");
+        btnNovo.setToolTipText("Novo");
         btnNovo.setOpaque(false);
         pnBotoes.add(btnNovo);
         btnNovo.setActionCommand("Novo");
         
-        btnEditar = new JButton("Editar");
+        btnEditar = new JButton("");
+        btnEditar.setToolTipText("Editar");
         btnEditar.setOpaque(false);
         pnBotoes.add(btnEditar);
         btnEditar.setActionCommand("Editar");
         
-        btnSalvar = new JButton("Salvar");
+        btnSalvar = new JButton("");
+        btnSalvar.setToolTipText("Salvar");
         btnSalvar.setOpaque(false);
         pnBotoes.add(btnSalvar);
         btnSalvar.setActionCommand("Salvar");
         
-        btnCancelar = new JButton("Cancelar");
+        btnCancelar = new JButton("");
+        btnCancelar.setToolTipText("Cancelar");
         btnCancelar.setOpaque(false);
         btnCancelar.setActionCommand("Cancelar");
         pnBotoes.add(btnCancelar);

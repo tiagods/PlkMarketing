@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -202,8 +203,10 @@ public class AuxiliarTabela {
 				o[5]=Boolean.FALSE;
 			else
 				o[5]=Boolean.TRUE;
-			o[6] = "Editar";
-			o[7] = "Excluir";
+			o[6] = recalculate(new ImageIcon(AuxiliarTabela.class
+					.getResource("/br/com/tiagods/utilitarios/button_edit.png")));
+			o[7] = recalculate(new ImageIcon(AuxiliarTabela.class
+					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
 		table.setModel(model);
@@ -299,4 +302,8 @@ public class AuxiliarTabela {
 		aux.analizarEntidades();
 	}
 	
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }	
 }

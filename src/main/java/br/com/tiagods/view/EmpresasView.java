@@ -349,7 +349,6 @@ public class EmpresasView extends JInternalFrame {
         btnNovo = new JButton();
         btnNovo.setToolTipText("Novo");
         btnNovo.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnNovo.setText("Novo");
         btnNovo.setActionCommand("Novo");
         btnNovo.setBounds(59, 306, 90, 25);
         btnNovo.addActionListener(controller);
@@ -358,7 +357,6 @@ public class EmpresasView extends JInternalFrame {
         btnEditar = new JButton();
         btnEditar.setToolTipText("Editar");
         btnEditar.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnEditar.setText("Editar");
         btnEditar.setActionCommand("Editar");
         btnEditar.addActionListener(controller);
         btnEditar.setBounds(153, 306, 90, 25);
@@ -367,7 +365,6 @@ public class EmpresasView extends JInternalFrame {
         btnSalvar = new JButton();
         btnSalvar.setToolTipText("Salvar");
         btnSalvar.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnSalvar.setText("Salvar");
         btnSalvar.setBounds(249, 306, 90, 25);
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.addActionListener(controller);
@@ -376,7 +373,6 @@ public class EmpresasView extends JInternalFrame {
         btnCancelar = new JButton();
         btnCancelar.setToolTipText("Cancelar");
         btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(345, 306, 90, 25);
         pnPrincipal.add(btnCancelar);
@@ -546,9 +542,9 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(cbCidade);
 
         btnPessoas = new JButton();
+        btnPessoas.setToolTipText("Pessoas");
         btnPessoas.setActionCommand("Pessoas");
         btnPessoas.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnPessoas.setText("Pessoas");
         btnPessoas.setBounds(442, 338, 87, 25);
         btnPessoas.addActionListener(controller);
         pnPrincipal.add(btnPessoas);
@@ -556,7 +552,6 @@ public class EmpresasView extends JInternalFrame {
         btnNegocios = new JButton();
         btnNegocios.setToolTipText("Neg\u00F3cios");
         btnNegocios.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnNegocios.setText("Neg\u00F3cios");
         btnNegocios.setActionCommand("Negocios");
         btnNegocios.setBounds(345, 338, 90, 25);
         btnNegocios.addActionListener(controller);
@@ -566,7 +561,6 @@ public class EmpresasView extends JInternalFrame {
         btnHistorico.setToolTipText("Tarefas");
         btnHistorico.setActionCommand("Historico");
         btnHistorico.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnHistorico.setText("Tarefas");
         btnHistorico.setBounds(249, 338, 90, 25);
         btnHistorico.addActionListener(controller);
         pnPrincipal.add(btnHistorico);
@@ -574,7 +568,6 @@ public class EmpresasView extends JInternalFrame {
         btnExcluir = new JButton();
         btnExcluir.setToolTipText("Excluir");
         btnExcluir.setFont(new Font("Dialog", Font.PLAIN, 9));
-        btnExcluir.setText("Excluir");
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.addActionListener(controller);
         btnExcluir.setBounds(438, 306, 90, 25);
