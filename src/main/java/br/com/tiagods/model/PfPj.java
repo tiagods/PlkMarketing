@@ -23,7 +23,8 @@ public class PfPj implements Serializable{
 	private Servico servico;
 	private Categoria categoria;
 	private Nivel nivel;
-
+	private String apelido;
+	private String razao;
 	/**
 	 * @return the telefone
 	 */
@@ -179,6 +180,30 @@ public class PfPj implements Serializable{
 	 */
 	public void setNivel(Nivel nivel) {
 		this.nivel = nivel;
+	}
+	/**
+	 * @return the apelido
+	 */
+	public String getApelido() {
+		return apelido;
+	}
+	/**
+	 * @param apelido the apelido to set
+	 */
+	public void setApelido(String apelido) {
+		this.apelido = apelido;
+	}
+	/**
+	 * @return the razao
+	 */
+	public String getRazao() {
+		return razao;
+	}
+	/**
+	 * @param razao the razao to set
+	 */
+	public void setRazao(String razao) {
+		this.razao = razao;
 	}
 	
 	

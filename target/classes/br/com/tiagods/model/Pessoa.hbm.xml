@@ -40,6 +40,8 @@
       	<many-to-one name="servico" column="PES_SERVICO_COD" foreign-key="FK_PES_SERVICO_COD"/>
 		<many-to-one name="categoria" column="PES_CATEGORIA_COD" foreign-key="FK_PES_CATEGORIA_COD"/>
 		<many-to-one name="nivel" column="PES_NIVEL_COD" foreign-key="FK_PES_NIVEL_COD"/>
+		<property name="apelido" column="PES_APELIDO_COD"/>
+		<property name="razao" column="PES_RAZAO_COD"/>
 	</component>
 	
 	</class>

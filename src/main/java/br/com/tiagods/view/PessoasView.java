@@ -77,9 +77,12 @@ public class PessoasView extends JInternalFrame {
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
 	public static JLabel txCodigo;
-	int i = 0 ;
+	public static JButton btnLink,btnEmail,btnImportar, btnExportar;
+	public static JTextField txApelido;
+	private JLabel lbApelido;
+	
 	ControllerPessoas controller = new ControllerPessoas();
-	public static JButton btnLink,btnEmail;
+
 	/**
 	 * Create the frame.
 	 */
@@ -89,14 +92,13 @@ public class PessoasView extends JInternalFrame {
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
 
-		txContador = new JLabel("");
-		txContador.setBounds(780, 235, 150, 14);
-		pnVisao.add(txContador);
 		controller.iniciar(pessoa);
 		btnEmpresas.setEnabled(false);
 		
 		
 		
+		btnImportar.setEnabled(false);
+		btnExportar.setEnabled(false);
 	}
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
@@ -216,6 +218,26 @@ public class PessoasView extends JInternalFrame {
         panel.add(data1);
         pnCabecalho.setLayout(gl_pnCabecalho);
 
+        btnImportar = new JButton();
+        btnImportar.setToolTipText("Importe um novo registro a partir de uma planilha Modelo Excel");
+		btnImportar.setText("Importar");
+		btnImportar.setName("Importar");
+		btnImportar.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btnImportar.setActionCommand("Importar");
+		btnImportar.addActionListener(controller);
+		btnImportar.setBounds(780, 107, 130, 25);
+		pnVisao.add(btnImportar);
+		
+		btnExportar = new JButton();
+		btnExportar.setToolTipText("Exporte o registro atual ou todos os registros da tabela para uma planilha Modelo Excel");
+		btnExportar.setText("Exportar");
+		btnExportar.setName("Exportar");
+		btnExportar.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btnExportar.setActionCommand("Exportar");
+		btnExportar.addActionListener(controller);
+		btnExportar.setBounds(780, 143, 130, 25);
+		pnVisao.add(btnExportar);
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,6 +248,8 @@ public class PessoasView extends JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnVisao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
+        
+        
         pnVisao.setLayout(null);
         pnVisao.add(pnCabecalho);
 
@@ -235,6 +259,19 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.setBounds(10, 260, 760, 363);
         pnVisao.add(pnPrincipal);
 
+        txContador = new JLabel("");
+		txContador.setBounds(780, 235, 150, 14);
+		pnVisao.add(txContador);
+		
+		txApelido = new JTextField();
+		txApelido.setBounds(474, 39, 92, 20);
+		pnPrincipal.add(txApelido);
+		
+		lbApelido = new JLabel();
+		lbApelido.setText("Apelido:");
+		lbApelido.setBounds(384, 41, 87, 17);
+		pnPrincipal.add(lbApelido);
+        
         JLabel lblEstados = new JLabel();
         lblEstados.setText("Estado:");
         lblEstados.setBounds(10, 278, 56, 17);
@@ -322,17 +359,17 @@ public class PessoasView extends JInternalFrame {
 
         txCadastradoPor = new JLabel();
         txCadastradoPor.setText("{Usuario}");
-        txCadastradoPor.setBounds(546, 14, 56, 14);
+        txCadastradoPor.setBounds(268, 14, 56, 14);
         pnPrincipal.add(txCadastradoPor);
 
         JLabel lblCadastro = new JLabel();
         lblCadastro.setText("Criado em:");
-        lblCadastro.setBounds(385, 14, 73, 14);
+        lblCadastro.setBounds(107, 14, 73, 14);
         pnPrincipal.add(lblCadastro);
 
         txDataCadastro = new JLabel();
         txDataCadastro.setText("");
-        txDataCadastro.setBounds(463, 14, 73, 14);
+        txDataCadastro.setBounds(185, 14, 73, 14);
         pnPrincipal.add(txDataCadastro);
 
         MaskFormatter formatterCpf=null;
@@ -371,6 +408,7 @@ public class PessoasView extends JInternalFrame {
         btnCancelar = new JButton();
         btnCancelar.setToolTipText("Cancelar");
         btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
+        btnCancelar.setActionCommand("Cancelar");
         btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(345, 306, 90, 25);
         pnPrincipal.add(btnCancelar);
@@ -395,12 +433,12 @@ public class PessoasView extends JInternalFrame {
 
         JLabel lbAtendente = new JLabel();
         lbAtendente.setText("Atendente:");
-        lbAtendente.setBounds(385, 42, 87, 17);
+        lbAtendente.setBounds(383, 13, 87, 17);
         pnPrincipal.add(lbAtendente);
 
         cbAtendenteCad = new DefaultComboBox();
         cbAtendenteCad.setName("AtendenteCad");
-        cbAtendenteCad.setBounds(476, 40, 92, 20);
+        cbAtendenteCad.setBounds(474, 11, 92, 20);
         pnPrincipal.add(cbAtendenteCad);
 
         pnPrivacidade = new JPanel();
@@ -515,7 +553,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(btnExcluir);
         
         txCodigo = new JLabel("");
-        txCodigo.setBounds(107, 14, 109, 14);
+        txCodigo.setBounds(10, 14, 87, 14);
         pnPrincipal.add(txCodigo);
         
         JLabel lbCategoriaCad = new JLabel();

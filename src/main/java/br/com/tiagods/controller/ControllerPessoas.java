@@ -253,6 +253,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		txDataCadastro.setText(conversor.format(pessoa.getPessoaFisica().getCriadoEm()));
 		txNome.setText(pessoa.getNome());
 		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente().getLogin());
+		txApelido.setText(pessoa.getPessoaFisica().getApelido());
 		txCpf.setText(pessoa.getCpf());
 		txDataNascimento.setText(pessoa.getDataNascimento());
 		cbOrigemCad.setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
@@ -468,6 +469,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		pessoaFisica.setCelular(txCelular.getText());
 		pessoaFisica.setEmail(txEmail.getText());
 		pessoaFisica.setSite(txSite.getText());
+		pessoaFisica.setApelido(txApelido.getText());
 		//se nao tem usuario cadastrado
 		if("".equals(cbAtendenteCad.getSelectedItem())){
 			pessoaFisica.setAtendente(UsuarioLogado.getInstance().getUsuario());
@@ -622,6 +624,10 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	ImageIcon iconURL = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
     	btnLink.setIcon(recalculate(iconURL));
     	
+    	ImageIcon iconImp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
+    	btnImportar.setIcon(recalculate(iconImp));
+    	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+    	btnExportar.setIcon(recalculate(iconExp));
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

@@ -64,7 +64,7 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	 * Create the frame.
 	 */
 	public MenuView() {
-		setTitle("Novos Negocios");
+		setTitle("Negocios");
 		try{
 		ImageIcon ion = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
 		ion.setImage(ion.getImage().getScaledInstance(50, 50, 100));

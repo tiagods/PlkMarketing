@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -224,12 +225,17 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			email="";
 			site="";
 			limparFormulario(pnCadastro);
+			
 			novoEditar();
 			telaEmEdicao = true;
 			negocio = new Negocio();
 			negocio.setHonorario(new BigDecimal("0.00"));
 			txHonorario.setText("0,00");
 			dataInicio.setDate(new Date());
+			
+			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
+			while(serv.getRowCount()>0)
+				serv.removeRow(0);
 			break;
 		case "Editar":
 			telaEmEdicao = true;
@@ -828,6 +834,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
 	private void preencherServicos(Set<ServicoContratado> servicos){
+		
 		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
 					false,false,false,true
@@ -848,6 +855,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
+		
 		tbServicosContratados.setRowHeight(25);
 		tbServicosContratados.setModel(model);
 		JButton btRem  = new ButtonColumnModel(tbServicosContratados,3).getButton();
@@ -861,15 +869,19 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		public void actionPerformed(ActionEvent e) {
 			session = HibernateFactory.getSession();
 			session.beginTransaction();
-			String value = ((JButton)e.getSource()).getText();
+			Icon value = ((JButton)e.getSource()).getIcon();
+			
+			Icon icoEmp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_empresas.png"));
+			Icon icoPes = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_people.png"));
+			
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 			Negocio neg = (Negocio) new NegocioDao().receberObjeto(Negocio.class, id, session);
-			if("Empresa".equals(value)){
+			if(icoEmp.toString().equals(value.toString())){
 				Empresa empresa = neg.getEmpresa();
 				EmpresasView viewEmpresas = new EmpresasView(empresa);
 				ControllerMenu.getInstance().abrirCorpo(viewEmpresas);
 			}
-			else if("Pessoa".equalsIgnoreCase(value)){
+			else if(icoPes.toString().equals(value.toString())){
 				Pessoa pessoa = neg.getPessoa();
 				PessoasView viewPessoa = new PessoasView(pessoa);
 				ControllerMenu.getInstance().abrirCorpo(viewPessoa);
@@ -949,9 +961,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				fechaSessao(open);
 			pnAuxiliar.setVisible(false);
 		}
-		else
-			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
-					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
+//		else
+//			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
+//					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -1071,6 +1083,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	btnEmail.setIcon(recalculate(iconMail));
     	ImageIcon iconURL = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
     	btnLink.setIcon(recalculate(iconURL));
+    	
+    	ImageIcon iconImp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
+    	btnImportar.setIcon(recalculate(iconImp));
+    	
+    	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+    	btnExportar.setIcon(recalculate(iconExp));
     	
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{

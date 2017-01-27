@@ -50,7 +50,7 @@ public class EmpresasView extends JInternalFrame {
     public static DefaultComboBox cbAtendenteCad;
     public static DefaultComboBox cbProdServicosCad;
     public static DefaultComboBox cbCidade;
-    public static javax.swing.JPanel jPanel1;
+    public static javax.swing.JPanel pnVisao;
     public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
     public static javax.swing.JPanel pnAuxiliar;
@@ -79,10 +79,13 @@ public class EmpresasView extends JInternalFrame {
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
-	public static JButton btnEmail, btnLink,btnNovaTarefa ;
+	public static JButton btnEmail, btnLink,btnNovaTarefa,btnImportar,btnExportar ;
+	private JLabel lbTitulo;
+	public static JTextField txRazaoSocial;
+	public static JTextField txApelido;
 	
 	ControllerEmpresas controller = new ControllerEmpresas();
-	private JLabel lbTitulo;
+
 	/**
 	 * Create the frame.
 	 */
@@ -92,13 +95,16 @@ public class EmpresasView extends JInternalFrame {
 		pnPrivacidade.setVisible(false);
 		txContador = new JLabel("");
 		txContador.setBounds(780, 235, 150, 14);
-		jPanel1.add(txContador);
+		pnVisao.add(txContador);
 		controller.iniciar(empresa);
 		btnPessoas.setEnabled(false);
 		
+		btnImportar.setEnabled(false);
+		btnExportar.setEnabled(false);
+		
 	}
 	private void initComponents() {
-        jPanel1 = new javax.swing.JPanel();
+        pnVisao = new javax.swing.JPanel();
         pnCabecalho = new javax.swing.JPanel();
         pnCabecalho.setBounds(0, 0, 1240, 69);
         cbAtendente = new DefaultComboBox();
@@ -109,7 +115,7 @@ public class EmpresasView extends JInternalFrame {
         setClosable(true);
         setPreferredSize(new java.awt.Dimension(880, 450));
 
-        jPanel1.setBackground(new java.awt.Color(250, 250, 250));
+        pnVisao.setBackground(new java.awt.Color(250, 250, 250));
 
         pnCabecalho.setBackground(new java.awt.Color(250, 250, 250));
 
@@ -214,25 +220,63 @@ public class EmpresasView extends JInternalFrame {
         panel.add(data1);
         pnCabecalho.setLayout(gl_pnCabecalho);
 
+        btnImportar = new JButton();
+        btnImportar.setToolTipText("Importe um novo registro a partir de uma planilha Modelo Excel");
+		btnImportar.setText("Importar");
+		btnImportar.setName("Importar");
+		btnImportar.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btnImportar.setActionCommand("Importar");
+		btnImportar.addActionListener(controller);
+		btnImportar.setBounds(780, 90, 130, 25);
+		pnVisao.add(btnImportar);
+		
+		btnExportar = new JButton();
+		btnExportar.setToolTipText("Exporte o registro atual ou todos os registros da tabela para uma planilha Modelo Excel");
+		btnExportar.setText("Exportar");
+		btnExportar.setName("Exportar");
+		btnExportar.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btnExportar.setActionCommand("Exportar");
+		btnExportar.addActionListener(controller);
+		btnExportar.setBounds(780, 126, 130, 25);
+		pnVisao.add(btnExportar);
+        
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnVisao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnVisao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        jPanel1.setLayout(null);
-        jPanel1.add(pnCabecalho);
+        pnVisao.setLayout(null);
+        pnVisao.add(pnCabecalho);
 
         pnPrincipal = new JPanel();
         pnPrincipal.setLayout(null);
         pnPrincipal.setBackground((Color) null);
         pnPrincipal.setBounds(10, 260, 760, 363);
-        jPanel1.add(pnPrincipal);
+        pnVisao.add(pnPrincipal);
 
+        txRazaoSocial = new JTextField();
+		txRazaoSocial.setBounds(107, 68, 201, 20);
+		pnPrincipal.add(txRazaoSocial);
+		
+		JLabel lbRazao = new JLabel();
+		lbRazao.setText("Raz\u00E3o Social:");
+		lbRazao.setBounds(10, 69, 87, 17);
+		pnPrincipal.add(lbRazao);
+		
+		txApelido = new JTextField();
+		txApelido.setBounds(462, 40, 92, 20);
+		pnPrincipal.add(txApelido);
+		
+		JLabel lblApelido = new JLabel();
+		lblApelido.setText("Apelido:");
+		lblApelido.setBounds(384, 41, 52, 14);
+		pnPrincipal.add(lblApelido);
+        
         JLabel lblEstados = new JLabel();
         lblEstados.setText("Estado:");
         lblEstados.setBounds(10, 278, 56, 17);
@@ -256,7 +300,7 @@ public class EmpresasView extends JInternalFrame {
 
         JLabel lbCnpj = new JLabel();
         lbCnpj.setText("CNPJ:");
-        lbCnpj.setBounds(10, 71, 56, 14);
+        lbCnpj.setBounds(384, 71, 44, 14);
         pnPrincipal.add(lbCnpj);
 
         JLabel lbComplemento = new JLabel();
@@ -275,7 +319,7 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(txComplemento);
 
         txCodigo = new JLabel();
-        txCodigo.setBounds(107, 11, 87, 20);
+        txCodigo.setBounds(10, 9, 87, 20);
         pnPrincipal.add(txCodigo);
 
         txNome = new JTextField();
@@ -325,16 +369,16 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(txBairro);
 
         txCadastradoPor = new JLabel();
-        txCadastradoPor.setBounds(546, 14, 56, 14);
+        txCadastradoPor.setBounds(268, 15, 56, 14);
         pnPrincipal.add(txCadastradoPor);
 
         JLabel lblCadastro = new JLabel();
         lblCadastro.setText("Criado em:");
-        lblCadastro.setBounds(385, 14, 73, 14);
+        lblCadastro.setBounds(107, 15, 73, 14);
         pnPrincipal.add(lblCadastro);
 
         txDataCadastro = new JLabel();
-        txDataCadastro.setBounds(463, 14, 73, 14);
+        txDataCadastro.setBounds(185, 15, 73, 14);
         pnPrincipal.add(txDataCadastro);
 
         MaskFormatter formatterCnpj=null;
@@ -343,7 +387,7 @@ public class EmpresasView extends JInternalFrame {
         }catch(Exception e){
         }
         txCnpj = new JFormattedTextField(formatterCnpj);
-        txCnpj.setBounds(107, 68, 109, 20);
+        txCnpj.setBounds(440, 68, 114, 20);
         pnPrincipal.add(txCnpj);
 
         btnNovo = new JButton();
@@ -373,6 +417,7 @@ public class EmpresasView extends JInternalFrame {
         btnCancelar = new JButton();
         btnCancelar.setToolTipText("Cancelar");
         btnCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
+        btnCancelar.setActionCommand("Cancelar");
         btnCancelar.addActionListener(controller);
         btnCancelar.setBounds(345, 306, 90, 25);
         pnPrincipal.add(btnCancelar);
@@ -464,12 +509,12 @@ public class EmpresasView extends JInternalFrame {
 
         cbAtendenteCad = new DefaultComboBox();
         cbAtendenteCad.setName("AtendenteCad");
-        cbAtendenteCad.setBounds(476, 40, 92, 20);
+        cbAtendenteCad.setBounds(462, 9, 92, 20);
         pnPrincipal.add(cbAtendenteCad);
 
         JLabel lbAtendente = new JLabel();
         lbAtendente.setText("Atendente:");
-        lbAtendente.setBounds(385, 42, 87, 17);
+        lbAtendente.setBounds(384, 12, 87, 17);
         pnPrincipal.add(lbAtendente);
 
         cbCategoriaCad = new DefaultComboBox();
@@ -576,7 +621,7 @@ public class EmpresasView extends JInternalFrame {
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
         pnAuxiliar.setBounds(780, 260, 460, 363);
-        jPanel1.add(pnAuxiliar);
+        pnVisao.add(pnAuxiliar);
         
         btnNovaTarefa = new JButton();
         btnNovaTarefa.setBounds(10, 11, 130, 25);
@@ -607,7 +652,7 @@ public class EmpresasView extends JInternalFrame {
 
         JScrollPane scrollPrincipal = new JScrollPane();
         scrollPrincipal.setBounds(10, 107, 760, 142);
-        jPanel1.add(scrollPrincipal);
+        pnVisao.add(scrollPrincipal);
 
         tbPrincipal = new JTable();
         tbPrincipal.addMouseListener(controller);
@@ -617,11 +662,11 @@ public class EmpresasView extends JInternalFrame {
         txBuscar.setActionCommand("Buscar");
         txBuscar.addKeyListener(controller);
         txBuscar.setBounds(74, 80, 139, 20);
-        jPanel1.add(txBuscar);
+        pnVisao.add(txBuscar);
 
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 83, 53, 14);
-        jPanel1.add(lbBuscar);
+        pnVisao.add(lbBuscar);
 
         btnEmail = new JButton();
 		btnEmail.setToolTipText("Enviar e-mail");
@@ -633,7 +678,7 @@ public class EmpresasView extends JInternalFrame {
 		
 		btnLink = new JButton();
 		btnLink.setToolTipText("Abrir P\u00E1gina");
-		btnLink.setBounds(567, 182, 35, 25);
+		btnLink.setBounds(565, 181, 35, 25);
 		pnPrincipal.add(btnLink);
 		btnLink.setFont(new Font("Tahoma", Font.PLAIN, 9));
 		btnLink.setActionCommand("OpenURL");

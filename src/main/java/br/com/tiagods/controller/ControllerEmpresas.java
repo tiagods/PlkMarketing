@@ -251,6 +251,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		txDataCadastro.setText(conversor.format(empresa.getPessoaJuridica().getCriadoEm()));
 		txNome.setText(empresa.getNome());
 		cbAtendenteCad.setSelectedItem(empresa.getPessoaJuridica().getAtendente()==null?"":empresa.getPessoaJuridica().getAtendente().getLogin());
+		txApelido.setText(empresa.getPessoaJuridica().getApelido());
+		txRazaoSocial.setText(empresa.getPessoaJuridica().getRazao());
 		txCnpj.setText(empresa.getCnpj());
 		cbNivelCad.setSelectedItem(empresa.getPessoaJuridica().getNivel()==null?"":empresa.getPessoaJuridica().getNivel().getNome());
 		cbOrigemCad.setSelectedItem(empresa.getPessoaJuridica().getOrigem()==null?"":empresa.getPessoaJuridica().getOrigem().getNome());
@@ -463,6 +465,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		else{
 			pessoaJuridica = empresa.getPessoaJuridica();
 		}
+		pessoaJuridica.setApelido(txApelido.getText());
+		pessoaJuridica.setRazao(txRazaoSocial.getText());
 		pessoaJuridica.setTelefone(txTelefone.getText());
 		pessoaJuridica.setCelular(txCelular.getText());
 		pessoaJuridica.setEmail(txEmail.getText());
@@ -622,6 +626,12 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	ImageIcon iconURL = new ImageIcon(ControllerEmpresas.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
     	btnLink.setIcon(recalculate(iconURL));
     	
+    	
+    	ImageIcon iconImp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
+    	btnImportar.setIcon(recalculate(iconImp));
+    	
+    	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+    	btnExportar.setIcon(recalculate(iconExp));
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

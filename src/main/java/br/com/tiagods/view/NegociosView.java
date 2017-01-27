@@ -110,7 +110,7 @@ public class NegociosView extends JInternalFrame {
 	public static JLabel txIdServicoContratado;
 	public static JButton btnNovoServicoAgregado;
 	private JLabel lbTitulo;
-	public static JButton btnLink,btnEmail;
+	public static JButton btnLink,btnEmail,btnImportar,btnExportar;
 	/**
 	 * Create the frame.
 	 */
@@ -120,7 +120,10 @@ public class NegociosView extends JInternalFrame {
 		pnPrivacidade.setVisible(false);
 		pnAuxiliar.setVisible(false);
 		rbContato.setSelected(true);
+		
 		pnTotalizador.setVisible(false);
+		btnImportar.setEnabled(false);
+		btnExportar.setEnabled(false);
 	}
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
@@ -274,6 +277,26 @@ public class NegociosView extends JInternalFrame {
         pnVisao.setLayout(null);
         pnVisao.add(pnPrincipal);
 
+        btnImportar = new JButton();
+        btnImportar.setToolTipText("Importe um novo registro a partir de uma planilha Modelo Excel");
+		btnImportar.setText("Importar");
+		btnImportar.setName("Importar");
+		btnImportar.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btnImportar.setActionCommand("Importar");
+		btnImportar.addActionListener(controller);
+		btnImportar.setBounds(780, 90, 130, 25);
+		pnVisao.add(btnImportar);
+		
+		btnExportar = new JButton();
+		btnExportar.setToolTipText("Exporte o registro atual ou todos os registros da tabela para uma planilha Modelo Excel");
+		btnExportar.setText("Exportar");
+		btnExportar.setName("Exportar");
+		btnExportar.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btnExportar.setActionCommand("Exportar");
+		btnExportar.addActionListener(controller);
+		btnExportar.setBounds(780, 126, 130, 25);
+		pnVisao.add(btnExportar);
+        
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
         pnAuxiliar.setBounds(780, 260, 460, 363);

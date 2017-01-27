@@ -39,6 +39,8 @@
 	  	<many-to-one name="servico" column="EMP_SERVICO_COD" foreign-key="FK_EMP_SERVICO_COD"/>
 		<many-to-one name="categoria" column="EMP_CATEGORIA_COD" foreign-key="FK_EMP_CATEGORIA_COD"/>
 		<many-to-one name="nivel" column="EMP_NIVEL_COD" foreign-key="FK_EMP_NIVEL_COD"/>
+		<property name="apelido" column="EMP_APELIDO_COD"/>
+		<property name="razao" column="EMP_RAZAO_COD"/>
 	</component>
 	</class>
 </hibernate-mapping>
