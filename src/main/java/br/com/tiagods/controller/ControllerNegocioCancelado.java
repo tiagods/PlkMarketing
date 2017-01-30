@@ -5,9 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
 import br.com.tiagods.model.Negocio;
+import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegocioPerdaDialog;
 
 import static br.com.tiagods.view.NegocioPerdaDialog.*;
@@ -23,6 +26,11 @@ public class ControllerNegocioCancelado implements ActionListener{
 		txData.setDate(new Date());
 		rbPreco.setSelected(true);
 		preencherFormulario();
+		try{
+			setarIcones();
+		}catch(NullPointerException e){
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -33,7 +41,11 @@ public class ControllerNegocioCancelado implements ActionListener{
 				negocio.setMotivoPerda(receberRadio());
 				negocio.setDataPerda(txData.getDate());
 				negocio.setDetalhesPerda(txDescricao.getText());
+				this.jdialog.dispose();
 			}
+			else
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Data informada esta incorreta!", "Validação de data!",
+						JOptionPane.ERROR_MESSAGE);
 			break;
 		case "Cancelar":
 			this.jdialog.dispose();
@@ -71,4 +83,19 @@ public class ControllerNegocioCancelado implements ActionListener{
 		if(negocio.getDataPerda()!=null)
 			txData.setDate(negocio.getDataPerda());
 	}
+	public void setarIcones() throws NullPointerException{
+		ImageIcon iconMoney = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_money.png"));
+		rbPreco.setIcon(recalculate(iconMoney));
+		ImageIcon iconDeadline = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_deadline.png"));
+		rbPrazo.setIcon(recalculate(iconDeadline));
+		ImageIcon iconProduct = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_product.png"));
+		rbProdServico.setIcon(recalculate(iconProduct));
+		ImageIcon iconExist = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_exit.png"));
+		rbDesistencia.setIcon(recalculate(iconExist));
+	}
+	
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
 }

@@ -172,8 +172,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 									+txCodigo.getText()+" \nNome: "+txNome.getText()+"\nConfirmar?","Aviso...",JOptionPane.OK_CANCEL_OPTION);
 					if(escolha==JOptionPane.OK_OPTION){
 						labelId.setText(txCodigo.getText());
-						String[] nome = (txNome.getText()).split(" ");
-						labelNome.setText(nome[0]);
+						//String[] nome = (txNome.getText()).split(" ");
+						labelNome.setText(txNome.getText());
 					}
 					view.dispose();
 				}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");

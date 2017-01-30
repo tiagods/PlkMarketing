@@ -95,7 +95,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	List<Negocio> listarNegocios;
 	NegocioPerdaDialog dialogPerda;
 	
-	String email;
 	String site;
 	
 	@SuppressWarnings("unchecked")
@@ -148,7 +147,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			if(e.getStateChange()==ItemEvent.DESELECTED && telaEmEdicao && "Perdido".equals(cbStatusCad.getSelectedItem())){
 				if(dialogPerda!=null) 
 					dialogPerda.dispose();
-				dialogPerda = new NegocioPerdaDialog(negocio);
+				dialogPerda = new NegocioPerdaDialog(MenuView.getInstance(),true,negocio);
 				dialogPerda.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialogPerda.setVisible(true);
 			}
@@ -169,14 +168,18 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		if(n.getClasse().equals(Empresa.class.getSimpleName())){
 			txCodObjeto.setText(""+n.getEmpresa().getId());
 			txNomeObjeto.setText(n.getEmpresa().getNome());
-			email = n.getEmpresa().getPessoaJuridica().getEmail();
+			txEmail.setText(n.getEmpresa().getPessoaJuridica().getEmail());
 			site = n.getEmpresa().getPessoaJuridica().getSite();
+			txFone.setText(n.getEmpresa().getPessoaJuridica().getTelefone());
+			txCelular.setText(n.getEmpresa().getPessoaJuridica().getCelular());
 		}
 		else if(n.getClasse().equals(Pessoa.class.getSimpleName())){
 			txCodObjeto.setText(""+n.getPessoa().getId());
 			txNomeObjeto.setText(n.getPessoa().getNome());
-			email = n.getPessoa().getPessoaFisica().getEmail();
+			txEmail.setText(n.getPessoa().getPessoaFisica().getEmail());
 			site = n.getPessoa().getPessoaFisica().getSite();
+			txFone.setText(n.getPessoa().getPessoaFisica().getTelefone());
+			txCelular.setText(n.getPessoa().getPessoaFisica().getCelular());
 		}
 		txCodigo.setText(""+n.getId());
 		txNome.setText(n.getNome());
@@ -222,7 +225,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}			
 			break;
 		case "Novo":
-			email="";
 			site="";
 			limparFormulario(pnCadastro);
 			
@@ -361,8 +363,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		case "MailTo":
 			URI urlMail = null;
 			try{
-				if(email.trim().length()>0){
-					urlMail = new URI("mailto", email, null);
+				if(txEmail.getText().trim().length()>0){
+					urlMail = new URI("mailto", txEmail.getText().trim(), null);
 					Desktop.getDesktop().mail(urlMail);
 				}
 				else
@@ -1089,6 +1091,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	
     	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
     	btnExportar.setIcon(recalculate(iconExp));
+    	
+    	ImageIcon iconContact = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_phone.png"));
+    	txFone.setIcon(recalculate(iconContact));
+    	txFone.setForeground(Color.blue);
+    	
+    	ImageIcon iconCellPhone = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_cellphone.png"));
+    	txCelular.setIcon(recalculate(iconCellPhone));
+    	txCelular.setForeground(Color.BLUE);
     	
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{

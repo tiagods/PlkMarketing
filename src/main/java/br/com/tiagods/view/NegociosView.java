@@ -111,6 +111,10 @@ public class NegociosView extends JInternalFrame {
 	public static JButton btnNovoServicoAgregado;
 	private JLabel lbTitulo;
 	public static JButton btnLink,btnEmail,btnImportar,btnExportar;
+	public static JLabel txIconFone;
+	public static JLabel txIconCelular;
+	public static JLabel txFone, txCelular;
+	public static JTextField txEmail;
 	/**
 	 * Create the frame.
 	 */
@@ -344,7 +348,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(lblDescrio);
 
         txCodigo = new JLabel();
-        txCodigo.setBounds(107, 5, 87, 14);
+        txCodigo.setBounds(10, 5, 87, 14);
         pnCadastro.add(txCodigo);
 
         txNome = new JTextField();
@@ -353,16 +357,16 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(txNome);
 
         txCadastradoPor = new JLabel();
-        txCadastradoPor.setBounds(517, 5, 83, 14);
+        txCadastradoPor.setBounds(278, 5, 83, 14);
         pnCadastro.add(txCadastradoPor);
 
         label_16 = new JLabel();
         label_16.setText("Cadastro em:");
-        label_16.setBounds(346, 5, 78, 14);
+        label_16.setBounds(107, 5, 78, 14);
         pnCadastro.add(label_16);
 
         txDataCadastro = new JLabel();
-        txDataCadastro.setBounds(434, 5, 73, 14);
+        txDataCadastro.setBounds(195, 5, 73, 14);
         pnCadastro.add(txDataCadastro);
 
         btnNovo = new JButton();
@@ -371,7 +375,7 @@ public class NegociosView extends JInternalFrame {
         btnNovo.setActionCommand("Novo");
         btnNovo.setName("Novo");
         btnNovo.addActionListener(controller);
-        btnNovo.setBounds(179, 321, 90, 25);
+        btnNovo.setBounds(207, 321, 90, 25);
         pnCadastro.add(btnNovo);
 
         btnEditar = new JButton();
@@ -380,7 +384,7 @@ public class NegociosView extends JInternalFrame {
         btnEditar.setActionCommand("Editar");
         btnEditar.setName("Editar");
         btnEditar.addActionListener(controller);
-        btnEditar.setBounds(275, 321, 90, 25);
+        btnEditar.setBounds(307, 321, 90, 25);
         pnCadastro.add(btnEditar);
 
         btnSalvar = new JButton();
@@ -389,7 +393,7 @@ public class NegociosView extends JInternalFrame {
         btnSalvar.setActionCommand("Salvar");
         btnSalvar.setName("Salvar");
         btnSalvar.addActionListener(controller);
-        btnSalvar.setBounds(371, 321, 90, 25);
+        btnSalvar.setBounds(407, 321, 90, 25);
         pnCadastro.add(btnSalvar);
 
         btnCancelar = new JButton();
@@ -398,24 +402,24 @@ public class NegociosView extends JInternalFrame {
         btnCancelar.setActionCommand("Cancelar");
         btnCancelar.setName("Cancelar");
         btnCancelar.addActionListener(controller);
-        btnCancelar.setBounds(467, 321, 90, 25);
+        btnCancelar.setBounds(507, 321, 90, 25);
         pnCadastro.add(btnCancelar);
 
         lbAtendenteCad = new JLabel();
         lbAtendenteCad.setBounds(new Rectangle(0, 40, 0, 0));
         lbAtendenteCad.setText("Atendente:");
-        lbAtendenteCad.setBounds(346, 30, 78, 17);
+        lbAtendenteCad.setBounds(346, 5, 78, 17);
         pnCadastro.add(lbAtendenteCad);
 
         cbAtendenteCad = new DefaultComboBox();
         cbAtendenteCad.setBounds(new Rectangle(0, 40, 0, 0));
         cbAtendenteCad.setName("AtendenteCad");
-        cbAtendenteCad.setBounds(437, 30, 115, 20);
+        cbAtendenteCad.setBounds(437, 5, 115, 20);
         pnCadastro.add(cbAtendenteCad);
 
         pnPrivacidade = new JPanel();
         pnPrivacidade.setBackground((Color) null);
-        pnPrivacidade.setBounds(601, 0, 159, 142);
+        pnPrivacidade.setBounds(601, 45, 159, 97);
         pnCadastro.add(pnPrivacidade);
 
         checkBox = new JCheckBox("Outros");
@@ -432,8 +436,7 @@ public class NegociosView extends JInternalFrame {
         GroupLayout gl_panel_3 = new GroupLayout(pnPrivacidade);
         gl_panel_3.setHorizontalGroup(
         	gl_panel_3.createParallelGroup(Alignment.LEADING)
-        		.addGap(0, 159, Short.MAX_VALUE)
-        		.addGroup(gl_panel_3.createSequentialGroup()
+        		.addGroup(Alignment.TRAILING, gl_panel_3.createSequentialGroup()
         			.addContainerGap()
         			.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
         				.addComponent(checkBox, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
@@ -444,9 +447,7 @@ public class NegociosView extends JInternalFrame {
         );
         gl_panel_3.setVerticalGroup(
         	gl_panel_3.createParallelGroup(Alignment.LEADING)
-        		.addGap(0, 334, Short.MAX_VALUE)
         		.addGroup(gl_panel_3.createSequentialGroup()
-        			.addGap(43)
         			.addComponent(label_21)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(checkBox_2)
@@ -454,7 +455,7 @@ public class NegociosView extends JInternalFrame {
         			.addComponent(checkBox_1)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addComponent(checkBox)
-        			.addContainerGap(195, Short.MAX_VALUE))
+        			.addContainerGap(46, Short.MAX_VALUE))
         );
         pnPrivacidade.setLayout(gl_panel_3);
 
@@ -462,7 +463,7 @@ public class NegociosView extends JInternalFrame {
         btnHistorico.setToolTipText("Tarefas");
         btnHistorico.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnHistorico.setActionCommand("Historico");
-        btnHistorico.setBounds(660, 321, 90, 25);
+        btnHistorico.setBounds(107, 321, 90, 25);
         btnHistorico.addActionListener(controller);
         pnCadastro.add(btnHistorico);
 
@@ -504,25 +505,25 @@ public class NegociosView extends JInternalFrame {
         JLabel lbFim = new JLabel();
         lbFim.setText("Concluir em:");
         lbFim.setHorizontalAlignment(SwingConstants.LEFT);
-        lbFim.setBounds(8, 178, 87, 20);
+        lbFim.setBounds(211, 178, 75, 20);
         pnCadastro.add(lbFim);
 
         dataFim = new JDateChooser();
-        dataFim.setBounds(107, 178, 98, 20);
+        dataFim.setBounds(287, 178, 98, 20);
         pnCadastro.add(dataFim);
 
         dataInicio = new JDateChooser();
-        dataInicio.setBounds(107, 150, 98, 20);
+        dataInicio.setBounds(105, 178, 98, 20);
         pnCadastro.add(dataInicio);
 
         JLabel lbInicio = new JLabel();
         lbInicio.setText("Data Inicio:");
         lbInicio.setHorizontalAlignment(SwingConstants.LEFT);
-        lbInicio.setBounds(8, 150, 87, 20);
+        lbInicio.setBounds(6, 178, 87, 20);
         pnCadastro.add(lbInicio);
         
         scrollServicos = new JScrollPane();
-        scrollServicos.setBounds(395, 197, 365, 113);
+        scrollServicos.setBounds(395, 222, 365, 88);
         pnCadastro.add(scrollServicos);
         scrollServicos.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         //scrollServicos.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -532,7 +533,7 @@ public class NegociosView extends JInternalFrame {
 
         txNomeObjeto = new JLabel();
         txNomeObjeto.setBackground(new Color(250,250,250));
-        txNomeObjeto.setBounds(285, 61, 139, 17);
+        txNomeObjeto.setBounds(278, 61, 146, 17);
         pnCadastro.add(txNomeObjeto);
 
         btnExcluir = new JButton();
@@ -540,7 +541,7 @@ public class NegociosView extends JInternalFrame {
         btnExcluir.setFont(new Font("Dialog", Font.PLAIN, 9));
         btnExcluir.setActionCommand("Excluir");
         btnExcluir.setName("Excluir");
-        btnExcluir.setBounds(563, 321, 90, 25);
+        btnExcluir.setBounds(607, 321, 90, 25);
         btnExcluir.addActionListener(controller);
         pnCadastro.add(btnExcluir);
 
@@ -553,71 +554,71 @@ public class NegociosView extends JInternalFrame {
         
         JLabel lbServicosCad = new JLabel();
         lbServicosCad.setText("Produtos/Servi\u00E7os:");
-        lbServicosCad.setBounds(317, 119, 109, 17);
+        lbServicosCad.setBounds(317, 145, 109, 17);
         pnCadastro.add(lbServicosCad);
         
         cbServicosCad = new DefaultComboBox();
         cbServicosCad.setName("ServicosCad");
-        cbServicosCad.setBounds(438, 119, 116, 20);
+        cbServicosCad.setBounds(438, 145, 116, 20);
         pnCadastro.add(cbServicosCad);
         
         btnServicoAdd = new JButton();
         btnServicoAdd.setActionCommand("CriarServico");
-        btnServicoAdd.setBounds(564, 116, 36, 25);
+        btnServicoAdd.setBounds(564, 142, 36, 25);
         btnServicoAdd.addActionListener(controller);
         pnCadastro.add(btnServicoAdd);
         
         btnNivelAdd = new JButton();
         btnNivelAdd.setActionCommand("CriarNivel");
-        btnNivelAdd.setBounds(564, 88, 36, 25);
+        btnNivelAdd.setBounds(564, 114, 36, 25);
         btnNivelAdd.addActionListener(controller);
         pnCadastro.add(btnNivelAdd);
         
         cbNivelCad = new DefaultComboBox();
         cbNivelCad.setName("NivelCad");
-        cbNivelCad.setBounds(438, 89, 116, 20);
+        cbNivelCad.setBounds(438, 115, 116, 20);
         pnCadastro.add(cbNivelCad);
         
         JLabel lbNivelCad = new JLabel();
         lbNivelCad.setText("Nivel:");
-        lbNivelCad.setBounds(346, 89, 89, 18);
+        lbNivelCad.setBounds(346, 115, 78, 18);
         pnCadastro.add(lbNivelCad);
         
         btnOrigemAdd = new JButton();
         btnOrigemAdd.setActionCommand("CriarOrigem");
-        btnOrigemAdd.setBounds(203, 116, 36, 25);
+        btnOrigemAdd.setBounds(203, 142, 36, 25);
         btnOrigemAdd.addActionListener(controller);
         pnCadastro.add(btnOrigemAdd);
         
         cbOrigemCad = new DefaultComboBox();
         cbOrigemCad.setName("OrigemCad");
-        cbOrigemCad.setBounds(107, 119, 87, 20);
+        cbOrigemCad.setBounds(107, 145, 87, 20);
         pnCadastro.add(cbOrigemCad);
         
         JLabel lbOrigemCad = new JLabel();
         lbOrigemCad.setText("Origem:");
-        lbOrigemCad.setBounds(10, 119, 87, 18);
+        lbOrigemCad.setBounds(10, 145, 87, 18);
         pnCadastro.add(lbOrigemCad);
         
         JLabel lbCategoriaCad = new JLabel();
         lbCategoriaCad.setText("Categoria:");
-        lbCategoriaCad.setBounds(10, 89, 87, 18);
+        lbCategoriaCad.setBounds(10, 115, 87, 18);
         pnCadastro.add(lbCategoriaCad);
         
         cbCategoriaCad = new DefaultComboBox();
         cbCategoriaCad.setName("CategoriaCad");
-        cbCategoriaCad.setBounds(107, 89, 87, 20);
+        cbCategoriaCad.setBounds(107, 115, 87, 20);
         pnCadastro.add(cbCategoriaCad);
         
         btnCategoriaAdd = new JButton();
         btnCategoriaAdd.setActionCommand("CriarCategoria");
-        btnCategoriaAdd.setBounds(203, 86, 36, 25);
+        btnCategoriaAdd.setBounds(203, 112, 36, 25);
         btnCategoriaAdd.addActionListener(controller);
         pnCadastro.add(btnCategoriaAdd);
         
         pnServicosContratados = new JPanel();
         pnServicosContratados.setBackground(new Color(250,250,250));
-        pnServicosContratados.setBounds(395, 153, 365, 33);
+        pnServicosContratados.setBounds(395, 178, 365, 33);
         pnCadastro.add(pnServicosContratados);
         pnServicosContratados.setLayout(null);
         
@@ -647,7 +648,7 @@ public class NegociosView extends JInternalFrame {
         btAddServicoAgregado.addActionListener(controller);
         
         txIdServicoContratado = new JLabel("");
-        txIdServicoContratado.setBounds(10, 9, 16, 14);
+        txIdServicoContratado.setBounds(0, 9, 32, 14);
         pnServicosContratados.add(txIdServicoContratado);
         
         btnNovoServicoAgregado = new JButton("");
@@ -659,16 +660,41 @@ public class NegociosView extends JInternalFrame {
         btnLink = new JButton();
         btnLink.setToolTipText("Abrir P\u00E1gina");
         btnLink.setActionCommand("OpenURL");
-        btnLink.setBounds(133, 321, 36, 25);
+        btnLink.setBounds(377, 86, 50, 25);
         btnLink.addActionListener(controller);
         pnCadastro.add(btnLink);
         
         btnEmail = new JButton();
         btnEmail.setToolTipText("Enviar e-mail");
         btnEmail.setActionCommand("MailTo");
-        btnEmail.setBounds(87, 321, 36, 25);
+        btnEmail.setBounds(317, 86, 50, 25);
         btnEmail.addActionListener(controller);
         pnCadastro.add(btnEmail);
+        
+        txFone = new JLabel("");
+        txFone.setBounds(485, 58, 115, 19);
+        pnCadastro.add(txFone);
+        
+        txCelular = new JLabel("");
+        txCelular.setBounds(485, 92, 115, 17);
+        pnCadastro.add(txCelular);
+        
+        txIconFone = new JLabel("");
+        txIconFone.setBounds(437, 58, 36, 25);
+        pnCadastro.add(txIconFone);
+        
+        txIconCelular = new JLabel("");
+        txIconCelular.setBounds(439, 89, 36, 25);
+        pnCadastro.add(txIconCelular);
+        
+        JLabel lbEmail = new JLabel();
+        lbEmail.setText("E-mail");
+        lbEmail.setBounds(10, 86, 56, 20);
+        pnCadastro.add(lbEmail);
+        
+        txEmail = new JTextField();
+        txEmail.setBounds(107, 86, 201, 20);
+        pnCadastro.add(txEmail);
         
         JLabel lbBuscar = new JLabel("Buscar");
         lbBuscar.setBounds(10, 65, 53, 20);
@@ -692,30 +718,37 @@ public class NegociosView extends JInternalFrame {
         pnVisao.add(pnAndamento);
 
         rbContato = new JRadioButton("Contato");
+        rbContato.setFont(new Font("Tahoma", Font.PLAIN, 10));
         rbContato.setOpaque(false);
         pnAndamento.add(rbContato);
 
         rbEnvioProposta = new JRadioButton("Envio de Proposta");
+        rbEnvioProposta.setFont(new Font("Tahoma", Font.PLAIN, 10));
         rbEnvioProposta.setOpaque(false);
         pnAndamento.add(rbEnvioProposta);
 
         rbFollowup = new JRadioButton("Follow-up");
+        rbFollowup.setFont(new Font("Tahoma", Font.PLAIN, 10));
         rbFollowup.setOpaque(false);
         pnAndamento.add(rbFollowup);
 
         rbFechamento = new JRadioButton("Fechamento");
+        rbFechamento.setFont(new Font("Tahoma", Font.PLAIN, 10));
         rbFechamento.setOpaque(false);
         pnAndamento.add(rbFechamento);
         
         rbIndefinida = new JRadioButton("Indefinida");
+        rbIndefinida.setFont(new Font("Tahoma", Font.PLAIN, 10));
         rbIndefinida.setOpaque(false);
         pnAndamento.add(rbIndefinida);
 
         JLabel lblStatus = new JLabel();
+        lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 10));
         pnAndamento.add(lblStatus);
         lblStatus.setText("Status:");
 
         cbStatusCad = new DefaultComboBox();
+        cbStatusCad.setFont(new Font("Tahoma", Font.PLAIN, 10));
         cbStatusCad.setName("StatusCad");
         pnAndamento.add(cbStatusCad);
         cbStatusCad.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
