@@ -20,6 +20,8 @@ import com.toedter.calendar.JDateChooser;
 import br.com.tiagods.controller.ControllerInicio;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
+import javax.swing.JTextPane;
+import javax.swing.UIManager;
 
 public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private JPanel jPanel1;
@@ -98,7 +100,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         			.addGap(23)
         			.addComponent(pnStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 554, Short.MAX_VALUE)
+        			.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         			.addContainerGap())
         );
         lbInfoTarefas = new JLabel();

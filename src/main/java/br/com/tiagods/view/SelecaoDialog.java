@@ -21,7 +21,7 @@ import javax.swing.JComboBox;
 import java.awt.Font;
 import java.awt.Frame;
 
-public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
+public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 	@Override
 	public Object getObject(String valor) {
 		return DefaultEnumModel.super.getObject(valor);
@@ -40,7 +40,7 @@ public class SelecaoObjetoDialog extends JDialog implements DefaultEnumModel{
 /**
 	 * Create the dialog.
 	 */
-	public SelecaoObjetoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JFrame parent,boolean modal ) {
+	public SelecaoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JFrame parent,boolean modal ) {
 		super(parent,modal);
 		initComponents();
 		controller.iniciar(labelId,labelNome,this,combobox);

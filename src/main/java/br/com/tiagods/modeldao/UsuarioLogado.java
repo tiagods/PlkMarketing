@@ -1,4 +1,4 @@
-package br.com.tiagods.controller;
+package br.com.tiagods.modeldao;
 
 import java.util.List;
 
@@ -6,22 +6,19 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.CriarAdmin;
 
 @SuppressWarnings("unchecked")
 public class UsuarioLogado {
-	Usuario usuario;
+	private Usuario usuario;
 	
 	static UsuarioLogado instance;
 	
 	public static UsuarioLogado getInstance(){
 		if(instance==null){
 			instance = new UsuarioLogado();
+			instance.receberUsuario();
 		}
 		return instance;
-	}
-	public UsuarioLogado(){
-		receberUsuario();
 	}
 	private void receberUsuario(){
 		Session session = HibernateFactory.getSession();

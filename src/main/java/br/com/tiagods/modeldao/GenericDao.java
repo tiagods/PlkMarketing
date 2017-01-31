@@ -12,7 +12,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 
 import br.com.tiagods.view.MenuView;
-import br.com.tiagods.view.SubmeterErroView;
+import br.com.tiagods.view.SubmeterErroDialog;
 import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class GenericDao implements InterfaceDao{
@@ -24,7 +24,7 @@ public class GenericDao implements InterfaceDao{
 			session.getTransaction().commit();
 			return true;
 		}catch (Exception e) {
-			
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -67,7 +67,7 @@ public class GenericDao implements InterfaceDao{
 		cap.gerarFoto();
 		java.io.File file = cap.getFile();
 		String message = classe+"\n"+tipo+"\n"+erro;
-		new SubmeterErroView(message,file);
+		new SubmeterErroDialog(message,file);
 		
 	}
 }

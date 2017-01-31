@@ -36,10 +36,11 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
-import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.SelecaoDialog;
 
-import static br.com.tiagods.view.SelecaoObjetoDialog.*;
+import static br.com.tiagods.view.SelecaoDialog.*;
 
 public class ControllerSeletor implements ActionListener,MouseListener,KeyListener {
 	
@@ -48,12 +49,12 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	private JLabel labelId;
 	private JLabel labelNome;
 	private JComboBox<String>[] combobox;
-	private SelecaoObjetoDialog view;
+	private SelecaoDialog view;
 	
 	private boolean telaEmEdicao = false;
 	Object object;
 	
-	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoObjetoDialog view,JComboBox[] combobox){
+	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoDialog view,JComboBox[] combobox){
 		if(labelId!=null && labelNome!=null){
 			this.labelId=labelId;
 			this.labelNome=labelNome;

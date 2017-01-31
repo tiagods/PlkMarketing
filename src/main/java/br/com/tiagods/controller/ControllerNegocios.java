@@ -72,7 +72,7 @@ import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegocioPerdaDialog;
 import br.com.tiagods.view.PessoasView;
-import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
@@ -205,6 +205,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txDescricao.setText(n.getDescricao());
 		Set<ServicoContratado> servicos = n.getServicosContratados();
 		preencherServicos(servicos);
+		
+		if(pnAuxiliar.isVisible()){
+			List<Criterion>criterios = new ArrayList<>();
+			Criterion criterion = Restrictions.eq("negocio", n);
+			criterios.add(criterion);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(n.getTarefas()), 
+					criterios,
+					Order.desc("dataEvento"));
+		}
 	}
 	@SuppressWarnings("unchecked")
 	private void preencherComboBox(JPanel panel){
@@ -274,18 +283,18 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			pnAuxiliar.setVisible(false);
 			break;
 		case "VincularObjeto":
-			SelecaoObjetoDialog dialog = null;
+			SelecaoDialog dialog = null;
 			if(!telaEmEdicao){
 				JOptionPane.showMessageDialog(jDBody, "Para selecionar uma Empresa ou Pessoa, clique em Novo ou Editar para uma nova associação!","Somente em edição...",JOptionPane.INFORMATION_MESSAGE);
 			}
 			else{
 				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
 					combos = new JComboBox[]{cbEmpresa};
-					dialog =new SelecaoObjetoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+					dialog =new SelecaoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
 				}
 				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
 					combos = new JComboBox[]{cbPessoa};
-					dialog = new SelecaoObjetoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+					dialog = new SelecaoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
 				}
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
@@ -293,22 +302,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 			break;
 		case "CriarCategoria":
-			dialog = new SelecaoObjetoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarNivel":
-			dialog = new SelecaoObjetoDialog(new Nivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Nivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarOrigem":
-			dialog = new SelecaoObjetoDialog(new Origem(), null, null, new JComboBox[]{cbOrigem,cbOrigemCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Origem(), null, null, new JComboBox[]{cbOrigem,cbOrigemCad},MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarServico":
-			dialog = new SelecaoObjetoDialog(new Servico(), null, null, new JComboBox[]{cbServicos,cbServicosCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Servico(), null, null, new JComboBox[]{cbServicos,cbServicosCad},MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -961,7 +970,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			preencherFormulario(this.negocio);
 			if(open)
 				fechaSessao(open);
-			pnAuxiliar.setVisible(false);
 		}
 //		else
 //			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",

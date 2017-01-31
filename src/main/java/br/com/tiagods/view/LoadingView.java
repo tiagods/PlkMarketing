@@ -48,12 +48,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayer;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -107,6 +109,16 @@ public class LoadingView extends JFrame{
 	}
 	
 	public static void main(String[] args) {
+//		JOptionPane.showMessageDialog(null, "Olá "+System.getProperty("user.name")+", execute a instalação do programa Negocios-1.0-Setup.exe localizada em _Trocas\\Marketing\n"
+//				+ "Essa Versão não esta mais disponivel!","Versão Antiga",JOptionPane.INFORMATION_MESSAGE);
+//		String atalho = System.getProperty("user.home")+"/Desktop/Novos Negocios.lnk";
+//		String atalho2 = System.getProperty("user.home")+"/Desktop/Novos Negocios - Atalho.lnk";
+//		File file = new File(atalho);
+//		File file2 = new File(atalho2);
+//		if(file.exists())
+//			file.delete();
+//		if(file2.exists())
+//			file2.delete();
 		inicializar();
 	}
 	

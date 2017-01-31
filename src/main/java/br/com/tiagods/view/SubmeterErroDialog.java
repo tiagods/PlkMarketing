@@ -20,7 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 import br.com.tiagods.controller.ControllerErro;
 
-public class SubmeterErroView extends JDialog {
+public class SubmeterErroDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	
@@ -38,7 +38,7 @@ public class SubmeterErroView extends JDialog {
 //		}
 //	}
 	
-	public SubmeterErroView(String detalhes,File file) {
+	public SubmeterErroDialog(String detalhes,File file) {
 		controller.iniciar(detalhes,file);
 	}
 	public void initComponents(){
@@ -67,7 +67,7 @@ public class SubmeterErroView extends JDialog {
 		JLabel lbLogo = new JLabel("");
 		lbLogo.setBounds(368, 0, 186, 109);
 		int novaAlturaLogo = lbLogo.getHeight();
-		ImageIcon iconLogo = new ImageIcon(SubmeterErroView.class.getResource("/br/com/tiagods/utilitarios/manutencao.jpg"));
+		ImageIcon iconLogo = new ImageIcon(SubmeterErroDialog.class.getResource("/br/com/tiagods/utilitarios/manutencao.jpg"));
 		iconLogo.setImage(iconLogo.getImage().getScaledInstance(iconLogo.getIconWidth()/iconLogo.getIconHeight()*novaAlturaLogo, novaAlturaLogo, 100));
 		lbLogo.setIcon(iconLogo);
 		panel.add(lbLogo);
@@ -76,7 +76,7 @@ public class SubmeterErroView extends JDialog {
 		lbOps.setBounds(0, 0, 356, 109);
 		panel.add(lbOps);
 		int novaAltura = lbOps.getHeight();
-		ImageIcon icon = new ImageIcon(SubmeterErroView.class.getResource("/br/com/tiagods/utilitarios/ops.png"));
+		ImageIcon icon = new ImageIcon(SubmeterErroDialog.class.getResource("/br/com/tiagods/utilitarios/ops.png"));
 		icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/icon.getIconHeight()*novaAltura, novaAltura, 100));
 		lbOps.setIcon(icon);
 		

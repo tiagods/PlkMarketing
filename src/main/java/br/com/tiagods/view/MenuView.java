@@ -28,7 +28,7 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	ControllerMenu controller = ControllerMenu.getInstance();
 	
     public static javax.swing.JDesktopPane jDBody;
-    public static JMenu mnInicio, mnTarefas, mnEmpresas,mnPessoas,mnNegocios,mnRelatorios,mnExtra;
+    public static JMenu mnInicio, mnTarefas, mnEmpresas,mnPessoas,mnNegocios,mnRelatorios,mnExtra,mnAtualizacao;
     private javax.swing.JPanel pnPrincipal;
     
     private static MenuView instance;
@@ -66,13 +66,13 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	public MenuView() {
 		setTitle("Negocios");
 		try{
-		ImageIcon ion = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
-		ion.setImage(ion.getImage().getScaledInstance(50, 50, 100));
-		this.setIconImage(ion.getImage());
+			ImageIcon ion = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
+			ion.setImage(ion.getImage().getScaledInstance(100, 100, 100));
+			this.setIconImage(ion.getImage());
 		}catch (NullPointerException e) {
 		}
 		initComponents();
-		controller.iniciar();
+		controller.iniciar(this);
 		
 		
 	}
@@ -152,6 +152,11 @@ public class MenuView extends JFrame implements DefaultUtilities{
         mnExtra.setName("Extra");
         mnExtra.addMouseListener(controller);
         menuBar.add(mnExtra);
+        
+        mnAtualizacao = new JMenu("Sobre");
+        mnAtualizacao.setName("Atualizar");
+        mnAtualizacao.addMouseListener(controller);
+        menuBar.add(mnAtualizacao);
         
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         setSize((int)d.getWidth(), getHeight());

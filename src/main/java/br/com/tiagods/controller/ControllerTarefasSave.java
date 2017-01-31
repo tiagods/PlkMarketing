@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -37,6 +38,7 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
+import br.com.tiagods.model.Etapa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
@@ -44,7 +46,7 @@ import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.*;
 import br.com.tiagods.view.MenuView;
-import br.com.tiagods.view.SelecaoObjetoDialog;
+import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
@@ -59,7 +61,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	String item = "";
 	Object object;
 	TarefasSaveView view;
-	SelecaoObjetoDialog dialog = null;
+	SelecaoDialog dialog = null;
 	AuxiliarComboBox padrao = new AuxiliarComboBox();
 
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
@@ -141,11 +143,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				dialog.dispose();
 			}
 			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
-				dialog =new SelecaoObjetoDialog(new Empresa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
+				dialog =new SelecaoDialog(new Empresa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
-				dialog =new SelecaoObjetoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
+				dialog =new SelecaoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
-				dialog =new SelecaoObjetoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
+				dialog =new SelecaoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -231,13 +233,14 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		session.beginTransaction();
 		setarSelecao();
 		tarefa.setTipoTarefa(tipoTarefas.get(item));
+		
+		Object object = getObject(cbObject.getSelectedItem().toString());
 		if("".equals(txCodigoObjeto.getText())){
 			continuar=false;
 			builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
 			builder.append("\n");
 		}
 		else{
-			Object object = getObject(cbObject.getSelectedItem().toString());
 			if(object instanceof Empresa){
 				Empresa empresa = (Empresa) new EmpresaDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				tarefa.setEmpresa(empresa);
@@ -245,8 +248,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				tarefa.setPessoa(null);
 			}
 			else if(object instanceof Negocio){
-				Negocio negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
-				tarefa.setNegocio(negocio);
+				object = new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				tarefa.setNegocio((Negocio)object);
 				tarefa.setEmpresa(null);
 				tarefa.setPessoa(null);
 			}
@@ -259,6 +262,10 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 		if(continuar){
 			if(new TarefaDao().salvar(tarefa,session)){
+				if(object instanceof Negocio){
+					session.beginTransaction();
+					atualizaNegocios(session,(Negocio)object,item);
+				}
 				salvarCancelar();
 				view.dispose();
 			}
@@ -267,7 +274,43 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 		session.close();
 	}
-
+	@SuppressWarnings("unchecked")
+	private void atualizaNegocios(Session session,Negocio negocio,String escolha){
+		GenericDao dao = new GenericDao();
+		Map<String,Etapa> etapas = new HashMap<>();
+		List<Etapa> lista = dao.listar(Etapa.class, session);
+		lista.forEach(c->{
+			etapas.put(c.getNome(),c);
+		});
+		System.out.println("Status pego: "+escolha);
+		if(!"Fechamento".equals(negocio.getEtapa().getNome()) && !"Indefinida".equals(negocio.getEtapa().getNome())){
+			switch(escolha){
+			case "Email":
+			case "Telefone":
+				negocio.setEtapa(etapas.get("Contato"));
+				negocio.setContato(new Date());
+				dao.salvar(negocio, session);
+				System.out.println("salvo contato");
+				break;
+			case "Proposta":
+				negocio.setEtapa(etapas.get("Envio de Proposta"));
+				negocio.setEnvioProposta(new Date());
+				dao.salvar(negocio, session);
+				System.out.println("salvo proposta");
+				break;
+			case "Reuniao":
+			case "Visita":
+				negocio.setEtapa(etapas.get("Follow-up"));
+				negocio.setFollowUp(new Date());
+				dao.salvar(negocio, session);
+				System.out.println("salvo follow-up");
+				break;
+			default:
+				break;
+			}
+		}
+		etapas.clear();
+	}
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes() {
 		List<Usuario> lista = new UsuarioDao().listar(Usuario.class, session);

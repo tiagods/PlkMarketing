@@ -122,9 +122,8 @@ public class NegociosView extends JInternalFrame {
 		initComponents();
 		controller.iniciar(negocio);
 		pnPrivacidade.setVisible(false);
-		pnAuxiliar.setVisible(false);
+		//pnAuxiliar.setVisible(false);
 		rbContato.setSelected(true);
-		
 		pnTotalizador.setVisible(false);
 		btnImportar.setEnabled(false);
 		btnExportar.setEnabled(false);

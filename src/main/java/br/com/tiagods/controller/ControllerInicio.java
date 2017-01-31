@@ -1,11 +1,22 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.InicioView.*;
+import static br.com.tiagods.view.InicioView.btnOk;
+import static br.com.tiagods.view.InicioView.cbAtendentes;
+import static br.com.tiagods.view.InicioView.jData1;
+import static br.com.tiagods.view.InicioView.jData2;
+import static br.com.tiagods.view.InicioView.lbInfoTarefas;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,8 +29,12 @@ import javax.swing.JOptionPane;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
+import br.com.tiagods.model.DescricaoVersao;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.*;
+import br.com.tiagods.modeldao.TarefaDao;
+import br.com.tiagods.modeldao.UsuarioDao;
+import br.com.tiagods.modeldao.UsuarioLogado;
+import br.com.tiagods.modeldao.VerificarAtualizacao;
 import br.com.tiagods.view.InicioView;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.TarefasView;
@@ -27,18 +42,17 @@ import br.com.tiagods.view.TarefasView;
 public class ControllerInicio implements ActionListener,MouseListener{
 		
 	Session session = null;
-	HashMap<String, Usuario> atendentes = new HashMap();
+	HashMap<String, Usuario> atendentes = new HashMap<>();
 	boolean liberar = false;
+	
+	DescricaoVersao descricao = new DescricaoVersao();
+	VerificarAtualizacao atualizacao = new VerificarAtualizacao();
+	boolean atualizar = false;
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		switch(arg0.getActionCommand()){
-		case "Filtrar":
-			if(validarDatas())
-				abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));
-			break;
-		default:
-			
-			break;
+		if("Filtrar".equals(arg0.getActionCommand()) && validarDatas()){
+			abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));
 		}
 	}
 	public void iniciar(){
@@ -101,7 +115,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 			cbAtendentes.addItem(c.getLogin());
 			atendentes.put(c.getLogin(), c);
 		});
-		cbAtendentes.setSelectedItem(UsuarioLogado.getInstance().usuario.getLogin());
+		cbAtendentes.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
 	}
 	//enviar data atual
 	private void carregarDataAgora() {
@@ -173,5 +187,4 @@ public class ControllerInicio implements ActionListener,MouseListener{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
     }
-
 }
