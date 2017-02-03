@@ -36,6 +36,7 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.NegocioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
@@ -50,11 +51,12 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	private JLabel labelNome;
 	private JComboBox<String>[] combobox;
 	private SelecaoDialog view;
+	private JComboBox<String>[] comboNegocios;
 	
 	private boolean telaEmEdicao = false;
 	Object object;
 	
-	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoDialog view,JComboBox[] combobox){
+	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoDialog view,JComboBox[] combobox, JComboBox[] comboNegocios){
 		if(labelId!=null && labelNome!=null){
 			this.labelId=labelId;
 			this.labelNome=labelNome;
@@ -65,6 +67,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		}
 		this.view=view;
 		this.combobox = combobox;
+		this.comboNegocios = comboNegocios;
 		pnCadastrar.setVisible(false);
 		setarIcones();
 	}
@@ -75,10 +78,9 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			Session session = HibernateFactory.getSession();
 			session.beginTransaction();
 			String[] colunas = {"ID", "NOME"};
-			String[][] linhas = new String[0][2];
+			String[][] linhas = null;
 			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"NOME", "ID"}));
 			comboFiltro.setSelectedItem(atributo.toUpperCase());
-			Order order = Order.asc("nome");
 			List<Criterion> criterion = new ArrayList<>();
 			if(!"".equals(buscarValor)){
 				if("id".equals(atributo)){
@@ -94,7 +96,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			GenericDao dao = new GenericDao();
 			if(object instanceof Empresa){
-				List<Empresa> lista = dao.items(Empresa.class, session, criterion, order);
+				List<Empresa> lista = dao.items(Empresa.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -103,7 +105,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relação de Empresas");
 			}
 			else if(object instanceof Negocio){
-				List<Negocio> lista = dao.items(Negocio.class, session, criterion, order);
+				List<Negocio> lista = dao.items(Negocio.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -112,7 +114,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relação de Negócios");
 			}
 			else if (object instanceof Pessoa){
-				List<Pessoa> lista = dao.items(Pessoa.class, session, criterion, order);
+				List<Pessoa> lista = dao.items(Pessoa.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -121,7 +123,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relação de Pessoas");
 			}
 			else if(object instanceof Categoria){
-				List<Categoria> lista = dao.items(Categoria.class, session, criterion, order);
+				List<Categoria> lista = dao.items(Categoria.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -130,7 +132,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relacao de Categorias");
 			}
 			else if(object instanceof Nivel){
-				List<Nivel> lista = dao.items(Nivel.class, session, criterion, order);
+				List<Nivel> lista = dao.items(Nivel.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -139,7 +141,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relacao de Niveis");
 			}
 			else if(object instanceof Origem){
-				List<Origem> lista = dao.items(Origem.class, session, criterion, order);
+				List<Origem> lista = dao.items(Origem.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -148,7 +150,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relacao de Origens");
 			}
 			else if(object instanceof Servico){
-				List<Servico> lista = dao.items(Servico.class, session, criterion, order);
+				List<Servico> lista = dao.items(Servico.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -166,20 +168,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "OK":
-			if(labelId!=null){
-				if(!"".equals(txCodigo.getText())){
-					int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, 
-							"Registro escolhido: \nCodigo: "
-									+txCodigo.getText()+" \nNome: "+txNome.getText()+"\nConfirmar?","Aviso...",JOptionPane.OK_CANCEL_OPTION);
-					if(escolha==JOptionPane.OK_OPTION){
-						labelId.setText(txCodigo.getText());
-						//String[] nome = (txNome.getText()).split(" ");
-						labelNome.setText(txNome.getText());
-					}
-					view.dispose();
-				}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
-			}
-			
+			transferirDados();
 			break;
 		case "Desistir":
 			sair();
@@ -230,6 +219,48 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			break;
 		}
 	}
+	public void transferirDados(){
+		if(labelId!=null){
+			if(!"".equals(txCodigo.getText())){
+				int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, 
+						"Registro escolhido: \nCodigo: "
+								+txCodigo.getText()+" \nNome: "+txNome.getText()+"\nConfirmar?","Aviso...",JOptionPane.OK_CANCEL_OPTION);
+				if(escolha==JOptionPane.OK_OPTION){
+					labelId.setText(txCodigo.getText());
+					labelNome.setText(txNome.getText());
+					if(comboNegocios!=null && object instanceof Pessoa ||
+							comboNegocios!=null && object instanceof Empresa){
+						int option = JOptionPane.showConfirmDialog(MenuView.jDBody,
+								"Deseja vincular os dados da "+object.getClass().getSimpleName()+": "+txCodigo.getText()+" e nome "+txNome.getText()+" ?"+
+								"\nSe clicar em Sim, CATEGORIA, ORIGEM, NIVEL E SERVICO de "+txNome.getText()+
+								" serão usados no cadastro do negócio?\nDeseja sobrescrever os valores?"
+								,"Substituir classificações", JOptionPane.YES_NO_OPTION);
+						if(option==JOptionPane.YES_OPTION){
+							Session session = HibernateFactory.getSession();
+							session.beginTransaction();
+							if(object instanceof Empresa){
+								Empresa empresa = (Empresa)new NegocioDao().receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
+								comboNegocios[0].setSelectedItem(empresa.getPessoaJuridica().getCategoria()==null?"":empresa.getPessoaJuridica().getCategoria().getNome());
+								comboNegocios[1].setSelectedItem(empresa.getPessoaJuridica().getOrigem()==null?"":empresa.getPessoaJuridica().getOrigem().getNome());
+								comboNegocios[2].setSelectedItem(empresa.getPessoaJuridica().getNivel()==null?"":empresa.getPessoaJuridica().getNivel().getNome());
+								comboNegocios[3].setSelectedItem(empresa.getPessoaJuridica().getServico()==null?"":empresa.getPessoaJuridica().getServico().getNome());
+							}
+							else if(object instanceof Pessoa){
+								Pessoa pessoa = (Pessoa)new NegocioDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
+								comboNegocios[0].setSelectedItem(pessoa.getPessoaFisica().getCategoria()==null?"":pessoa.getPessoaFisica().getCategoria().getNome());
+								comboNegocios[1].setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
+								comboNegocios[2].setSelectedItem(pessoa.getPessoaFisica().getNivel()==null?"":pessoa.getPessoaFisica().getNivel().getNome());
+								comboNegocios[3].setSelectedItem(pessoa.getPessoaFisica().getServico()==null?"":pessoa.getPessoaFisica().getServico().getNome());
+							}
+							session.close();
+						}
+					}
+				}
+				view.dispose();
+			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
+		}
+	}
+	
 	public void sair(){
 		if(telaEmEdicao){
 			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody,

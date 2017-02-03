@@ -171,25 +171,25 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			break;
 		case "CriarCategoria":
 			combos = new JComboBox[]{cbCategoria,cbCategoriaCad};
-			SelecaoDialog dialog = new SelecaoDialog(new Categoria(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			SelecaoDialog dialog = new SelecaoDialog(new Categoria(), new JLabel(), new JLabel(), combos,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarNivel":
 			combos = new JComboBox[]{cbNivel,cbNivelCad};
-			dialog = new SelecaoDialog(new Nivel(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Nivel(), new JLabel(), new JLabel(), combos,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarOrigem":
 			combos = new JComboBox[]{cbOrigem,cbOrigemCad};
-			dialog = new SelecaoDialog(new Origem(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Origem(), new JLabel(), new JLabel(), combos,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarServico":
 			combos = new JComboBox[]{cbProdServicos,cbProdServicosCad};
-			dialog = new SelecaoDialog(new Servico(), new JLabel(), new JLabel(), combos,MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Servico(), new JLabel(), new JLabel(), combos,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;

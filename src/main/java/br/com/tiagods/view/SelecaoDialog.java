@@ -40,10 +40,10 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 /**
 	 * Create the dialog.
 	 */
-	public SelecaoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JFrame parent,boolean modal ) {
+	public SelecaoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JComboBox[] comboNegocios, JFrame parent,boolean modal ) {
 		super(parent,modal);
 		initComponents();
-		controller.iniciar(labelId,labelNome,this,combobox);
+		controller.iniciar(labelId,labelNome,this,combobox,comboNegocios);
 		controller.processarObjeto(object,"","");
 	}
 	public void initComponents(){

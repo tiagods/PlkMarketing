@@ -246,6 +246,7 @@ public class ControllerMenu implements MouseListener{
         }
         public void atualizarAgora(){
         	try{
+        		System.out.println("Atualização invocada!");
         		Runtime.getRuntime().exec("java -jar update.jar plk*link815");
         		System.exit(0);
         	}catch(Exception e){

@@ -2,6 +2,7 @@ package br.com.tiagods.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.Toolkit;
 
@@ -45,9 +46,9 @@ public class MenuView extends JFrame implements DefaultUtilities{
     public Color getColor() {
     	return DefaultUtilities.super.getColor();
     }
-//	/**
-//	 * Launch the application.
-//	 */
+	/**
+	 * Launch the application.
+	 */
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
 //			@Override
@@ -59,7 +60,6 @@ public class MenuView extends JFrame implements DefaultUtilities{
 //			}
 //		});
 //	}
-
 	/**
 	 * Create the frame.
 	 */

@@ -9,6 +9,8 @@ import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -45,7 +47,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -141,7 +147,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		tbServicosContratados.addMouseListener(new AcaoTabelaServicosContratados());
 	}
 	public class InvocarDialogPerda implements ItemListener{
-
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(e.getStateChange()==ItemEvent.DESELECTED && telaEmEdicao && "Perdido".equals(cbStatusCad.getSelectedItem())){
@@ -236,7 +241,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		case "Novo":
 			site="";
 			limparFormulario(pnCadastro);
-			
 			novoEditar();
 			telaEmEdicao = true;
 			negocio = new Negocio();
@@ -253,10 +257,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			novoEditar();
 			break;
 		case "Cancelar":
+			telaEmEdicao = false;
 			if(negocioBackup!=null)
 				preencherFormulario(negocioBackup);
 			salvarCancelar();
-			telaEmEdicao = false;
 			break;
 		case "Excluir":
 			invocarExclusao();
@@ -288,13 +292,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				JOptionPane.showMessageDialog(jDBody, "Para selecionar uma Empresa ou Pessoa, clique em Novo ou Editar para uma nova associação!","Somente em edição...",JOptionPane.INFORMATION_MESSAGE);
 			}
 			else{
+				
+				JComboBox[] comboNegocios = new JComboBox[]{cbCategoriaCad,cbOrigemCad,cbNivelCad,cbServicosCad};
 				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
 					combos = new JComboBox[]{cbEmpresa};
-					dialog =new SelecaoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+					dialog =new SelecaoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
 				}
 				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
 					combos = new JComboBox[]{cbPessoa};
-					dialog = new SelecaoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,MenuView.getInstance(),true);
+					dialog = new SelecaoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
 				}
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
@@ -302,22 +308,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 			break;
 		case "CriarCategoria":
-			dialog = new SelecaoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarNivel":
-			dialog = new SelecaoDialog(new Nivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Nivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarOrigem":
-			dialog = new SelecaoDialog(new Origem(), null, null, new JComboBox[]{cbOrigem,cbOrigemCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Origem(), null, null, new JComboBox[]{cbOrigem,cbOrigemCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarServico":
-			dialog = new SelecaoDialog(new Servico(), null, null, new JComboBox[]{cbServicos,cbServicosCad},MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new Servico(), null, null, new JComboBox[]{cbServicos,cbServicosCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -461,39 +467,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	public class MudarCliente implements PropertyChangeListener{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			//if(!evt.getOldValue().equals(evt.getNewValue()))
+			if(telaEmEdicao && evt.getNewValue()!=null)
 				receberObjeto();
 		}
 	}
 	public void receberObjeto(){
-		if(telaEmEdicao && !txCodObjeto.getText().equals("")){
-			int option = JOptionPane.showConfirmDialog(MenuView.jDBody,
-					"Deseja vincular os dados da "+cbObject.getSelectedItem().toString()+" "+txNomeObjeto.getText()+"?"+
-							"Se clicar em SIM, CATEGORIA, ORIGEM, NIVEL E SERVICO da "+cbObject.getSelectedItem().toString()+
-							" serão usados no cadastro do negócio? Deseja sobrescrever os valores?"
-							,"Substituir classificações do Negócio", JOptionPane.YES_NO_OPTION);
-			if(option==JOptionPane.YES_OPTION){
-				PfPj pfpj = new PfPj();
-				session = HibernateFactory.getSession();
-				session.beginTransaction();
-				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-					Empresa empresa = (Empresa)new EmpresaDao().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
-					pfpj = empresa.getPessoaJuridica();
-				}
-				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-					Pessoa pessoa = (Pessoa)new PessoaDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
-					pfpj = pessoa.getPessoaFisica();
-				}
-				if(pfpj!=null){
-					cbCategoriaCad.setSelectedItem(pfpj.getCategoria()==null?"":pfpj.getCategoria().getNome());
-					cbOrigemCad.setSelectedItem(pfpj.getOrigem()==null?"":pfpj.getOrigem().getNome());
-					cbNivelCad.setSelectedItem(pfpj.getNivel()==null?"":pfpj.getNivel().getNome());
-					cbServicosCad.setSelectedItem(pfpj.getServico()==null?"":pfpj.getServico().getNome());
-				}
-				session.close();
-				if("".equals(txNome.getText().trim()))
+		if(telaEmEdicao && !"0".equals(txCodObjeto.getText())){
+			if("".equals(txNome.getText().trim()))
 					txNome.setText(txNomeObjeto.getText());
-			}
 		}
 		
 	}
@@ -837,6 +818,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			table.setSelectionBackground(Color.ORANGE);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
 			
+			TableCellRenderer tcr2 = new Colorir();
+	        TableColumn column2 =
+	        tbPrincipal.getColumnModel().getColumn(2);
+	        column2.setCellRenderer(tcr2);
+			
 			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new AcaoInTable());
@@ -940,7 +926,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if(e.getStateChange()==ItemEvent.DESELECTED){
+		if(e.getStateChange()==ItemEvent.DESELECTED && !e.getSource().equals(cbObject) ){
 			//JComboBox combo = (JComboBox)e.getSource();
 			boolean openHere = recebeSessao();
 			realizarFiltro();
@@ -1113,5 +1099,38 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
     }
-	
+    class Colorir extends JLabel implements TableCellRenderer{
+        public Colorir(){
+            this.setOpaque(true);
+        }
+      
+        public Component getTableCellRendererComponent(
+            JTable table, 
+            Object value, boolean isSelected, boolean hasFocus,
+               int row, int column){
+
+            if(value.toString().equals("Perdido")){
+                setBackground(Color.RED);
+                setForeground(Color.WHITE);
+            }
+            else if(value.toString().equals("Ganho")){
+                setBackground(Color.GREEN);
+                setForeground(Color.black);
+            }
+            else{
+            	setBackground(Color.YELLOW);
+                setForeground(tbPrincipal.getForeground());
+            }
+            setFont(tbPrincipal.getFont());
+            setText(value.toString());
+            return this;   	
+        }
+      
+      public void validate() {}
+      public void revalidate() {}
+      protected void firePropertyChange(String propertyName,
+         Object oldValue, Object newValue) {}
+      public void firePropertyChange(String propertyName,
+         boolean oldValue, boolean newValue) {}
+    }
 }

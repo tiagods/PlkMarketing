@@ -143,11 +143,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				dialog.dispose();
 			}
 			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
-				dialog =new SelecaoDialog(new Empresa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
+				dialog =new SelecaoDialog(new Empresa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
-				dialog =new SelecaoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
+				dialog =new SelecaoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
-				dialog =new SelecaoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,MenuView.getInstance(),true);
+				dialog =new SelecaoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
