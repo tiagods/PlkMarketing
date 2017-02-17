@@ -671,10 +671,12 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(btnEmail);
         
         txFone = new JLabel("");
+        txFone.setFont(new Font("Tahoma", Font.PLAIN, 10));
         txFone.setBounds(485, 58, 115, 19);
         pnCadastro.add(txFone);
         
         txCelular = new JLabel("");
+        txCelular.setFont(new Font("Tahoma", Font.PLAIN, 10));
         txCelular.setBounds(485, 92, 115, 17);
         pnCadastro.add(txCelular);
         
