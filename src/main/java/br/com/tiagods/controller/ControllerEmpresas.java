@@ -58,6 +58,7 @@ import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.*;
+import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
@@ -106,10 +107,15 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	desbloquerFormulario(false, pnPrincipal);
     	setarIcones();
     	session.close();
+    	
+
+		LoadingView loading = LoadingView.getInstance();
+		loading.fechar();
     }
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JComboBox[] combos=null;
+		JComboBox<String>[] combos=null;
 		
 		switch(e.getActionCommand()){
 		case "Buscar":

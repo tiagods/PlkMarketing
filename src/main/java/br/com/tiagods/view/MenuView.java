@@ -2,8 +2,6 @@ package br.com.tiagods.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Image;
 import java.awt.Toolkit;
 
 import javax.swing.GroupLayout;
@@ -11,10 +9,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import br.com.tiagods.controller.ControllerMenu;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
@@ -46,23 +40,7 @@ public class MenuView extends JFrame implements DefaultUtilities{
     public Color getColor() {
     	return DefaultUtilities.super.getColor();
     }
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			@Override
-//			public void run() {
-//				try {
-//					
-//					instance.setVisible(true);
-//				} catch (RuntimeException e) {e.getMessage();}
-//			}
-//		});
-//	}
-	/**
-	 * Create the frame.
-	 */
+	
 	public MenuView() {
 		setTitle("Negocios");
 		try{

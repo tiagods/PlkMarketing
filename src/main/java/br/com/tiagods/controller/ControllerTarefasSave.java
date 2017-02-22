@@ -1,11 +1,9 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.TarefasSaveView.*;
 import static br.com.tiagods.view.MenuView.jDBody;
+import static br.com.tiagods.view.TarefasSaveView.*;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -13,26 +11,17 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
 
 import org.hibernate.Session;
 
@@ -44,11 +33,17 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.*;
+import br.com.tiagods.modeldao.EmpresaDao;
+import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.NegocioDao;
+import br.com.tiagods.modeldao.PessoaDao;
+import br.com.tiagods.modeldao.TarefaDao;
+import br.com.tiagods.modeldao.TipoTarefaDao;
+import br.com.tiagods.modeldao.UsuarioDao;
+import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
-import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
 public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, ItemListener{
@@ -114,6 +109,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
 		}
 	}
+	@SuppressWarnings("unchecked")
 	private void carregarTipoTarefasEAtendentes(){
 		List<TipoTarefa> listTiposTarefas = new TipoTarefaDao().listar(TipoTarefa.class, session);
 		listTiposTarefas.forEach(t->{
@@ -124,6 +120,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			usuarios.put(u.getLogin(), u);
 		});
 	}
+	@SuppressWarnings("unused")
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){

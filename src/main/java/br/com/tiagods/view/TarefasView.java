@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
 import javax.swing.JInternalFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -16,15 +15,14 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ActionEvent;
 import java.awt.Font;;
 
 public class TarefasView extends JInternalFrame implements DefaultUtilities{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2621283794064432106L;
 	public static JDateChooser jData1;
 	public static JDateChooser jData2;
 	public static javax.swing.JButton btNovaTarefa;
@@ -66,7 +64,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         controller.iniciar(data1,data2,usuario);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
     	group = new javax.swing.ButtonGroup();

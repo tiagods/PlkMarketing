@@ -3,14 +3,15 @@
  */
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.MenuView.jDBody;
+import static br.com.tiagods.view.NegociosView.*;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -24,10 +25,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,8 +45,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -73,8 +69,13 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.modeldao.*;
+import br.com.tiagods.modeldao.EmpresaDao;
+import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.NegocioDao;
+import br.com.tiagods.modeldao.PessoaDao;
+import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.EmpresasView;
+import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegocioPerdaDialog;
 import br.com.tiagods.view.PessoasView;
@@ -83,9 +84,6 @@ import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
-
-import static br.com.tiagods.view.MenuView.jDBody;
-import static br.com.tiagods.view.NegociosView.*;
 /**
  *
  * @author Tiago
@@ -113,6 +111,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			preencherComboBox(panel);
 		}
 		List<Criterion> criterion = new ArrayList<>();
+		criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));
 		listarNegocios = new GenericDao().items(Negocio.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		if(this.negocio==null && !listarNegocios.isEmpty()){
@@ -124,10 +123,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		tbPrincipal.addMouseListener(this);
 		session.close();
 		setarIcones();
+		cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
 		definirAcoes();
 //		desbloquerFormulario(false, pnCadastro);
 //		desbloquerFormulario(false, pnAndamento);
 		salvarCancelar();
+		
+		LoadingView loading = LoadingView.getInstance();
+		loading.fechar();
     }
 	public void definirAcoes(){
 		data1.addPropertyChangeListener(this);
@@ -228,7 +231,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JComboBox[] combos = null;
@@ -406,6 +409,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			break;
 		}
 	}
+	@SuppressWarnings("unchecked")
 	private void realizarFiltro() {
 		if(!telaEmEdicao){
 			List<Criterion> criterios = new ArrayList<>();
@@ -478,7 +482,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		
 	}
-	@SuppressWarnings("unchecked")
 	public void invocarSalvamento(){
 		if("".equals(txCodigo.getText())){	
 			negocio.setCriadoEm(new Date());
@@ -543,9 +546,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		negocio.setServicosContratados(servicosContratados);
 		GenericDao dao = new GenericDao();
 		if(dao.salvar(negocio, session)){
-			List<Criterion> criterios = new ArrayList<>();
-			listarNegocios = dao.items(Negocio.class, session, criterios, Order.desc("id"));
-			preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
+			session.beginTransaction();
+			telaEmEdicao = false;
+			realizarFiltro();
 			preencherFormulario(negocio);
 			salvarCancelar();
 		}
@@ -830,6 +833,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
+	@SuppressWarnings("serial")
 	private void preencherServicos(Set<ServicoContratado> servicos){
 		
 		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR","EXCLUIR"},0){
@@ -862,6 +866,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	public class AcaoInTable implements ActionListener{
 
+		@SuppressWarnings("static-access")
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			session = HibernateFactory.getSession();
@@ -1100,7 +1105,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	return icon;
     }
     class Colorir extends JLabel implements TableCellRenderer{
-        public Colorir(){
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 3906288238715470468L;
+		public Colorir(){
             this.setOpaque(true);
         }
       

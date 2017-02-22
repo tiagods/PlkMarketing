@@ -2,12 +2,10 @@ package br.com.tiagods.model;
 
 public class DescricaoVersao {
 	private String nome="Negócios";
-	private String versao="1.0.1";
-	private String data="31.01.2017";
+	private String versao="1.0.2";
+	private String data="22.02.2017";
 	private String versaoBanco="1.0";
-	private String detalhes="Inclusão da cor vermelha na tabela de Novos Negocios.Ao criar uma tarefa o Negócio vinculado a esta tarefa é atualizado para "
-			+ "Contato, Enviando Proposta ou Follow-up de acordo com o Tipo de Tarefa."
-			+ "É necessário Atualizar a pagina Negócios depois da inclusão ou alteração de uma tarefa.";
+	private String detalhes="Inclusão de Tela de Login para operadores, \nInclusão de senha com criptografia\nOtimização da Tela de Novos Negocios";
 	/*
 	 */
 	/**

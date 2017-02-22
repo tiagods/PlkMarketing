@@ -56,6 +56,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	private boolean telaEmEdicao = false;
 	Object object;
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoDialog view,JComboBox[] combobox, JComboBox[] comboNegocios){
 		if(labelId!=null && labelNome!=null){
 			this.labelId=labelId;
@@ -71,7 +72,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		pnCadastrar.setVisible(false);
 		setarIcones();
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void processarObjeto(Object object,String atributo, String buscarValor){
 		this.object=object;
 		if(object != null){
@@ -404,6 +405,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		else
 			JOptionPane.showMessageDialog(MenuView.jDBody, "Nenhum registro selecionado para exclusao");
 	}
+	@SuppressWarnings("unused")
 	private void enviarFiltros(Object novoObjeto){
 		int id=0;
 		String value="";

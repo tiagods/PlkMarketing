@@ -1,10 +1,6 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -15,10 +11,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
@@ -29,12 +23,11 @@ import com.toedter.calendar.JDateChooser;
 import br.com.tiagods.controller.ControllerEmpresas;
 import br.com.tiagods.model.Empresa;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Logradouro;
 
+@SuppressWarnings("serial")
 public class EmpresasView extends JInternalFrame {
 	public static DefaultComboBox cbAtendente;
     public static DefaultComboBox cbCategoria;
@@ -42,7 +35,8 @@ public class EmpresasView extends JInternalFrame {
     public static DefaultComboBox cbOrigem;
     public static DefaultComboBox cbEmpresa;
     public static DefaultComboBox cbProdServicos;
-    public static javax.swing.JComboBox cbLogradouro;
+    @SuppressWarnings("rawtypes")
+	public static JComboBox cbLogradouro;
     public static DefaultComboBox cbOrigemCad;
     public static DefaultComboBox cbNivel;
     public static DefaultComboBox cbNivelCad;
@@ -58,6 +52,7 @@ public class EmpresasView extends JInternalFrame {
     public static javax.swing.JButton btnNegocios, btnHistorico, btnPessoas,btEsconder;
     public static javax.swing.JButton btnCategoriaAdd,btnNivelAdd,btnOrigemAdd,btnServicoAdd;
     public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar;
+	@SuppressWarnings("unused")
 	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
@@ -98,11 +93,10 @@ public class EmpresasView extends JInternalFrame {
 		pnVisao.add(txContador);
 		controller.iniciar(empresa);
 		btnPessoas.setEnabled(false);
-		
 		btnImportar.setEnabled(false);
 		btnExportar.setEnabled(false);
-		
 	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
         pnCabecalho = new javax.swing.JPanel();
@@ -501,12 +495,6 @@ public class EmpresasView extends JInternalFrame {
         txCep.setBounds(107, 245, 78, 20);
         pnPrincipal.add(txCep);
 
-        MaskFormatter formatterNascimento=null;
-        try{
-        	formatterNascimento = new MaskFormatter("##/##");
-        }catch (Exception e) {
-		}
-
         cbAtendenteCad = new DefaultComboBox();
         cbAtendenteCad.setName("AtendenteCad");
         cbAtendenteCad.setBounds(462, 9, 92, 20);
@@ -647,9 +635,7 @@ public class EmpresasView extends JInternalFrame {
         scrolAuxiliar.setViewportView(tbAuxiliar);
         pnAuxiliar.add(scrolAuxiliar);
         pnAuxiliar.add(btEsconder);
-        ButtonGroup group = new ButtonGroup();
-
-
+        
         JScrollPane scrollPrincipal = new JScrollPane();
         scrollPrincipal.setBounds(10, 107, 760, 142);
         pnVisao.add(scrollPrincipal);

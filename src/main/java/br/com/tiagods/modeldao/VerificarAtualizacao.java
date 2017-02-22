@@ -38,6 +38,7 @@ public class VerificarAtualizacao {
 					}
 				}
 			}
+				ps.close();
 			}catch(SQLException e){
 				return "Comando invalido";
 			}finally{

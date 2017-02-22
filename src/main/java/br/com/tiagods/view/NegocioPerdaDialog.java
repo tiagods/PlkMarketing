@@ -1,6 +1,5 @@
 package br.com.tiagods.view;
 
-import java.awt.Color;
 import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
@@ -32,6 +31,7 @@ public class NegocioPerdaDialog extends JDialog{
 /**
 	 * Create the dialog.
 	 */
+	
 	public NegocioPerdaDialog(JFrame frame, boolean modal, Negocio negocio) {
 		super(frame, modal);
 		initComponents();
@@ -60,24 +60,27 @@ public class NegocioPerdaDialog extends JDialog{
 		getContentPane().add(lbMotivo);
 				
 		rbPreco = new JRadioButton("Pre\u00E7o");
-		rbPreco.setOpaque(false);
+		rbPreco.setBorderPainted(true);
 		rbPreco.setName("Preco");
 		rbPreco.setBounds(6, 38, 70, 23);
 		getContentPane().add(rbPreco);
 		
 		rbPrazo = new JRadioButton("Prazo");
+		rbPrazo.setBorderPainted(true);
 		rbPrazo.setOpaque(false);
 		rbPrazo.setName("Prazo");
 		rbPrazo.setBounds(85, 38, 70, 23);
 		getContentPane().add(rbPrazo);
 		
 		rbProdServico = new JRadioButton("Produto/Servi\u00E7o");
+		rbProdServico.setBorderPainted(true);
 		rbProdServico.setOpaque(false);
 		rbProdServico.setName("Produto/Servico");
 		rbProdServico.setBounds(168, 38, 137, 23);
 		getContentPane().add(rbProdServico);
 		
 		rbDesistencia = new JRadioButton("Desist\u00EAncia");
+		rbDesistencia.setBorderPainted(true);
 		rbDesistencia.setOpaque(false);
 		rbDesistencia.setName("Desistencia");
 		rbDesistencia.setBounds(314, 38, 110, 23);

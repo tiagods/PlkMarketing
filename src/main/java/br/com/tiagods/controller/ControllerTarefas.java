@@ -3,24 +3,7 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.TarefasView.btNovaTarefa;
-import static br.com.tiagods.view.TarefasView.cbAtendentes;
-import static br.com.tiagods.view.TarefasView.ckEmail;
-import static br.com.tiagods.view.TarefasView.ckFinalizados;
-import static br.com.tiagods.view.TarefasView.ckPendentes;
-import static br.com.tiagods.view.TarefasView.ckProposta;
-import static br.com.tiagods.view.TarefasView.ckReuniao;
-import static br.com.tiagods.view.TarefasView.ckTelefone;
-import static br.com.tiagods.view.TarefasView.ckVisita;
-import static br.com.tiagods.view.TarefasView.jData1;
-import static br.com.tiagods.view.TarefasView.jData2;
-import static br.com.tiagods.view.TarefasView.pnData;
-import static br.com.tiagods.view.TarefasView.rbDefinirData;
-import static br.com.tiagods.view.TarefasView.rbEssaSemana;
-import static br.com.tiagods.view.TarefasView.rbHoje;
-import static br.com.tiagods.view.TarefasView.rbTudo;
-import static br.com.tiagods.view.TarefasView.tbPrincipal;
-import static br.com.tiagods.view.TarefasView.txContador;
+import static br.com.tiagods.view.TarefasView.*;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -77,6 +60,7 @@ import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.TipoTarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.view.EmpresasView;
+import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
@@ -147,6 +131,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			setarIcons();
 		}catch (NullPointerException e) {
 		}
+
+		LoadingView loading = LoadingView.getInstance();
+		loading.fechar();
 	}
 	private void definirAcoes(){
 		jData1.addPropertyChangeListener(this);
@@ -612,6 +599,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 	}
 	public class TextAreaEditor extends DefaultCellEditor {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8056096378619799509L;
 		protected JScrollPane scrollpane;
 		protected JTextArea textarea; 
 

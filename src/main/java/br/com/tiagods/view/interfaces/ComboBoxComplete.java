@@ -7,8 +7,14 @@ import java.lang.reflect.Field;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 public class ComboBoxComplete extends PlainDocument {
-    JComboBox comboBox;
-    ComboBoxModel model;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7875173609824112784L;
+	@SuppressWarnings("rawtypes")
+	JComboBox comboBox;
+    @SuppressWarnings("rawtypes")
+	ComboBoxModel model;
     JTextComponent editor;
     // flag to indicate if setSelectedItem has been called
     // subsequent calls to remove/insertString should be ignored
@@ -17,7 +23,8 @@ public class ComboBoxComplete extends PlainDocument {
     boolean hitBackspace=false;
     boolean hitBackspaceOnSelection;
     
-    public ComboBoxComplete(final JComboBox comboBox) {
+    @SuppressWarnings("rawtypes")
+	public ComboBoxComplete(final JComboBox comboBox) {
         this.comboBox = comboBox;
         model = comboBox.getModel();
         editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
@@ -62,17 +69,20 @@ public class ComboBoxComplete extends PlainDocument {
         highlightCompletedText(0);
     }
     
-    public void setPrototypeValue() {
+    @SuppressWarnings("rawtypes")
+	public void setPrototypeValue() {
         JList list = getListBox();
         setPrototypeValue(getPrototypeValue(list), list);
     }
     
-    void setPrototypeValue(Object value, JList list) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	void setPrototypeValue(Object value, JList list) {
         comboBox.setPrototypeDisplayValue(value);
         list.setPrototypeCellValue(value);
     }
     
-    Object getPrototypeValue(JList list) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	Object getPrototypeValue(JList list) {
         Object prototypeValue=null;
         double prototypeWidth=0;
         ListCellRenderer renderer = comboBox.getRenderer();
@@ -88,7 +98,8 @@ public class ComboBoxComplete extends PlainDocument {
         return prototypeValue;
     }
     
-    JList getListBox() {
+    @SuppressWarnings("rawtypes")
+	JList getListBox() {
         JList listBox;
         try {
             Field field = JComponent.class.getDeclaredField("ui");

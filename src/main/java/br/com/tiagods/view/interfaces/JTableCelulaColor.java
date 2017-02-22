@@ -6,13 +6,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 public class JTableCelulaColor extends JLabel implements TableCellRenderer{
-	    boolean finalizado;
+	    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7832245173271925512L;
+		boolean finalizado;
 		public JTableCelulaColor(boolean finalizado){
 	        this.finalizado=finalizado;
 			this.setOpaque(true);	        

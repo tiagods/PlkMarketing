@@ -1,6 +1,5 @@
 package br.com.tiagods.controller;
 
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,9 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
@@ -127,14 +124,15 @@ public class AuxiliarTabela {
 	}
 	@SuppressWarnings("serial")
 	private DefaultTableModel gerarModel(Tarefa tarefas){
-		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","STATUS","ANDAMENTO","EDITAR","EXCLUIR"},0){
+		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","DESCRICAO","STATUS","ANDAMENTO","EDITAR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
-					false,false,false,false,false,true,true,true
+					false,false,false,false,false,false,true,true,true
 			};
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public Class getColumnClass(int columnIndex) {
 				return getValueAt(0, columnIndex).getClass();
@@ -198,14 +196,15 @@ public class AuxiliarTabela {
 			o[1]=sdf.format(t.getDataEvento());
 			o[2]=t.getTipoTarefa().getNome();
 			o[3]=t.getAtendente().getNome();
-			o[4]=t.getFinalizado()==0?"Aberto":"Finalizado";
+			o[4]=t.getDescricao();
+			o[5]=t.getFinalizado()==0?"Aberto":"Finalizado";
 			if(t.getFinalizado()==0)
-				o[5]=Boolean.FALSE;
+				o[6]=Boolean.FALSE;
 			else
-				o[5]=Boolean.TRUE;
-			o[6] = recalculate(new ImageIcon(AuxiliarTabela.class
-					.getResource("/br/com/tiagods/utilitarios/button_edit.png")));
+				o[6]=Boolean.TRUE;
 			o[7] = recalculate(new ImageIcon(AuxiliarTabela.class
+					.getResource("/br/com/tiagods/utilitarios/button_edit.png")));
+			o[8] = recalculate(new ImageIcon(AuxiliarTabela.class
 					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
@@ -218,16 +217,16 @@ public class AuxiliarTabela {
 		table.setRowHeight(30);
 		
 		JCheckBox ckFinalizar = new JCheckBox();
-		TableColumn col = table.getColumnModel().getColumn(5);
+		TableColumn col = table.getColumnModel().getColumn(6);
 		col.setCellEditor(new DefaultCellEditor(ckFinalizar));
 		ckFinalizar.setActionCommand("Finalizar");
 		ckFinalizar.addActionListener(new AcaoInTable());
 		
-		JButton btEdit = new ButtonColumnModel(table,6).getButton();
+		JButton btEdit = new ButtonColumnModel(table,7).getButton();
 		btEdit.setActionCommand("Editar");
 		btEdit.addActionListener(new AcaoInTable());
 
-		JButton btExcluir =new ButtonColumnModel(table,7).getButton();
+		JButton btExcluir =new ButtonColumnModel(table,8).getButton();
 		btExcluir.setActionCommand("Excluir");
 		btExcluir.addActionListener(new AcaoInTable());
 	}
@@ -273,9 +272,9 @@ public class AuxiliarTabela {
 	String fechado = "Finalizado";
 	
 	public void finalizar(Session session){
-		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 5);
+		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 6);
 		int id = (int)table.getValueAt(table.getSelectedRow(), 0);
-		String status = (String)table.getValueAt(table.getSelectedRow(), 4);
+		String status = (String)table.getValueAt(table.getSelectedRow(), 5);
 		if(!value && pendente.equals(status)){
 			TarefaDao dao = new TarefaDao();
 			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
@@ -290,12 +289,13 @@ public class AuxiliarTabela {
 			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
 			thisTar.setFinalizado(0);
 			if(dao.salvar(thisTar, session)){
-				table.setValueAt(pendente, table.getSelectedRow(), 4);
+				table.setValueAt(pendente, table.getSelectedRow(), 5);
 			}
 		}
 		//buscar(session);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void buscar(Session session){
 		List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
 		AuxiliarTabela aux = new AuxiliarTabela(object, table, tarefas, criterios, order);

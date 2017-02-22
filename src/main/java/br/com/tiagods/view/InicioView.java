@@ -2,13 +2,11 @@ package br.com.tiagods.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,9 +18,8 @@ import com.toedter.calendar.JDateChooser;
 import br.com.tiagods.controller.ControllerInicio;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
-import javax.swing.JTextPane;
-import javax.swing.UIManager;
 
+@SuppressWarnings("serial")
 public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private JPanel jPanel1;
     private JLabel lblAte;
@@ -40,23 +37,8 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
 	public Color getColor() {
 		return DefaultUtilities.super.getColor();		
 	}
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InicioView frame = new InicioView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public InicioView() {
+	
 		initComponents();
 		controller.iniciar();
 	}

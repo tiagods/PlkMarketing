@@ -22,6 +22,11 @@ import br.com.tiagods.controller.ControllerErro;
 
 public class SubmeterErroDialog extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -78476565522489797L;
+
 	private final JPanel contentPanel = new JPanel();
 	
 	public static JTextArea txResumo,txDetalhes;

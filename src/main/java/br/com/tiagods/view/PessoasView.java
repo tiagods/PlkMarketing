@@ -1,10 +1,6 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -15,10 +11,8 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
@@ -33,12 +27,17 @@ import br.com.tiagods.view.interfaces.DefaultComboBox;
 import java.awt.Font;
 
 public class PessoasView extends JInternalFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5517536740531185413L;
 	public static DefaultComboBox cbAtendente;
     public static DefaultComboBox cbCategoria;
     public static DefaultComboBox cbOrigem;
     public static DefaultComboBox cbEmpresa;
     public static DefaultComboBox cbProdServicos;
-    public static JComboBox cbLogradouro;
+    @SuppressWarnings("rawtypes")
+	public static JComboBox cbLogradouro;
     public static DefaultComboBox cbEstado;
     public static DefaultComboBox cbAtendenteCad;
     public static DefaultComboBox cbCidade;
@@ -55,7 +54,6 @@ public class PessoasView extends JInternalFrame {
     public static javax.swing.JButton btnNegocios, btnHistorico, btnEmpresas, btEsconder;
     public static javax.swing.JButton btnNovo, btnSalvar, btnEditar, btnExcluir, btnCancelar,btnNovaTarefa;
     public static javax.swing.JButton btnNivelCad,btnCategoriaCad,btnOrigemCad,btnServicosCad;
-	private JPanel contentPane;
 	private JPanel panel;
 	private JLabel label;
 	public static JDateChooser data1,data2;
@@ -88,18 +86,17 @@ public class PessoasView extends JInternalFrame {
 	 */
 	public PessoasView(Pessoa pessoa) {
 		initComponents();
-		
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);
 
 		controller.iniciar(pessoa);
+		
 		btnEmpresas.setEnabled(false);
-		
-		
 		
 		btnImportar.setEnabled(false);
 		btnExportar.setEnabled(false);
 	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
         pnCabecalho = new javax.swing.JPanel();

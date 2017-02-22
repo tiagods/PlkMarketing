@@ -40,7 +40,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -49,7 +48,6 @@ import org.hibernate.criterion.Restrictions;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
@@ -61,6 +59,7 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.PessoaDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
+import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
@@ -78,6 +77,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	Pessoa pessoa= null;
 	Pessoa pessoaBackup;
 	boolean telaEmEdicao = false;
+	GenericDao dao = new GenericDao();
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Pessoa pessoa){
@@ -105,12 +105,17 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	desbloquerFormulario(false, pnPrincipal);
     	session.close();
     	setarIcones();
+    	
     	definirAcoes();
+
+		LoadingView loading = LoadingView.getInstance();
+		loading.fechar();
     }
 	private void definirAcoes(){
 		data1.addPropertyChangeListener(this);
 		data2.addPropertyChangeListener(this);
 	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JComboBox[] combos = null;
@@ -150,7 +155,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			Criterion criterion = Restrictions.eq("pessoa", pessoa);
 			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
+			List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas,criterios,order);
 			fechaSessao(open);
 			break;
@@ -165,7 +170,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			criterion = Restrictions.eq("pessoa", pessoa);
 			criterios.add(criterion);
 			order = Order.desc("id");		
-			List<Negocio> negocios = (List<Negocio>) new GenericDao().items(Negocio.class, session, criterios, order);
+			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios, criterios,order);
 			fechaSessao(open);
 			break;
@@ -341,32 +346,30 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 
 	}
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings({"unchecked"})
 	private void realizarFiltro(){
 		if(!telaEmEdicao){
-		Criteria criteria = session.createCriteria(Pessoa.class);
-		criteria.addOrder(Order.desc("id"));
-		if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
-			criteria.add(Restrictions.eq("pessoaFisica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
-		if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))
-			criteria.add(Restrictions.eq("pessoaFisica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
-		if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
-			criteria.add(Restrictions.eq("pessoaFisica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
-		if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
-			criteria.add(Restrictions.eq("pessoaFisica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
-		if(!"".equals(txBuscar.getText().trim()))
-			criteria.add(Restrictions.ilike("nome", txBuscar.getText().trim()+"%"));
-		try{
-			Date data01 = data1.getDate();
-			Date data02 = data2.getDate();
-			if(data02.compareTo(data01)>=0){
-				criteria.add(Restrictions.between("pessoaFisica.criadoEm", data01, data02));
+			List<Criterion> criterios = new ArrayList<>();
+			if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
+				criterios.add(Restrictions.eq("pessoaFisica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
+			if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))
+				criterios.add(Restrictions.eq("pessoaFisica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
+			if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
+				criterios.add(Restrictions.eq("pessoaFisica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
+			if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
+				criterios.add(Restrictions.eq("pessoaFisica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
+			if(!"".equals(txBuscar.getText().trim()))
+				criterios.add(Restrictions.ilike("nome", txBuscar.getText().trim()+"%"));
+			try{
+				Date data01 = data1.getDate();
+				Date data02 = data2.getDate();
+				if(data02.compareTo(data01)>=0){
+					criterios.add(Restrictions.between("pessoaFisica.criadoEm", data01, data02));
+				}
+			}catch(NullPointerException e){
 			}
-		}catch(NullPointerException e){
-
-		}
-		List<Pessoa> lista = criteria.list();
-		preencherTabela(lista, tbPrincipal, txContador);
+			List<Pessoa> lista = dao.items(Pessoa.class, session, criterios, Order.desc("id"));
+			preencherTabela(lista, tbPrincipal, txContador);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
@@ -551,6 +554,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 
 	}
+	@SuppressWarnings("serial")
 	public void preencherTabela(List<Pessoa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
 			new SemRegistrosJTable(table,"Relação de Pessoas");

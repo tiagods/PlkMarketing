@@ -1,5 +1,8 @@
 *.class
 hibernate.cfg.xml
+hibernate.properties
+ConnectionFactory.java
+SendEmail.java
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

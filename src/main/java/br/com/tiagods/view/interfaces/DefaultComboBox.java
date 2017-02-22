@@ -5,20 +5,29 @@ import java.util.Vector;
  
 // got this workaround from the following bug: 
 //      http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4618607 
+@SuppressWarnings("rawtypes")
 public class DefaultComboBox extends JComboBox{ 
  
-    public DefaultComboBox() { 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -109654472443203636L;
+
+	public DefaultComboBox() { 
     } 
  
-    public DefaultComboBox(final Object items[]){ 
+    @SuppressWarnings("unchecked")
+	public DefaultComboBox(final Object items[]){ 
         super(items); 
     } 
  
-    public DefaultComboBox(Vector items) { 
+    @SuppressWarnings("unchecked")
+	public DefaultComboBox(Vector items) { 
         super(items); 
     } 
  
-    public DefaultComboBox(ComboBoxModel aModel) { 
+    @SuppressWarnings("unchecked")
+	public DefaultComboBox(ComboBoxModel aModel) { 
         super(aModel); 
     } 
  

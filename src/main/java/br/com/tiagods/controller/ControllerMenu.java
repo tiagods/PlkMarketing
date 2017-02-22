@@ -3,7 +3,15 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.MenuView.*;
+import static br.com.tiagods.view.MenuView.jDBody;
+import static br.com.tiagods.view.MenuView.mnAtualizacao;
+import static br.com.tiagods.view.MenuView.mnEmpresas;
+import static br.com.tiagods.view.MenuView.mnExtra;
+import static br.com.tiagods.view.MenuView.mnInicio;
+import static br.com.tiagods.view.MenuView.mnNegocios;
+import static br.com.tiagods.view.MenuView.mnPessoas;
+import static br.com.tiagods.view.MenuView.mnRelatorios;
+import static br.com.tiagods.view.MenuView.mnTarefas;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -27,6 +35,7 @@ import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.modeldao.VerificarAtualizacao;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.InicioView;
+import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
@@ -76,28 +85,52 @@ public class ControllerMenu implements MouseListener{
     public void mouseClicked(MouseEvent e) {
     	switch(e.getComponent().getName()){
     	case "Inicio":
-	        inicio = new InicioView();
-	        abrirCorpo(inicio);
+    		invocarLoading();
+    		Runnable run = ()->{
+    			inicio = new InicioView();
+    			abrirCorpo(inicio);
+    		};
+    		new Thread(run).start();
             break;
         case "Empresas":
-        	empresas = new EmpresasView(null);
-            abrirCorpo(empresas);
+        	invocarLoading();
+        	run = ()->{
+        		empresas = new EmpresasView(null);
+        		abrirCorpo(empresas);
+        	};
+        	new Thread(run).start();
             break;
         case "Tarefas":
-            tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
-            abrirCorpo(tarefas);
+        	invocarLoading();
+        	run = ()->{
+        		tarefas = new TarefasView(new Date(), new Date(), UsuarioLogado.getInstance().getUsuario());
+        		abrirCorpo(tarefas);
+        	};
+        	new Thread(run).start();
             break;
         case "TarefasSave":
-        	tarefasSave = new TarefasSaveView(null,null,MenuView.getInstance(),true);
-        	tarefasSave.setVisible(true);
+        	invocarLoading();
+        	run = ()->{
+        		tarefasSave = new TarefasSaveView(null,null,MenuView.getInstance(),true);
+        		tarefasSave.setVisible(true);
+        	};
+        	new Thread(run).start();
         	break;
         case "Negocios":
-        	negocios = new NegociosView(null);
-        	abrirCorpo(negocios);
+        	invocarLoading();
+        	run = ()->{
+        		negocios = new NegociosView(null);
+        		abrirCorpo(negocios);
+        	};
+        	new Thread(run).start();
             break;
         case "Pessoas":
-            pessoas = new PessoasView(null);
+        	invocarLoading();
+        	run = ()->{
+        	pessoas = new PessoasView(null);
             abrirCorpo(pessoas);
+        	};
+        	new Thread(run).start();
         	break;
         case "Atualizar":
         	if(atualizar)
@@ -112,6 +145,11 @@ public class ControllerMenu implements MouseListener{
         	JOptionPane.showMessageDialog(jDBody, "Esse modulo esta em fase de desenvolvimento, aguarde...!","Modulo em Desenvolvimento!",JOptionPane.OK_OPTION);
         	break;
     	}
+    }
+    @SuppressWarnings("static-access")
+	public void invocarLoading(){
+    	LoadingView loading = LoadingView.getInstance();
+    	loading.inicializar(false);
     }
     @Override
     public void mousePressed(MouseEvent e) {
@@ -185,7 +223,6 @@ public class ControllerMenu implements MouseListener{
     				e.printStackTrace();
     			}
     		}
-    		atualizarAgora();
     	}
     	else{
     		Agendador();

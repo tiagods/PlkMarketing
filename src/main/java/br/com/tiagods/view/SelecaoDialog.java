@@ -19,9 +19,12 @@ import br.com.tiagods.controller.ControllerSeletor;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import javax.swing.JComboBox;
 import java.awt.Font;
-import java.awt.Frame;
 
 public class SelecaoDialog extends JDialog implements DefaultEnumModel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -256153764561770404L;
 	@Override
 	public Object getObject(String valor) {
 		return DefaultEnumModel.super.getObject(valor);
@@ -40,12 +43,14 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 /**
 	 * Create the dialog.
 	 */
+	@SuppressWarnings("rawtypes")
 	public SelecaoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JComboBox[] comboNegocios, JFrame parent,boolean modal ) {
 		super(parent,modal);
 		initComponents();
 		controller.iniciar(labelId,labelNome,this,combobox,comboNegocios);
 		controller.processarObjeto(object,"","");
 	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void initComponents(){
 		setBounds(100, 100, 600, 400);
 		getContentPane().setLayout(null);

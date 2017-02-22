@@ -12,7 +12,6 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -42,6 +41,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public static JPanel pnItem,pnRelacionamento,pnDetalhes, pnBotoes;
 	private JPanel panel;
 	public static JDateChooser txData;
+	@SuppressWarnings("rawtypes")
 	public static JComboBox cbObject; 
 	public static DefaultComboBox cbAtendente;
 	public static JTextArea txDetalhes;
@@ -51,8 +51,6 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
 	public static JCheckBox ckFinalizado;
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
-	private JButton btnExcluir;
-	
 	@Override	public Color getColor() {
 		// TODO Auto-generated method stub
 		return DefaultUtilities.super.getColor();
@@ -69,8 +67,8 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 		super(frame,modal);
 		initComponents();
 		controller.iniciar(this,tarefa, object);
-		
 	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initComponents(){
 		panel = new JPanel();
         

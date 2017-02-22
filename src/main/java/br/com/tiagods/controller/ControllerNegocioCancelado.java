@@ -17,11 +17,11 @@ import static br.com.tiagods.view.NegocioPerdaDialog.*;
 
 public class ControllerNegocioCancelado implements ActionListener{
 
-	private NegocioPerdaDialog jdialog;
+	private NegocioPerdaDialog view;
 	private Negocio negocio;
 	
 	public void iniciar(Negocio negocio,NegocioPerdaDialog dialog){
-		this.jdialog=dialog;
+		this.view=dialog;
 		this.negocio = negocio;
 		txData.setDate(new Date());
 		rbPreco.setSelected(true);
@@ -41,21 +41,21 @@ public class ControllerNegocioCancelado implements ActionListener{
 				negocio.setMotivoPerda(receberRadio());
 				negocio.setDataPerda(txData.getDate());
 				negocio.setDetalhesPerda(txDescricao.getText());
-				this.jdialog.dispose();
+				this.view.dispose();
 			}
 			else
 				JOptionPane.showMessageDialog(MenuView.jDBody, "Data informada esta incorreta!", "Validação de data!",
 						JOptionPane.ERROR_MESSAGE);
 			break;
 		case "Cancelar":
-			this.jdialog.dispose();
+			this.view.dispose();
 			break;
 		default:
 			break;
 		}
 	}
 	public void setarRadio(String motivo){
-		for(Component c : jdialog.getComponents()){
+		for(Component c : view.getComponents()){
 			if(c instanceof JRadioButton){
 				JRadioButton radio = (JRadioButton)c;
 				if(motivo.equals(radio.getName())){
@@ -66,7 +66,7 @@ public class ControllerNegocioCancelado implements ActionListener{
 		}
 	}
 	public String receberRadio(){
-		for(Component c : jdialog.getComponents()){
+		for(Component c : view.getComponents()){
 			if(c instanceof JRadioButton){
 				JRadioButton radio = (JRadioButton)c;
 				if(radio.isSelected()){

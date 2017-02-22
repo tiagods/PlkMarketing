@@ -1,5 +1,16 @@
 package br.com.tiagods.view.interfaces;
 
+import java.awt.Component;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,20 +21,26 @@ package br.com.tiagods.view.interfaces;
  *
  * @author Tiago
  */
-import javax.swing.border.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
-import java.awt.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 public class JTextAreaTableExample extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3997534958900692244L;
 
 	public JTextAreaTableExample() {
 		super( "JTextAreaTableExample Example" );
 
 		DefaultTableModel dtm = new DefaultTableModel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -386436698622406685L;
+
 			//make first cell uneditable
 			public boolean isCellEditable(int row, int column)
 			{
@@ -56,8 +73,11 @@ public class JTextAreaTableExample extends JFrame {
 		});
 	}
 }
-class TextAreaRenderer extends JScrollPane implements TableCellRenderer
-{
+class TextAreaRenderer extends JScrollPane implements TableCellRenderer{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2502286447891359570L;
 	JTextArea textarea;
 
 	public TextAreaRenderer() {
@@ -90,6 +110,10 @@ class TextAreaRenderer extends JScrollPane implements TableCellRenderer
 	}
 }
 class TextAreaEditor extends DefaultCellEditor {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6843655484164616129L;
 	protected JScrollPane scrollpane;
 	protected JTextArea textarea; 
 

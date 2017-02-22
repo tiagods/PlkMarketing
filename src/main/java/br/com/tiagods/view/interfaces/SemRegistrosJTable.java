@@ -9,6 +9,10 @@ public class SemRegistrosJTable {
 		DefaultTableModel model = new DefaultTableModel(
 				new Object[][]{{"Nenhum Registro foi Localizado"}},
 				new String[]{titulo}){
+			/**
+					 * 
+					 */
+					private static final long serialVersionUID = -515008091793704669L;
 			boolean[] canEdit = new boolean[]{
 					false
 			};
@@ -16,6 +20,7 @@ public class SemRegistrosJTable {
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public Class getColumnClass(int columnIndex) {
 				return getValueAt(0, columnIndex).getClass();

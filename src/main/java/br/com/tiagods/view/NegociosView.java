@@ -1,7 +1,8 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Rectangle;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -13,7 +14,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -30,9 +30,6 @@ import br.com.tiagods.controller.ControllerNegocios;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
-import java.awt.Rectangle;
-import javax.swing.table.DefaultTableModel;
-import java.awt.Font;
 
 public class NegociosView extends JInternalFrame {
     /**
@@ -48,7 +45,8 @@ public class NegociosView extends JInternalFrame {
     public static JPanel pnPrincipal;
     public static JPanel pnAndamento;
     public static JPanel pnServicosContratados;
-    public static JComboBox cbObject;
+    @SuppressWarnings("rawtypes")
+	public static JComboBox cbObject;
 	private JPanel panel;
 	private JLabel label;
 	public static JDateChooser data2;
@@ -68,8 +66,6 @@ public class NegociosView extends JInternalFrame {
 	public static DefaultComboBox cbServicosCad;
 	public static DefaultComboBox cbServicosAgregados;
 	public static JPanel pnAuxiliar;
-	private JScrollPane scrollPane;
-	private JButton button;
 	public static JPanel pnCadastro;
 	private JLabel label_7;
 	private JLabel lblDescrio;
@@ -96,7 +92,6 @@ public class NegociosView extends JInternalFrame {
 	public static JCheckBox checkBox_2;
 	private JLabel label_21;
 	public static JLabel txCodObjeto;
-	private JTable table;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal, tbAuxiliar;
 	public static JButton btAddEmpresaPessoa;
@@ -120,14 +115,14 @@ public class NegociosView extends JInternalFrame {
 	 */
 	public NegociosView(Negocio negocio) {
 		initComponents();
+		rbContato.setSelected(true);
 		controller.iniciar(negocio);
 		pnPrivacidade.setVisible(false);
-		//pnAuxiliar.setVisible(false);
-		rbContato.setSelected(true);
 		pnTotalizador.setVisible(false);
 		btnImportar.setEnabled(false);
 		btnExportar.setEnabled(false);
 	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initComponents() {
         pnVisao = new javax.swing.JPanel();
         pnPrincipal = new javax.swing.JPanel();
@@ -306,6 +301,7 @@ public class NegociosView extends JInternalFrame {
         pnVisao.add(pnAuxiliar);
 
         JScrollPane scrolAuxiliar = new JScrollPane();
+        scrolAuxiliar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrolAuxiliar.setBounds(0, 52, 450, 308);
 
         btEsconder = new JButton("Esconder");
@@ -672,20 +668,20 @@ public class NegociosView extends JInternalFrame {
         
         txFone = new JLabel("");
         txFone.setFont(new Font("Tahoma", Font.PLAIN, 10));
-        txFone.setBounds(485, 58, 115, 19);
+        txFone.setBounds(476, 58, 124, 19);
         pnCadastro.add(txFone);
         
         txCelular = new JLabel("");
         txCelular.setFont(new Font("Tahoma", Font.PLAIN, 10));
-        txCelular.setBounds(485, 92, 115, 17);
+        txCelular.setBounds(476, 92, 124, 17);
         pnCadastro.add(txCelular);
         
         txIconFone = new JLabel("");
-        txIconFone.setBounds(437, 58, 36, 25);
+        txIconFone.setBounds(437, 58, 29, 25);
         pnCadastro.add(txIconFone);
         
         txIconCelular = new JLabel("");
-        txIconCelular.setBounds(439, 89, 36, 25);
+        txIconCelular.setBounds(439, 89, 29, 25);
         pnCadastro.add(txIconCelular);
         
         JLabel lbEmail = new JLabel();

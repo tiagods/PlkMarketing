@@ -6,17 +6,10 @@ import static br.com.tiagods.view.InicioView.jData1;
 import static br.com.tiagods.view.InicioView.jData2;
 import static br.com.tiagods.view.InicioView.lbInfoTarefas;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,6 +56,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		carregarAtendentes();
 		carregarTarefasHoje(UsuarioLogado.getInstance().getUsuario());
 		long fim = System.currentTimeMillis();
+		
 		System.out.println("Tempo de execucao: "+(fim-inicio));
 		session.close();
 		LoadingView in = LoadingView.getInstance();

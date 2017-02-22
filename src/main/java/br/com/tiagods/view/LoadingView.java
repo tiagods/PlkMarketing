@@ -48,14 +48,11 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.Ellipse2D;
 import java.beans.PropertyChangeEvent;
-import java.io.File;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayer;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -68,7 +65,7 @@ public class LoadingView extends JFrame{
 	private static final long serialVersionUID = 5988038104895514107L;
 
 	private Color cor;
-	final WaitLayerUI layerUI = new WaitLayerUI();
+	WaitLayerUI layerUI = new WaitLayerUI();
 	
 	private static LoadingView instance;
 	private boolean mIsRunning;
@@ -77,12 +74,13 @@ public class LoadingView extends JFrame{
 	public static LoadingView getInstance(){
 		return instance;
 	}
+	
 	public void fechar(){
 		layerUI.stop();
 		this.dispose();
 	}
 	
-	public static void inicializar(){
+	public static void inicializar(boolean openMenu){
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice gd = ge.getDefaultScreenDevice();
 		final boolean isTranslucencySupported = gd.isWindowTranslucencySupported(TRANSLUCENT);
@@ -97,31 +95,20 @@ public class LoadingView extends JFrame{
 			@Override
 			public void run() {
 				instance = new LoadingView();
-				
 				// Set the window to 70% translucency, if supported.
 				if (isTranslucencySupported) {
 					instance.setOpacity(0.25f);
 				}
 				instance.setVisible(true);
-				instance.openMenu();
+				if(openMenu) 
+					instance.openMenu();
 			}
 		});
 	}
 	
 	public static void main(String[] args) {
-//		JOptionPane.showMessageDialog(null, "Olá "+System.getProperty("user.name")+", execute a instalação do programa Negocios-1.0-Setup.exe localizada em _Trocas\\Marketing\n"
-//				+ "Essa Versão não esta mais disponivel!","Versão Antiga",JOptionPane.INFORMATION_MESSAGE);
-//		String atalho = System.getProperty("user.home")+"/Desktop/Novos Negocios.lnk";
-//		String atalho2 = System.getProperty("user.home")+"/Desktop/Novos Negocios - Atalho.lnk";
-//		File file = new File(atalho);
-//		File file2 = new File(atalho2);
-//		if(file.exists())
-//			file.delete();
-//		if(file2.exists())
-//			file2.delete();
-		inicializar();
+		inicializar(true);
 	}
-	
 	public void openMenu(){
 		OpenProgramView run = new OpenProgramView();
 		Thread thread = new Thread(run);
@@ -130,17 +117,15 @@ public class LoadingView extends JFrame{
 	public class OpenProgramView implements Runnable{
 		@Override
 		public void run() {
-			MenuView.getInstance();
+			LoginDialog login = new LoginDialog();
+			login.setVisible(true);
 		}
-		
 	}
-	
 	public LoadingView(){
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				setShape(new Ellipse2D.Double(20,20,getWidth()-40,getHeight()-40));
-
 			}
 		});
 		setUndecorated(true);
@@ -172,7 +157,8 @@ public class LoadingView extends JFrame{
 		
 		JPanel panel = createPanel();
 		JLayer<JPanel> jlayer = new JLayer<JPanel>(panel, layerUI);
-		final Timer stopper = new Timer(20000, new ActionListener() {
+		final Timer stopper = new Timer(30000, new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent ae) {
 				layerUI.stop();
 				dispose();
@@ -196,6 +182,11 @@ public class LoadingView extends JFrame{
 	
 	public class WaitLayerUI extends LayerUI<JPanel> implements ActionListener {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8926445841056802376L;
+
 		private Timer mTimer;
 
 		private int mAngle;
@@ -282,6 +273,7 @@ public class LoadingView extends JFrame{
 			mIsFadingOut = true;
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public void applyPropertyChange(PropertyChangeEvent pce, JLayer l) {
 			if ("tick".equals(pce.getPropertyName())) {

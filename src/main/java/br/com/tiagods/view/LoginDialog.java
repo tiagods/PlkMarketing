@@ -2,44 +2,50 @@ package br.com.tiagods.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Font;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.border.EmptyBorder;
-
-import br.com.tiagods.model.DescricaoVersao;
-
-import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+
+import br.com.tiagods.controller.ControllerLogin;
+import br.com.tiagods.model.DescricaoVersao;
 
 public class LoginDialog extends JDialog {
-	/**
-	 * 
-	 */
-	public static void main(String[] args) {
-		new LoginDialog().setVisible(true);
-	}
 	
+	DescricaoVersao versao = new DescricaoVersao();
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	DescricaoVersao versao = new DescricaoVersao();
-	public static JTextField txUsuario;
+	public static JPanel pnLogin,pnGerarSenha,pnRecuperarConta;
+	public static JTextField txUsuario,txEmail;
 	public static JPasswordField txSenha;
-	private JLabel lbNome;
+	public static JLabel lbNome, lbIcon;
 	public static JPasswordField txNovaSenha;
 	public static JPasswordField txConfirmarSenha;
+	public static JButton btnCancelarSenha,btnOk,btnSubmeterSenha,btnMinhaConta,btnBack;
+	public static JLabel lbEsqueciAConta,lbEsqueciASenha,lbRecuperar;
+
+	private JLabel lblprolinkcontabilcombr;
 	
+	ControllerLogin controller = new ControllerLogin();
 	public LoginDialog() {
 		initComponents();
+		setTitle("Negocios");
+		try{
+			ImageIcon ion = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
+			ion.setImage(ion.getImage().getScaledInstance(100, 100, 100));
+			this.setIconImage(ion.getImage());
+		}catch (NullPointerException e) {
+		}
+		controller.iniciar(this);
+		
 	}
 	public void initComponents(){
 		setBounds(100, 100, 500, 350);
@@ -60,27 +66,112 @@ public class LoginDialog extends JDialog {
 		lbVersao.setBounds(10, 47, 464, 14);
 		contentPanel.add(lbVersao);
 		
-		JLabel lbIcon = new JLabel("");
+		lbIcon = new JLabel("");
 		lbIcon.setHorizontalAlignment(SwingConstants.CENTER);
     	lbIcon.setBounds(15, 107, 158, 153);
-		
-		ImageIcon iconTheme = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
-		int nAlt = lbIcon.getHeight();
-		iconTheme.setImage(iconTheme.getImage().getScaledInstance(iconTheme.getIconWidth()/iconTheme.getIconHeight()*nAlt, nAlt, 100));
-		lbIcon.setIcon(iconTheme);
 		contentPanel.add(lbIcon);
 		
-		JPanel pnLogin = new JPanel();
-		pnLogin.setBackground(Color.WHITE);
-		pnLogin.setVisible(false);
+		pnRecuperarConta = new JPanel();
+		pnRecuperarConta.setBounds(183, 72, 291, 228);
+		contentPanel.add(pnRecuperarConta);
+		pnRecuperarConta.setLayout(null);
+		pnRecuperarConta.setBackground(Color.WHITE);
 		
-		JPanel pnGerarSenha = new JPanel();
+		btnMinhaConta = new JButton("");
+		btnMinhaConta.setActionCommand("Esqueci");
+		btnMinhaConta.setBounds(231, 192, 50, 25);
+		btnMinhaConta.addActionListener(controller);
+		pnRecuperarConta.add(btnMinhaConta);
+		
+		txEmail = new JTextField();
+		txEmail.setHorizontalAlignment(SwingConstants.CENTER);
+		txEmail.setFont(new Font("Tahoma", Font.BOLD, 12));
+		txEmail.setColumns(10);
+		txEmail.setBounds(10, 109, 104, 25);
+		pnRecuperarConta.add(txEmail);
+		
+		lbRecuperar = new JLabel("");
+		lbRecuperar.setHorizontalAlignment(SwingConstants.CENTER);
+		lbRecuperar.setFont(new Font("Tahoma", Font.BOLD, 10));
+		lbRecuperar.setBounds(10, 71, 271, 14);
+		pnRecuperarConta.add(lbRecuperar);
+		
+		lblprolinkcontabilcombr = new JLabel("@prolinkcontabil.com.br");
+		lblprolinkcontabilcombr.setHorizontalAlignment(SwingConstants.CENTER);
+		lblprolinkcontabilcombr.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblprolinkcontabilcombr.setBounds(124, 115, 157, 14);
+		pnRecuperarConta.add(lblprolinkcontabilcombr);
+		
+		btnBack = new JButton("");
+		btnBack.setActionCommand("Back");
+		btnBack.addActionListener(controller);
+		btnBack.setBounds(171, 192, 50, 25);
+		pnRecuperarConta.add(btnBack);
+		
+		pnLogin = new JPanel();
+		pnLogin.setBackground(Color.WHITE);
+		
+		pnLogin.setBounds(183, 72, 291, 228);
+		contentPanel.add(pnLogin);
+		pnLogin.setLayout(null);
+		
+		btnOk = new JButton("");
+		btnOk.setBounds(231, 192, 50, 25);
+		pnLogin.add(btnOk);
+		btnOk.setActionCommand("Entrar");
+		btnOk.addActionListener(controller);
+		
+		
+		getRootPane().setDefaultButton(btnOk);
+		txUsuario = new JTextField();
+		txUsuario.setFont(new Font("Tahoma", Font.BOLD, 12));
+		txUsuario.setHorizontalAlignment(SwingConstants.CENTER);
+		txUsuario.setBounds(71, 60, 150, 25);
+		pnLogin.add(txUsuario);
+		txUsuario.setColumns(10);
+		
+		txSenha = new JPasswordField();
+		txSenha.setEchoChar('*');
+		txSenha.setFont(new Font("Tahoma", Font.BOLD, 12));
+		txSenha.setHorizontalAlignment(SwingConstants.CENTER);
+		txSenha.setColumns(10);
+		txSenha.setBounds(71, 119, 150, 25);
+		pnLogin.add(txSenha);
+		
+		lbEsqueciASenha = new JLabel("Esqueci a minha senha...");
+		lbEsqueciASenha.setForeground(Color.RED);
+		lbEsqueciASenha.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lbEsqueciASenha.setBounds(10, 192, 211, 25);
+		lbEsqueciASenha.addMouseListener(controller);
+		pnLogin.add(lbEsqueciASenha);
+		
+		lbNome = new JLabel("Nome:");
+		lbNome.setHorizontalAlignment(SwingConstants.CENTER);
+		lbNome.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lbNome.setBounds(10, 35, 271, 14);
+		pnLogin.add(lbNome);
+		
+		JLabel lbSenha = new JLabel("Senha:");
+		lbSenha.setHorizontalAlignment(SwingConstants.CENTER);
+		lbSenha.setFont(new Font("Tahoma", Font.BOLD, 12));
+		lbSenha.setBounds(10, 94, 271, 14);
+		pnLogin.add(lbSenha);
+		
+		lbEsqueciAConta = new JLabel("N\u00E3o sei minha conta...");
+		lbEsqueciAConta.setForeground(Color.RED);
+		lbEsqueciAConta.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lbEsqueciAConta.setBounds(10, 156, 211, 25);
+		lbEsqueciAConta.addMouseListener(controller);
+		pnLogin.add(lbEsqueciAConta);
+		
+		pnGerarSenha = new JPanel();
 		pnGerarSenha.setBackground(Color.WHITE);
 		pnGerarSenha.setBounds(183, 72, 291, 228);
 		contentPanel.add(pnGerarSenha);
 		pnGerarSenha.setLayout(null);
 		
 		txNovaSenha = new JPasswordField();
+		txNovaSenha.setEchoChar('*');
 		txNovaSenha.setHorizontalAlignment(SwingConstants.CENTER);
 		txNovaSenha.setBounds(88, 104, 130, 25);
 		pnGerarSenha.add(txNovaSenha);
@@ -93,6 +184,7 @@ public class LoginDialog extends JDialog {
 		pnGerarSenha.add(txtpnParaDeixarmosO);
 		
 		txConfirmarSenha = new JPasswordField();
+		txConfirmarSenha.setEchoChar('*');
 		txConfirmarSenha.setHorizontalAlignment(SwingConstants.CENTER);
 		txConfirmarSenha.setBounds(88, 159, 130, 25);
 		pnGerarSenha.add(txConfirmarSenha);
@@ -109,74 +201,19 @@ public class LoginDialog extends JDialog {
 		lblConfirmarSenha.setBounds(88, 140, 130, 14);
 		pnGerarSenha.add(lblConfirmarSenha);
 		
-		
-		
-		pnLogin.setBounds(183, 72, 291, 228);
-		contentPanel.add(pnLogin);
-		pnLogin.setLayout(null);
-		
-		JButton okButton = new JButton("");
-		okButton.setBounds(231, 192, 50, 25);
-		pnLogin.add(okButton);
-		okButton.setActionCommand("OK");
-		ImageIcon iconOk = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
-		okButton.setIcon(recalculate(iconOk));
-		
-		JButton btnSubmeterSenha = new JButton("");
+		btnSubmeterSenha = new JButton("");
+		btnSubmeterSenha.setActionCommand("Alterar");
 		btnSubmeterSenha.setBounds(246, 195, 35, 25);
-		btnSubmeterSenha.setIcon(iconOk);
+		btnSubmeterSenha.addActionListener(controller);
+		
 		pnGerarSenha.add(btnSubmeterSenha);
 		
-		ImageIcon iconCancelar = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_exit.png"));
-		
-		JButton btnCancelarSenha = new JButton("");
+		btnCancelarSenha = new JButton("");
 		btnCancelarSenha.setBounds(201, 195, 35, 25);
-		btnCancelarSenha.setIcon(recalculate(iconCancelar));
+		btnCancelarSenha.setActionCommand("Close");
+		btnCancelarSenha.addActionListener(controller);
 		pnGerarSenha.add(btnCancelarSenha);
-		
-		okButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dispose();
-			}
-		});
-		getRootPane().setDefaultButton(okButton);
-		
-		txUsuario = new JTextField();
-		txUsuario.setBounds(10, 60, 95, 25);
-		pnLogin.add(txUsuario);
-		txUsuario.setColumns(10);
-		
-		txSenha = new JPasswordField();
-		txSenha.setColumns(10);
-		txSenha.setBounds(10, 119, 271, 25);
-		pnLogin.add(txSenha);
-		
-		JLabel lbEsqueci = new JLabel("Problemas para acessar a conta?");
-		lbEsqueci.setForeground(Color.RED);
-		lbEsqueci.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lbEsqueci.setBounds(10, 192, 211, 25);
-		pnLogin.add(lbEsqueci);
-		
-		lbNome = new JLabel("Nome:");
-		lbNome.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lbNome.setBounds(10, 35, 271, 14);
-		pnLogin.add(lbNome);
-		
-		JLabel lbSenha = new JLabel("Senha:");
-		lbSenha.setFont(new Font("Tahoma", Font.BOLD, 12));
-		lbSenha.setBounds(10, 94, 271, 14);
-		pnLogin.add(lbSenha);
-		
-		JLabel lblprolinkcontabilcombr = new JLabel("@prolinkcontabil.com.br");
-		lblprolinkcontabilcombr.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblprolinkcontabilcombr.setBounds(114, 65, 167, 14);
-		pnLogin.add(lblprolinkcontabilcombr);
 		
 		setLocationRelativeTo(null);
 	}
-	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
-		icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
-    	return icon;
-    }
 }
