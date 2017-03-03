@@ -33,12 +33,8 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.EmpresaDao;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.NegocioDao;
-import br.com.tiagods.modeldao.PessoaDao;
 import br.com.tiagods.modeldao.TarefaDao;
-import br.com.tiagods.modeldao.TipoTarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
@@ -63,6 +59,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	HashMap<String, Usuario> usuarios = new HashMap<>();  
 
 	Session session = null;
+	
+	GenericDao dao = new GenericDao();
 	//se for null o formulario nao sera preenchido
 	public void iniciar(TarefasSaveView view,Tarefa tarefa, Object object){
 		this.tarefa = tarefa;
@@ -111,7 +109,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	}
 	@SuppressWarnings("unchecked")
 	private void carregarTipoTarefasEAtendentes(){
-		List<TipoTarefa> listTiposTarefas = new TipoTarefaDao().listar(TipoTarefa.class, session);
+		List<TipoTarefa> listTiposTarefas =dao.listar(TipoTarefa.class, session);
 		listTiposTarefas.forEach(t->{
 			tipoTarefas.put(t.getNome(), t);
 		});
@@ -239,19 +237,19 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}
 		else{
 			if(object instanceof Empresa){
-				Empresa empresa = (Empresa) new EmpresaDao().receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				Empresa empresa = (Empresa) dao.receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				tarefa.setEmpresa(empresa);
 				tarefa.setNegocio(null);
 				tarefa.setPessoa(null);
 			}
 			else if(object instanceof Negocio){
-				object = new NegocioDao().receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				object = dao.receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				tarefa.setNegocio((Negocio)object);
 				tarefa.setEmpresa(null);
 				tarefa.setPessoa(null);
 			}
 			else if(object instanceof Pessoa){
-				Pessoa pessoa = (Pessoa) new PessoaDao().receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				Pessoa pessoa = (Pessoa) dao.receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				tarefa.setPessoa(pessoa);
 				tarefa.setEmpresa(null);
 				tarefa.setNegocio(null);

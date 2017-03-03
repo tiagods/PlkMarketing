@@ -57,7 +57,6 @@ import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.TarefaDao;
-import br.com.tiagods.modeldao.TipoTarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.LoadingView;
@@ -86,6 +85,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	
 	String pendente = "Aberto";
 	String fechado = "Finalizado";
+	
+	GenericDao dao = new GenericDao();
 	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Date data1, Date data2, Usuario usuario){
@@ -231,7 +232,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	}
 	@SuppressWarnings("unchecked")
 	private void carregarTipoTarefas(){
-		List<TipoTarefa> lista = (List<TipoTarefa>)new TipoTarefaDao().listar(TipoTarefa.class, session);
+		List<TipoTarefa> lista = (List<TipoTarefa>)dao.listar(TipoTarefa.class, session);
 		lista.forEach(c->{
 			tipoTarefas.add(c);
 			tipoTarefasMapa.put(c.getNome(), c);

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +38,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -45,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -69,10 +72,7 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.modeldao.EmpresaDao;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.NegocioDao;
-import br.com.tiagods.modeldao.PessoaDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.LoadingView;
@@ -83,24 +83,28 @@ import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
+import br.com.tiagods.view.interfaces.ExcelGenerico;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
+import jxl.write.WriteException;
 /**
  *
  * @author Tiago
  */
 public class ControllerNegocios implements ActionListener,ItemListener,MouseListener, PropertyChangeListener, KeyListener{
-	
+
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
-	
+
 	Session session = null;
 	Negocio negocio = null;
 	Negocio negocioBackup = null;
 	boolean telaEmEdicao = false;
 	List<Negocio> listarNegocios;
 	NegocioPerdaDialog dialogPerda;
-	
+
 	String site;
-	
+
+	GenericDao dao = new GenericDao();
+
 	@SuppressWarnings("unchecked")
 	public void iniciar(Negocio negocio){
 		this.negocio=negocio;
@@ -112,7 +116,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		List<Criterion> criterion = new ArrayList<>();
 		criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));
-		listarNegocios = new GenericDao().items(Negocio.class, session, criterion, Order.desc("id"));
+		
+		listarNegocios = dao.items(Negocio.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		if(this.negocio==null && !listarNegocios.isEmpty()){
 			this.negocio=listarNegocios.get(0);
@@ -123,12 +128,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		tbPrincipal.addMouseListener(this);
 		session.close();
 		setarIcones();
-		cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
+		cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
 		definirAcoes();
 //		desbloquerFormulario(false, pnCadastro);
 //		desbloquerFormulario(false, pnAndamento);
 		salvarCancelar();
-		
+
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
     }
@@ -153,22 +158,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			if(e.getStateChange()==ItemEvent.DESELECTED && telaEmEdicao && "Perdido".equals(cbStatusCad.getSelectedItem())){
-				if(dialogPerda!=null) 
+				if(dialogPerda!=null)
 					dialogPerda.dispose();
 				dialogPerda = new NegocioPerdaDialog(MenuView.getInstance(),true,negocio);
 				dialogPerda.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialogPerda.setVisible(true);
 			}
 		}
-		
+
 	}
-	
+
 	public void preencherFormulario(Negocio n){
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		enviarEtapa(n.getEtapa());
 		cbStatusCad.setSelectedItem(n.getStatus().getNome());
 		cbObject.setSelectedItem(n.getClasse());
-		
+
 		txCodObjeto.setOpaque(true);
 		txCodObjeto.setForeground(Color.BLUE);
 		txNomeObjeto.setOpaque(true);
@@ -213,12 +218,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txDescricao.setText(n.getDescricao());
 		Set<ServicoContratado> servicos = n.getServicosContratados();
 		preencherServicos(servicos);
-		
+
 		if(pnAuxiliar.isVisible()){
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", n);
 			criterios.add(criterion);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(n.getTarefas()), 
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(n.getTarefas()),
 					criterios,
 					Order.desc("dataEvento"));
 		}
@@ -230,7 +235,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				padrao.preencherCombo((JComboBox<String>)component, session, null);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -239,7 +244,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		case "Buscar":
 			if(txBuscar.getText().trim().length()>=3){
 				pesquisar();
-			}			
+			}
 			break;
 		case "Novo":
 			site="";
@@ -250,14 +255,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setHonorario(new BigDecimal("0.00"));
 			txHonorario.setText("0,00");
 			dataInicio.setDate(new Date());
-			
+
 			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
 			while(serv.getRowCount()>0)
 				serv.removeRow(0);
 			break;
 		case "Editar":
 			telaEmEdicao = true;
-			novoEditar();
+			if(!"".equals(txCodigo.getText()))
+				novoEditar();
 			break;
 		case "Cancelar":
 			telaEmEdicao = false;
@@ -266,7 +272,17 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			salvarCancelar();
 			break;
 		case "Excluir":
-			invocarExclusao();
+			String mensagem = "Se quiser usar o mesmo numero da proposta "+txCodigo.getText()+",\n"
+					+ "prefira alterar as informações desse negocio usando a proposta de numero "+txCodigo.getText()+" no lugar de Excluir\n"
+							+ "Para cancelar a exclusão clique em Não ou Sim para continuar!";
+			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, mensagem,"Alerta de Exclusão",JOptionPane.YES_NO_OPTION);
+			if(escolha==JOptionPane.YES_OPTION){
+				if(UsuarioLogado.getInstance().getUsuario()==negocio.getCriadoPor()){
+					invocarExclusao();
+				}
+				else
+					JOptionPane.showMessageDialog(MenuView.jDBody, "Esse negocio so pode ser excluido pelo criador( "+txCadastradoPor.getText()+" )!","Exclusão não autorizada",JOptionPane.WARNING_MESSAGE);
+			}
 			telaEmEdicao = false;
 			break;
 		case "Salvar":
@@ -281,8 +297,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", negocio);
 			criterios.add(criterion);
-			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
+			Order order = Order.desc("dataEvento");
+			List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
 			fechaSessao(open);
 			break;
@@ -295,7 +311,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				JOptionPane.showMessageDialog(jDBody, "Para selecionar uma Empresa ou Pessoa, clique em Novo ou Editar para uma nova associação!","Somente em edição...",JOptionPane.INFORMATION_MESSAGE);
 			}
 			else{
-				
+
 				JComboBox[] comboNegocios = new JComboBox[]{cbCategoriaCad,cbOrigemCad,cbNivelCad,cbServicosCad};
 				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
 					combos = new JComboBox[]{cbEmpresa};
@@ -405,10 +421,100 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				ex.printStackTrace();
 			}
 			break;
+		case "Exportar":
+			DefaultTableModel model = (DefaultTableModel)tbPrincipal.getModel();
+			if(model.getColumnCount()>1){
+				exportarExcel();
+			}
+			else{
+				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
+			}
+			break;
 		default:
 			break;
 		}
 	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void exportarExcel(){
+		int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
+				+"Todos os registros serão exportados para o formato excel, deseja imprimir o filtro realizado",
+				"Exportar Negocios",JOptionPane.YES_NO_OPTION);
+		if(opcao==JOptionPane.YES_OPTION){
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+			realizarFiltro();
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+			
+			Integer[] colunasLenght = new Integer[]{8,26,11,11,8,14,16,14,13,17,9,12,19,30,10,10,10,30,11};
+			String[] cabecalho = new String[]{
+					"Negocio","Nome","Data_Inicio","Data_Fim","Tipo","Criador","Etapa","Status","Atendente","Origem","Categoria","Nivel","Servicos/Produtos","Descricao","Honorario","Servicos Contratados","Motivo_da_Perda","Detalhe_Perda","Data_Perda"};
+			listaImpressao.add(new ArrayList<>());
+			for(String c : cabecalho){
+				listaImpressao.get(0).add(c);
+			}
+			
+			for(int i = 0;i<listarNegocios.size();i++){
+				listaImpressao.add(new ArrayList());
+				Negocio n = listarNegocios.get(i);
+				listaImpressao.get(i+1).add(n.getId());
+				listaImpressao.get(i+1).add(n.getNome());
+				listaImpressao.get(i+1).add(dateFormat.format(n.getDataInicio()));
+				listaImpressao.get(i+1).add(n.getDataFim()==null?"":dateFormat.format(n.getDataFim()));
+				listaImpressao.get(i+1).add(n.getClasse());
+				listaImpressao.get(i+1).add(n.getCriadoPor().getNome());
+				listaImpressao.get(i+1).add(n.getEtapa().getNome());
+				listaImpressao.get(i+1).add(n.getStatus().getNome());
+				listaImpressao.get(i+1).add(n.getAtendente().getNome());
+				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getOrigem()==null?"":n.getPessoaFisicaOrJuridica().getOrigem().getNome());
+				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getCategoria()==null?"":n.getPessoaFisicaOrJuridica().getCategoria().getNome());
+				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome());
+				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getServico()==null?"":n.getPessoaFisicaOrJuridica().getServico().getNome());
+				
+				listaImpressao.get(i+1).add(n.getDescricao());
+				listaImpressao.get(i+1).add(NumberFormat.getCurrencyInstance().format(n.getHonorario()));
+
+				double vlrServicos = 0.00;
+				Iterator<ServicoContratado> iterator = n.getServicosContratados().iterator();
+				while(iterator.hasNext()){
+					ServicoContratado sc = iterator.next();
+					vlrServicos+=sc.getValor().doubleValue();
+				}
+				listaImpressao.get(i+1).add(NumberFormat.getCurrencyInstance().format(vlrServicos));
+				listaImpressao.get(i+1).add(n.getMotivoPerda());
+				listaImpressao.get(i+1).add(n.getDetalhesPerda());
+				listaImpressao.get(i+1).add(n.getDataPerda()==null?"":dateFormat.format(n.getDataPerda()));
+				
+			}
+			String export = carregarArquivo("Salvar arquivo");
+			if(!"".equals(export)){
+				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
+				try {
+					planilha.gerarExcel();
+					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
+				} catch (WriteException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+				}
+			}
+			session.close();
+		}
+	}
+	private String carregarArquivo(String title){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setDialogTitle(title);
+        String local = "";
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+        int retorno = chooser.showSaveDialog(null);
+        if(retorno==JFileChooser.APPROVE_OPTION){
+        	local = chooser.getSelectedFile().getAbsolutePath(); //
+        }
+        return local;
+    }
 	@SuppressWarnings("unchecked")
 	private void realizarFiltro() {
 		if(!telaEmEdicao){
@@ -462,7 +568,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				Criterion c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
 				criterios.add(c);
 			}
-			listarNegocios = new GenericDao().items(Negocio.class, session, criterios, order);
+			listarNegocios = dao.items(Negocio.class, session, criterios, order);
 			preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		}
 		else
@@ -480,10 +586,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			if("".equals(txNome.getText().trim()))
 					txNome.setText(txNomeObjeto.getText());
 		}
-		
+
 	}
 	public void invocarSalvamento(){
-		if("".equals(txCodigo.getText())){	
+		if("".equals(txCodigo.getText())){
 			negocio.setCriadoEm(new Date());
 			negocio.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		}
@@ -495,7 +601,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setAtendente(padrao.getAtendentes((String)cbAtendenteCad.getSelectedItem()));
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		
+
 		PfPj pessoaFisicaOrJuridica = new PfPj();
 		if(!cbCategoriaCad.getSelectedItem().equals("")){
 			pessoaFisicaOrJuridica.setCategoria(padrao.getCategorias((String)cbCategoriaCad.getSelectedItem()));
@@ -510,15 +616,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			pessoaFisicaOrJuridica.setServico(padrao.getServicos((String)cbServicosCad.getSelectedItem()));
 		}
 		negocio.setPessoaFisicaOrJuridica(pessoaFisicaOrJuridica);
-		
+
 		if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-			Empresa o = (Empresa) new EmpresaDao().receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
+			Empresa o = (Empresa) dao.receberObjeto(Empresa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			negocio.setClasse("Empresa");
 			negocio.setEmpresa(o);
 			negocio.setPessoa(null);
 		}
 		else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-			Object o = new PessoaDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
+			Object o = dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			negocio.setClasse("Pessoa");
 			negocio.setPessoa((Pessoa)o);
 			negocio.setEmpresa(null);
@@ -529,9 +635,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setDataFim(dataFim.getDate());
 		negocio.setHonorario(new BigDecimal(txHonorario.getText().replace(".","").replace(",", ".")));
 		negocio.setDescricao(txDescricao.getText().trim());
-		
+
 		negocio.setStatus(padrao.getStatus((String)cbStatusCad.getSelectedItem()));
-		
+
 		Set<ServicoContratado> servicosContratados = new HashSet<>();
 		for(int i = 0; i< tbServicosContratados.getRowCount(); i++){
 			ServicoContratado sc = new ServicoContratado();
@@ -544,7 +650,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			servicosContratados.add(sc);
 		}
 		negocio.setServicosContratados(servicosContratados);
-		GenericDao dao = new GenericDao();
 		if(dao.salvar(negocio, session)){
 			session.beginTransaction();
 			telaEmEdicao = false;
@@ -602,7 +707,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	private boolean verificarCondicao(){
 		StringBuilder builder = new StringBuilder();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-				
+
 		if("".equals(txCodObjeto.getText())){
 			builder.append("Primeiro vincule uma Pessoa ou uma Empresa e tente salvar novamente!");
 			JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, builder.toString());
@@ -631,10 +736,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@SuppressWarnings("unchecked")
 	private void invocarExclusao(){
     	int escolha = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, "Você deseja excluir esse registro? "
-				+ "\nTodos os historicos serão perdidos, lembre-se que essa ação não terá mais volta!",
-				"Pedido de Exclusao", JOptionPane.YES_NO_OPTION);
+				+ "\nTodos os historicos serão perdidos, lembre-se que essa ação não terá mais volta!","Tentativa de Exclusao", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
-			NegocioDao dao = new NegocioDao();
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(negocio,session);
 			if(excluiu){
@@ -740,7 +843,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				desbloquerFormulario(desbloquear,(Container)c);
 			}
 			txDescricao.setEditable(desbloquear);
-			
+
 		}
 	}
 	private boolean recebeSessao(){
@@ -753,7 +856,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		return open;
 	}
 	private void fechaSessao(boolean close){
-		if(close){ 
+		if(close){
 			session.close();
 		}
 	}
@@ -764,7 +867,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		else{
 			Object [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","TEMPO","CRIADO EM","ATENDENTE","ABRIR"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
-				
+
 				private static final long serialVersionUID = -8716692364710569296L;
 				boolean[] canEdit = new boolean[]{
 						false,false,false,false,false,false,false,false,false,true
@@ -788,14 +891,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					linha[5] = n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome();
 				}
 				linha[6] = "";
-				if("Em Andamento".equals(n.getStatus().getNome()) 
-						&& n.getDataFim()!=null 
+				if("Em Andamento".equals(n.getStatus().getNome())
+						&& n.getDataFim()!=null
 						&& new Date().compareTo(n.getDataFim())==1){
 					long diferenca = (new Date().getTime() - n.getDataFim().getTime()) + 3600000;
 					long qtd = (diferenca / 86400000L);
 					if(qtd>0)
 					linha[6]=qtd+" dia(s) atrasado(s)";
-					
+
 				}
 				try{
 					Date criadoEm = n.getCriadoEm();
@@ -820,12 +923,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.ORANGE);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
-			
+
 			TableCellRenderer tcr2 = new Colorir();
 	        TableColumn column2 =
 	        tbPrincipal.getColumnModel().getColumn(2);
 	        column2.setCellRenderer(tcr2);
-			
+
 			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new AcaoInTable());
@@ -835,7 +938,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@SuppressWarnings("serial")
 	private void preencherServicos(Set<ServicoContratado> servicos){
-		
+
 		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
 					false,false,false,true
@@ -856,7 +959,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
-		
+
 		tbServicosContratados.setRowHeight(25);
 		tbServicosContratados.setModel(model);
 		JButton btRem  = new ButtonColumnModel(tbServicosContratados,3).getButton();
@@ -872,12 +975,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			session = HibernateFactory.getSession();
 			session.beginTransaction();
 			Icon value = ((JButton)e.getSource()).getIcon();
-			
+
 			Icon icoEmp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_empresas.png"));
 			Icon icoPes = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_people.png"));
-			
+
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
-			Negocio neg = (Negocio) new NegocioDao().receberObjeto(Negocio.class, id, session);
+			Negocio neg = (Negocio) dao.receberObjeto(Negocio.class, id, session);
 			if(icoEmp.toString().equals(value.toString())){
 				Empresa empresa = neg.getEmpresa();
 				EmpresasView viewEmpresas = new EmpresasView(empresa);
@@ -892,21 +995,20 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 
 	}
-	
+
 	public class AcaoInTableServicosContratados implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(telaEmEdicao){
 				int row = tbServicosContratados.getSelectedRow();
 				Object value = tbServicosContratados.getValueAt(row, 0);
-				int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
+				int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody,
 						"Deseja excluir o seguinte serviço: \n"+tbServicosContratados.getValueAt(row, 0)+" \nNome: "+tbServicosContratados.getValueAt(row, 1)+
 						"\nValor: "+tbServicosContratados.getValueAt(row, 2)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
 				if(i==JOptionPane.OK_OPTION){
 					if(!"".equals(value.toString())){
 						session = HibernateFactory.getSession();
 						session.beginTransaction();
-						GenericDao dao = new GenericDao();
 						ServicoContratado sec = (ServicoContratado) dao.receberObjeto(ServicoContratado.class, Integer.parseInt(value.toString()), session);
 						if(dao.excluir(sec, session)){
 							removerServico(row);
@@ -948,7 +1050,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 && 
+		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 &&
 				tbPrincipal.getColumnCount()>1 && !telaEmEdicao){
 			boolean open = recebeSessao();
 			DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
@@ -957,10 +1059,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 			tbServicosContratados.setModel(model);
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
-			this.negocio = (Negocio) new NegocioDao().receberObjeto(Negocio.class, id, session);
+			this.negocio = (Negocio) dao.receberObjeto(Negocio.class, id, session);
 			preencherFormulario(this.negocio);
 			if(open)
 				fechaSessao(open);
+			salvarCancelar();
 		}
 //		else
 //			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
@@ -998,7 +1101,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@Override
 	public void keyPressed(KeyEvent e) {
 		pesquisar();
-		
+
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
@@ -1028,7 +1131,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		@Override
 		public void mouseExited(MouseEvent e) {
 		}
-		
+
 	}
 	public void setarIcones() throws NullPointerException{
     	ImageIcon iconNovo = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
@@ -1037,7 +1140,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	btnNivelAdd.setIcon(iconNovo);
     	btnOrigemAdd.setIcon(iconNovo);
     	btnServicoAdd.setIcon(iconNovo);
-    	
+
     	ImageIcon iconEdit = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
     	btnEditar.setIcon(recalculate(iconEdit));
     	ImageIcon iconSave = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
@@ -1046,18 +1149,18 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	btnCancelar.setIcon(recalculate(iconCancel));
     	ImageIcon iconTrash = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
     	btnExcluir.setIcon(recalculate(iconTrash));
-    	
+
     	ImageIcon iconNewTask = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_addtask.png"));
     	btnNovaTarefa.setIcon(recalculate(iconNewTask));
     	ImageIcon iconTask = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_task.png"));
     	btnHistorico.setIcon(recalculate(iconTask));
-    	
+
     	btAddServicoAgregado.setIcon(iconSave);
     	btnNovoServicoAgregado.setIcon(iconNovo);
-    	
+
     	ImageIcon iconEsconder = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_nofixar.png"));
     	btEsconder.setIcon(recalculate(iconEsconder));
-    	
+
     	ImageIcon iconPhone = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_fone.png"));
         rbContato.setIcon(recalculate(iconPhone));
         rbContato.setBorderPainted(true);
@@ -1067,38 +1170,38 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
         ImageIcon iconFollowup = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_followup.png"));
         rbFollowup.setIcon(recalculate(iconFollowup));
         rbFollowup.setBorderPainted(true);
-        
+
         ImageIcon iconClose = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_fechamento.png"));
         rbFechamento.setIcon(recalculate(iconClose));
         rbFechamento.setBorderPainted(true);
-        
+
         ImageIcon iconIndefinida = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/negocio_question.png"));
         rbIndefinida.setIcon(recalculate(iconIndefinida));
         rbIndefinida.setBorderPainted(true);
-        
+
         ImageIcon iconImportant = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/exclamation.png"));
         btAddEmpresaPessoa.setIcon(recalculate(iconImportant));
         btAddEmpresaPessoa.setBorderPainted(true);
-        
+
     	ImageIcon iconMail = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_mail.png"));
     	btnEmail.setIcon(recalculate(iconMail));
     	ImageIcon iconURL = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
     	btnLink.setIcon(recalculate(iconURL));
-    	
+
     	ImageIcon iconImp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
     	btnImportar.setIcon(recalculate(iconImp));
-    	
+
     	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
     	btnExportar.setIcon(recalculate(iconExp));
-    	
+
     	ImageIcon iconContact = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_phone.png"));
     	txFone.setIcon(recalculate(iconContact));
     	txFone.setForeground(Color.blue);
-    	
+
     	ImageIcon iconCellPhone = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_cellphone.png"));
     	txCelular.setIcon(recalculate(iconCellPhone));
     	txCelular.setForeground(Color.BLUE);
-    	
+
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
@@ -1106,15 +1209,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     }
     class Colorir extends JLabel implements TableCellRenderer{
         /**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 3906288238715470468L;
 		public Colorir(){
             this.setOpaque(true);
         }
-      
+
         public Component getTableCellRendererComponent(
-            JTable table, 
+            JTable table,
             Object value, boolean isSelected, boolean hasFocus,
                int row, int column){
 
@@ -1132,9 +1235,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
             }
             setFont(tbPrincipal.getFont());
             setText(value.toString());
-            return this;   	
+            return this;
         }
-      
+
       public void validate() {}
       public void revalidate() {}
       protected void firePropertyChange(String propertyName,

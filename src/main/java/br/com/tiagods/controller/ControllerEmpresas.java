@@ -3,7 +3,63 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.EmpresasView.*;
+import static br.com.tiagods.view.EmpresasView.btEsconder;
+import static br.com.tiagods.view.EmpresasView.btnCancelar;
+import static br.com.tiagods.view.EmpresasView.btnCategoriaAdd;
+import static br.com.tiagods.view.EmpresasView.btnEditar;
+import static br.com.tiagods.view.EmpresasView.btnEmail;
+import static br.com.tiagods.view.EmpresasView.btnExcluir;
+import static br.com.tiagods.view.EmpresasView.btnExportar;
+import static br.com.tiagods.view.EmpresasView.btnHistorico;
+import static br.com.tiagods.view.EmpresasView.btnImportar;
+import static br.com.tiagods.view.EmpresasView.btnLink;
+import static br.com.tiagods.view.EmpresasView.btnNegocios;
+import static br.com.tiagods.view.EmpresasView.btnNivelAdd;
+import static br.com.tiagods.view.EmpresasView.btnNovaTarefa;
+import static br.com.tiagods.view.EmpresasView.btnNovo;
+import static br.com.tiagods.view.EmpresasView.btnOrigemAdd;
+import static br.com.tiagods.view.EmpresasView.btnPessoas;
+import static br.com.tiagods.view.EmpresasView.btnSalvar;
+import static br.com.tiagods.view.EmpresasView.btnServicoAdd;
+import static br.com.tiagods.view.EmpresasView.cbAtendente;
+import static br.com.tiagods.view.EmpresasView.cbAtendenteCad;
+import static br.com.tiagods.view.EmpresasView.cbCategoria;
+import static br.com.tiagods.view.EmpresasView.cbCategoriaCad;
+import static br.com.tiagods.view.EmpresasView.cbCidade;
+import static br.com.tiagods.view.EmpresasView.cbEmpresa;
+import static br.com.tiagods.view.EmpresasView.cbEstado;
+import static br.com.tiagods.view.EmpresasView.cbLogradouro;
+import static br.com.tiagods.view.EmpresasView.cbNivel;
+import static br.com.tiagods.view.EmpresasView.cbNivelCad;
+import static br.com.tiagods.view.EmpresasView.cbOrigem;
+import static br.com.tiagods.view.EmpresasView.cbOrigemCad;
+import static br.com.tiagods.view.EmpresasView.cbProdServicos;
+import static br.com.tiagods.view.EmpresasView.cbProdServicosCad;
+import static br.com.tiagods.view.EmpresasView.data1;
+import static br.com.tiagods.view.EmpresasView.data2;
+import static br.com.tiagods.view.EmpresasView.pnAuxiliar;
+import static br.com.tiagods.view.EmpresasView.pnCabecalho;
+import static br.com.tiagods.view.EmpresasView.pnPrincipal;
+import static br.com.tiagods.view.EmpresasView.tbAuxiliar;
+import static br.com.tiagods.view.EmpresasView.tbPrincipal;
+import static br.com.tiagods.view.EmpresasView.txApelido;
+import static br.com.tiagods.view.EmpresasView.txBairro;
+import static br.com.tiagods.view.EmpresasView.txBuscar;
+import static br.com.tiagods.view.EmpresasView.txCadastradoPor;
+import static br.com.tiagods.view.EmpresasView.txCelular;
+import static br.com.tiagods.view.EmpresasView.txCep;
+import static br.com.tiagods.view.EmpresasView.txCnpj;
+import static br.com.tiagods.view.EmpresasView.txCodigo;
+import static br.com.tiagods.view.EmpresasView.txComplemento;
+import static br.com.tiagods.view.EmpresasView.txContador;
+import static br.com.tiagods.view.EmpresasView.txDataCadastro;
+import static br.com.tiagods.view.EmpresasView.txEmail;
+import static br.com.tiagods.view.EmpresasView.txLogradouro;
+import static br.com.tiagods.view.EmpresasView.txNome;
+import static br.com.tiagods.view.EmpresasView.txNum;
+import static br.com.tiagods.view.EmpresasView.txRazaoSocial;
+import static br.com.tiagods.view.EmpresasView.txSite;
+import static br.com.tiagods.view.EmpresasView.txTelefone;
 import static br.com.tiagods.view.MenuView.jDBody;
 
 import java.awt.Color;
@@ -40,7 +96,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
@@ -57,7 +112,8 @@ import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
-import br.com.tiagods.modeldao.*;
+import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
@@ -79,6 +135,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	Empresa empresaBackup;
 	boolean telaEmEdicao = false;
 	
+	GenericDao dao = new GenericDao();
+	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Empresa empresa){
 		cbEmpresa.setEnabled(false);
@@ -94,7 +152,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	List<Criterion> criterion = new ArrayList<>();
     	Order order = Order.desc("id");
     	
-    	listaEmpresas = (List<Empresa>)(new GenericDao().items(Empresa.class, session, criterion, order));
+    	listaEmpresas = (List<Empresa>)(dao.items(Empresa.class, session, criterion, order));
     	preencherTabela(listaEmpresas, tbPrincipal,txContador);
     	if(!listaEmpresas.isEmpty() && empresa==null){
     		this.empresa = listaEmpresas.get(0);
@@ -153,7 +211,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			Criterion criterion = Restrictions.eq("empresa", empresa);
 			criterios.add(criterion);
 			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
+			List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios, order);
 			fechaSessao(open);
 			break;
@@ -168,7 +226,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			criterion = Restrictions.eq("empresa", empresa);
 			criterios.add(criterion);
 			order = Order.desc("id");		
-			List<Negocio> negocios = (List<Negocio>) new GenericDao().items(Negocio.class, session, criterios, order);
+			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios,criterios, order);
 			fechaSessao(open);
 			break;
@@ -346,30 +404,29 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	private void realizarFiltro(){
 		if(!telaEmEdicao){
-			Criteria criteria = session.createCriteria(Empresa.class);
-			criteria.addOrder(Order.desc("id"));
+			List<Criterion> criterios = new ArrayList<>();
 			if(!cbCategoria.getSelectedItem().equals(cbCategoria.getName()))
-				criteria.add(Restrictions.eq("pessoaJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
+				criterios.add(Restrictions.eq("pessoaJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem())));
 			if(!cbNivel.getSelectedItem().equals(cbNivel.getName()))
-				criteria.add(Restrictions.eq("nivel", padrao.getNiveis((String)cbNivel.getSelectedItem())));
+				criterios.add(Restrictions.eq("nivel", padrao.getNiveis((String)cbNivel.getSelectedItem())));
 			if(!cbOrigem.getSelectedItem().equals(cbOrigem.getName()))	
-				criteria.add(Restrictions.eq("pessoaJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
+				criterios.add(Restrictions.eq("pessoaJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem())));
 			if(!cbProdServicos.getSelectedItem().equals(cbProdServicos.getName()))
-				criteria.add(Restrictions.eq("pessoaJuridica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
+				criterios.add(Restrictions.eq("pessoaJuridica.servico", padrao.getServicos((String)cbProdServicos.getSelectedItem())));
 			if(!cbAtendente.getSelectedItem().equals(cbAtendente.getName()))
-				criteria.add(Restrictions.eq("pessoaJuridica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
+				criterios.add(Restrictions.eq("pessoaJuridica.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem())));
 			if(!"".equals(txBuscar.getText().trim()))
-				criteria.add(Restrictions.ilike("nome", txBuscar.getText().trim()+"%"));
+				criterios.add(Restrictions.ilike("nome", txBuscar.getText().trim()+"%"));
 			try{
 				Date data01 = data1.getDate();
 				Date data02 = data2.getDate();
 				if(data02.compareTo(data01)>=0){
-					criteria.add(Restrictions.between("pessoaJuridica.criadoEm", data01, data02));
+					criterios.add(Restrictions.between("pessoaJuridica.criadoEm", data01, data02));
 				}
 			}catch(NullPointerException e){
 				e.getMessage();
 			}
-			List<Empresa> lista = criteria.list();
+			List<Empresa> lista = dao.items(Empresa.class, session, criterios, Order.desc("id"));
 			preencherTabela(lista, tbPrincipal, txContador);
 		}
 		else
@@ -432,7 +489,6 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 		if(valor>0 && !telaEmEdicao){
 			boolean open = recebeSessao();
-			EmpresaDao dao = new EmpresaDao();
 			empresa = (Empresa)dao.receberObjeto(Empresa.class, valor, session);
 			preencherFormulario(empresa);
 			fechaSessao(open);
@@ -507,13 +563,13 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		}
 		empresa.setEndereco(endereco);
 		empresa.setPessoaJuridica(pessoaJuridica);
-		EmpresaDao dao = new EmpresaDao();
+		GenericDao dao = new GenericDao();
 		boolean openHere = recebeSessao();
 		boolean salvo = dao.salvar(empresa, session);
 		fechaSessao(openHere);
 		if(salvo) {
 			openHere = recebeSessao();
-			listaEmpresas = (List<Empresa>)new EmpresaDao().listar(Empresa.class, session);
+			listaEmpresas = (List<Empresa>)dao.listar(Empresa.class, session);
 			preencherFormulario(empresa);
 	    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
@@ -533,10 +589,9 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			if(excluiu){
 				limparFormulario(pnPrincipal);
 				openHere = recebeSessao();
-				
 				List<Criterion> criterion = new ArrayList<>();
 		    	Order order = Order.desc("id");
-		    	listaEmpresas = (List<Empresa>)(new GenericDao().items(Empresa.class, session, criterion, order));
+		    	listaEmpresas = (List<Empresa>)(dao.items(Empresa.class, session, criterion, order));
 		    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 		    	fechaSessao(openHere);
 			}

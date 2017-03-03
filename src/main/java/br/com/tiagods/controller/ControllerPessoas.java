@@ -57,7 +57,6 @@ import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.PessoaDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
@@ -431,7 +430,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 		if(valor>0 && !telaEmEdicao){
 			boolean open = recebeSessao();
-			PessoaDao dao = new PessoaDao();
 			pessoa = (Pessoa)dao.receberObjeto(Pessoa.class, valor, session);
 			preencherFormulario(pessoa);
 			fechaSessao(open);
@@ -504,7 +502,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		}
 		pessoa.setEndereco(endereco);
 		pessoa.setPessoaFisica(pessoaFisica);
-		PessoaDao dao = new PessoaDao();
 		boolean openHere = recebeSessao();
 		boolean salvo = dao.salvar(pessoa, session);
 		fechaSessao(openHere);
@@ -525,7 +522,6 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				+ "\nTodos os históricos serão perdidos, lembre-se que essa ação não terá mais volta!",
 				"Pedido de Exclusão", JOptionPane.YES_NO_OPTION);
 		if(escolha==JOptionPane.YES_OPTION){
-			PessoaDao dao = new PessoaDao();
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(pessoa,session);
 			fechaSessao(openHere);

@@ -36,7 +36,6 @@ import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.NegocioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
@@ -55,6 +54,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	
 	private boolean telaEmEdicao = false;
 	Object object;
+	GenericDao dao= new GenericDao();
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoDialog view,JComboBox[] combobox, JComboBox[] comboNegocios){
@@ -240,14 +240,14 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 							Session session = HibernateFactory.getSession();
 							session.beginTransaction();
 							if(object instanceof Empresa){
-								Empresa empresa = (Empresa)new NegocioDao().receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
+								Empresa empresa = (Empresa)dao.receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
 								comboNegocios[0].setSelectedItem(empresa.getPessoaJuridica().getCategoria()==null?"":empresa.getPessoaJuridica().getCategoria().getNome());
 								comboNegocios[1].setSelectedItem(empresa.getPessoaJuridica().getOrigem()==null?"":empresa.getPessoaJuridica().getOrigem().getNome());
 								comboNegocios[2].setSelectedItem(empresa.getPessoaJuridica().getNivel()==null?"":empresa.getPessoaJuridica().getNivel().getNome());
 								comboNegocios[3].setSelectedItem(empresa.getPessoaJuridica().getServico()==null?"":empresa.getPessoaJuridica().getServico().getNome());
 							}
 							else if(object instanceof Pessoa){
-								Pessoa pessoa = (Pessoa)new NegocioDao().receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
+								Pessoa pessoa = (Pessoa)dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
 								comboNegocios[0].setSelectedItem(pessoa.getPessoaFisica().getCategoria()==null?"":pessoa.getPessoaFisica().getCategoria().getNome());
 								comboNegocios[1].setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
 								comboNegocios[2].setSelectedItem(pessoa.getPessoaFisica().getNivel()==null?"":pessoa.getPessoaFisica().getNivel().getNome());

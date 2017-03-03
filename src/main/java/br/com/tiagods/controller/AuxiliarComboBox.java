@@ -1,5 +1,6 @@
 package br.com.tiagods.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Cidade;
@@ -23,16 +27,7 @@ import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.Status;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modeldao.CategoriaDao;
-import br.com.tiagods.modeldao.EmpresaDao;
-import br.com.tiagods.modeldao.EtapaDao;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.NivelDao;
-import br.com.tiagods.modeldao.OrigemDao;
-import br.com.tiagods.modeldao.PessoaDao;
-import br.com.tiagods.modeldao.ServicoDao;
-import br.com.tiagods.modeldao.StatusDao;
-import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.view.interfaces.ComboBoxComplete;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 /*
@@ -64,6 +59,8 @@ public class AuxiliarComboBox {
 
 	private static AuxiliarComboBox instance;
 	
+	GenericDao dao = new GenericDao();
+	
 	static AuxiliarComboBox getInstance(){
 		if(instance==null){
 			instance = new AuxiliarComboBox();
@@ -77,12 +74,12 @@ public class AuxiliarComboBox {
     	combo.addItem(combo.getName());
     	switch(combo.getName()){
     	case "Atendente":
-    		listarUsuarios= new UsuarioDao().listar(Usuario.class, session);
+    		listarUsuarios = dao.items(Usuario.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		atendentes = new HashMap();
     		if(!listarUsuarios.isEmpty()){
     			listarUsuarios.forEach(c->{
-    				atendentes.put(c.getLogin(),c);
-    				combo.addItem(c.getLogin());
+    				atendentes.put(c.getNome(),c);
+    				combo.addItem(c.getNome());
     			});
     		}
         	combo.setSelectedItem(combo.getName());
@@ -92,12 +89,12 @@ public class AuxiliarComboBox {
     		combo.addItem("");
     		if(!listarUsuarios.isEmpty()){
     			listarUsuarios.forEach(c->{
-    				combo.addItem(c.getLogin());
+    				combo.addItem(c.getNome());
     			});
     		}
     		break;
     	case "Categoria":
-    		listarCategorias = new CategoriaDao().listar(Categoria.class, session);
+    		listarCategorias = dao.items(Categoria.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		categorias = new HashMap();
     		if(!listarCategorias.isEmpty()){
     			listarCategorias.forEach(c->{
@@ -117,7 +114,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Empresa":
-    		listarEmpresas = new EmpresaDao().listar(Empresa.class, session);
+    		listarEmpresas = dao.items(Empresa.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		empresas = new HashMap();
     		if(!listarEmpresas.isEmpty()){
     			listarEmpresas.forEach(c->{
@@ -128,7 +125,7 @@ public class AuxiliarComboBox {
         	combo.setSelectedItem(combo.getName());
     		break;
     	case "Etapa":
-    		listarEtapas = new EtapaDao().listar(Etapa.class, session);
+    		listarEtapas = dao.items(Etapa.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		etapas = new HashMap();
     		if(!listarEtapas.isEmpty()){
     			listarEtapas.forEach(c->{
@@ -145,7 +142,7 @@ public class AuxiliarComboBox {
     		combo.setSelectedItem(DefaultEnumModel.Logradouro.valueOf("Rua"));
     		break;
     	case "Nivel":
-    		listarNiveis =	new NivelDao().listar(Nivel.class, session);
+    		listarNiveis = dao.items(Nivel.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		niveis = new HashMap();
     		if(!listarNiveis.isEmpty()){
     			listarNiveis.forEach(c->{
@@ -165,7 +162,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Origem":
-    		listarOrigens =	new OrigemDao().listar(Origem.class, session);
+    		listarOrigens = dao.items(Origem.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		origens = new HashMap();
     		if(!listarOrigens.isEmpty()){
     			listarOrigens.forEach(c->{
@@ -185,7 +182,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Pessoa":
-    		listarPessoas = new PessoaDao().listar(Pessoa.class, session);
+    		listarPessoas = dao.items(Pessoa.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		pessoas = new HashMap();
     		if(!listarPessoas.isEmpty()){
     			listarPessoas.forEach(c->{
@@ -195,7 +192,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Produtos/Servicos":
-    		listarServicos = new ServicoDao().listar(Servico.class,session);
+    		listarServicos = dao.items(Servico.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		servicos = new HashMap();
     		if(!listarServicos.isEmpty()){
     			listarServicos.forEach(c->{
@@ -208,7 +205,7 @@ public class AuxiliarComboBox {
     	case "ServicoAgregadoCad":
     		combo.removeAllItems();
     		combo.addItem("");
-    		listaServicosAgregados = new GenericDao().listar(ServicoAgregado.class, session);
+    		listaServicosAgregados = dao.items(ServicoAgregado.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		servicosAgregados = new HashMap();
     		if(!listaServicosAgregados.isEmpty()){
     			listaServicosAgregados.forEach(c->{
@@ -227,7 +224,7 @@ public class AuxiliarComboBox {
     		}
     		break;
     	case "Status":
-    		listarStatus = new StatusDao().listar(Status.class, session);
+    		listarStatus  = dao.items(Status.class, session, new ArrayList<Criterion>(), Order.asc("nome"));
     		statusMapa = new HashMap<>();
     		if(!listarStatus.isEmpty()){
     			listarStatus.forEach(c->{
@@ -249,8 +246,12 @@ public class AuxiliarComboBox {
     		combo.addItem("");
     		if(comboEstado.getSelectedItem()!=null){
     			combo.removeAllItems();
-    			List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
-						.setParameter("nomeEstado", comboEstado.getSelectedItem().toString()).getResultList();
+//    			List<Cidade> listarCidades = session.createQuery("from Cidade c where c.estado=:nomeEstado")
+//						.setParameter("nomeEstado", comboEstado.getSelectedItem().toString()).getResultList();
+    			List<Criterion> criterios = new ArrayList<>();
+    			criterios.add(Restrictions.eq("estado", comboEstado.getSelectedItem().toString()));
+    			List<Cidade> listarCidades = dao.items(Cidade.class, session, criterios,Order.asc("nome"));
+    			
 				cidades = new HashMap();
 				combo.addItem("");
 				if(!listarCidades.isEmpty()){
@@ -267,7 +268,7 @@ public class AuxiliarComboBox {
     	case "Estado":
     		combo.removeAllItems();
     		combo.addItem("");
-    		List<Cidade> listaCidades = session.createQuery("from Cidade").getResultList();
+    		List<Cidade> listaCidades = dao.listar(Cidade.class, session);
     		Set<String> listaEstados = new TreeSet();
     		listaCidades.forEach(c->{
     			listaEstados.add(c.getEstado());

@@ -117,10 +117,10 @@ public class NegociosView extends JInternalFrame {
 		initComponents();
 		rbContato.setSelected(true);
 		controller.iniciar(negocio);
+		
 		pnPrivacidade.setVisible(false);
 		pnTotalizador.setVisible(false);
 		btnImportar.setEnabled(false);
-		btnExportar.setEnabled(false);
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initComponents() {
