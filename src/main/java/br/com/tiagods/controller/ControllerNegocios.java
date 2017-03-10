@@ -115,7 +115,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			preencherComboBox(panel);
 		}
 		List<Criterion> criterion = new ArrayList<>();
-		criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));
+		//criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));  //departamento não se acostumou com a nova regra
 		
 		listarNegocios = dao.items(Negocio.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
@@ -128,7 +128,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		tbPrincipal.addMouseListener(this);
 		session.close();
 		setarIcones();
-		cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
 		definirAcoes();
 //		desbloquerFormulario(false, pnCadastro);
 //		desbloquerFormulario(false, pnAndamento);
