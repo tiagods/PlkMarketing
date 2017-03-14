@@ -310,11 +310,11 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	private void preencherFormulario(Empresa empresa){
 		txCodigo.setText(""+empresa.getId());
 		SimpleDateFormat conversor = new SimpleDateFormat("dd/MM/yyyy");
-		txCadastradoPor.setText(empresa.getPessoaJuridica().getCriadoPor()==null?"":empresa.getPessoaJuridica().getCriadoPor().getLogin());
+		txCadastradoPor.setText(empresa.getPessoaJuridica().getCriadoPor()==null?"":empresa.getPessoaJuridica().getCriadoPor().getNome());
 		
 		txDataCadastro.setText(conversor.format(empresa.getPessoaJuridica().getCriadoEm()));
 		txNome.setText(empresa.getNome());
-		cbAtendenteCad.setSelectedItem(empresa.getPessoaJuridica().getAtendente()==null?"":empresa.getPessoaJuridica().getAtendente().getLogin());
+		cbAtendenteCad.setSelectedItem(empresa.getPessoaJuridica().getAtendente()==null?"":empresa.getPessoaJuridica().getAtendente().getNome());
 		txApelido.setText(empresa.getPessoaJuridica().getApelido());
 		txRazaoSocial.setText(empresa.getPessoaJuridica().getRazao());
 		txCnpj.setText(empresa.getCnpj());
@@ -641,7 +641,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				}catch (NumberFormatException e) {
 					linha[5] = "";
 				}
-				linha[6] = em.getPessoaJuridica().getAtendente()==null?"":em.getPessoaJuridica().getAtendente().getLogin();
+				linha[6] = em.getPessoaJuridica().getAtendente()==null?"":em.getPessoaJuridica().getAtendente().getNome();
 				model.addRow(linha);
 			}
 			txContadorRegistros.setText("Total: "+lista.size()+" registros");

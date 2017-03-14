@@ -253,11 +253,11 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 	private void preencherFormulario(Pessoa pessoa){
 		txCodigo.setText(""+pessoa.getId());
 		SimpleDateFormat conversor = new SimpleDateFormat("dd/MM/yyyy");
-		txCadastradoPor.setText(pessoa.getPessoaFisica().getCriadoPor()==null?"":pessoa.getPessoaFisica().getCriadoPor().getLogin());
+		txCadastradoPor.setText(pessoa.getPessoaFisica().getCriadoPor()==null?"":pessoa.getPessoaFisica().getCriadoPor().getNome());
 
 		txDataCadastro.setText(conversor.format(pessoa.getPessoaFisica().getCriadoEm()));
 		txNome.setText(pessoa.getNome());
-		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente().getLogin());
+		cbAtendenteCad.setSelectedItem(pessoa.getPessoaFisica().getAtendente().getNome());
 		txApelido.setText(pessoa.getPessoaFisica().getApelido());
 		txCpf.setText(pessoa.getCpf());
 		txDataNascimento.setText(pessoa.getDataNascimento());
@@ -580,7 +580,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				}catch (NumberFormatException e) {
 					linha[4] = "";
 				}
-				linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getLogin();
+				linha[5] = p.getPessoaFisica().getAtendente()==null?"":p.getPessoaFisica().getAtendente().getNome();
 				model.addRow(linha);
 			}
 			txContadorRegistros.setText("Total: "+lista.size()+" registros");

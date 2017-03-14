@@ -1,10 +1,6 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.InicioView.btnOk;
-import static br.com.tiagods.view.InicioView.cbAtendentes;
-import static br.com.tiagods.view.InicioView.jData1;
-import static br.com.tiagods.view.InicioView.jData2;
-import static br.com.tiagods.view.InicioView.lbInfoTarefas;
+import static br.com.tiagods.view.InicioView.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,12 +14,16 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.Negocio;
+import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -55,6 +55,8 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		carregarDataAgora();
 		carregarAtendentes();
 		carregarTarefasHoje(UsuarioLogado.getInstance().getUsuario());
+		preencherTabelaNegocios(session);
+		preencherTabelaTarefas(session);
 		long fim = System.currentTimeMillis();
 		
 		System.out.println("Tempo de execucao: "+(fim-inicio));
@@ -82,7 +84,6 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		}
 		else
 			hey = "Boa noite";
-		
 		switch(quant){
 		case 0:
 			String v1 = hey+" "+nome[0]+", você não tem tarefas pendentes para hoje!";
@@ -106,10 +107,10 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		List<Usuario> lista = new UsuarioDao().listar(Usuario.class, session);
 		cbAtendentes.removeAllItems();
 		lista.forEach(c->{
-			cbAtendentes.addItem(c.getLogin());
-			atendentes.put(c.getLogin(), c);
+			cbAtendentes.addItem(c.getNome());
+			atendentes.put(c.getNome(), c);
 		});
-		cbAtendentes.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
+		cbAtendentes.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
 	}
 	//enviar data atual
 	private void carregarDataAgora() {
@@ -172,12 +173,189 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 	}
-	public void setarIcons() throws NullPointerException {
+	
+	private void preencherTabelaNegocios(Session session){
+		Usuario usuario = UsuarioLogado.getInstance().getUsuario();
+		
+		Object [] tableHeader = {"STATUS",usuario.getNome().toUpperCase(),"TODOS"};
+		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+			boolean[] canEdit = new boolean[]{
+					false,false,false
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+		};
+		
+		List<Negocio> listarNegocios = new GenericDao().listar(Negocio.class, session);
+		
+		
+		int meuAndamento=0;
+		int meuGanho=0;
+		int meuPerdido=0;
+		int todosAndamentos=0;
+		int todosGanhos=0;
+		int todosPerdidos=0;
+		
+		for(int h = 0; h<listarNegocios.size(); h++){
+			Negocio n = listarNegocios.get(h);
+			if("Em Andamento".equals(n.getStatus().getNome())){
+				todosAndamentos++;
+				if(n.getAtendente().equals(usuario))
+					meuAndamento++;
+			}
+			else if("Ganho".equals(n.getStatus().getNome())){
+				todosGanhos++;
+				if(n.getAtendente().equals(usuario))
+					meuGanho++;
+			}
+			else if("Perdido".equals(n.getStatus().getNome())){
+				todosPerdidos++;
+				if(n.getAtendente().equals(usuario))
+					meuPerdido++;
+			}
+		}
+		
+		for(int i = 0; i<5;i++){
+			Object[] o = new Object[3];
+			if(i==0){
+				o[0] = "Em Andamento"; 
+				o[1] = meuAndamento;
+				o[2] = todosAndamentos;
+			}
+			else if(i==1){
+				o[0] = "Ganho";
+				o[1] = meuGanho;
+				o[2] = todosGanhos;
+			}
+			else if(i==2){
+				o[0] = "Perdido";
+				o[1] = meuPerdido;
+				o[2] = todosPerdidos;
+			}
+			else if(i==4){
+				o[0] = "Total";
+				o[1] = meuAndamento+meuGanho+meuPerdido;
+				o[2] = listarNegocios.size();
+				
+			}
+			model.addRow(o);
+		}
+		tbNegocios.setModel(model);
+	}
+	private void preencherTabelaTarefas(Session session){
+		Usuario usuario = UsuarioLogado.getInstance().getUsuario();
+
+		Object [] tableHeader = {"TIPO",usuario.getNome().toUpperCase(),"TODOS"};
+		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+			boolean[] canEdit = new boolean[]{
+					false,false,false
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+		};
+		
+		List<Tarefa> listarTarefas = new GenericDao().listar(Tarefa.class, session);
+		
+		int meuEmail=0,todosEmails=0,meuProposta=0,todosPropostas=0,meuReuniao=0,todosReuniao=0,
+				meuTelefone=0,todosTelefone=0,meuVisita=0,todosVisita=0,meuPendentes=0,todosPendentes=0,
+				meuConcluido=0,todosConcluidos=0;
+		
+		for(int h = 0; h<listarTarefas.size(); h++){
+			Tarefa tarefa = listarTarefas.get(h);
+			if(tarefa.getFinalizado()==0){
+				todosPendentes++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuPendentes++;
+			}
+			else{
+				todosConcluidos++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuConcluido++;
+			}
+			if("Email".equals(tarefa.getTipoTarefa().getNome())){
+				todosEmails++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuEmail++;
+			}
+			else if("Proposta".equals(tarefa.getTipoTarefa().getNome())){
+				todosPropostas++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuProposta++;
+			}
+			else if("Reuniao".equals(tarefa.getTipoTarefa().getNome())){
+				todosReuniao++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuReuniao++;
+			}
+			else if("Telefone".equals(tarefa.getTipoTarefa().getNome())){
+				todosTelefone++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuTelefone++;
+			}
+			else if("Visita".equals(tarefa.getTipoTarefa().getNome())){
+				todosVisita++;
+				if(tarefa.getAtendente().equals(usuario))
+					meuVisita++;
+			}
+		}
+		for(int i = 0; i<10;i++){
+			Object[] o = new Object[3];
+			if(i==0){
+				o[0] = "Email"; 
+				o[1] = meuEmail;
+				o[2] = todosEmails;
+			}
+			else if(i==1){
+				o[0] = "Proposta";
+				o[1] = meuProposta;
+				o[2] = todosPropostas;
+			}
+			else if(i==2){
+				o[0] = "Reuniao";
+				o[1] = meuReuniao;
+				o[2] = todosReuniao;
+			}
+			else if(i==3){
+				o[0] = "Telefone";
+				o[1] = meuTelefone;
+				o[2] = todosTelefone;
+			}
+			else if(i==4){
+				o[0] = "Visita";
+				o[1] = meuVisita;
+				o[2] = todosVisita;
+			}
+			
+			else if(i==6){
+				o[0] = "T.Pendentes";
+				o[1] = meuPendentes;
+				o[2] = todosPendentes;
+			}
+			else if(i==7){
+				o[0] = "T.Concluidas";
+				o[1] = meuConcluido;
+				o[2] = todosConcluidos;
+			}
+			
+			else if(i==9){
+				o[0] = "Total";
+				o[1] = meuEmail+meuProposta+meuReuniao+meuTelefone+meuVisita;
+				o[2] = listarTarefas.size();
+				
+			}
+			model.addRow(o);
+		}
+		tbTarefas.setModel(model);
+	}
+	private void setarIcons() throws NullPointerException {
 		ImageIcon iconOk = new ImageIcon(InicioView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
         btnOk.setIcon(recalculate(iconOk));
-        
 	}
-	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+	private ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
     }

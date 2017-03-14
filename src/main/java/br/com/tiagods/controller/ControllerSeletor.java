@@ -35,6 +35,7 @@ import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
@@ -159,9 +160,18 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relacao de Produtos/Serviços");
 			}
+			else if(object instanceof ServicoAgregado){
+				List<ServicoAgregado> lista = dao.items(ServicoAgregado.class, session, criterion, Order.asc("nome"));
+				linhas = new String[lista.size()][colunas.length];
+				for(int i=0;i<lista.size();i++){
+					linhas[i][0] = String.valueOf(lista.get(i).getId());
+					linhas[i][1] = lista.get(i).getNome();
+				}
+				view.setTitle("Relacao de Serviços a Contratar");
+			}
 			tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
 			tbRelacao.setAutoCreateRowSorter(true);
-			tbRelacao.getColumnModel().getColumn(0).setPreferredWidth(40);
+			tbRelacao.getColumnModel().getColumn(0).setMaxWidth(40);
 			session.close();
 		}
 	}
@@ -350,6 +360,14 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				novoObjeto = (Servico)dao.receberObjeto(Servico.class, Integer.parseInt(txCodigo.getText()), session);
 			((Servico)novoObjeto).setNome(txNome.getText().trim());
 		}
+		else if(object instanceof ServicoAgregado){
+			if("".equals(txCodigo.getText())){
+				novoObjeto = new ServicoAgregado();
+			}
+			else 
+				novoObjeto = (ServicoAgregado)dao.receberObjeto(ServicoAgregado.class, Integer.parseInt(txCodigo.getText()), session);
+			((ServicoAgregado)novoObjeto).setNome(txNome.getText().trim());
+		}
 		if(dao.salvar(novoObjeto,session)){
 			limparFormulario(pnCadastrar);
 			processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
@@ -394,6 +412,9 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			else if(object instanceof Servico){
 				novoObjeto = dao.receberObjeto(Servico.class, id, session);
 			}
+			else if(object instanceof ServicoAgregado){
+				novoObjeto = dao.receberObjeto(ServicoAgregado.class, id, session);
+			}
 			if(dao.excluir(novoObjeto, session)){
 				limparFormulario(pnCadastrar);
 				processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
@@ -436,6 +457,10 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		else if(object instanceof Servico){
 			id=((Servico) object).getId();
 			value=((Servico) object).getNome();
+		}
+		else if(object instanceof ServicoAgregado){
+			id=((ServicoAgregado) object).getId();
+			value=((ServicoAgregado) object).getNome();
 		}
 	}
 	private void salvarCancelar(){

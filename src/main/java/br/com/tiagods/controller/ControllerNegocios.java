@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -47,7 +48,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -84,6 +87,7 @@ import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.ExcelGenerico;
+import br.com.tiagods.view.interfaces.LabelTable;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 import jxl.write.WriteException;
 /**
@@ -195,9 +199,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 		txCodigo.setText(""+n.getId());
 		txNome.setText(n.getNome());
-		txDataCadastro.setText(sdf.format(n.getCriadoEm()));
-		txCadastradoPor.setText(n.getCriadoPor().getLogin());
-		cbAtendenteCad.setSelectedItem(n.getAtendente()==null?"":n.getAtendente().getLogin());
+		txDataCadastro.setText(n.getCriadoEm()!=null?sdf.format(n.getCriadoEm()):"");
+		txCadastradoPor.setText(n.getCriadoPor()!=null?n.getCriadoPor().getNome():"");
+		cbAtendenteCad.setSelectedItem(n.getAtendente()==null?"":n.getAtendente().getNome());
 		if(n.getPessoaFisicaOrJuridica()!=null){
 			cbNivelCad.setSelectedItem(n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome());
 			cbOrigemCad.setSelectedItem(n.getPessoaFisicaOrJuridica().getOrigem()==null?"":n.getPessoaFisicaOrJuridica().getOrigem().getNome());
@@ -217,8 +221,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txDescricao.setText(n.getDescricao());
 		Set<ServicoContratado> servicos = n.getServicosContratados();
 		preencherServicos(servicos);
-
-		if(pnAuxiliar.isVisible()){
+if(pnAuxiliar.isVisible()){
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", n);
 			criterios.add(criterion);
@@ -254,7 +257,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setHonorario(new BigDecimal("0.00"));
 			txHonorario.setText("0,00");
 			dataInicio.setDate(new Date());
-
+			
+			txEmail.setText("");
+			txCelular.setText("");
+			txFone.setText("");
+			
 			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
 			while(serv.getRowCount()>0)
 				serv.removeRow(0);
@@ -347,35 +354,20 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			break;
 		case "AdicionarServicoAgregado":
 			if(telaEmEdicao){
-				DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
-				Object[] o = new Object[4];
-				o[0]=txIdServicoContratado.getText();
-				ServicoAgregado sa = padrao.getServicosAgregados((String) cbServicosAgregados.getSelectedItem());
-				o[1]=sa.getNome();
-				o[2]=txValorServico.getText();
-				o[3]="Excluir";
-				if(!"".equals(o[0])){
-					int linha=0;
-					while(linha<model.getRowCount()){
-						Object valor = model.getValueAt(linha, 0);
-						if(o[0].equals(valor.toString())){
-							model.removeRow(linha);
-							break;
-						}
-						linha++;
-					}
+				try{
+					Double.parseDouble(txValorServico.getText().trim().replace(",", "."));
+					adicionarServico();
+				}catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(MenuView.jDBody, "Valor informado está incorreto! User o padrao 0,00");
 				}
-				model.addRow(o);
-				tbServicosContratados.setModel(model);
-				cbServicosAgregados.setSelectedItem("");
-				txValorServico.setText("0,00");
-				txIdServicoContratado.setText("");
-			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteração!");
+			}
+			else 
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteração!");
 			break;
 		case "NovoServicoContratado":
-			txIdServicoContratado.setText("");
-			cbServicosAgregados.setSelectedItem("");
-			txValorServico.setText("0,00");
+			dialog = new SelecaoDialog(new ServicoAgregado(), null, null, new JComboBox[]{cbServicosAgregados},null,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
 			break;
 		case "Nova Tarefa":
 			if("".equals(txCodigo.getText())){
@@ -429,11 +421,48 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
 			}
 			break;
+		case "VerPerda":
+			if("Perdido".equals(cbStatusCad.getSelectedItem()) && !"".equals(txCodigo.getText())){
+				if(dialogPerda!=null)
+					dialogPerda.dispose();
+				dialogPerda = new NegocioPerdaDialog(MenuView.getInstance(),true,negocio);
+				dialogPerda.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialogPerda.setVisible(true);
+			}
+			break;
 		default:
 			break;
 		}
 	}
+	private void adicionarServico(){
+		DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
+		Object[] o = new Object[4];
+		
+		o[0]=txIdServicoContratado.getText();
+		ServicoAgregado sa = padrao.getServicosAgregados((String) cbServicosAgregados.getSelectedItem());
+		o[1]=sa.getNome();
 	
+		String servicoValue = txValorServico.getText().trim().replace(".", "").replace(",", ".");
+		NumberFormat nf = NumberFormat.getCurrencyInstance();
+		o[2]=nf.format(Double.parseDouble(servicoValue));
+		o[3]="";
+		if(!"".equals(o[0])){
+			int linha=0;
+			while(linha<model.getRowCount()){
+				Object valor = model.getValueAt(linha, 0);
+				if(o[0].equals(valor.toString())){
+					model.removeRow(linha);
+					break;
+				}
+				linha++;
+			}
+		}
+		model.addRow(o);
+		tbServicosContratados.setModel(model);
+		cbServicosAgregados.setSelectedItem("");
+		txValorServico.setText("0,00");
+		txIdServicoContratado.setText("");
+	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void exportarExcel(){
 		int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
@@ -448,7 +477,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			
 			Integer[] colunasLenght = new Integer[]{8,26,11,11,8,14,16,14,13,17,9,12,19,30,10,10,10,30,11};
 			String[] cabecalho = new String[]{
-					"Negocio","Nome","Data_Inicio","Data_Fim","Tipo","Criador","Etapa","Status","Atendente","Origem","Categoria","Nivel","Servicos/Produtos","Descricao","Honorario","Servicos Contratados","Motivo_da_Perda","Detalhe_Perda","Data_Perda"};
+					"Negocio","Nome", "E-mail","Fone","Celular",
+					"Data Inicio","Data Limite","Tipo","Criador","Etapa","Status","Atendente",
+					"Origem","Categoria","Nivel","Servicos/Produtos","Descricao",
+					"Honorario","Servicos Contratados","Motivo da Perda","Detalhe da Perda","Data da Perda"};
 			listaImpressao.add(new ArrayList<>());
 			for(String c : cabecalho){
 				listaImpressao.get(0).add(c);
@@ -459,6 +491,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				Negocio n = listarNegocios.get(i);
 				listaImpressao.get(i+1).add(n.getId());
 				listaImpressao.get(i+1).add(n.getNome());
+				
+				PfPj pfpj = n.getPessoa()!=null?n.getPessoa().getPessoaFisica():n.getEmpresa().getPessoaJuridica();
+				
+				listaImpressao.get(i+1).add(pfpj.getEmail());
+				listaImpressao.get(i+1).add(pfpj.getTelefone());
+				listaImpressao.get(i+1).add(pfpj.getCelular());
 				listaImpressao.get(i+1).add(dateFormat.format(n.getDataInicio()));
 				listaImpressao.get(i+1).add(n.getDataFim()==null?"":dateFormat.format(n.getDataFim()));
 				listaImpressao.get(i+1).add(n.getClasse());
@@ -581,18 +619,18 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 	}
 	public void receberObjeto(){
-		if(telaEmEdicao && !"0".equals(txCodObjeto.getText())){
+		if(telaEmEdicao && !"".equals(txCodObjeto.getText())){
 			if("".equals(txNome.getText().trim()))
 					txNome.setText(txNomeObjeto.getText());
 		}
 
 	}
-	public void invocarSalvamento(){
+	private void invocarSalvamento(){
 		if("".equals(txCodigo.getText())){
 			negocio.setCriadoEm(new Date());
 			negocio.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+			negocio.setNome("".equals(txNome.getText().trim())?txNomeObjeto.getText():txNome.getText());
 		}
-		negocio.setNome(txNome.getText().trim());
 		negocio.setStatus(padrao.getStatus((String)cbStatusCad.getSelectedItem()));//
 		if("".equals(cbAtendenteCad.getSelectedItem()))
 			negocio.setAtendente(UsuarioLogado.getInstance().getUsuario());//
@@ -636,15 +674,24 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		negocio.setDescricao(txDescricao.getText().trim());
 
 		negocio.setStatus(padrao.getStatus((String)cbStatusCad.getSelectedItem()));
-
+		
 		Set<ServicoContratado> servicosContratados = new HashSet<>();
 		for(int i = 0; i< tbServicosContratados.getRowCount(); i++){
 			ServicoContratado sc = new ServicoContratado();
 			if(!"".equals(tbServicosContratados.getValueAt(i, 0)))
 				sc.setId((int) tbServicosContratados.getValueAt(i, 0));
 			sc.setServicosAgregados(padrao.getServicosAgregados((String) tbServicosContratados.getValueAt(i, 1)));
-			String valor = tbServicosContratados.getValueAt(i, 2).toString().replace(",", ".");
-			sc.setValor(new BigDecimal(valor));
+			
+			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			Number number = null;
+			try {
+				number = nf.parse(tbServicosContratados.getValueAt(i, 2).toString());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			BigDecimal bigdecimal = new BigDecimal(number.doubleValue());
+			sc.setValor(bigdecimal);
+			//Double valor = Double.parseDouble(tbServicosContratados.getValueAt(i, 2).toString().replace(",", "."));
 			sc.setNegocios(negocio);
 			servicosContratados.add(sc);
 		}
@@ -758,6 +805,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		desbloquerFormulario(false, pnCadastro);
 		desbloquerFormulario(false, pnAndamento);
 		desbloquerFormulario(false, pnServicosContratados);
+		
 	}
 	private void pesquisar(){
 		List<Negocio> lista = new ArrayList<>();
@@ -780,9 +828,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		btnSalvar.setEnabled(true);
 		btnCancelar.setEnabled(true);
 		btnExcluir.setEnabled(false);
-		cbAtendenteCad.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());
+		cbAtendenteCad.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
+		txEmail.setEditable(false);
 		if(this.negocio!=null)
 			negocioBackup=negocio;
+		
 	}
 	@SuppressWarnings("rawtypes")
 	private void limparFormulario(Container container){
@@ -881,7 +931,27 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				Object[] linha = new Object[10];
 				linha[0] = ""+n.getId();
 				linha[1] = n.getNome();
-				linha[2] = n.getStatus()==null?"":n.getStatus().getNome();
+				
+				if(n.getStatus()!=null){
+					if("Ganho".equals(n.getStatus().getNome())){
+						linha[2] =recalculate(new ImageIcon(ControllerNegocios.class
+								.getResource("/br/com/tiagods/utilitarios/button_winner.png")),15);
+					}
+					else if("Perdido".equals(n.getStatus().getNome())){
+						linha[2] = recalculate(new ImageIcon(ControllerNegocios.class
+								.getResource("/br/com/tiagods/utilitarios/button_sad.png")),15);
+					}	
+					else if("Em Andamento".equals(n.getStatus().getNome())){
+						linha[2] = recalculate(new ImageIcon(ControllerNegocios.class
+								.getResource("/br/com/tiagods/utilitarios/button_deadline.png")),15);
+					}
+					else{
+						linha[2] = "";
+					}
+				}
+				else
+					linha[2] = null;
+				
 				linha[3] = n.getEtapa()==null?"":n.getEtapa().getNome();
 				linha[4] = "";
 				linha[5] = "";
@@ -897,7 +967,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					long qtd = (diferenca / 86400000L);
 					if(qtd>0)
 					linha[6]=qtd+" dia(s) atrasado(s)";
-
 				}
 				try{
 					Date criadoEm = n.getCriadoEm();
@@ -906,7 +975,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				}catch (NumberFormatException e) {
 					linha[7] = "";
 				}
-				linha[8] = n.getAtendente()==null?"":n.getAtendente().getLogin();
+				linha[8] = n.getAtendente()==null?"":n.getAtendente().getNome();
 				String imageName ="";
 				if("Empresa".equals(n.getClasse())){
 					imageName ="button_empresas.png";
@@ -917,27 +986,32 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 						.getResource("/br/com/tiagods/utilitarios/"+imageName)));
 				model.addRow(linha);
 			}
-			table.setRowHeight(25);
+			table.setRowHeight(30);
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.ORANGE);
+			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
-
-			TableCellRenderer tcr2 = new Colorir();
-	        TableColumn column2 =
-	        tbPrincipal.getColumnModel().getColumn(2);
-	        column2.setCellRenderer(tcr2);
+			table.getColumnModel().getColumn(2).setMaxWidth(60);
+			
+			TableCellRenderer tcr2 = new LabelTable();
+			TableColumn column2 = tbPrincipal.getColumnModel().getColumn(2);
+			column2.setCellRenderer(tcr2);
+			
+//			TableCellRenderer tcr2 = new Colorir();
+//	        TableColumn column2 =
+//	        tbPrincipal.getColumnModel().getColumn(2);
+//	        column2.setCellRenderer(tcr2);
 
 			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new AcaoInTable());
-			table.getColumnModel().getColumn(9).setPreferredWidth(90);
+			table.getColumnModel().getColumn(9).setPreferredWidth(40);
 		}
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
 	@SuppressWarnings("serial")
 	private void preencherServicos(Set<ServicoContratado> servicos){
-
 		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","VALOR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
 					false,false,false,true
@@ -946,6 +1020,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
+			
 		};
 		Iterator<ServicoContratado> iterator = servicos.iterator();
 		while(iterator.hasNext()){
@@ -953,17 +1028,23 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			Object[] o = new Object[4];
 			o[0] = s.getId();
 			o[1] = s.getServicosAgregados().getNome();
-			o[2] = s.getValor().toString().replace(".", ",");
+			
+			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			o[2] = nf.format(s.getValor());
+			//o[2] = s.getValor().toString().replace(".", ",");
 			o[3] = recalculate(new ImageIcon(ControllerNegocios.class
 					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
-
 		tbServicosContratados.setRowHeight(25);
 		tbServicosContratados.setModel(model);
 		JButton btRem  = new ButtonColumnModel(tbServicosContratados,3).getButton();
+		btRem.setToolTipText("Clique para remover o registro");
 		btRem.addActionListener(new AcaoInTableServicosContratados());
-		tbServicosContratados.getColumnModel().getColumn(0).setPreferredWidth(40);
+		
+		tbServicosContratados.getColumnModel().getColumn(0).setMaxWidth(40);
+		tbServicosContratados.getColumnModel().getColumn(2).setPreferredWidth(40);
+		tbServicosContratados.getColumnModel().getColumn(3).setPreferredWidth(40);
 		tbServicosContratados.setAutoCreateRowSorter(true);
 	}
 	public class AcaoInTable implements ActionListener{
@@ -1116,7 +1197,17 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			int row = tbServicosContratados.getSelectedRow();
 			txIdServicoContratado.setText(""+tbServicosContratados.getValueAt(row, 0));
 			cbServicosAgregados.setSelectedItem((String)tbServicosContratados.getValueAt(row, 1));
-			txValorServico.setText((String)tbServicosContratados.getValueAt(row, 2));
+			
+			NumberFormat nf = NumberFormat.getCurrencyInstance();
+			Number number;
+			try {
+				number = nf.parse((String)tbServicosContratados.getValueAt(row, 2));
+				txValorServico.setText(number.toString().replace(".", ","));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 		}
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -1200,10 +1291,17 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	ImageIcon iconCellPhone = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_cellphone.png"));
     	txCelular.setIcon(recalculate(iconCellPhone));
     	txCelular.setForeground(Color.BLUE);
+    	
+    	ImageIcon iconPerda = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/menu_about.png"));
+    	btnVerPerda.setIcon(recalculate(iconPerda));
 
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
+    public ImageIcon recalculate(ImageIcon icon, int valor) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
     	return icon;
     }
     class Colorir extends JLabel implements TableCellRenderer{

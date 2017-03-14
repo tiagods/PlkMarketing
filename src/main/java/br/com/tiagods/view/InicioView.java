@@ -18,7 +18,10 @@ import com.toedter.calendar.JDateChooser;
 import br.com.tiagods.controller.ControllerInicio;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
-
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.TitledBorder;
+import javax.swing.UIManager;
 @SuppressWarnings("serial")
 public class InicioView extends JInternalFrame implements DefaultUtilities {
 	private JPanel jPanel1;
@@ -30,7 +33,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
 	public static JDateChooser jData2;
 	public static DefaultComboBox cbAtendentes;
 	public static JButton btnOk;
-	
+	public static JTable tbNegocios, tbTarefas;
 	ControllerInicio controller = new ControllerInicio();
 	
 	@Override
@@ -86,7 +89,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         			.addContainerGap())
         );
         lbInfoTarefas = new JLabel();
-        lbInfoTarefas.setBounds(0, 5, 1230, 549);
+        lbInfoTarefas.setBounds(0, 5, 916, 549);
         lbInfoTarefas.setHorizontalAlignment(SwingConstants.CENTER);
         lbInfoTarefas.setName("Info");
         lbInfoTarefas.addMouseListener(controller);
@@ -95,6 +98,58 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         
         lbInfoTarefas.setFont(new Font("Dialog", Font.BOLD, 26)); // NOI18N
         lbInfoTarefas.setText("Voc\u00EA tem ### tarefas hoje");
+        
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resumo", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        panel.setBounds(926, 11, 294, 412);
+        pnDetalhes.add(panel);
+        
+        JScrollPane spNegocios = new JScrollPane();
+        spNegocios.setOpaque(false);
+        
+        tbNegocios = new JTable();
+        tbNegocios.setOpaque(false);
+        spNegocios.setViewportView(tbNegocios);
+        
+        JLabel lblNewLabel = new JLabel("Neg\u00F3cios");
+        lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JLabel lblTarefas = new JLabel("Tarefas");
+        lblTarefas.setFont(new Font("Tahoma", Font.BOLD, 12));
+        lblTarefas.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JScrollPane spTarefas = new JScrollPane();
+        spTarefas.setOpaque(false);
+        
+        tbTarefas = new JTable();
+        tbTarefas.setOpaque(false);
+        spTarefas.setViewportView(tbTarefas);
+        GroupLayout gl_panel = new GroupLayout(panel);
+        gl_panel.setHorizontalGroup(
+        	gl_panel.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(gl_panel.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+        				.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+        				.addComponent(spNegocios, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+        				.addComponent(lblTarefas, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
+        				.addComponent(spTarefas, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
+        );
+        gl_panel.setVerticalGroup(
+        	gl_panel.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_panel.createSequentialGroup()
+        			.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(spNegocios, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+        			.addGap(18)
+        			.addComponent(lblTarefas, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(spTarefas, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
+        );
+        panel.setLayout(gl_panel);
         
         pnStatus.add(lblCriadoPor);
         
@@ -110,7 +165,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         pnStatus.add(lblAte);
         pnStatus.add(jData2);
         
-        btnOk = new JButton("OK");
+        btnOk = new JButton("");
         btnOk.setActionCommand("Filtrar");
         btnOk.addActionListener(controller);
         pnStatus.add(btnOk);

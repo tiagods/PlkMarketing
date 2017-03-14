@@ -105,7 +105,7 @@ public class NegociosView extends JInternalFrame {
 	public static JLabel txIdServicoContratado;
 	public static JButton btnNovoServicoAgregado;
 	private JLabel lbTitulo;
-	public static JButton btnLink,btnEmail,btnImportar,btnExportar;
+	public static JButton btnLink,btnEmail,btnImportar,btnExportar,btnVerPerda;
 	public static JLabel txIconFone;
 	public static JLabel txIconCelular;
 	public static JLabel txFone, txCelular;
@@ -116,6 +116,7 @@ public class NegociosView extends JInternalFrame {
 	public NegociosView(Negocio negocio) {
 		initComponents();
 		rbContato.setSelected(true);
+		
 		controller.iniciar(negocio);
 		
 		pnPrivacidade.setVisible(false);
@@ -352,7 +353,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro.add(txNome);
 
         txCadastradoPor = new JLabel();
-        txCadastradoPor.setBounds(278, 5, 83, 14);
+        txCadastradoPor.setBounds(278, 5, 56, 14);
         pnCadastro.add(txCadastradoPor);
 
         label_16 = new JLabel();
@@ -414,7 +415,7 @@ public class NegociosView extends JInternalFrame {
 
         pnPrivacidade = new JPanel();
         pnPrivacidade.setBackground((Color) null);
-        pnPrivacidade.setBounds(601, 45, 159, 97);
+        pnPrivacidade.setBounds(601, 70, 159, 97);
         pnCadastro.add(pnPrivacidade);
 
         checkBox = new JCheckBox("Outros");
@@ -618,39 +619,39 @@ public class NegociosView extends JInternalFrame {
         pnServicosContratados.setLayout(null);
         
         JLabel lblServio = new JLabel("Servi\u00E7o:");
-        lblServio.setBounds(37, 9, 52, 14);
+        lblServio.setBounds(31, 1, 52, 23);
         pnServicosContratados.add(lblServio);
         
         cbServicosAgregados = new DefaultComboBox();
-        cbServicosAgregados.setBounds(99, 6, 62, 20);
+        cbServicosAgregados.setBounds(82, 1, 79, 22);
         cbServicosAgregados.setName("ServicoAgregadoCad");
         pnServicosContratados.add(cbServicosAgregados);
         
-        JLabel lblValor_1 = new JLabel("Valor:");
-        lblValor_1.setBounds(171, 9, 38, 14);
-        pnServicosContratados.add(lblValor_1);
-        
-        txValorServico = new JFormattedTextField();
-        txValorServico.setHorizontalAlignment(SwingConstants.CENTER);
-        txValorServico.setBounds(212, 6, 41, 20);
-        txValorServico.setText("0,00");
-        pnServicosContratados.add(txValorServico);
-        
         btAddServicoAgregado = new JButton("");
-        btAddServicoAgregado.setBounds(318, 5, 45, 25);
+        btAddServicoAgregado.setBounds(320, 0, 45, 23);
         pnServicosContratados.add(btAddServicoAgregado);
         btAddServicoAgregado.setActionCommand("AdicionarServicoAgregado"); 
         btAddServicoAgregado.addActionListener(controller);
         
         txIdServicoContratado = new JLabel("");
-        txIdServicoContratado.setBounds(0, 9, 32, 14);
+        txIdServicoContratado.setBounds(0, 0, 21, 23);
         pnServicosContratados.add(txIdServicoContratado);
         
         btnNovoServicoAgregado = new JButton("");
         btnNovoServicoAgregado.setActionCommand("NovoServicoContratado");
         btnNovoServicoAgregado.addActionListener(controller);
-        btnNovoServicoAgregado.setBounds(263, 5, 45, 25);
+        btnNovoServicoAgregado.setBounds(171, 0, 45, 22);
         pnServicosContratados.add(btnNovoServicoAgregado);
+        
+        JLabel lblValor_1 = new JLabel("Valor:");
+        lblValor_1.setBounds(219, 0, 38, 23);
+        pnServicosContratados.add(lblValor_1);
+        
+        txValorServico = new JFormattedTextField();
+        txValorServico.setBounds(258, 1, 52, 20);
+        pnServicosContratados.add(txValorServico);
+        txValorServico.setHorizontalAlignment(SwingConstants.CENTER);
+        txValorServico.setText("0,00");
         
         btnLink = new JButton();
         btnLink.setToolTipText("Abrir P\u00E1gina");
@@ -750,6 +751,11 @@ public class NegociosView extends JInternalFrame {
         pnAndamento.add(cbStatusCad);
         cbStatusCad.setModel(new DefaultComboBoxModel(new String[] {"Em Andamento", "Ganho", "Perdido"}));
 
+        btnVerPerda = new JButton();
+		btnVerPerda.setActionCommand("VerPerda");
+		btnVerPerda.addActionListener(controller);
+		pnAndamento.add(btnVerPerda);
+		
         pnTotalizador = new JPanel();
         pnTotalizador.setBackground(new Color(250,250,250));
         pnTotalizador.setBounds(980, 90, 260, 142);

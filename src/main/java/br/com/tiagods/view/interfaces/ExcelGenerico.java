@@ -6,14 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import javax.swing.GroupLayout.Alignment;
 
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.format.Border;
 import jxl.format.BorderLineStyle;
 import jxl.format.Colour;
-import jxl.format.Pattern;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
@@ -45,7 +43,7 @@ public class ExcelGenerico {
 		WritableWorkbook workbook = Workbook.createWorkbook(arquivo,wbSettings);
 		
 		//inserir um nome da planilha
-		workbook.createSheet("Lista1", 0);
+		workbook.createSheet("Plan1", 0);
 		WritableSheet sheet = workbook.getSheet(0);
 		
 		WritableFont font1 = new WritableFont(WritableFont.TIMES,14,WritableFont.BOLD);
@@ -54,21 +52,20 @@ public class ExcelGenerico {
 		fontCabecalho = new WritableCellFormat(font1);
 		//Colour corBorda = Colour.getInternalColour(new Color(128,125,128).getRGB());
 		
-		Colour corBorda = Colour.GOLD;
+		Colour corBorda = Colour.OCEAN_BLUE;
 		fontCabecalho.setBackground(Colour.OCEAN_BLUE);
 		fontCabecalho.setAlignment(jxl.format.Alignment.CENTRE);
 		
 		WritableFont font2 = new WritableFont(WritableFont.TIMES,11,WritableFont.BOLD);
 		fontPadrao1 = new WritableCellFormat(font2);
-		fontPadrao1.setBorder(Border.BOTTOM, BorderLineStyle.THIN,corBorda);
+		fontPadrao1.setBorder(Border.BOTTOM, BorderLineStyle.HAIR,corBorda);
 		//fontPadrao1.setBackground(Colour.getInternalColour(new Color(128,122,217).getRGB()));
 		
 		fontPadrao2 = new WritableCellFormat(font2);
-		fontPadrao2.setBorder(Border.BOTTOM, BorderLineStyle.THIN,corBorda);
+		fontPadrao2.setBorder(Border.BOTTOM, BorderLineStyle.HAIR,corBorda);
 		
-		fontPadrao2.setBackground(Colour.getInternalColour(new Color(160,0,240).getRGB()));
-		//fontPadrao2.setBackground(Colour.BLUE);
-		fontPadrao2.setBackground(Colour.GOLD);
+		//fontPadrao2.setBackground(Colour.getInternalColour(new Color(160,0,240).getRGB()));
+		fontPadrao2.setBackground(Colour.WHITE);
 		gerarConteudo(sheet, lista);	
 		
 		workbook.write();
