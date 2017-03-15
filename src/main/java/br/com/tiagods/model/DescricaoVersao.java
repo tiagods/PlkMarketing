@@ -2,10 +2,10 @@ package br.com.tiagods.model;
 
 public class DescricaoVersao {
 	private String nome="Negócios";
-	private String versao="1.0.7";
-	private String data="14.03.2017";
+	private String versao="1.0.8";
+	private String data="15.03.2017";
 	private String versaoBanco="1.0";
-	private String detalhes="Inclusão de Tabelas na Tela Inicial\nNovos icones dentro da tabela Negocios\nMelhorado a visualização da Planilha Exportada";
+	private String detalhes="Inclusão de Filtro na Tela inicial com Tabelas de Contadores\nNovos icones dentro da tabela Negocios\nMelhorado a visualização da Planilha Exportada";
 	/*
 	 */
 	/**

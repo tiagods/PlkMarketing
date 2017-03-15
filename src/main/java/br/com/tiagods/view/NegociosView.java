@@ -298,7 +298,7 @@ public class NegociosView extends JInternalFrame {
         
         pnAuxiliar = new JPanel();
         pnAuxiliar.setBackground(new Color(250, 250, 250));
-        pnAuxiliar.setBounds(780, 260, 460, 363);
+        pnAuxiliar.setBounds(780, 270, 460, 363);
         pnVisao.add(pnAuxiliar);
 
         JScrollPane scrolAuxiliar = new JScrollPane();
@@ -329,7 +329,7 @@ public class NegociosView extends JInternalFrame {
         pnCadastro = new JPanel();
         pnCadastro.setLayout(null);
         pnCadastro.setBackground((Color) null);
-        pnCadastro.setBounds(10, 268, 760, 355);
+        pnCadastro.setBounds(10, 278, 760, 355);
         pnVisao.add(pnCadastro);
 
         label_7 = new JLabel();
@@ -712,7 +712,7 @@ public class NegociosView extends JInternalFrame {
 
         pnAndamento = new JPanel();
         pnAndamento.setBackground(new Color(250,250,250));
-        pnAndamento.setBounds(10, 235, 760, 30);
+        pnAndamento.setBounds(10, 235, 760, 41);
         pnVisao.add(pnAndamento);
 
         rbContato = new JRadioButton("Contato");

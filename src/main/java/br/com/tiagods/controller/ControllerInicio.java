@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +20,11 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+
+import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.DescricaoVersao;
@@ -40,12 +48,20 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	
 	DescricaoVersao descricao = new DescricaoVersao();
 	VerificarAtualizacao atualizacao = new VerificarAtualizacao();
+	GenericDao dao = new GenericDao();
 	boolean atualizar = false;
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if("Filtrar".equals(arg0.getActionCommand()) && validarDatas()){
+		if("Filtrar".equals(arg0.getActionCommand()) && validarDatas(jData1, jData2)){
 			abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));
+		}
+		else if("FiltrarResumo".equals(arg0.getActionCommand()) && validarDatas(dataResumo1, dataResumo2)){
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+			preencherTabelaNegocios(session);
+			preencherTabelaTarefas(session);
+			session.close();
 		}
 	}
 	public void iniciar(){
@@ -116,14 +132,22 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	private void carregarDataAgora() {
 		jData1.setDate(new Date());
 		jData2.setDate(new Date());
+		
+		Calendar data1 = Calendar.getInstance();
+		Calendar data2 = Calendar.getInstance();
+		data1.set(data1.get(Calendar.YEAR), data1.get(Calendar.MONTH), 1, 0, 0, 0);
+		data2.set(data1.get(Calendar.YEAR), data1.get(Calendar.MONTH), data1.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+		
+		dataResumo1.setDate(data1.getTime());
+		dataResumo2.setDate(data2.getTime());
 	}
 	//validar datas
-	private boolean validarDatas(){
+	private boolean validarDatas(JDateChooser data1, JDateChooser data2){
 		Calendar calendar = Calendar.getInstance();
 		Calendar calendar2 = Calendar.getInstance();
 		try{
-			calendar.setTime(jData1.getDate());
-			calendar2.setTime(jData2.getDate());
+			calendar.setTime(data1.getDate());
+			calendar2.setTime(data2.getDate());
 			if(calendar.after(calendar2)){
 				JOptionPane.showMessageDialog(br.com.tiagods.view.MenuView.jDBody, 
 						"O intervalo entre as datas está incorreto\n"
@@ -153,7 +177,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		switch(e.getComponent().getName()){
 		case "OK":	
-		if(validarDatas())
+		if(validarDatas(jData1,jData2))
 				abrirTarefasView(jData1.getDate(),jData2.getDate(), atendentes.get(cbAtendentes.getSelectedItem()));
 		break;
 		default:
@@ -187,9 +211,9 @@ public class ControllerInicio implements ActionListener,MouseListener{
 				return canEdit [columnIndex];
 			}
 		};
-		
-		List<Negocio> listarNegocios = new GenericDao().listar(Negocio.class, session);
-		
+		List<Criterion> criterios = new ArrayList<>();
+		criterios.add(Restrictions.between("dataInicio", dataResumo1.getDate(), dataResumo2.getDate()));
+		List<Negocio> listarNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
 		
 		int meuAndamento=0;
 		int meuGanho=0;
@@ -246,7 +270,6 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	}
 	private void preencherTabelaTarefas(Session session){
 		Usuario usuario = UsuarioLogado.getInstance().getUsuario();
-
 		Object [] tableHeader = {"TIPO",usuario.getNome().toUpperCase(),"TODOS"};
 		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 			boolean[] canEdit = new boolean[]{
@@ -258,7 +281,21 @@ public class ControllerInicio implements ActionListener,MouseListener{
 			}
 		};
 		
-		List<Tarefa> listarTarefas = new GenericDao().listar(Tarefa.class, session);
+		List<Criterion> criterios = new ArrayList<>();
+		
+		Calendar data1 = dataResumo1.getCalendar();
+		data1.set(Calendar.HOUR, 0);
+		data1.set(Calendar.MINUTE,0);
+		data1.set(Calendar.SECOND,0);
+		data1.set(Calendar.MILLISECOND, 0);
+		Calendar data2 = dataResumo2.getCalendar();
+		data2.set(Calendar.HOUR, 23);
+		data2.set(Calendar.MINUTE,59);
+		data2.set(Calendar.SECOND,59);
+		data2.set(Calendar.MILLISECOND, 999);
+		criterios.add(Restrictions.between("dataEvento", data1.getTime(), data2.getTime()));
+		
+		List<Tarefa> listarTarefas = dao.items(Tarefa.class, session, criterios, Order.asc("id"));
 		
 		int meuEmail=0,todosEmails=0,meuProposta=0,todosPropostas=0,meuReuniao=0,todosReuniao=0,
 				meuTelefone=0,todosTelefone=0,meuVisita=0,todosVisita=0,meuPendentes=0,todosPendentes=0,
@@ -354,6 +391,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	private void setarIcons() throws NullPointerException {
 		ImageIcon iconOk = new ImageIcon(InicioView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
         btnOk.setIcon(recalculate(iconOk));
+        btnOkResumo.setIcon(iconOk);
 	}
 	private ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

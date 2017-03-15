@@ -29,11 +29,11 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
 	
     public static JLabel lbInfoTarefas;
     public static JPanel pnStatus;
-    public static JDateChooser jData1;
-	public static JDateChooser jData2;
+    public static JDateChooser jData1,jData2,dataResumo1, dataResumo2;
 	public static DefaultComboBox cbAtendentes;
-	public static JButton btnOk;
+	public static JButton btnOk, btnOkResumo;
 	public static JTable tbNegocios, tbTarefas;
+	
 	ControllerInicio controller = new ControllerInicio();
 	
 	@Override
@@ -88,6 +88,7 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         			.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         			.addContainerGap())
         );
+        
         lbInfoTarefas = new JLabel();
         lbInfoTarefas.setBounds(0, 5, 916, 549);
         lbInfoTarefas.setHorizontalAlignment(SwingConstants.CENTER);
@@ -102,10 +103,12 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         JPanel panel = new JPanel();
         panel.setOpaque(false);
         panel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Resumo", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        panel.setBounds(926, 11, 294, 412);
+        panel.setBounds(926, 11, 294, 480);
+        panel.setBackground(new Color(250,250,250));
         pnDetalhes.add(panel);
         
         JScrollPane spNegocios = new JScrollPane();
+        spNegocios.setBounds(12, 116, 272, 115);
         spNegocios.setOpaque(false);
         
         tbNegocios = new JTable();
@@ -113,43 +116,47 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         spNegocios.setViewportView(tbNegocios);
         
         JLabel lblNewLabel = new JLabel("Neg\u00F3cios");
+        lblNewLabel.setBounds(12, 91, 272, 14);
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         
         JLabel lblTarefas = new JLabel("Tarefas");
+        lblTarefas.setBounds(12, 249, 272, 14);
         lblTarefas.setFont(new Font("Tahoma", Font.BOLD, 12));
         lblTarefas.setHorizontalAlignment(SwingConstants.CENTER);
         
         JScrollPane spTarefas = new JScrollPane();
+        spTarefas.setBounds(12, 269, 272, 200);
         spTarefas.setOpaque(false);
         
         tbTarefas = new JTable();
         tbTarefas.setOpaque(false);
         spTarefas.setViewportView(tbTarefas);
-        GroupLayout gl_panel = new GroupLayout(panel);
-        gl_panel.setHorizontalGroup(
-        	gl_panel.createParallelGroup(Alignment.TRAILING)
-        		.addGroup(gl_panel.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-        				.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-        				.addComponent(spNegocios, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-        				.addComponent(lblTarefas, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-        				.addComponent(spTarefas, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)))
-        );
-        gl_panel.setVerticalGroup(
-        	gl_panel.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel.createSequentialGroup()
-        			.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(spNegocios, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
-        			.addGap(18)
-        			.addComponent(lblTarefas, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(spTarefas, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap())
-        );
-        panel.setLayout(gl_panel);
+        panel.setLayout(null);
+        panel.add(lblNewLabel);
+        panel.add(spNegocios);
+        panel.add(lblTarefas);
+        panel.add(spTarefas);
+        
+        dataResumo1 = new JDateChooser();
+        dataResumo1.setPreferredSize(new Dimension(100, 20));
+        dataResumo1.setBounds(12, 44, 100, 20);
+        panel.add(dataResumo1);
+        
+        JLabel label = new JLabel("at\u00E9:");
+        label.setBounds(117, 47, 20, 14);
+        panel.add(label);
+        
+        dataResumo2 = new JDateChooser();
+        dataResumo2.setPreferredSize(new Dimension(100, 20));
+        dataResumo2.setBounds(142, 44, 100, 20);
+        panel.add(dataResumo2);
+        
+        btnOkResumo = new JButton("");
+        btnOkResumo.setActionCommand("FiltrarResumo");
+        btnOkResumo.addActionListener(controller);
+        btnOkResumo.setBounds(252, 37, 33, 27);
+        panel.add(btnOkResumo);
         
         pnStatus.add(lblCriadoPor);
         
