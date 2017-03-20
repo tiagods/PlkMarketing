@@ -144,12 +144,12 @@ public class InicioView extends JInternalFrame implements DefaultUtilities {
         panel.add(dataResumo1);
         
         JLabel label = new JLabel("at\u00E9:");
-        label.setBounds(117, 47, 20, 14);
+        label.setBounds(117, 47, 33, 14);
         panel.add(label);
         
         dataResumo2 = new JDateChooser();
         dataResumo2.setPreferredSize(new Dimension(100, 20));
-        dataResumo2.setBounds(142, 44, 100, 20);
+        dataResumo2.setBounds(152, 44, 100, 20);
         panel.add(dataResumo2);
         
         btnOkResumo = new JButton("");

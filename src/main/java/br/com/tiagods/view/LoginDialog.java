@@ -16,11 +16,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import br.com.tiagods.controller.ControllerLogin;
-import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.VersaoSistema;
 
 public class LoginDialog extends JDialog {
 	
-	DescricaoVersao versao = new DescricaoVersao();
+	VersaoSistema versao = new VersaoSistema();
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	public static JPanel pnLogin,pnGerarSenha,pnRecuperarConta;
@@ -75,7 +75,7 @@ public class LoginDialog extends JDialog {
 		pnRecuperarConta.setBounds(183, 72, 291, 228);
 		contentPanel.add(pnRecuperarConta);
 		pnRecuperarConta.setLayout(null);
-		pnRecuperarConta.setBackground(Color.WHITE);
+		pnRecuperarConta.setBackground(new Color(250,250,250));
 		
 		btnMinhaConta = new JButton("");
 		btnMinhaConta.setActionCommand("Esqueci");

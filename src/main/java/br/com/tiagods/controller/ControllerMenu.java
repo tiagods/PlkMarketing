@@ -30,7 +30,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.modeldao.VerificarAtualizacao;
 import br.com.tiagods.view.EmpresasView;
@@ -55,7 +55,7 @@ public class ControllerMenu implements MouseListener{
     TarefasView tarefas;
     NegociosView negocios;
     MenuView view;
-    DescricaoVersao descricao = new DescricaoVersao();
+    VersaoSistema descricao = new VersaoSistema();
     VerificarAtualizacao atualizacao = new VerificarAtualizacao();
     boolean atualizar = false;
     
@@ -229,7 +229,7 @@ public class ControllerMenu implements MouseListener{
     	}
     }
         //comparação de versoes, retorna false se estiver desatualizado
-        public boolean verificarVersao(VerificarAtualizacao atualizacao, DescricaoVersao versao){
+        public boolean verificarVersao(VerificarAtualizacao atualizacao, VersaoSistema versao){
         	return atualizacao.receberStatus(versao).equals("Desatualizado");
         }
         //agendador para verificar se existe uma nova versao

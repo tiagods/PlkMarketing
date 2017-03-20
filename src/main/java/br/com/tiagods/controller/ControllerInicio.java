@@ -27,7 +27,7 @@ import org.hibernate.criterion.Restrictions;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
@@ -46,7 +46,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	HashMap<String, Usuario> atendentes = new HashMap<>();
 	boolean liberar = false;
 	
-	DescricaoVersao descricao = new DescricaoVersao();
+	VersaoSistema descricao = new VersaoSistema();
 	VerificarAtualizacao atualizacao = new VerificarAtualizacao();
 	GenericDao dao = new GenericDao();
 	boolean atualizar = false;

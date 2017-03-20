@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import br.com.tiagods.factory.ConnectionFactory;
-import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.VersaoSistema;
 
 public class VerificarAtualizacao {
 	private String versaoDisponivel = "";
@@ -15,7 +15,7 @@ public class VerificarAtualizacao {
 	private String dataVersao;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	
-	public String receberStatus(DescricaoVersao versao){
+	public String receberStatus(VersaoSistema versao){
 		Connection con = new ConnectionFactory().getConnection();
 		if(con==null){
 			System.out.println("Sem link de comunicação");

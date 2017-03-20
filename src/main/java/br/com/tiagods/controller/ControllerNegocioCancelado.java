@@ -19,7 +19,7 @@ public class ControllerNegocioCancelado implements ActionListener{
 
 	private NegocioPerdaDialog view;
 	private Negocio negocio;
-	
+		
 	public void iniciar(Negocio negocio,NegocioPerdaDialog dialog){
 		this.view=dialog;
 		this.negocio = negocio;
@@ -41,6 +41,7 @@ public class ControllerNegocioCancelado implements ActionListener{
 				negocio.setMotivoPerda(receberRadio());
 				negocio.setDataPerda(txData.getDate());
 				negocio.setDetalhesPerda(txDescricao.getText());
+				view.setNegocio(this.negocio);
 				this.view.dispose();
 			}
 			else

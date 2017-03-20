@@ -18,6 +18,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -166,9 +168,45 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				dialogPerda = new NegocioPerdaDialog(MenuView.getInstance(),true,negocio);
 				dialogPerda.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialogPerda.setVisible(true);
+				dialogPerda.addWindowListener(new FechandoDialogPerda());
 			}
 		}
 
+	}
+	public class FechandoDialogPerda implements WindowListener{
+
+		@Override
+		public void windowOpened(WindowEvent e) {
+		}
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			Negocio negocioPerda = dialogPerda.getNegocio();
+			negocio.setMotivoPerda(negocioPerda.getMotivoPerda()!=null?negocioPerda.getMotivoPerda():"");
+			negocio.setDataPerda(negocioPerda.getDataPerda());
+			negocio.setDetalhesPerda(negocioPerda.getDetalhesPerda()!=null?negocioPerda.getDetalhesPerda():"");
+			
+		}
+		@Override
+		public void windowClosed(WindowEvent e) {
+		}
+
+		@Override
+		public void windowIconified(WindowEvent e) {
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent e) {
+		}
+
+		@Override
+		public void windowActivated(WindowEvent e) {
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent e) {
+		}
+		
 	}
 
 	public void preencherFormulario(Negocio n){
@@ -221,7 +259,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txDescricao.setText(n.getDescricao());
 		Set<ServicoContratado> servicos = n.getServicosContratados();
 		preencherServicos(servicos);
-if(pnAuxiliar.isVisible()){
+		if(pnAuxiliar.isVisible()){
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", n);
 			criterios.add(criterion);
@@ -257,14 +295,13 @@ if(pnAuxiliar.isVisible()){
 			negocio.setHonorario(new BigDecimal("0.00"));
 			txHonorario.setText("0,00");
 			dataInicio.setDate(new Date());
-			
 			txEmail.setText("");
 			txCelular.setText("");
 			txFone.setText("");
-			
 			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
 			while(serv.getRowCount()>0)
 				serv.removeRow(0);
+			pnAuxiliar.setVisible(false);
 			break;
 		case "Editar":
 			telaEmEdicao = true;
@@ -273,8 +310,10 @@ if(pnAuxiliar.isVisible()){
 			break;
 		case "Cancelar":
 			telaEmEdicao = false;
-			if(negocioBackup!=null)
+			if(negocioBackup!=null){
+				negocio = negocioBackup;
 				preencherFormulario(negocioBackup);
+			}
 			salvarCancelar();
 			break;
 		case "Excluir":
@@ -298,15 +337,17 @@ if(pnAuxiliar.isVisible()){
 			}
 			break;
 		case "Historico":
-			pnAuxiliar.setVisible(true);
-			boolean open = recebeSessao();
-			List<Criterion>criterios = new ArrayList<>();
-			Criterion criterion = Restrictions.eq("negocio", negocio);
-			criterios.add(criterion);
-			Order order = Order.desc("dataEvento");
-			List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
-			fechaSessao(open);
+			if(!txCodigo.getText().equals("") && !telaEmEdicao){
+				pnAuxiliar.setVisible(true);
+				boolean open = recebeSessao();
+				List<Criterion>criterios = new ArrayList<>();
+				Criterion criterion = Restrictions.eq("negocio", negocio);
+				criterios.add(criterion);
+				Order order = Order.desc("dataEvento");
+				List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
+				new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
+				fechaSessao(open);
+			}
 			break;
 		case "Esconder":
 			pnAuxiliar.setVisible(false);
@@ -823,6 +864,7 @@ if(pnAuxiliar.isVisible()){
 		desbloquerFormulario(true, pnCadastro);
 		desbloquerFormulario(true, pnAndamento);
 		desbloquerFormulario(true, pnServicosContratados);
+		pnAuxiliar.setVisible(true);
 		btnNovo.setEnabled(false);
 		btnEditar.setEnabled(false);
 		btnSalvar.setEnabled(true);
@@ -830,7 +872,7 @@ if(pnAuxiliar.isVisible()){
 		btnExcluir.setEnabled(false);
 		cbAtendenteCad.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
 		txEmail.setEditable(false);
-		if(this.negocio!=null)
+		if(this.negocio.getId()>0)
 			negocioBackup=negocio;
 		
 	}
@@ -1140,9 +1182,10 @@ if(pnAuxiliar.isVisible()){
 			tbServicosContratados.setModel(model);
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 			this.negocio = (Negocio) dao.receberObjeto(Negocio.class, id, session);
+			if(!pnAuxiliar.isVisible()) 
+				pnAuxiliar.setVisible(true);
 			preencherFormulario(this.negocio);
-			if(open)
-				fechaSessao(open);
+			fechaSessao(open);
 			salvarCancelar();
 		}
 //		else

@@ -11,7 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.VersaoSistema;
 
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
@@ -25,7 +25,7 @@ public class SobreDialog extends JDialog {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
-	DescricaoVersao versao = new DescricaoVersao();
+	VersaoSistema versao = new VersaoSistema();
 	
 	public SobreDialog(MenuView view, boolean modal) {
 		super(view,modal);

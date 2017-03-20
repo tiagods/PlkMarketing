@@ -31,7 +31,13 @@ public class NegocioPerdaDialog extends JDialog{
 /**
 	 * Create the dialog.
 	 */
-	
+	private Negocio negocio;
+	public Negocio getNegocio(){
+		return this.negocio;
+	}
+	public void setNegocio(Negocio negocio){
+		this.negocio=negocio;
+	}
 	public NegocioPerdaDialog(JFrame frame, boolean modal, Negocio negocio) {
 		super(frame, modal);
 		initComponents();

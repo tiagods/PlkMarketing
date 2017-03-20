@@ -27,7 +27,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.DescricaoVersao;
+import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.SendEmail;
@@ -47,7 +47,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	
 	GenericDao dao = new GenericDao();
 	VerificarAtualizacao atualizacao = new VerificarAtualizacao();
-	DescricaoVersao descricao = new DescricaoVersao();
+	VersaoSistema descricao = new VersaoSistema();
     private Usuario usuario;
     int esqueci = -1; //0 para recuperar conta e 1 para redefinir senha
 	
@@ -346,7 +346,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
     	}
     }
 	//comparação de versoes, retorna false se estiver desatualizado
-    public boolean verificarVersao(VerificarAtualizacao atualizacao, DescricaoVersao versao){
+    public boolean verificarVersao(VerificarAtualizacao atualizacao, VersaoSistema versao){
     	return atualizacao.receberStatus(versao).equals("Desatualizado");
     }
 

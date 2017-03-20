@@ -29,7 +29,7 @@
       	<many-to-one name="criadoPor" column="PES_CRIADOPOR_COD" foreign-key="FK_PES_CRIADOPOR_COD"/>
 		<many-to-one name="origem" column="PES_ORIGEM_COD" foreign-key="FK_PES_ORIGEM_COD"/>
 		<many-to-one name="atendente" column="PES_ATENDENTE_COD" foreign-key="FK_PES_ATENDENTE_COD"/>
-		<set name="negocios" inverse="true" cascade="save-update, delete">
+		<set name="negocios" inverse="true" cascade="all">
 			<key column="NEG_PESSOA_COD"/>
 			<one-to-many class="Negocio" />
 		</set>

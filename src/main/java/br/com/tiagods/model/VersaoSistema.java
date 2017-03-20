@@ -1,11 +1,11 @@
 package br.com.tiagods.model;
 
-public class DescricaoVersao {
+public class VersaoSistema {
 	private String nome="Negócios";
-	private String versao="1.0.8";
-	private String data="15.03.2017";
+	private String versao="1.0.9";
+	private String data="20.03.2017";
 	private String versaoBanco="1.0";
-	private String detalhes="Inclusão de Filtro na Tela inicial com Tabelas de Contadores\nNovos icones dentro da tabela Negocios\nMelhorado a visualização da Planilha Exportada";
+	private String detalhes="Corrigido bug que criava dois Negocios ao cadastrar Perda\n Inclusão de Filtro na Tela inicial com Tabelas de Contadores\nNovos icones dentro da tabela Negocios\nMelhorado a visualização da Planilha Exportada";
 	/*
 	 */
 	/**
