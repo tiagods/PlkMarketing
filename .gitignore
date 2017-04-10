@@ -3,6 +3,7 @@ hibernate.cfg.xml
 hibernate.properties
 ConnectionFactory.java
 SendEmail.java
+SendMail.java
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

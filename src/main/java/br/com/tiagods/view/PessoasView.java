@@ -94,7 +94,6 @@ public class PessoasView extends JInternalFrame {
 		btnEmpresas.setEnabled(false);
 		
 		btnImportar.setEnabled(false);
-		btnExportar.setEnabled(false);
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initComponents() {

@@ -76,17 +76,21 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -94,6 +98,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
@@ -111,6 +116,7 @@ import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -119,7 +125,9 @@ import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
+import br.com.tiagods.view.interfaces.ExcelGenerico;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
+import jxl.write.WriteException;
 /**
  *
  * @author Tiago
@@ -295,10 +303,151 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				ex.printStackTrace();
 			}
 			break;
+		case "Exportar":
+			DefaultTableModel model = (DefaultTableModel)tbPrincipal.getModel();
+			if(model.getColumnCount()>1){
+				exportarExcel();
+			}
+			else{
+				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
+			}
+			break;
 		default:
 			break;
 		}
 	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void exportarExcel(){
+		int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
+				+"Todos os registros serão exportados para o formato excel, deseja imprimir o filtro realizado",
+				"Exportar Negocios",JOptionPane.YES_NO_OPTION);
+		if(opcao==JOptionPane.YES_OPTION){
+			String export = carregarArquivo("Salvar arquivo");
+			if(!"".equals(export)){
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				realizarFiltro();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+				
+				Integer[] colunasLenght = new Integer[]{6,30,29,9,13,15,13,14,14,13,12,11,14,10,10,16,10,19,16,30};
+				String[] cabecalho = new String[]{
+						"Cod","Nome", "Razao Social","Apelido","CNPJ",
+						"E-mail","Site","Telefone","Celular","Criado Em","Atendente","Endereço",
+						"Categoria","Nivel","Origem","Servicos/Produtos","Qtde Negócios",
+						"Status Negocio","Honorário","Outros Serviços"};
+				listaImpressao.add(new ArrayList<>());
+				for(String c : cabecalho){
+					listaImpressao.get(0).add(c);
+				}
+				for(int i = 0;i<listaEmpresas.size();i++){
+					listaImpressao.add(new ArrayList());
+					
+					Empresa e = listaEmpresas.get(i);
+					PfPj pf = e.getPessoaJuridica();
+					
+					listaImpressao.get(i+1).add(e.getId());
+					listaImpressao.get(i+1).add(e.getNome());
+					listaImpressao.get(i+1).add(pf.getRazao()==null?"":pf.getRazao());
+					listaImpressao.get(i+1).add(pf.getApelido()==null?"":pf.getApelido());
+					listaImpressao.get(i+1).add(e.getCnpj()==null?"":e.getCnpj());
+					listaImpressao.get(i+1).add(pf.getEmail());
+					listaImpressao.get(i+1).add(pf.getSite());
+					listaImpressao.get(i+1).add(pf.getTelefone());
+					listaImpressao.get(i+1).add(pf.getCelular());
+					listaImpressao.get(i+1).add(dateFormat.format(pf.getCriadoEm()));
+					listaImpressao.get(i+1).add(pf.getAtendente().getNome());
+					
+					StringBuilder endereco = new StringBuilder();
+					if(e.getEndereco()!=null && !"".equals(e.getEndereco().getNome().trim())){
+						Endereco end = e.getEndereco(); 
+						endereco.append(end.getLogradouro());
+						endereco.append(" ");
+						endereco.append(end.getNome());
+						endereco.append(end.getNumero().equals("")?"":", "+end.getNumero());
+						endereco.append(end.getComplemento().equals("")?"":" "+end.getComplemento());
+						endereco.append(end.getBairro().equals("")?"":" - "+end.getBairro());
+						endereco.append(end.getCep().equals("")?"":" - "+end.getCep());
+						endereco.append(end.getCidade()==null?"":" - "+end.getCidade().getNome());
+						endereco.append(end.getCidade()==null?"":" - "+end.getCidade().getEstado());
+					}
+					listaImpressao.get(i+1).add(endereco.toString());//endereço completo
+					listaImpressao.get(i+1).add(pf.getCategoria()==null?"":pf.getCategoria().getNome());
+					listaImpressao.get(i+1).add(pf.getNivel()==null?"":pf.getNivel().getNome());
+					listaImpressao.get(i+1).add(pf.getOrigem()==null?"":pf.getOrigem().getNome());
+					listaImpressao.get(i+1).add(pf.getServico()==null?"":pf.getServico().getNome());
+					
+					int qtdNegocios=0;
+					StringBuilder valorHonorario = new StringBuilder();
+					StringBuilder statusNegocio = new StringBuilder();
+					StringBuilder statusServicosNegocios = new StringBuilder();
+					
+					List<Criterion> criterios = new ArrayList<>();
+					criterios.add(Restrictions.eq("empresa", e));
+					List<Negocio> listaNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+
+					if(!listaNegocios.isEmpty()){
+						for(Negocio negocio : listaNegocios){
+							qtdNegocios++;
+	
+							valorHonorario.append(negocio.getId());
+							valorHonorario.append("-");
+							valorHonorario.append(NumberFormat.getCurrencyInstance().format(negocio.getHonorario()));
+							valorHonorario.append("\n ");
+	
+							statusNegocio.append(negocio.getId());
+							statusNegocio.append("-");
+							statusNegocio.append(negocio.getStatus().getNome());
+							statusNegocio.append("\n ");
+	
+							Set<ServicoContratado> servicos = negocio.getServicosContratados();
+							for(ServicoContratado sc : servicos){
+								statusServicosNegocios.append(negocio.getId());
+								statusServicosNegocios.append(" - ");
+								statusServicosNegocios.append(sc.getServicosAgregados().getNome());
+								statusServicosNegocios.append(" - ");
+								statusServicosNegocios.append(NumberFormat.getCurrencyInstance().format(sc.getValor()));
+								statusServicosNegocios.append("\n ");
+							}
+							
+						}
+					}
+					listaImpressao.get(i+1).add(qtdNegocios);//possui negocio
+					listaImpressao.get(i+1).add(statusNegocio.toString());//status do negocio
+					listaImpressao.get(i+1).add(valorHonorario.toString());//valor do negocio
+					listaImpressao.get(i+1).add(statusServicosNegocios.toString());//valor do negocio
+				}
+				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
+				try {
+					planilha.gerarExcel();
+					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
+					Desktop.getDesktop().open(new File(export+".xls"));
+				} catch (WriteException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+				} catch(NullPointerException e2){
+					e2.printStackTrace();
+				}
+				finally{
+					session.close();
+				}
+			}
+		}
+	}
+	private String carregarArquivo(String title){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setDialogTitle(title);
+        String local = "";
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+        int retorno = chooser.showSaveDialog(null);
+        if(retorno==JFileChooser.APPROVE_OPTION){
+        	local = chooser.getSelectedFile().getAbsolutePath(); //
+        }
+        return local;
+    }
 	@SuppressWarnings("rawtypes")
 	private void preencherComboBox(JPanel panel){
 		for(Component component : panel.getComponents()){
@@ -426,8 +575,9 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			}catch(NullPointerException e){
 				e.getMessage();
 			}
-			List<Empresa> lista = dao.items(Empresa.class, session, criterios, Order.desc("id"));
-			preencherTabela(lista, tbPrincipal, txContador);
+			listaEmpresas.clear();
+			listaEmpresas = dao.items(Empresa.class, session, criterios, Order.desc("id"));
+			preencherTabela(listaEmpresas, tbPrincipal, txContador);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);

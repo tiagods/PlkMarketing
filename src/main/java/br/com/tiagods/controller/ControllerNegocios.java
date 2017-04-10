@@ -22,6 +22,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -510,75 +511,74 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				+"Todos os registros serão exportados para o formato excel, deseja imprimir o filtro realizado",
 				"Exportar Negocios",JOptionPane.YES_NO_OPTION);
 		if(opcao==JOptionPane.YES_OPTION){
-			session = HibernateFactory.getSession();
-			session.beginTransaction();
-			realizarFiltro();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-			
-			Integer[] colunasLenght = new Integer[]{8,26,11,11,8,14,16,14,13,17,9,12,19,30,10,10,10,30,11};
-			String[] cabecalho = new String[]{
-					"Negocio","Nome", "E-mail","Fone","Celular",
-					"Data Inicio","Data Limite","Tipo","Criador","Etapa","Status","Atendente",
-					"Origem","Categoria","Nivel","Servicos/Produtos","Descricao",
-					"Honorario","Servicos Contratados","Motivo da Perda","Detalhe da Perda","Data da Perda"};
-			listaImpressao.add(new ArrayList<>());
-			for(String c : cabecalho){
-				listaImpressao.get(0).add(c);
-			}
-			
-			for(int i = 0;i<listarNegocios.size();i++){
-				listaImpressao.add(new ArrayList());
-				Negocio n = listarNegocios.get(i);
-				listaImpressao.get(i+1).add(n.getId());
-				listaImpressao.get(i+1).add(n.getNome());
-				
-				PfPj pfpj = n.getPessoa()!=null?n.getPessoa().getPessoaFisica():n.getEmpresa().getPessoaJuridica();
-				
-				listaImpressao.get(i+1).add(pfpj.getEmail());
-				listaImpressao.get(i+1).add(pfpj.getTelefone());
-				listaImpressao.get(i+1).add(pfpj.getCelular());
-				listaImpressao.get(i+1).add(dateFormat.format(n.getDataInicio()));
-				listaImpressao.get(i+1).add(n.getDataFim()==null?"":dateFormat.format(n.getDataFim()));
-				listaImpressao.get(i+1).add(n.getClasse());
-				listaImpressao.get(i+1).add(n.getCriadoPor().getNome());
-				listaImpressao.get(i+1).add(n.getEtapa().getNome());
-				listaImpressao.get(i+1).add(n.getStatus().getNome());
-				listaImpressao.get(i+1).add(n.getAtendente().getNome());
-				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getOrigem()==null?"":n.getPessoaFisicaOrJuridica().getOrigem().getNome());
-				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getCategoria()==null?"":n.getPessoaFisicaOrJuridica().getCategoria().getNome());
-				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome());
-				listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getServico()==null?"":n.getPessoaFisicaOrJuridica().getServico().getNome());
-				
-				listaImpressao.get(i+1).add(n.getDescricao());
-				listaImpressao.get(i+1).add(NumberFormat.getCurrencyInstance().format(n.getHonorario()));
-
-				double vlrServicos = 0.00;
-				Iterator<ServicoContratado> iterator = n.getServicosContratados().iterator();
-				while(iterator.hasNext()){
-					ServicoContratado sc = iterator.next();
-					vlrServicos+=sc.getValor().doubleValue();
-				}
-				listaImpressao.get(i+1).add(NumberFormat.getCurrencyInstance().format(vlrServicos));
-				listaImpressao.get(i+1).add(n.getMotivoPerda());
-				listaImpressao.get(i+1).add(n.getDetalhesPerda());
-				listaImpressao.get(i+1).add(n.getDataPerda()==null?"":dateFormat.format(n.getDataPerda()));
-				
-			}
 			String export = carregarArquivo("Salvar arquivo");
 			if(!"".equals(export)){
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				realizarFiltro();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+				
+				Integer[] colunasLenght = new Integer[]{8,26,11,11,8,14,16,14,13,17,9,12,19,30,10,10,10,30,11};
+				String[] cabecalho = new String[]{
+						"Negocio","Nome", "E-mail","Fone","Celular",
+						"Data Inicio","Data Limite","Tipo","Criador","Etapa","Status","Atendente",
+						"Origem","Categoria","Nivel","Servicos/Produtos","Descricao",
+						"Honorario","Servicos Contratados","Motivo da Perda","Detalhe da Perda","Data da Perda"};
+				listaImpressao.add(new ArrayList<>());
+				for(String c : cabecalho){
+					listaImpressao.get(0).add(c);
+				}
+				for(int i = 0;i<listarNegocios.size();i++){
+					listaImpressao.add(new ArrayList());
+					Negocio n = listarNegocios.get(i);
+					listaImpressao.get(i+1).add(n.getId());
+					listaImpressao.get(i+1).add(n.getNome());
+					
+					PfPj pfpj = n.getPessoa()!=null?n.getPessoa().getPessoaFisica():n.getEmpresa().getPessoaJuridica();
+					
+					listaImpressao.get(i+1).add(pfpj.getEmail());
+					listaImpressao.get(i+1).add(pfpj.getTelefone());
+					listaImpressao.get(i+1).add(pfpj.getCelular());
+					listaImpressao.get(i+1).add(dateFormat.format(n.getDataInicio()));
+					listaImpressao.get(i+1).add(n.getDataFim()==null?"":dateFormat.format(n.getDataFim()));
+					listaImpressao.get(i+1).add(n.getClasse());
+					listaImpressao.get(i+1).add(n.getCriadoPor().getNome());
+					listaImpressao.get(i+1).add(n.getEtapa().getNome());
+					listaImpressao.get(i+1).add(n.getStatus().getNome());
+					listaImpressao.get(i+1).add(n.getAtendente().getNome());
+					listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getOrigem()==null?"":n.getPessoaFisicaOrJuridica().getOrigem().getNome());
+					listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getCategoria()==null?"":n.getPessoaFisicaOrJuridica().getCategoria().getNome());
+					listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome());
+					listaImpressao.get(i+1).add(n.getPessoaFisicaOrJuridica().getServico()==null?"":n.getPessoaFisicaOrJuridica().getServico().getNome());
+					listaImpressao.get(i+1).add(n.getDescricao());
+					listaImpressao.get(i+1).add(NumberFormat.getCurrencyInstance().format(n.getHonorario()));
+
+					double vlrServicos = 0.00;
+					Iterator<ServicoContratado> iterator = n.getServicosContratados().iterator();
+					while(iterator.hasNext()){
+						ServicoContratado sc = iterator.next();
+						vlrServicos+=sc.getValor().doubleValue();
+					}
+					listaImpressao.get(i+1).add(NumberFormat.getCurrencyInstance().format(vlrServicos));
+					listaImpressao.get(i+1).add(n.getMotivoPerda());
+					listaImpressao.get(i+1).add(n.getDetalhesPerda());
+					listaImpressao.get(i+1).add(n.getDataPerda()==null?"":dateFormat.format(n.getDataPerda()));
+				}
 				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 				try {
 					planilha.gerarExcel();
 					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
+					Desktop.getDesktop().open(new File(export+".xls"));
 				} catch (WriteException e1) {
 					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
 					e1.printStackTrace();
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+				} finally{
+					session.close();
 				}
 			}
-			session.close();
 		}
 	}
 	private String carregarArquivo(String title){

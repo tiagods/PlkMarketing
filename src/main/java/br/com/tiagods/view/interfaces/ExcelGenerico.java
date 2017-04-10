@@ -36,7 +36,7 @@ public class ExcelGenerico {
 		this.lista=lista;
 		this.larguraColunas=larguraColunas;
 	}
-	public void gerarExcel() throws IOException, WriteException{
+	public void gerarExcel() throws NullPointerException, IOException, WriteException{
 		WorkbookSettings wbSettings = new WorkbookSettings();
 		wbSettings.setLocale(new Locale("pt","BR"));
 		File arquivo = new File(arquivoSaida);
@@ -72,7 +72,7 @@ public class ExcelGenerico {
 		workbook.close();
 	}
 	@SuppressWarnings("rawtypes")
-	private void gerarConteudo(WritableSheet sheet, ArrayList<ArrayList> lista)throws WriteException,RowsExceededException{
+	private void gerarConteudo(WritableSheet sheet, ArrayList<ArrayList> lista)throws NullPointerException,WriteException, RowsExceededException{
 		if(!lista.isEmpty()){
 			//gerando celulas com nome da coluna
 			for(int i = 0; i<larguraColunas.length;i++)
