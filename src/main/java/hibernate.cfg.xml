@@ -4,10 +4,6 @@
 <hibernate-configuration>
  <session-factory>
   	<property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-<!--   	<property name="hibernate.connection.url">jdbc:postgresql://127.0.0.1/negocios</property> -->
-<!-- 	<property name="hibernate.connection.username">postgres</property> -->
-<!-- 	<property name="hibernate.connection.password">postgres</property> -->
-	
 	<property name="hibernate.connection.url">jdbc:postgresql://192.168.0.202/negocios</property>
 	<property name="hibernate.connection.username">developer</property>
 	<property name="hibernate.connection.password">02986731</property>
@@ -25,6 +21,7 @@
   <mapping resource="br/com/tiagods/model/Categoria.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Cidade.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Departamento.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Documento.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Empresa.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Etapa.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Funcao.hbm.xml"/>

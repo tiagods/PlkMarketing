@@ -36,6 +36,7 @@ public class Negocio implements Serializable{
 	private String motivoPerda="";
 	private String detalhesPerda="";
 	private Date dataPerda;
+	private Set<Documento> documentos = new LinkedHashSet<>();
 	/**
 	 * @return the id
 	 */
@@ -329,6 +330,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setDataPerda(Date dataPerda) {
 		this.dataPerda = dataPerda;
+	}
+	/**
+	 * @return the documentos
+	 */
+	public Set<Documento> getDocumentos() {
+		return documentos;
+	}
+	/**
+	 * @param documentos the documentos to set
+	 */
+	public void setDocumentos(Set<Documento> documentos) {
+		this.documentos = documentos;
 	}
 		
 }

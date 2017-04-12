@@ -57,11 +57,12 @@ public class EmpresasView extends JInternalFrame {
 	private JPanel panel;
 	private JLabel label;
 	public static JDateChooser data1,data2;
-	public static JLabel label_1, txCadastradoPor, txDataCadastro;
+	public static JTextField txCadastradoPor, txDataCadastro;
 	public static JTextField txLogradouro;
 	public static JTextField txComplemento;
-	public static JLabel txCodigo;
+	public static JTextField txCodigo;
 	public static JLabel txContador;
+	public static JLabel label_1;
 	public static JTextField txNome;
 	public static JTextField txNum;
 	public static JTextField txTelefone;
@@ -311,7 +312,8 @@ public class EmpresasView extends JInternalFrame {
         txComplemento.setBounds(252, 245, 56, 20);
         pnPrincipal.add(txComplemento);
 
-        txCodigo = new JLabel();
+        txCodigo = new JTextField();
+        txCodigo.setEnabled(false);
         txCodigo.setBounds(10, 9, 87, 20);
         pnPrincipal.add(txCodigo);
 
@@ -361,8 +363,9 @@ public class EmpresasView extends JInternalFrame {
         txBairro.setBounds(440, 244, 90, 20);
         pnPrincipal.add(txBairro);
 
-        txCadastradoPor = new JLabel();
-        txCadastradoPor.setBounds(268, 15, 56, 14);
+        txCadastradoPor = new JTextField();
+        txCadastradoPor.setEnabled(false);
+        txCadastradoPor.setBounds(268, 9, 85, 20);
         pnPrincipal.add(txCadastradoPor);
 
         JLabel lblCadastro = new JLabel();
@@ -370,13 +373,14 @@ public class EmpresasView extends JInternalFrame {
         lblCadastro.setBounds(107, 15, 73, 14);
         pnPrincipal.add(lblCadastro);
 
-        txDataCadastro = new JLabel();
-        txDataCadastro.setBounds(185, 15, 73, 14);
+        txDataCadastro = new JTextField();
+        txDataCadastro.setEnabled(false);
+        txDataCadastro.setBounds(185, 9, 73, 20);
         pnPrincipal.add(txDataCadastro);
 
         MaskFormatter formatterCnpj=null;
         try{
-        	formatterCnpj = new MaskFormatter("##.###.###/###-##");
+        	formatterCnpj = new MaskFormatter("##.###.###/####-##");
         }catch(Exception e){
         }
         txCnpj = new JFormattedTextField(formatterCnpj);
@@ -564,8 +568,8 @@ public class EmpresasView extends JInternalFrame {
         pnPrincipal.add(btnServicoAdd);
         
         JLabel lbProdServicosCad = new JLabel();
-        lbProdServicosCad.setText("Produtos/Servi\u00E7os:");
-        lbProdServicosCad.setBounds(317, 126, 109, 17);
+        lbProdServicosCad.setText("Ramo:");
+        lbProdServicosCad.setBounds(384, 126, 42, 17);
         pnPrincipal.add(lbProdServicosCad);
         
         cbCidade = new DefaultComboBox();

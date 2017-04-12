@@ -7,14 +7,11 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -40,6 +37,7 @@ public class AuxiliarTabela {
 	List<Criterion> criterios;
 	Order order;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
 	
 	@SuppressWarnings("rawtypes")
 	public AuxiliarTabela(Object classe, JTable tabela, List lista,List<Criterion> criterios, Order order){
@@ -124,9 +122,9 @@ public class AuxiliarTabela {
 	}
 	@SuppressWarnings("serial")
 	private DefaultTableModel gerarModel(Tarefa tarefas){
-		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","DESCRICAO","STATUS","ANDAMENTO","EDITAR","EXCLUIR"},0){
+		return new DefaultTableModel(new Object[]{"ID","DATA","TIPO","ATENDENTE","DESCRICAO","EDITAR","EXCLUIR"},0){
 			boolean[] canEdit = new boolean[]{
-					false,false,false,false,false,false,true,true,true
+					false,false,false,false,false,true,true
 			};
 			@Override
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -193,40 +191,69 @@ public class AuxiliarTabela {
 			Tarefa t = iterator.next();
 			Object[] o = new Object[model.getColumnCount()];
 			o[0]=t.getId();
-			o[1]=sdf.format(t.getDataEvento());
-			o[2]=t.getTipoTarefa().getNome();
+			o[1]=sdf.format(t.getDataEvento()) + " às "+ sdh.format(t.getDataEvento());
+
+			String statusValue = "";
+			switch(t.getTipoTarefa().getId()){
+			case 1:
+				statusValue = "tarefas_visita";
+				break;
+			case 2:
+				statusValue = "tarefas_reuniao";
+				break;
+			case 3:
+				statusValue = "tarefas_proposta";
+				break;
+			case 4:
+				statusValue = "tarefas_fone";
+				break;
+			case 5:
+				statusValue = "tarefas_email";
+				break;
+			default:
+				statusValue = "button_question";
+				break;
+			}
+			o[2] = recalculate(new ImageIcon(ControllerNegocios.class
+					.getResource("/br/com/tiagods/utilitarios/"+statusValue+".png")),15);
+			
 			o[3]=t.getAtendente().getNome();
 			o[4]=t.getDescricao();
-			o[5]=t.getFinalizado()==0?"Aberto":"Finalizado";
-			if(t.getFinalizado()==0)
-				o[6]=Boolean.FALSE;
-			else
-				o[6]=Boolean.TRUE;
-			o[7] = recalculate(new ImageIcon(AuxiliarTabela.class
+//			o[5]=t.getFinalizado()==0?"Aberto":"Finalizado";
+//			if(t.getFinalizado()==0)
+//				o[6]=Boolean.FALSE;
+//			else
+//				o[6]=Boolean.TRUE;
+			o[5] = recalculate(new ImageIcon(AuxiliarTabela.class
 					.getResource("/br/com/tiagods/utilitarios/button_edit.png")));
-			o[8] = recalculate(new ImageIcon(AuxiliarTabela.class
+			o[6] = recalculate(new ImageIcon(AuxiliarTabela.class
 					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
 			model.addRow(o);
 		}
 		table.setModel(model);
-		table.getColumnModel().getColumn(0).setPreferredWidth(30);
+		table.getColumnModel().getColumn(0).setMinWidth(0);
+		table.getColumnModel().getColumn(0).setPreferredWidth(0);
+		table.getColumnModel().getColumn(0).setMaxWidth(0);
 		table.getColumnModel().getColumn(1).setPreferredWidth(60);
-		table.getColumnModel().getColumn(2).setPreferredWidth(60);
-		table.getColumnModel().getColumn(3).setPreferredWidth(60);
+		table.getColumnModel().getColumn(2).setPreferredWidth(40);
+		table.getColumnModel().getColumn(3).setPreferredWidth(40);
+		table.getColumnModel().getColumn(5).setPreferredWidth(30);
+		table.getColumnModel().getColumn(6).setPreferredWidth(30);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		table.setRowHeight(30);
 		
-		JCheckBox ckFinalizar = new JCheckBox();
-		TableColumn col = table.getColumnModel().getColumn(6);
-		col.setCellEditor(new DefaultCellEditor(ckFinalizar));
-		ckFinalizar.setActionCommand("Finalizar");
-		ckFinalizar.addActionListener(new AcaoInTable());
+		/*Removendo função de validar dentro da tabela, não será mais usada*/
+//		JCheckBox ckFinalizar = new JCheckBox();
+//		TableColumn col = table.getColumnModel().getColumn(6);
+//		col.setCellEditor(new DefaultCellEditor(ckFinalizar));
+//		ckFinalizar.setActionCommand("Finalizar");
+//		ckFinalizar.addActionListener(new AcaoInTable());
 		
-		JButton btEdit = new ButtonColumnModel(table,7).getButton();
+		JButton btEdit = new ButtonColumnModel(table,5).getButton();
 		btEdit.setActionCommand("Editar");
 		btEdit.addActionListener(new AcaoInTable());
 
-		JButton btExcluir =new ButtonColumnModel(table,8).getButton();
+		JButton btExcluir =new ButtonColumnModel(table,6).getButton();
 		btExcluir.setActionCommand("Excluir");
 		btExcluir.addActionListener(new AcaoInTable());
 	}
@@ -237,9 +264,9 @@ public class AuxiliarTabela {
 			Session session = HibernateFactory.getSession();
 			session.beginTransaction();
 			switch(e.getActionCommand()){
-			case "Finalizar":
-				finalizar(session);
-				break;
+//			case "Finalizar":
+//				finalizar(session);
+//				break;
 			case "Editar":
 				int valor = (int)table.getModel().getValueAt(table.getSelectedRow(), 0);
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
@@ -268,32 +295,32 @@ public class AuxiliarTabela {
 				buscar(session);
 		}
 	}
-	String pendente = "Aberto";
-	String fechado = "Finalizado";
-	
-	public void finalizar(Session session){
-		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 6);
-		int id = (int)table.getValueAt(table.getSelectedRow(), 0);
-		String status = (String)table.getValueAt(table.getSelectedRow(), 5);
-		if(!value && pendente.equals(status)){
-			TarefaDao dao = new TarefaDao();
-			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
-			thisTar.setFinalizado(1);
-			if(dao.salvar(thisTar, session)){
-				table.setValueAt(fechado, table.getSelectedRow(), 4);
-			}
-
-		}
-		else if(value && fechado.equals(status)){
-			TarefaDao dao = new TarefaDao();
-			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
-			thisTar.setFinalizado(0);
-			if(dao.salvar(thisTar, session)){
-				table.setValueAt(pendente, table.getSelectedRow(), 5);
-			}
-		}
-		//buscar(session);
-	}
+//	String pendente = "Aberto";
+//	String fechado = "Finalizado";
+//	
+//	public void finalizar(Session session){
+//		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 6);
+//		int id = (int)table.getValueAt(table.getSelectedRow(), 0);
+//		String status = (String)table.getValueAt(table.getSelectedRow(), 5);
+//		if(!value && pendente.equals(status)){
+//			TarefaDao dao = new TarefaDao();
+//			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
+//			thisTar.setFinalizado(1);
+//			if(dao.salvar(thisTar, session)){
+//				table.setValueAt(fechado, table.getSelectedRow(), 4);
+//			}
+//
+//		}
+//		else if(value && fechado.equals(status)){
+//			TarefaDao dao = new TarefaDao();
+//			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
+//			thisTar.setFinalizado(0);
+//			if(dao.salvar(thisTar, session)){
+//				table.setValueAt(pendente, table.getSelectedRow(), 5);
+//			}
+//		}
+//		//buscar(session);
+//	}
 
 	@SuppressWarnings("unchecked")
 	private void buscar(Session session){
@@ -306,4 +333,8 @@ public class AuxiliarTabela {
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
     }	
+	public ImageIcon recalculate(ImageIcon icon, int valor) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
+    	return icon;
+    }
 }

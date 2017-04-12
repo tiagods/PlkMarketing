@@ -47,8 +47,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
 	
-	private JLabel labelId;
-	private JLabel labelNome;
+	private JTextField labelId;
+	private JTextField labelNome;
 	private JComboBox<String>[] combobox;
 	private SelecaoDialog view;
 	private JComboBox<String>[] comboNegocios;
@@ -58,7 +58,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	GenericDao dao= new GenericDao();
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void iniciar(JLabel labelId, JLabel labelNome,SelecaoDialog view,JComboBox[] combobox, JComboBox[] comboNegocios){
+	public void iniciar(JTextField labelId, JTextField labelNome,SelecaoDialog view,JComboBox[] combobox, JComboBox[] comboNegocios){
 		if(labelId!=null && labelNome!=null){
 			this.labelId=labelId;
 			this.labelNome=labelNome;

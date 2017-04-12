@@ -6,9 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -198,6 +196,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	public void mouseExited(MouseEvent e) {
 	}
 	
+	@SuppressWarnings({ "serial", "unchecked" })
 	private void preencherTabelaNegocios(Session session){
 		Usuario usuario = UsuarioLogado.getInstance().getUsuario();
 		
@@ -268,6 +267,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		}
 		tbNegocios.setModel(model);
 	}
+	@SuppressWarnings({ "serial", "unchecked" })
 	private void preencherTabelaTarefas(Session session){
 		Usuario usuario = UsuarioLogado.getInstance().getUsuario();
 		Object [] tableHeader = {"TIPO",usuario.getNome().toUpperCase(),"TODOS"};

@@ -31,6 +31,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,12 +49,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -67,6 +69,7 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.Documento;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Etapa;
 import br.com.tiagods.model.Negocio;
@@ -77,8 +80,12 @@ import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.ServicoContratado;
+import br.com.tiagods.model.Status;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.modeldao.FTPDownload;
+import br.com.tiagods.modeldao.FTPUpload;
 import br.com.tiagods.modeldao.GenericDao;
+import br.com.tiagods.modeldao.Randomico;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.LoadingView;
@@ -100,7 +107,6 @@ import jxl.write.WriteException;
 public class ControllerNegocios implements ActionListener,ItemListener,MouseListener, PropertyChangeListener, KeyListener{
 
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
-
 	Session session = null;
 	Negocio negocio = null;
 	Negocio negocioBackup = null;
@@ -109,15 +115,16 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	NegocioPerdaDialog dialogPerda;
 
 	String site;
-
 	GenericDao dao = new GenericDao();
-
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
+	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
+	
 	@SuppressWarnings("unchecked")
 	public void iniciar(Negocio negocio){
 		this.negocio=negocio;
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		JPanel[] panels = {pnPrincipal,pnAndamento,pnCadastro,pnServicosContratados};
+		JPanel[] panels = {pnPrincipal,pnAndamento,pnCadastro,pnServicosContratados,pnFiltros};
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
 		}
@@ -129,10 +136,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		if(this.negocio==null && !listarNegocios.isEmpty()){
 			this.negocio=listarNegocios.get(0);
 			preencherFormulario(this.negocio);
+			tabbedPane.setSelectedIndex(0);
 		}
-		else if(this.negocio!=null)
+		else if(this.negocio!=null){
 			preencherFormulario(this.negocio);
+			tabbedPane.setSelectedIndex(1);
+		}
 		tbPrincipal.addMouseListener(this);
+		calcularNegociosDoUsuario(session);
 		session.close();
 		setarIcones();
 		definirAcoes();
@@ -143,6 +154,32 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
     }
+	@SuppressWarnings("unchecked")
+	private void calcularNegociosDoUsuario(Session session) {
+		List<Criterion> criterios = new ArrayList<>();
+		Calendar inicio = Calendar.getInstance();
+		inicio.set(Calendar.DAY_OF_MONTH, 1);
+		Calendar fim = Calendar.getInstance();
+		fim.set(Calendar.DAY_OF_MONTH, fim.getMaximum(Calendar.DAY_OF_MONTH));
+		Status status = session.get(Status.class, 2);
+		criterios.add(Restrictions.or(Restrictions.between("fechamento", inicio.getTime(), fim.getTime()),
+				Restrictions.between("followUp", inicio.getTime(), fim.getTime()),
+				Restrictions.between("envioProposta", inicio.getTime(), fim.getTime()),
+				Restrictions.between("contato", inicio.getTime(), fim.getTime())));
+		criterios.add(Restrictions.eq("atendente.id", 2));
+		criterios.add(Restrictions.eq("status", status));
+		List<Negocio> calculos = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+		double valor = 0.00;
+		for(Negocio neg : calculos){
+			valor+= neg.getHonorario().doubleValue();
+			Set<ServicoContratado> servicos = neg.getServicosContratados();
+			for(ServicoContratado s : servicos){
+				valor+=s.getValor().doubleValue();
+			}
+		}
+		txValorNegocios.setText(NumberFormat.getCurrencyInstance().format(valor));		
+		
+	}
 	public void definirAcoes(){
 		data1.addPropertyChangeListener(this);
 		data2.addPropertyChangeListener(this);
@@ -159,6 +196,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		cbStatusCad.addItemListener(new InvocarDialogPerda());
 		txBuscar.addKeyListener(this);
 		tbServicosContratados.addMouseListener(new AcaoTabelaServicosContratados());
+		tabbedPane.addMouseListener(this);
 	}
 	public class InvocarDialogPerda implements ItemListener{
 		@Override
@@ -259,7 +297,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txHonorario.setText(honorario.replace(".", ","));
 		txDescricao.setText(n.getDescricao());
 		Set<ServicoContratado> servicos = n.getServicosContratados();
+		Set<Documento> documentos = n.getDocumentos();
 		preencherServicos(servicos);
+		preencherDocumentos(documentos);
 		if(pnAuxiliar.isVisible()){
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", n);
@@ -269,11 +309,109 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					Order.desc("dataEvento"));
 		}
 	}
+	private void preencherDocumentos(Set<Documento> documentos) {
+		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","DATA","NOME","DESCRICAO","ATENDENTE","VISUALIZAR","EXCLUIR"},0){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -8716692364710569296L;
+			boolean[] canEdit = new boolean[]{
+					false,false,false,false,false,true,true
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+		};
+		Iterator<Documento> iterator = documentos.iterator();
+		while(iterator.hasNext()){
+			Documento d = iterator.next();
+			Object[] o = new Object[7];
+			o[0] = d.getId();
+			o[1] = sdf.format(d.getData())+" às "+sdh.format(d.getData());
+			o[2] = d.getNome();
+			o[3] = d.getDescricao();
+			o[4] = d.getUsuario().getNome();
+			o[5] = recalculate(new ImageIcon(ControllerNegocios.class
+					.getResource("/br/com/tiagods/utilitarios/button_viewfile.png")));
+			o[6] = recalculate(new ImageIcon(ControllerNegocios.class
+					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
+			model.addRow(o);
+		}
+		tbDocumentos.setRowHeight(25);
+		tbDocumentos.setModel(model);
+		JButton btView  = new ButtonColumnModel(tbDocumentos,5).getButton();
+		btView.setToolTipText("Clique abrir o arquivo");
+		btView.addActionListener( new AbrirDocumentos());
+		JButton btRem  = new ButtonColumnModel(tbDocumentos,6).getButton();
+		btRem.setToolTipText("Clique para remover o registro");
+		btRem.addActionListener(new AcaoInTableDocumentos());
+		
+		tbDocumentos.getColumnModel().getColumn(0).setMaxWidth(30);
+		tbDocumentos.getColumnModel().getColumn(4).setPreferredWidth(40);
+		tbDocumentos.getColumnModel().getColumn(5).setPreferredWidth(40);
+		tbDocumentos.getColumnModel().getColumn(6).setPreferredWidth(40);
+		tbDocumentos.setAutoCreateRowSorter(true);
+	}
+	
+	public class AcaoInTableDocumentos implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(telaEmEdicao){
+				int row = tbDocumentos.getSelectedRow();
+				Object value = tbDocumentos.getValueAt(row, 0);
+				int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody,
+						"Deseja excluir o seguinte serviço: \n"+tbDocumentos.getValueAt(row, 0)+" \nNome: "+tbDocumentos.getValueAt(row, 2)+
+						"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
+				if(i==JOptionPane.OK_OPTION){
+					if(!"".equals(value.toString())){
+						session = HibernateFactory.getSession();
+						session.beginTransaction();
+						Documento doc = (Documento)dao.receberObjeto(Documento.class, Integer.parseInt(value.toString()), session);
+						if(dao.excluir(doc, session)){
+							removerDocumento(row);
+						}
+						session.close();
+					}
+					else{
+						removerDocumento(row);
+					}
+				}
+			}
+			else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de realizar qualquer alteração!");
+		}
+	}
+	public class AbrirDocumentos implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			DefaultTableModel model =  (DefaultTableModel)tbDocumentos.getModel();
+			int valor = Integer.parseInt(String.valueOf(model.getValueAt(tbDocumentos.getSelectedRow(), 0)));
+			FTPDownload download = new FTPDownload();
+            session = HibernateFactory.getSession();
+			session.beginTransaction();
+			Documento doc = session.get(Documento.class, valor);
+			if(download.downloadFile(doc.getUrl())){
+                try {
+                    Desktop.getDesktop().open(download.returnFile());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+			session.close();
+		}
+
+	}
+	public void removerDocumento(int row){
+		DefaultTableModel model = (DefaultTableModel) tbDocumentos.getModel();
+		model.removeRow(row);
+		tbDocumentos.setModel(model);
+	}
 	@SuppressWarnings("unchecked")
 	private void preencherComboBox(JPanel panel){
 		for(Component component : panel.getComponents()){
 			if(component instanceof JComboBox)
 				padrao.preencherCombo((JComboBox<String>)component, session, null);
+			
 		}
 	}
 
@@ -299,9 +437,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			txEmail.setText("");
 			txCelular.setText("");
 			txFone.setText("");
-			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
-			while(serv.getRowCount()>0)
-				serv.removeRow(0);
+//			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
+//			while(serv.getRowCount()>0)
+//				serv.removeRow(0);
 			pnAuxiliar.setVisible(false);
 			break;
 		case "Editar":
@@ -313,7 +451,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			telaEmEdicao = false;
 			if(negocioBackup!=null){
 				negocio = negocioBackup;
-				preencherFormulario(negocioBackup);
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				negocio = (Negocio)dao.receberObjeto(Negocio.class, negocio.getId(), session);
+				preencherFormulario(negocio);
+				session.close();
 			}
 			salvarCancelar();
 			break;
@@ -472,10 +614,80 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				dialogPerda.setVisible(true);
 			}
 			break;
+		case "Enviar Documento":
+			if("".equals(txDocumentoNome.getText())){
+				JOptionPane.showMessageDialog(null, "Anexe um documento antes de enviar!","Não existe arquivo...",JOptionPane.ERROR_MESSAGE);
+			}
+			else{
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+		        Documento doc = gerarSerial(new File(txDocumentoPath.getText()));
+				if(doc!=null){
+					Set<Documento> documentos = negocio.getDocumentos();
+					documentos.add(doc);
+					negocio.setDocumentos(documentos);
+					dao.salvar(negocio, session);
+					preencherDocumentos(negocio.getDocumentos());
+					
+					txDocumentoNome.setText("");
+					txDocumentoPath.setText("");
+					txDocumentoDescricao.setText("");
+				}
+				session.close();
+			}
+			break;
+		case "Anexar Documento":
+			 if("".equals(txCodigo.getText())){
+		         JOptionPane.showMessageDialog(null, "Antes, salve o Negocio para depois anexar itens!");
+		     }
+			 else if(!telaEmEdicao){
+				 JOptionPane.showMessageDialog(null, "Clique em editar para anexar um documento!");	 
+			 }
+			 else if("".equals(txDocumentoNome.getText().trim())){
+		            JOptionPane.showMessageDialog(null, "Insira um nome!");
+		     }
+			 else{
+		    	 File file = carregarArquivo();
+		    	 txDocumentoPath.setText(file.getAbsolutePath());
+		     }
+			break;
 		default:
 			break;
 		}
 	}
+	private Documento gerarSerial(File arquivo){
+		Randomico gerador = new Randomico();
+        String nomeArquivo = gerador.gerarSerial(txCodigo.getText());
+        FTPUpload upload = new FTPUpload();
+        nomeArquivo+=arquivo.getName().substring(arquivo.getName().lastIndexOf("."), arquivo.getName().length());//inserindo extensao no nome do arquivo
+        Documento documento = null;
+        if(upload.uploadFile(arquivo, nomeArquivo)){
+        	documento = new Documento();
+        	documento.setNegocio(negocio);
+        	documento.setNome(txDocumentoNome.getText());
+        	documento.setNome(txDocumentoDescricao.getText());
+        	documento.setData(new Date());
+        	documento.setUrl(nomeArquivo);
+        	documento.setUsuario(UsuarioLogado.getInstance().getUsuario());
+        	preencherDocumentos(negocio.getDocumentos());
+        }
+        return documento;
+    }
+	private File carregarArquivo(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(true);
+        chooser.setDialogTitle("Selecione um arquivo");
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Documento PDF", "pdf"));
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("MS Office","doc","docx","xls", "xlsx", "pptx"));
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+        int retorno = chooser.showOpenDialog(null);
+        if(retorno==JFileChooser.OPEN_DIALOG){
+            return chooser.getSelectedFile();
+        }
+        return null;
+    }
+	
 	private void adicionarServico(){
 		DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
 		Object[] o = new Object[4];
@@ -737,6 +949,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			servicosContratados.add(sc);
 		}
 		negocio.setServicosContratados(servicosContratados);
+		
+		Set<Documento> documentos = new HashSet<>();
+		DefaultTableModel modelDocs = (DefaultTableModel)tbDocumentos.getModel();
+		for(int i = 0 ; i< tbDocumentos.getRowCount(); i++){
+			Documento doc = (Documento)dao.receberObjeto(Documento.class, Integer.parseInt(String.valueOf(modelDocs.getValueAt(i, 0))), session);
+			documentos.add(doc);
+		}
+		negocio.setDocumentos(documentos);		
 		if(dao.salvar(negocio, session)){
 			session.beginTransaction();
 			telaEmEdicao = false;
@@ -828,7 +1048,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(negocio,session);
 			if(excluiu){
-				limparFormulario(pnPrincipal);
+				limparFormulario(pnPesquisa);
 				listarNegocios = (List<Negocio>)dao.listar(Negocio.class, session);
 		    	preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		    }
@@ -883,6 +1103,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				((JTextField)c).setText("");
 			}
 			else if(c instanceof JComboBox){
+				((JComboBox)c).setSelectedIndex(0);
 				((JComboBox)c).setSelectedItem("");
 			}
 			else if(c instanceof JTextArea){
@@ -899,18 +1120,16 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				((JDateChooser)c).setDate(null);
 			}
 			else if(c instanceof JScrollPane){
+				JViewport viewPort = ((JScrollPane)c).getViewport();
+				limparFormulario((Container)viewPort);
+			}
+			else if(c instanceof JTabbedPane || c instanceof JPanel){
 				limparFormulario((Container)c);
 			}
 		}
-		txCodigo.setText("");
-		txCadastradoPor.setText("");
-		txDataCadastro.setText("");
-		txDescricao.setText("");
-		txCodObjeto.setText("");
-		txNomeObjeto.setText("");
-		cbObject.setSelectedItem("Empresa");
+		//cbObject.setSelectedItem("Empresa");
 		rbContato.setSelected(true);
-		cbStatusCad.setSelectedItem("Em Andamento");
+		//cbStatusCad.setSelectedItem("Em Andamento");
 	}
 	@SuppressWarnings("rawtypes")
 	private void desbloquerFormulario(boolean desbloquear,Container container){
@@ -931,10 +1150,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				((JRadioButton)c).setEnabled(desbloquear);
 			}
 			else if(c instanceof JScrollPane){
+				JViewport viewPort = ((JScrollPane)c).getViewport();
+				desbloquerFormulario(desbloquear,(Container)viewPort);
+			}
+			else if(c instanceof JTabbedPane || c instanceof JPanel){
 				desbloquerFormulario(desbloquear,(Container)c);
 			}
-			txDescricao.setEditable(desbloquear);
-
+			txDocumentoNome.setEnabled(true);
+			txDocumentoDescricao.setEnabled(true);
 		}
 	}
 	private boolean recebeSessao(){
@@ -1180,13 +1403,21 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				model.removeRow(0);
 			}
 			tbServicosContratados.setModel(model);
+			
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 			this.negocio = (Negocio) dao.receberObjeto(Negocio.class, id, session);
 			if(!pnAuxiliar.isVisible()) 
 				pnAuxiliar.setVisible(true);
+			limparFormulario(pnCadastro);
 			preencherFormulario(this.negocio);
+			tabbedPane.setSelectedIndex(1);
 			fechaSessao(open);
 			salvarCancelar();
+		}
+		else if(e.getComponent() instanceof JTabbedPane && telaEmEdicao && ((JTabbedPane)e.getComponent()).getSelectedIndex()==0){
+			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
+					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
+			tabbedPane.setSelectedIndex(1);
 		}
 //		else
 //			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
@@ -1250,7 +1481,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
 		}
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -1328,15 +1558,22 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	btnExportar.setIcon(recalculate(iconExp));
 
     	ImageIcon iconContact = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_phone.png"));
-    	txFone.setIcon(recalculate(iconContact));
-    	txFone.setForeground(Color.blue);
+    	txIconFone.setIcon(recalculate(iconContact));
+    	txIconFone.setForeground(Color.blue);
 
     	ImageIcon iconCellPhone = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_cellphone.png"));
-    	txCelular.setIcon(recalculate(iconCellPhone));
-    	txCelular.setForeground(Color.BLUE);
+    	txIconCelular.setIcon(recalculate(iconCellPhone));
+    	txIconCelular.setForeground(Color.BLUE);
     	
     	ImageIcon iconPerda = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/menu_about.png"));
     	btnVerPerda.setIcon(recalculate(iconPerda));
+    	
+    	ImageIcon iconDoc = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_upload.png"));
+    	btnAnexarDocumento.setIcon(recalculate(iconDoc));
+    	
+    	ImageIcon iconDocEnviar = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
+    	btnEnviarArquivo.setIcon(recalculate(iconDocEnviar));
+    	
 
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{

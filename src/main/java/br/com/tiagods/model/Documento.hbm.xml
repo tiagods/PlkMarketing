@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Documento" table="NEGOCIO_DOCUMENTO">
+	<id name="id" column="NEG_DOC_COD" type="int">
+	<generator class="identity" />
+	</id>
+	<property name="nome" column="NEG_DOC_NOME"/>
+	<property name="descricao" column="NEG_DOC_DESCRICAO"/>
+	<many-to-one name="usuario" column="NEG_DOC_USUARIO" foreign-key="FK_NEG_DOC_USUARIO_COD"/>
+	<property name="data" column="NEG_DOC_DATA" type="timestamp"/>
+	<property name="url" column="NEG_DOC_URL" />
+	<many-to-one name="negocio" column="NEG_DOC_NEGOCIO_COD" foreign-key="FK_NEG_DOC_NEGOCIO_COD"/>
+	</class>
+</hibernate-mapping>
+

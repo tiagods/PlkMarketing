@@ -44,7 +44,7 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 	 * Create the dialog.
 	 */
 	@SuppressWarnings("rawtypes")
-	public SelecaoDialog(Object object, JLabel labelId, JLabel labelNome,JComboBox[] combobox, JComboBox[] comboNegocios, JFrame parent,boolean modal ) {
+	public SelecaoDialog(Object object, JTextField labelId, JTextField labelNome,JComboBox[] combobox, JComboBox[] comboNegocios, JFrame parent,boolean modal ) {
 		super(parent,modal);
 		initComponents();
 		controller.iniciar(labelId,labelNome,this,combobox,comboNegocios);

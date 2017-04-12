@@ -46,6 +46,10 @@
 	<property name="motivoPerda" column="NEG_MOTIVOPERDA" type="string" length="100"></property>
 	<property name="detalhesPerda" column="NEG_DETALHESPERDA" type="text"></property>
 	<property name="dataPerda" column="NEG_DATAPERDA" type="date"></property>
+	<set name="documentos" inverse="true" cascade="save-update, delete" >
+		<key column="NEG_DOC_NEGOCIO_COD"/>
+		<one-to-many class="Documento"/>
+ 	</set>
 	</class>
 </hibernate-mapping>
 

@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.MaskFormatter;
 
 import com.toedter.calendar.JDateChooser;
@@ -45,7 +46,8 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public static JComboBox cbObject; 
 	public static DefaultComboBox cbAtendente;
 	public static JTextArea txDetalhes;
-	public static JLabel txCodigoObjeto, txNomeObjeto, txQuantidade ;
+	public static JTextField txCodigoObjeto, txNomeObjeto;
+	public static JLabel txQuantidade ;
 	public static JFormattedTextField txHora;
 	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar, btnAssociacao;
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
@@ -175,14 +177,18 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         btnAssociacao.setOpaque(false);
         btnAssociacao.setActionCommand("ChamarDialog");
         
-        txCodigoObjeto = new JLabel("");
+        txCodigoObjeto = new JTextField();
+        txCodigoObjeto.setColumns(3);
+        txCodigoObjeto.setEnabled(false);
         txCodigoObjeto.setBackground(Color.WHITE);
         txCodigoObjeto.setOpaque(true);
         txCodigoObjeto.setForeground(Color.BLUE);
         txCodigoObjeto.setFont(new Font("Tahoma", Font.BOLD, 11));
         pnRelacionamento.add(txCodigoObjeto);
         
-        txNomeObjeto = new JLabel("");
+        txNomeObjeto = new JTextField("");
+        txNomeObjeto.setColumns(30);
+        txNomeObjeto.setEnabled(false);
         txNomeObjeto.setBackground(Color.WHITE);
         txNomeObjeto.setOpaque(true);
         txNomeObjeto.setForeground(Color.BLUE);

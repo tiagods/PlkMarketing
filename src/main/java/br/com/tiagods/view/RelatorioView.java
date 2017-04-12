@@ -45,94 +45,13 @@ public class RelatorioView extends JInternalFrame implements DefaultUtilities {
         
         JScrollPane scrollPane_1 = new JScrollPane();
         
-        JCheckBox chckbxVisita = new JCheckBox("Visita");
-        
-        JCheckBox chckbxReunio = new JCheckBox("Reuni\u00E3o");
-        
-        JCheckBox chckbxProposta = new JCheckBox("Proposta");
-        
-        JCheckBox chckbxLigao = new JCheckBox("Liga\u00E7\u00E3o");
-        
-        JCheckBox chckbxEmail = new JCheckBox("E-mail");
-        
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1Layout.setHorizontalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel1Layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 1230, Short.MAX_VALUE)
-        				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.UNRELATED)
-        					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
-        					.addGap(122)
-        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        						.addComponent(chckbxEmail, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(chckbxLigao, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(chckbxProposta, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(chckbxReunio, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(chckbxVisita, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE))))
-        			.addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-        		.addGroup(jPanel1Layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addComponent(chckbxEmail)
-        					.addComponent(chckbxLigao)
-        					.addComponent(chckbxProposta)
-        					.addComponent(chckbxReunio)
-        					.addComponent(chckbxVisita))
-        				.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-        			.addPreferredGap(ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
-        			.addComponent(pnDetalhes, GroupLayout.PREFERRED_SIZE, 363, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap())
-        );
-        
-        JPanel panel = new JPanel();
-        scrollPane.setViewportView(panel);
-        JCheckBox chckbxQuantidadeDeEmpresas = new JCheckBox("Quantidade de Empresas");
-        JCheckBox chckbxQuantidadeDeNegocios = new JCheckBox("Quantidade de Negocios");
-        JCheckBox chckbxQuantidadeDePessoas = new JCheckBox("Quantidade de Pessoas");
-        JCheckBox chckbxQuantidadeDeTarefas = new JCheckBox("Quantidade de Tarefas");
-        JCheckBox chckbxValoresDosNegcios = new JCheckBox("Valores dos Neg\u00F3cios");
-        JCheckBox chckbxValoresDasTarefas = new JCheckBox("Valores das Tarefas");
-        GroupLayout gl_panel = new GroupLayout(panel);
-        gl_panel.setHorizontalGroup(
-        	gl_panel.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel.createSequentialGroup()
-        			.addGap(6)
-        			.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-        				.addComponent(chckbxQuantidadeDeEmpresas)
-        				.addComponent(chckbxQuantidadeDeNegocios, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxQuantidadeDePessoas, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxQuantidadeDeTarefas, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxValoresDosNegcios, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxValoresDasTarefas, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)))
-        );
-        gl_panel.setVerticalGroup(
-        	gl_panel.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel.createSequentialGroup()
-        			.addGap(7)
-        			.addComponent(chckbxQuantidadeDeEmpresas)
-        			.addComponent(chckbxQuantidadeDeNegocios)
-        			.addComponent(chckbxQuantidadeDePessoas)
-        			.addComponent(chckbxQuantidadeDeTarefas)
-        			.addComponent(chckbxValoresDosNegcios)
-        			.addComponent(chckbxValoresDasTarefas))
-        );
-        panel.setLayout(gl_panel);
+        JPanel panel_2 = new JPanel();
         
         JPanel panel_1 = new JPanel();
-        scrollPane_1.setViewportView(panel_1);
         
         JCheckBox chckbxDepartamento = new JCheckBox("Departamento");
         
-        JCheckBox chckbxUsurio = new JCheckBox("Usu\u00E1rio");
+        JCheckBox chckbxUsurio = new JCheckBox("Criado Por");
         
         JCheckBox chckbxAtendente = new JCheckBox("Atendente");
         
@@ -174,6 +93,84 @@ public class RelatorioView extends JInternalFrame implements DefaultUtilities {
         			.addComponent(chckbxAno))
         );
         panel_1.setLayout(gl_panel_1);
+        
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1Layout.setHorizontalGroup(
+        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        		.addGroup(jPanel1Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        				.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 1230, Short.MAX_VALUE)
+        				.addGroup(jPanel1Layout.createSequentialGroup()
+        					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(jPanel1Layout.createSequentialGroup()
+        			.addContainerGap()
+        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(jPanel1Layout.createSequentialGroup()
+        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
+        						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
+        						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE))
+        					.addPreferredGap(ComponentPlacement.RELATED, 35, Short.MAX_VALUE))
+        				.addGroup(jPanel1Layout.createSequentialGroup()
+        					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)))
+        			.addComponent(pnDetalhes, GroupLayout.PREFERRED_SIZE, 363, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
+        );
+        panel_2.setLayout(null);
+        
+        JCheckBox chckbxVisita = new JCheckBox("Visita");
+        chckbxVisita.setBounds(6, 99, 145, 23);
+        panel_2.add(chckbxVisita);
+        
+        JCheckBox chckbxReunio = new JCheckBox("Reuni\u00E3o");
+        chckbxReunio.setBounds(6, 76, 145, 23);
+        panel_2.add(chckbxReunio);
+        
+        JCheckBox chckbxProposta = new JCheckBox("Proposta");
+        chckbxProposta.setBounds(6, 53, 145, 23);
+        panel_2.add(chckbxProposta);
+        
+        JCheckBox chckbxLigao = new JCheckBox("Liga\u00E7\u00E3o");
+        chckbxLigao.setBounds(6, 30, 145, 23);
+        panel_2.add(chckbxLigao);
+        
+        JCheckBox chckbxEmail = new JCheckBox("E-mail");
+        chckbxEmail.setBounds(6, 7, 145, 23);
+        panel_2.add(chckbxEmail);
+        
+        JPanel panel = new JPanel();
+        scrollPane.setViewportView(panel);
+        JCheckBox chckbxQuantidadeDeEmpresas = new JCheckBox("Quantidade de Empresas");
+        chckbxQuantidadeDeEmpresas.setBounds(6, 40, 145, 23);
+        JCheckBox chckbxQuantidadeDeNegocios = new JCheckBox("Quantidade de Negocios");
+        chckbxQuantidadeDeNegocios.setBounds(6, 63, 145, 23);
+        JCheckBox chckbxQuantidadeDePessoas = new JCheckBox("Quantidade de Pessoas");
+        chckbxQuantidadeDePessoas.setBounds(6, 86, 145, 23);
+        JCheckBox chckbxQuantidadeDeTarefas = new JCheckBox("Quantidade de Tarefas");
+        chckbxQuantidadeDeTarefas.setBounds(6, 109, 145, 23);
+        JCheckBox chckbxValoresDosNegcios = new JCheckBox("Valores dos Neg\u00F3cios");
+        chckbxValoresDosNegcios.setBounds(6, 132, 145, 23);
+        JCheckBox chckbxValoresDasTarefas = new JCheckBox("Descri\u00E7\u00E3o das Tarefas");
+        chckbxValoresDasTarefas.setBounds(6, 155, 145, 23);
+        panel.setLayout(null);
+        panel.add(chckbxQuantidadeDeEmpresas);
+        panel.add(chckbxQuantidadeDeNegocios);
+        panel.add(chckbxQuantidadeDePessoas);
+        panel.add(chckbxQuantidadeDeTarefas);
+        panel.add(chckbxValoresDosNegcios);
+        panel.add(chckbxValoresDasTarefas);
         pnDetalhes.setLayout(null);
         
         jPanel1.setLayout(jPanel1Layout);

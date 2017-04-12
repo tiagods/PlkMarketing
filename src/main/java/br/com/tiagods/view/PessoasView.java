@@ -46,7 +46,7 @@ public class PessoasView extends JInternalFrame {
     public static DefaultComboBox cbProdServicosCad;
     public static DefaultComboBox cbNivel;
     public static DefaultComboBox cbNivelCad;
-    public static javax.swing.JPanel pnVisao;
+    public static JPanel pnVisao;
     public static javax.swing.JPanel pnPrincipal;
     public static javax.swing.JPanel pnCabecalho;
     public static javax.swing.JPanel pnAuxiliar;
@@ -57,10 +57,11 @@ public class PessoasView extends JInternalFrame {
 	private JPanel panel;
 	private JLabel label;
 	public static JDateChooser data1,data2;
-	public static JLabel label_1, txCadastradoPor, txDataCadastro;
+	public static JTextField txCadastradoPor, txDataCadastro;
 	public static JTextField txLogradouro;
 	public static JTextField txComplemento;
 	public static JLabel txContador;
+	public static JLabel label_1;
 	public static JTextField txNome;
 	public static JTextField txNum;
 	public static JTextField txTelefone;
@@ -74,7 +75,7 @@ public class PessoasView extends JInternalFrame {
 	public static JTable tbAuxiliar;
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
-	public static JLabel txCodigo;
+	public static JTextField txCodigo;
 	public static JButton btnLink,btnEmail,btnImportar, btnExportar;
 	public static JTextField txApelido;
 	private JLabel lbApelido;
@@ -287,6 +288,7 @@ public class PessoasView extends JInternalFrame {
         lbNome.setText("Nome:");
         lbNome.setBounds(10, 40, 56, 17);
         pnPrincipal.add(lbNome);
+        
 
         JLabel lbCpf = new JLabel();
         lbCpf.setText("CPF:");
@@ -307,7 +309,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(txComplemento);
 
         txNome = new JTextField();
-        txNome.setBounds(107, 39, 201, 20);
+        txNome.setBounds(107, 39, 217, 20);
         pnPrincipal.add(txNome);
 
         txTelefone = new JTextField();
@@ -353,19 +355,20 @@ public class PessoasView extends JInternalFrame {
         txBairro.setBounds(440, 244, 90, 20);
         pnPrincipal.add(txBairro);
 
-        txCadastradoPor = new JLabel();
-        txCadastradoPor.setText("{Usuario}");
-        txCadastradoPor.setBounds(268, 14, 56, 14);
+        txCadastradoPor = new JTextField();
+        txCadastradoPor.setEnabled(false);
+        txCadastradoPor.setBounds(268, 11, 85, 17);
         pnPrincipal.add(txCadastradoPor);
 
         JLabel lblCadastro = new JLabel();
         lblCadastro.setText("Criado em:");
-        lblCadastro.setBounds(107, 14, 73, 14);
+        lblCadastro.setBounds(107, 11, 73, 17);
         pnPrincipal.add(lblCadastro);
 
-        txDataCadastro = new JLabel();
+        txDataCadastro = new JTextField();
+        txDataCadastro.setEnabled(false);
         txDataCadastro.setText("");
-        txDataCadastro.setBounds(185, 14, 73, 14);
+        txDataCadastro.setBounds(185, 11, 73, 17);
         pnPrincipal.add(txDataCadastro);
 
         MaskFormatter formatterCpf=null;
@@ -548,8 +551,9 @@ public class PessoasView extends JInternalFrame {
         btnExcluir.setBounds(438, 306, 90, 25);
         pnPrincipal.add(btnExcluir);
         
-        txCodigo = new JLabel("");
-        txCodigo.setBounds(10, 14, 87, 14);
+        txCodigo = new JTextField();
+        txCodigo.setEnabled(false);
+        txCodigo.setBounds(10, 11, 87, 17);
         pnPrincipal.add(txCodigo);
         
         JLabel lbCategoriaCad = new JLabel();
@@ -585,8 +589,8 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(lbOrigemCad);
         
         JLabel lbServicosCad = new JLabel();
-        lbServicosCad.setText("Produtos/Servi\u00E7os:");
-        lbServicosCad.setBounds(319, 126, 109, 17);
+        lbServicosCad.setText("Ramo");
+        lbServicosCad.setBounds(384, 126, 44, 17);
         pnPrincipal.add(lbServicosCad);
         
         cbProdServicosCad = new DefaultComboBox();
@@ -607,7 +611,7 @@ public class PessoasView extends JInternalFrame {
         
         JLabel lbNivelCad = new JLabel();
         lbNivelCad.setText("Nivel:");
-        lbNivelCad.setBounds(348, 94, 89, 18);
+        lbNivelCad.setBounds(384, 94, 53, 18);
         pnPrincipal.add(lbNivelCad);
         
         btnNivelCad = new JButton();

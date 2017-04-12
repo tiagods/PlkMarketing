@@ -4,6 +4,8 @@ hibernate.properties
 ConnectionFactory.java
 SendEmail.java
 SendMail.java
+FTPDownload.java
+FTPUpload.java
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
