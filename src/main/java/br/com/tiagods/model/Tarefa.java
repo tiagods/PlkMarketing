@@ -20,6 +20,7 @@ public class Tarefa implements Serializable{
 	private Empresa empresa;
 	private Negocio negocio;
 	private int finalizado;
+	private int alertaEnviado;
 	/**
 	 * @return the id
 	 */
@@ -163,6 +164,18 @@ public class Tarefa implements Serializable{
 	 */
 	public void setFinalizado(int finalizado) {
 		this.finalizado = finalizado;
+	}
+	/**
+	 * @return the alertaEnviado
+	 */
+	public int getAlertaEnviado() {
+		return alertaEnviado;
+	}
+	/**
+	 * @param alertaEnviado the alertaEnviado to set
+	 */
+	public void setAlertaEnviado(int alertaEnviado) {
+		this.alertaEnviado = alertaEnviado;
 	}
 	 
 }

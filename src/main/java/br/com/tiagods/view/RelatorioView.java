@@ -1,21 +1,16 @@
 package br.com.tiagods.view;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
 
 import br.com.tiagods.view.interfaces.DefaultUtilities;
-import javax.swing.JCheckBox;
-import javax.swing.JScrollPane;
 
 
 @SuppressWarnings("serial")

@@ -26,6 +26,7 @@ public class Negocio implements Serializable{
 	private Date followUp;
 	private Date fechamento;
 	private Date indefinida;
+	private Date dataFinalizacao;
 	private Set<Tarefa> tarefas = new LinkedHashSet<>();
 	private Empresa empresa;
 	private Pessoa pessoa;
@@ -228,6 +229,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setIndefinida(Date indefinida) {
 		this.indefinida = indefinida;
+	}
+	/**
+	 * @return the dataFinalizacao
+	 */
+	public Date getDataFinalizacao() {
+		return dataFinalizacao;
+	}
+	/**
+	 * @param dataFinalizacao the dataFinalizacao to set
+	 */
+	public void setDataFinalizacao(Date dataFinalizacao) {
+		this.dataFinalizacao = dataFinalizacao;
 	}
 	/**
 	 * @return the tarefas

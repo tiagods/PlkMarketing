@@ -23,7 +23,7 @@ public class MenuView extends JFrame implements DefaultUtilities{
 	ControllerMenu controller = ControllerMenu.getInstance();
 	
     public static javax.swing.JDesktopPane jDBody;
-    public static JMenu mnInicio, mnTarefas, mnEmpresas,mnPessoas,mnNegocios,mnRelatorios,mnExtra,mnAtualizacao;
+    public static JMenu mnInicio, mnTarefas, mnEmpresas,mnPessoas,mnNegocios,mnRelatorios,mnExtra,mnAtualizacao, mnProspeccao;
     private javax.swing.JPanel pnPrincipal;
     
     private static MenuView instance;
@@ -111,22 +111,30 @@ public class MenuView extends JFrame implements DefaultUtilities{
         mnEmpresas.addMouseListener(controller);
         menuBar.add(mnEmpresas);
         
-        mnNegocios = new JMenu("Neg\u00F3cios");
-        mnNegocios.setName("Negocios");
-        mnNegocios.addMouseListener(controller);
-        
         mnPessoas = new JMenu("Pessoas");
         mnPessoas.setName("Pessoas");
         mnPessoas.addMouseListener(controller);
         menuBar.add(mnPessoas);
-        menuBar.add(mnNegocios);
+        
+        mnProspeccao = new JMenu("Prospec\u00E7\u00E3o");
+        mnProspeccao.setEnabled(false);
+        mnProspeccao.setName("Prospeccao");
+        mnProspeccao.addMouseListener(controller);
+        menuBar.add(mnProspeccao);
         
         mnRelatorios = new JMenu("Relat\u00F3rios");
+        mnRelatorios.setEnabled(false);
         mnRelatorios.setName("Relatorios");
         mnRelatorios.addMouseListener(controller);
+        
+        mnNegocios = new JMenu("Neg\u00F3cios");
+        mnNegocios.setName("Negocios");
+        mnNegocios.addMouseListener(controller);
+        menuBar.add(mnNegocios);
         menuBar.add(mnRelatorios);
         
         mnExtra = new JMenu("Extra");
+        mnExtra.setEnabled(false);
         mnExtra.setName("Extra");
         mnExtra.addMouseListener(controller);
         menuBar.add(mnExtra);

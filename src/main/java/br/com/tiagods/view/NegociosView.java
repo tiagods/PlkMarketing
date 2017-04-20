@@ -103,9 +103,6 @@ public class NegociosView extends JInternalFrame {
 	public static JTextField txNomeObjeto;
 	public static JTextArea txDescricao;
 	public static JScrollPane scrollServicos;
-	
-	ControllerNegocios controller = new ControllerNegocios();
-	
 	public static JTable tbServicosContratados;
 	public static JTextField txIdServicoContratado;
 	public static JButton btnNovoServicoAgregado;
@@ -129,6 +126,11 @@ public class NegociosView extends JInternalFrame {
 	private JLabel lblPrincipal;
 	private JLabel lblDescrio_1;
 	public static JTextField txDocumentoDescricao;
+	public static JComboBox<String> cbOrdenacao, cbBuscarPor;
+	public static JRadioButton rbCrescente, rbDecrescente;
+	ControllerNegocios controller = new ControllerNegocios();
+	private JLabel lblPesquisarenter;
+	
 	/**
 	 * Create the frame.
 	 */
@@ -373,6 +375,44 @@ public class NegociosView extends JInternalFrame {
 		txContadorRegistros = new JLabel("");
 		txContadorRegistros.setBounds(972, 522, 152, 14);
 		pnPesquisa.add(txContadorRegistros);
+		
+		cbBuscarPor = new JComboBox();
+		cbBuscarPor.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nome"}));
+		cbBuscarPor.setBounds(223, 100, 100, 20);
+		pnPesquisa.add(cbBuscarPor);
+		
+		ButtonGroup group = new ButtonGroup();
+		
+		rbCrescente = new JRadioButton("Crescente");
+		rbCrescente.setActionCommand("Ordenar");
+		rbCrescente.addActionListener(controller);
+		rbCrescente.setOpaque(false);
+		rbCrescente.setBounds(582, 100, 109, 23);
+		pnPesquisa.add(rbCrescente);
+		group.add(rbCrescente);
+		
+		rbDecrescente = new JRadioButton("Decrescente");
+		rbDecrescente.setActionCommand("Odernar");
+		rbDecrescente.addActionListener(controller);
+		rbDecrescente.setOpaque(false);
+		rbDecrescente.setBounds(582, 127, 109, 23);
+		rbDecrescente.setSelected(true);
+		pnPesquisa.add(rbDecrescente);
+		group.add(rbDecrescente);
+		
+		JLabel lblOrdenarPor = new JLabel("Ordenar Por:");
+		lblOrdenarPor.setBounds(333, 100, 90, 20);
+		pnPesquisa.add(lblOrdenarPor);
+		
+		cbOrdenacao = new JComboBox();
+		cbOrdenacao.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Nome", "Data Cria\u00E7\u00E3o", "Data Vencimento", "Data Finaliza\u00E7\u00E3o"}));
+		cbOrdenacao.setBounds(433, 100, 130, 20);
+		pnPesquisa.add(cbOrdenacao);
+		
+		lblPesquisarenter = new JLabel("Pressione <Enter>");
+		lblPesquisarenter.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPesquisarenter.setBounds(74, 131, 139, 14);
+		pnPesquisa.add(lblPesquisarenter);
 
 		pnCadastros = new JPanel();
 		pnCadastros.setBackground(new Color(250,250,250));

@@ -3,6 +3,7 @@
  */
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.NegociosView.tbPrincipal;
 import static br.com.tiagods.view.TarefasView.*;
 
 import java.awt.Color;
@@ -58,6 +59,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
+import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.EmpresasView;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
@@ -352,7 +354,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		data2.set(novaDataFimDeSemana.getYear(), novaDataFimDeSemana.getMonthValue()-1, novaDataFimDeSemana.getDayOfMonth()-1,23,59,59);
 	}
 	@SuppressWarnings("serial")
-	public void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
+	private void preencherTabela(JTable table, List<Tarefa> lista, JLabel txContador){
 		if(lista.isEmpty()){
 			new SemRegistrosJTable(table,"Relação de Tarefas");
 		}
@@ -360,8 +362,12 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			String[] tableHeader = {"ID","PRAZO","ANDAMENTO","TIPO","NOME","STATUS",
 					"DETALHES","ATENDENTE", "FINALIZADO","ABRIR","EDITAR","EXCLUIR"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+				/**
+				 * 
+				 */
+				
 				boolean[] canEdit = new boolean[]{
-						false,true,false,false,false,false,true,false,true,true,true,true
+						false,false,false,false,false,false,true,false,true,true,true,true
 				};
 				@Override
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -450,9 +456,14 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
+//			table.getColumnModel().getColumn(0).setMaxWidth(0);
+//			table.getColumnModel().getColumn(0).setMinWidth(0);
 			table.getColumnModel().getColumn(1).setPreferredWidth(100);
 			table.getColumnModel().getColumn(6).setPreferredWidth(100);
-			table.getColumnModel().getColumn(9).setPreferredWidth(90);
+			table.getColumnModel().getColumn(9).setMaxWidth(40);
+			table.getColumnModel().getColumn(10).setMaxWidth(40);
+			table.getColumnModel().getColumn(11).setMaxWidth(40);
+
 		}
 		txContador.setText("Total: "+lista.size()+" tarefa(s) ");
 	}
@@ -510,7 +521,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	}
 	public void excluir(Session session){
 		int row = tbPrincipal.getSelectedRow();
-		int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
+		int i = JOptionPane.showConfirmDialog(MenuView.jDBody, 
 				"Deseja excluir a seguinte tarefa: "+tbPrincipal.getValueAt(row, 0)+" andamento: "+tbPrincipal.getValueAt(row, 2)+
 				" relacionado a "+tbPrincipal.getValueAt(row, 3)+" de nome:"+tbPrincipal.getValueAt(row, 4)+
 				" com status :"+tbPrincipal.getValueAt(row, 5)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
@@ -518,8 +529,14 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			TarefaDao dao = new TarefaDao();
 			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
 			Tarefa tRemove = (Tarefa)dao.receberObjeto(Tarefa.class, id, session);
-			if(dao.excluir(tRemove, session))
-				buscar();
+			if(tRemove.getCriadoPor()== UsuarioLogado.getInstance().getUsuario()){
+				if(dao.excluir(tRemove, session))
+					buscar();
+			}
+			else{
+				JOptionPane.showConfirmDialog(MenuView.jDBody, "Apenas o criador da Tarefa ("+tRemove.getCriadoPor().getNome()+")pode excluir esse registro",
+						"Acesso não permitido!",JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 	@SuppressWarnings("static-access")
@@ -672,5 +689,48 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
+    }
+	class Colorir extends JLabel implements TableCellRenderer{
+        /**
+		 *
+		 */
+		boolean valor;
+		private static final long serialVersionUID = 3906288238715470468L;
+		public Colorir(boolean valor){
+            this.setOpaque(true);
+            this.valor = valor;
+        }
+
+        public Component getTableCellRendererComponent(
+            JTable table,
+            Object value, boolean isSelected, boolean hasFocus,
+               int row, int column){
+
+        	if(valor==false){
+        		if(value.toString().equals("Perdido")){
+	                setBackground(Color.RED);
+	                setForeground(Color.WHITE);
+	            }
+	            else if(value.toString().equals("Ganho")){
+	                setBackground(Color.GREEN);
+	                setForeground(Color.black);
+	            }
+	        }
+            else{
+            	setBackground(table.getBackground());
+                setForeground(table.getForeground());
+            }
+    	
+            setFont(table.getFont());
+            setText(value.toString());
+            return this;
+        }
+
+      public void validate() {}
+      public void revalidate() {}
+      protected void firePropertyChange(String propertyName,
+         Object oldValue, Object newValue) {}
+      public void firePropertyChange(String propertyName,
+         boolean oldValue, boolean newValue) {}
     }
 }

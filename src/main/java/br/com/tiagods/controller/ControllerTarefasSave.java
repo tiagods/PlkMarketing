@@ -153,6 +153,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				tarefa = new Tarefa();
 				tarefa.setCriadoEm(new Date());
 				tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+				tarefa.setAlertaEnviado(0);
 			}
 			tarefa.setAtendente(usuarios.get(cbAtendente.getSelectedItem()));
 			tarefa.setClasse(cbObject.getSelectedItem().toString());

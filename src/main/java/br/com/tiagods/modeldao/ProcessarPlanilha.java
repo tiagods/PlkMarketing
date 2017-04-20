@@ -29,10 +29,10 @@ public class ProcessarPlanilha {
 		
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
-		java.util.Map<String, Usuario> usuarios = new HashMap();
-		java.util.Map<String, Negocio> negocios = new HashMap();
-		java.util.Map<String, Tarefa> tarefas = new HashMap();
-		java.util.Map<String, TipoTarefa> tipos = new HashMap();
+		java.util.Map<String, Usuario> usuarios = new HashMap<>();
+		java.util.Map<String, Negocio> negocios = new HashMap<>();
+		java.util.Map<String, Tarefa> tarefas = new HashMap<>();
+		java.util.Map<String, TipoTarefa> tipos = new HashMap<>();
 				
 		List<Usuario> listaUsuario = new GenericDao().listar(Usuario.class, session);
 		listaUsuario.forEach(c->{

@@ -13,7 +13,6 @@ public class UsuarioDao implements InterfaceDao{
 				.setParameter("loginName", login)
 				.getSingleResult();
 	}
-
 	@Override
 	public boolean salvar(Object classe, Session session) {
 		return false;

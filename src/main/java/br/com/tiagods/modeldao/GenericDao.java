@@ -68,14 +68,4 @@ public class GenericDao implements InterfaceDao{
 		criteria.addOrder(order);
 		return criteria.list();
 	}
-	
-	@SuppressWarnings("unused")
-	private void relatarErro(String classe, String tipo, String erro){
-		CapturarTela cap = new CapturarTela();
-		cap.gerarFoto();
-		java.io.File file = cap.getFile();
-		String message = classe+"\n"+tipo+"\n"+erro;
-		new SubmeterErroDialog(message,file);
-		
-	}
 }

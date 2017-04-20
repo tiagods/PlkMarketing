@@ -191,10 +191,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		cbServicos.addItemListener(this);
 		cbEmpresa.addItemListener(this);
 		cbPessoa.addItemListener(this);
+		cbOrdenacao.addItemListener(this);
+		cbBuscarPor.addItemListener(this);
+		rbCrescente.addItemListener(this);
+		rbDecrescente.addItemListener(this);
 		cbAtendente.addItemListener(this);
 		cbObject.addItemListener(this);
 		cbStatusCad.addItemListener(new InvocarDialogPerda());
 		txBuscar.addKeyListener(this);
+		rbCrescente.addItemListener(this);
 		tbServicosContratados.addMouseListener(new AcaoTabelaServicosContratados());
 		tabbedPane.addMouseListener(this);
 	}
@@ -420,10 +425,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	public void actionPerformed(ActionEvent e) {
 		JComboBox[] combos = null;
 		switch(e.getActionCommand()){
-		case "Buscar":
-			if(txBuscar.getText().trim().length()>=3){
-				pesquisar();
-			}
+		case "Ordenar":
+			recebeSessao();
+			realizarFiltro();
+			fechaSessao(true);
 			break;
 		case "Novo":
 			site="";
@@ -748,7 +753,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					listaImpressao.get(i+1).add(n.getNome());
 					
 					PfPj pfpj = n.getPessoa()!=null?n.getPessoa().getPessoaFisica():n.getEmpresa().getPessoaJuridica();
-					
 					listaImpressao.get(i+1).add(pfpj.getEmail());
 					listaImpressao.get(i+1).add(pfpj.getTelefone());
 					listaImpressao.get(i+1).add(pfpj.getCelular());
@@ -809,61 +813,112 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	private void realizarFiltro() {
 		if(!telaEmEdicao){
 			List<Criterion> criterios = new ArrayList<>();
-			Order order = Order.desc("id");
-			if(!"Status".equals(cbStatus.getSelectedItem())){
-				Criterion c = Restrictions.eq("status", padrao.getStatus((String)cbStatus.getSelectedItem()));
+			Order order = receberOrdenacao();
+			criterios.addAll(receberFiltroSuperior());
+			Criterion c = realizarBusca();
+			if(c!=null) 
 				criterios.add(c);
-			}
-			if(!"Etapa".equals(cbEtapa.getSelectedItem())){
-				Criterion c = Restrictions.eq("etapa", padrao.getEtapa((String)cbEtapa.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Categoria".equals(cbCategoria.getSelectedItem())){
-				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Origem".equals(cbOrigem.getSelectedItem())){
-				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Nivel".equals(cbNivel.getSelectedItem())){
-				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.nivel", padrao.getNiveis((String)cbNivel.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Produtos/Servicos".equals(cbServicos.getSelectedItem())){
-				Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.servico", padrao.getServicos((String)cbServicos.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Empresa".equals(cbEmpresa.getSelectedItem())){
-				Criterion c = Restrictions.eq("empresa", padrao.getEmpresas((String)cbEmpresa.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Pessoa".equals(cbPessoa.getSelectedItem())){
-				Criterion c = Restrictions.eq("pessoa", padrao.getPessoas((String)cbPessoa.getSelectedItem()));
-				criterios.add(c);
-			}
-			if(!"Atendente".equals(cbAtendente.getSelectedItem())){
-				Criterion c = Restrictions.eq("atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
-				criterios.add(c);
-			}
-			try{
-				Date data01 = data1.getDate();
-				Date data02 = data2.getDate();
-				if(data02.compareTo(data01)>=0){
-					criterios.add(Restrictions.between("criadoEm", data01, data02));
-				}
-			}catch(NullPointerException e){
-			}
-			if("".equals(txBuscar.getText().trim())){
-				Criterion c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
-				criterios.add(c);
-			}
 			listarNegocios = dao.items(Negocio.class, session, criterios, order);
 			preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		}
 		else
 			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
+	private Order receberOrdenacao(){
+		Order order=null;
+		String campo = "";
+		switch((String)cbOrdenacao.getSelectedItem()){
+		case "Código":
+			campo = "id";
+			break;
+		case "Nome":
+			campo = "nome";
+			break;
+		case "Data Criação":
+			campo = "criadoEm";
+			break;
+		case "Data Vencimento":
+			campo = "dataFim";
+			break;
+		case "Data Finalização":
+			campo = "dataFinalizacao";
+			break;
+		default:
+			campo="id";
+			break;
+		}
+		if(rbCrescente.isSelected())
+			order = Order.asc(campo);
+		else
+			order = Order.desc(campo);
+		return order;
+		
+	}
+	private Criterion realizarBusca(){
+		Criterion c = null;
+		if(!"".equals(txBuscar.getText().trim())){
+			if("Código".equals(cbBuscarPor.getSelectedItem())){
+				try{
+					int num = Integer.parseInt(txBuscar.getText());
+					c = Restrictions.eq("id",num);
+				}catch(NumberFormatException e){
+					c = null;
+				} 
+			}
+			else
+				c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
+		}
+		return c;
+	}
+	private List<Criterion> receberFiltroSuperior(){
+		List<Criterion> criterios = new ArrayList<>();
+		if(!"Status".equals(cbStatus.getSelectedItem())){
+			Criterion c = Restrictions.eq("status", padrao.getStatus((String)cbStatus.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Etapa".equals(cbEtapa.getSelectedItem())){
+			Criterion c = Restrictions.eq("etapa", padrao.getEtapa((String)cbEtapa.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Categoria".equals(cbCategoria.getSelectedItem())){
+			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.categoria", padrao.getCategorias((String)cbCategoria.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Origem".equals(cbOrigem.getSelectedItem())){
+			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.origem", padrao.getOrigens((String)cbOrigem.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Nivel".equals(cbNivel.getSelectedItem())){
+			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.nivel", padrao.getNiveis((String)cbNivel.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Produtos/Servicos".equals(cbServicos.getSelectedItem())){
+			Criterion c = Restrictions.eq("pessoaFisicaOrJuridica.servico", padrao.getServicos((String)cbServicos.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Empresa".equals(cbEmpresa.getSelectedItem())){
+			Criterion c = Restrictions.eq("empresa", padrao.getEmpresas((String)cbEmpresa.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Pessoa".equals(cbPessoa.getSelectedItem())){
+			Criterion c = Restrictions.eq("pessoa", padrao.getPessoas((String)cbPessoa.getSelectedItem()));
+			criterios.add(c);
+		}
+		if(!"Atendente".equals(cbAtendente.getSelectedItem())){
+			Criterion c = Restrictions.eq("atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
+			criterios.add(c);
+		}
+		try{
+			Date data01 = data1.getDate();
+			Date data02 = data2.getDate();
+			if(data02.compareTo(data01)>=0){
+				criterios.add(Restrictions.between("criadoEm", data01, data02));
+			}
+		}catch(NullPointerException e){
+		}
+		return criterios;
+	}
+	
 	public class MudarCliente implements PropertyChangeListener{
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
@@ -884,7 +939,13 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			negocio.setNome("".equals(txNome.getText().trim())?txNomeObjeto.getText():txNome.getText());
 		}
-		negocio.setStatus(padrao.getStatus((String)cbStatusCad.getSelectedItem()));//
+		Status s = padrao.getStatus((String)cbStatusCad.getSelectedItem());
+		if(s!=null && s.getId()!=1 && negocio.getStatus()!=s ){
+			negocio.setDataFinalizacao(new Date());
+		}
+		else
+			negocio.setDataFinalizacao(null);
+		negocio.setStatus(s);//
 		if("".equals(cbAtendenteCad.getSelectedItem()))
 			negocio.setAtendente(UsuarioLogado.getInstance().getUsuario());//
 		else
@@ -1068,18 +1129,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		desbloquerFormulario(false, pnServicosContratados);
 		
 	}
-	private void pesquisar(){
-		List<Negocio> lista = new ArrayList<>();
-		for(int i =0;i<listarNegocios.size();i++){
-			String texto = txBuscar.getText().trim().toUpperCase();
-			if(listarNegocios.get(i).getNome().trim().length()>texto.length() && listarNegocios.get(i).getNome().substring(0,texto.length()).equalsIgnoreCase(texto)){
-				lista.add(listarNegocios.get(i));
-			}
-		}
-		if(!lista.isEmpty()){
-			preencherTabela(lista, tbPrincipal,txContadorRegistros);
-		}
-	}
 	private void novoEditar(){
 		desbloquerFormulario(true, pnCadastro);
 		desbloquerFormulario(true, pnAndamento);
@@ -1175,11 +1224,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 	}
 	public void preencherTabela(List<Negocio> lista, JTable table, JLabel txContadorRegistros){
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if(lista.isEmpty()){
 			new SemRegistrosJTable(table,"Relação de Negócios");
 		}
 		else{
-			Object [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","TEMPO","CRIADO EM","ATENDENTE","ABRIR"};
+			Object [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","VENCIMENTO","CRIADO EM","ATENDENTE","ABRIR"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 
 				private static final long serialVersionUID = -8716692364710569296L;
@@ -1225,17 +1275,18 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					linha[5] = n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome();
 				}
 				linha[6] = "";
-				if("Em Andamento".equals(n.getStatus().getNome())
-						&& n.getDataFim()!=null
-						&& new Date().compareTo(n.getDataFim())==1){
-					long diferenca = (new Date().getTime() - n.getDataFim().getTime()) + 3600000;
-					long qtd = (diferenca / 86400000L);
-					if(qtd>0)
-					linha[6]=qtd+" dia(s) atrasado(s)";
-				}
+//				if("Em Andamento".equals(n.getStatus().getNome())
+//						&& n.getDataFim()!=null
+//						&& new Date().compareTo(n.getDataFim())==1){
+//					long diferenca = (new Date().getTime() - n.getDataFim().getTime()) + 3600000;
+//					long qtd = (diferenca / 86400000L);
+//					if(qtd>0)
+//					linha[6]=qtd+" dia(s) atrasado(s)";
+//				}
+				linha[6]=n.getDataFim()==null?"":sdf.format(n.getDataFim());
 				try{
 					Date criadoEm = n.getCriadoEm();
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+					
 					linha[7] = sdf.format(criadoEm);
 				}catch (NumberFormatException e) {
 					linha[7] = "";
@@ -1379,7 +1430,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getStateChange()==ItemEvent.DESELECTED && !e.getSource().equals(cbObject) ){
-			//JComboBox combo = (JComboBox)e.getSource();
 			boolean openHere = recebeSessao();
 			realizarFiltro();
 			fechaSessao(openHere);
@@ -1403,7 +1453,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				model.removeRow(0);
 			}
 			tbServicosContratados.setModel(model);
-			
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 			this.negocio = (Negocio) dao.receberObjeto(Negocio.class, id, session);
 			if(!pnAuxiliar.isVisible()) 
@@ -1419,6 +1468,13 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 			tabbedPane.setSelectedIndex(1);
 		}
+		else if(e.getComponent() instanceof JRadioButton){
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+			realizarFiltro();
+			session.close();
+		}
+		
 //		else
 //			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
 //					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
@@ -1454,7 +1510,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
-		pesquisar();
+		if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+			realizarFiltro();
+			session.close();
+		}
 
 	}
 	@Override
@@ -1584,42 +1645,5 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
     	return icon;
     }
-    class Colorir extends JLabel implements TableCellRenderer{
-        /**
-		 *
-		 */
-		private static final long serialVersionUID = 3906288238715470468L;
-		public Colorir(){
-            this.setOpaque(true);
-        }
-
-        public Component getTableCellRendererComponent(
-            JTable table,
-            Object value, boolean isSelected, boolean hasFocus,
-               int row, int column){
-
-            if(value.toString().equals("Perdido")){
-                setBackground(Color.RED);
-                setForeground(Color.WHITE);
-            }
-            else if(value.toString().equals("Ganho")){
-                setBackground(Color.GREEN);
-                setForeground(Color.black);
-            }
-            else{
-            	setBackground(Color.YELLOW);
-                setForeground(tbPrincipal.getForeground());
-            }
-            setFont(tbPrincipal.getFont());
-            setText(value.toString());
-            return this;
-        }
-
-      public void validate() {}
-      public void revalidate() {}
-      protected void firePropertyChange(String propertyName,
-         Object oldValue, Object newValue) {}
-      public void firePropertyChange(String propertyName,
-         boolean oldValue, boolean newValue) {}
-    }
+    
 }

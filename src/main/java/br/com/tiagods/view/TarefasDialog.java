@@ -1,28 +1,24 @@
 package br.com.tiagods.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.model.VersaoSistema;
-
-import javax.swing.JLabel;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JRadioButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 
 public class TarefasDialog extends JDialog {
 
