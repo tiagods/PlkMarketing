@@ -3,7 +3,6 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.NegociosView.tbPrincipal;
 import static br.com.tiagods.view.TarefasView.*;
 
 import java.awt.Color;

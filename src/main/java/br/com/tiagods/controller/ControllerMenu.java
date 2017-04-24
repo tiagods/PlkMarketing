@@ -79,8 +79,12 @@ public class ControllerMenu implements MouseListener{
 		}
     	inicio = new InicioView();
     	abrirCorpo(inicio);
+    	JOptionPane.showMessageDialog(jDBody, "O sistema ativou modulos para gerar notificações via e-mail"
+    			+ "\nsobre as Tarefas em aberto."
+    			+ "\nO atendente será notificado no momento em que sua tarefa expirar!!!"
+    			+ "\n\nNas proximas versões...notificações sobre Negócios Expirados, Prospecção e lembrete de Aniversariantes",
+    			"Mais sobre a versão...",JOptionPane.INFORMATION_MESSAGE);
     }
-    
     @Override
     public void mouseClicked(MouseEvent e) {
     	switch(e.getComponent().getName()){

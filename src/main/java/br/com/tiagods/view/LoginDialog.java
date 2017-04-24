@@ -62,6 +62,9 @@ public class LoginDialog extends JDialog {
 		contentPanel.add(lbTitulo);
 		
 		JLabel lbVersao = new JLabel("Versão do Sistema: "+versao.getVersao()+" em "+versao.getDate());
+		
+		lbVersao.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		lbVersao.setForeground(Color.BLACK);
 		lbVersao.setHorizontalAlignment(SwingConstants.CENTER);
 		lbVersao.setBounds(10, 47, 464, 14);
 		contentPanel.add(lbVersao);
