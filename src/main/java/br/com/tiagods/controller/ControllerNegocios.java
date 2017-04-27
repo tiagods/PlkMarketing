@@ -1028,24 +1028,26 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		session.close();
 	}
 	public void enviarEtapa(Etapa e){
-		switch(e.getNome()){
-		case "Contato":
-			rbContato.setSelected(true);
-			break;
-		case "Envio de Proposta":
-			rbEnvioProposta.setSelected(true);
-			break;
-		case "Fechamento":
-			rbFechamento.setSelected(true);
-			break;
-		case "Follow-up":
-			rbFollowup.setSelected(true);
-			break;
-		case "Indefinida":
-			rbIndefinida.setSelected(true);
-			break;
-		default:
-			break;
+		if(e!=null){
+			switch(e.getNome()){
+			case "Contato":
+				rbContato.setSelected(true);
+				break;
+			case "Envio de Proposta":
+				rbEnvioProposta.setSelected(true);
+				break;
+			case "Fechamento":
+				rbFechamento.setSelected(true);
+				break;
+			case "Follow-up":
+				rbFollowup.setSelected(true);
+				break;
+			case "Indefinida":
+				rbIndefinida.setSelected(true);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	private Etapa receberEtapa(Negocio r){

@@ -39,6 +39,7 @@ import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
+import br.com.tiagods.view.ProspeccaoView;
 import br.com.tiagods.view.SobreDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
@@ -55,6 +56,7 @@ public class ControllerMenu implements MouseListener{
     TarefasView tarefas;
     NegociosView negocios;
     MenuView view;
+    ProspeccaoView prospeccao;
     VersaoSistema descricao = new VersaoSistema();
     VerificarAtualizacao atualizacao = new VerificarAtualizacao();
     boolean atualizar = false;
@@ -136,14 +138,14 @@ public class ControllerMenu implements MouseListener{
         	};
         	new Thread(run).start();
         	break;
-//        case "Prospeccao":
-////        	invocarLoading();
-////        	run = ()->{
-////        	pessoas = new PessoasView(null);
-////            abrirCorpo(pessoas);
-////        	};
-////        	new Thread(run).start();
-//        	break;
+        case "Prospeccao":
+        	//invocarLoading();
+        	run = ()->{
+        	prospeccao = new ProspeccaoView(null);
+            abrirCorpo(pessoas);
+        	};
+        	new Thread(run).start();
+        	break;
         	
         case "Atualizar":
         	if(atualizar)
