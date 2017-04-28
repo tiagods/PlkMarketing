@@ -17,6 +17,9 @@ public class PfPj implements Serializable{
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Origem origem;
+	private String detalhesOrigem;
+	private String resumo;
+	private String apresentacao;
 	private Usuario atendente;
 	private Set<Negocio> negocios = new LinkedHashSet<>();
 	private Set<Tarefa> tarefas = new LinkedHashSet<>();
@@ -108,6 +111,42 @@ public class PfPj implements Serializable{
 	 */
 	public void setOrigem(Origem origem) {
 		this.origem = origem;
+	}
+	/**
+	 * @return the resumo
+	 */
+	public String getResumo() {
+		return resumo;
+	}
+	/**
+	 * @param resumo the resumo to set
+	 */
+	public void setResumo(String resumo) {
+		this.resumo = resumo;
+	}
+	/**
+	 * @return the apresentacao
+	 */
+	public String getApresentacao() {
+		return apresentacao;
+	}
+	/**
+	 * @param apresentacao the apresentacao to set
+	 */
+	public void setApresentacao(String apresentacao) {
+		this.apresentacao = apresentacao;
+	}
+	/**
+	 * @return the detalhesOrigem
+	 */
+	public String getDetalhesOrigem() {
+		return detalhesOrigem;
+	}
+	/**
+	 * @param detalhesOrigem the detalhesOrigem to set
+	 */
+	public void setDetalhesOrigem(String detalhesOrigem) {
+		this.detalhesOrigem = detalhesOrigem;
 	}
 	/**
 	 * @return the atendente

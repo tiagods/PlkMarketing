@@ -14,9 +14,9 @@ public class Prospeccao implements Serializable{
 	private String responsavel;
 	private String departamento;
 	private PfPj pfpj;
-	private int conviteParaEventos;
-	private int material;
-	private int newsletter;
+	private int conviteParaEventos=0;
+	private int material=0;
+	private int newsletter=0;
 	private ProspeccaoTipoContato tipoContato;
 	private Set<Lista> listas = new LinkedHashSet<>();
 	/**

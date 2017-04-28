@@ -14,8 +14,8 @@ public class Lista implements Serializable{
 	private int id;
 	private String nome;
 	private Date criadoEm;
-	private Date criadoPor;
-	private Set<Prospeccao> contatos = new LinkedHashSet<>();
+	private Usuario criadoPor;
+	private Set<Prospeccao> prospects = new LinkedHashSet<>();
 	/**
 	 * @return the id
 	 */
@@ -55,25 +55,26 @@ public class Lista implements Serializable{
 	/**
 	 * @return the criadoPor
 	 */
-	public Date getCriadoPor() {
+	public Usuario getCriadoPor() {
 		return criadoPor;
 	}
 	/**
 	 * @param criadoPor the criadoPor to set
 	 */
-	public void setCriadoPor(Date criadoPor) {
+	public void setCriadoPor(Usuario criadoPor) {
 		this.criadoPor = criadoPor;
 	}
 	/**
-	 * @return the contatos
+	 * @return the prospects
 	 */
-	public Set<Prospeccao> getContatos() {
-		return contatos;
+	public Set<Prospeccao> getProspects() {
+		return prospects;
 	}
 	/**
-	 * @param contatos the contatos to set
+	 * @param prospects the prospects to set
 	 */
-	public void setContatos(Set<Prospeccao> contatos) {
-		this.contatos = contatos;
+	public void setProspects(Set<Prospeccao> prospects) {
+		this.prospects = prospects;
 	}
+
 }

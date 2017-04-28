@@ -21,19 +21,29 @@ import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
+import javax.swing.ScrollPaneConstants;
+import java.awt.Font;
 
 public class ProspeccaoView extends JInternalFrame {
-	private JTable table;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTextField textField_6;
-	private JTextField textField_8;
-	private JTextField textField_7;
-	private JTextField txBuscar;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8490414289089315953L;
+	public static JTable tbPesquisa;
+	public static JTextField txCodigo;
+	public static JTextField txEmpresa;
+	public static JTextField txNomeContato;
+	public static JTextField txTelefone;
+	public static JTextField txEmail;
+	public static JTextField txCelular;
+	public static JTextField txDepartamento;
+	public static JTextField txEndereco;
+	public static JTextField txSite;
+	public static JTextField txBuscar;
+	public static JTable tbLista;
+	public static JTable tbAuxiliar;
+
+	private JButton btNovaTarefa;
 
 	/**
 	 * Launch the application.
@@ -55,65 +65,70 @@ public class ProspeccaoView extends JInternalFrame {
 	 * Create the frame.
 	 */
 	public ProspeccaoView(Prospeccao prospeccao) {
-		setBounds(0, 0, 1250, 660);
 		
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(10, 11, 1214, 608);
-		panel.add(tabbedPane);
+		JTabbedPane tpPrincipal = new JTabbedPane(JTabbedPane.TOP);
+		tpPrincipal.setBounds(10, 11, 1214, 608);
+		panel.add(tpPrincipal);
 		
 		JPanel pnPesquisa = new JPanel();
-		tabbedPane.addTab("Pesquisa", null, pnPesquisa, null);
+		tpPrincipal.addTab("Pesquisa", null, pnPesquisa, null);
 		pnPesquisa.setLayout(null);
 		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 116, 947, 263);
-		pnPesquisa.add(scrollPane);
+		JComboBox<String> cbTipoContatoPesquisa = new JComboBox<String>();
+		cbTipoContatoPesquisa.setName("Tipo de Contato");
+		cbTipoContatoPesquisa.setModel(new DefaultComboBoxModel(new String[] {"Tipo de Contato"}));
+		cbTipoContatoPesquisa.setBounds(10, 11, 110, 20);
+		pnPesquisa.add(cbTipoContatoPesquisa);
 		
-		table = new JTable();
-		scrollPane.setViewportView(table);
+		JComboBox<String> cbOrigemPesquisa = new JComboBox<String>();
+		cbOrigemPesquisa.setName("Origem");
+		cbOrigemPesquisa.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
+		cbOrigemPesquisa.setBounds(130, 11, 97, 20);
+		pnPesquisa.add(cbOrigemPesquisa);
 		
-		JComboBox comboBox_3 = new JComboBox();
-		comboBox_3.setName("Tipo de Contato");
-		comboBox_3.setModel(new DefaultComboBoxModel(new String[] {"Tipo de Contato"}));
-		comboBox_3.setBounds(10, 11, 110, 20);
-		pnPesquisa.add(comboBox_3);
+		JComboBox<String> cbListaPesquisa = new JComboBox<String>();
+		cbListaPesquisa.setName("Lista");
+		cbListaPesquisa.setModel(new DefaultComboBoxModel(new String[] {"Lista"}));
+		cbListaPesquisa.setBounds(237, 11, 97, 20);
+		pnPesquisa.add(cbListaPesquisa);
 		
-		JButton button = new JButton("Exportar Mala Direta");
-		button.setEnabled(false);
-		button.setBounds(807, 56, 150, 23);
-		pnPesquisa.add(button);
+		JComboBox<String> cbAtendentePesquisa = new JComboBox<String>();
+		cbAtendentePesquisa.setName("Atendente");
+		cbAtendentePesquisa.setModel(new DefaultComboBoxModel(new String[] {"Atendente"}));
+		cbAtendentePesquisa.setBounds(344, 11, 97, 20);
+		pnPesquisa.add(cbAtendentePesquisa);
 		
-		JComboBox comboBox_4 = new JComboBox();
-		comboBox_4.setName("Origem");
-		comboBox_4.setModel(new DefaultComboBoxModel(new String[] {"Origem"}));
-		comboBox_4.setBounds(130, 11, 97, 20);
-		pnPesquisa.add(comboBox_4);
+		JCheckBox ckConvitePesquisa = new JCheckBox("Convite para Eventos");
+		ckConvitePesquisa.setBounds(447, 10, 142, 23);
+		pnPesquisa.add(ckConvitePesquisa);
 		
-		JComboBox comboBox_5 = new JComboBox();
-		comboBox_5.setName("Lista");
-		comboBox_5.setModel(new DefaultComboBoxModel(new String[] {"Lista"}));
-		comboBox_5.setBounds(237, 11, 97, 20);
-		pnPesquisa.add(comboBox_5);
+		JCheckBox ckMaterialPesquisa = new JCheckBox("Material");
+		ckMaterialPesquisa.setBounds(591, 11, 97, 23);
+		pnPesquisa.add(ckMaterialPesquisa);
+		
+		JCheckBox ckNewsletterPesquisa = new JCheckBox("Newsletter");
+		ckNewsletterPesquisa.setBounds(690, 11, 97, 23);
+		pnPesquisa.add(ckNewsletterPesquisa);
+		
+		JLabel lblBuscar = new JLabel("Buscar:");
+		lblBuscar.setBounds(10, 63, 46, 14);
+		pnPesquisa.add(lblBuscar);
 		
 		txBuscar = new JTextField();
 		txBuscar.setBounds(66, 57, 86, 20);
 		pnPesquisa.add(txBuscar);
 		txBuscar.setColumns(10);
 		
-		JLabel lblBuscar = new JLabel("Buscar:");
-		lblBuscar.setBounds(10, 63, 46, 14);
-		pnPesquisa.add(lblBuscar);
-		
 		JLabel lblPor = new JLabel("por:");
 		lblPor.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPor.setBounds(162, 63, 46, 14);
 		pnPesquisa.add(lblPor);
 		
-		JComboBox cbPesquisarPor = new JComboBox();
+		JComboBox<String> cbPesquisarPor = new JComboBox<String>();
 		cbPesquisarPor.setModel(new DefaultComboBoxModel(new String[] {"ID", "Nome", "Responsavel"}));
 		cbPesquisarPor.setBounds(218, 57, 103, 20);
 		pnPesquisa.add(cbPesquisarPor);
@@ -122,236 +137,329 @@ public class ProspeccaoView extends JInternalFrame {
 		lblClassificarPor.setBounds(366, 60, 110, 14);
 		pnPesquisa.add(lblClassificarPor);
 		
-		JComboBox comboBox_6 = new JComboBox();
-		comboBox_6.setToolTipText("Voc\u00EA consegue organizar com duplo clique no nome da coluna dentro da tabela abaixo, mas campos como DATA E CODIGO n\u00E3o s\u00E3o possiveis de ordenar, por isso dispon\u00EDvel essa fun\u00E7\u00E3o atrav\u00E9s dessa caixa.");
-		comboBox_6.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Data de Cadastro"}));
-		comboBox_6.setBounds(494, 57, 121, 20);
-		pnPesquisa.add(comboBox_6);
+		JComboBox<String> cbClassificar = new JComboBox<String>();
+		cbClassificar.setToolTipText("Voc\u00EA consegue organizar com duplo clique no nome da coluna dentro da tabela abaixo, mas campos como DATA E CODIGO n\u00E3o s\u00E3o possiveis de ordenar, por isso dispon\u00EDvel essa fun\u00E7\u00E3o atrav\u00E9s dessa caixa.");
+		cbClassificar.setModel(new DefaultComboBoxModel(new String[] {"C\u00F3digo", "Data de Cadastro"}));
+		cbClassificar.setBounds(494, 57, 121, 20);
+		pnPesquisa.add(cbClassificar);
 		
-		JComboBox comboBox_7 = new JComboBox();
-		comboBox_7.setName("Atendente");
-		comboBox_7.setModel(new DefaultComboBoxModel(new String[] {"Atendente"}));
-		comboBox_7.setBounds(344, 11, 97, 20);
-		pnPesquisa.add(comboBox_7);
+		JRadioButton rbCrescente = new JRadioButton("Crescente");
+		rbCrescente.setBounds(623, 56, 109, 23);
+		pnPesquisa.add(rbCrescente);
 		
-		JCheckBox chckbxApresentao = new JCheckBox("Convite para Eventos");
-		chckbxApresentao.setBounds(447, 10, 142, 23);
-		pnPesquisa.add(chckbxApresentao);
+		JRadioButton rbDecrescente = new JRadioButton("Decrescente");
+		rbDecrescente.setBounds(623, 82, 109, 23);
+		pnPesquisa.add(rbDecrescente);
 		
-		JCheckBox chckbxMaterial_1 = new JCheckBox("Material");
-		chckbxMaterial_1.setBounds(591, 11, 97, 23);
-		pnPesquisa.add(chckbxMaterial_1);
-		
-		JCheckBox chckbxNewsletter_1 = new JCheckBox("Newsletter");
-		chckbxNewsletter_1.setBounds(690, 11, 97, 23);
-		pnPesquisa.add(chckbxNewsletter_1);
-		
-		JRadioButton rdbtnCrescente = new JRadioButton("Crescente");
-		rdbtnCrescente.setBounds(623, 56, 109, 23);
-		pnPesquisa.add(rdbtnCrescente);
-		
-		JRadioButton rdbtnDecrescente = new JRadioButton("Decrescente");
-		rdbtnDecrescente.setBounds(623, 82, 109, 23);
-		pnPesquisa.add(rdbtnDecrescente);
+		JButton btExportarMalaDireta = new JButton("Exportar Mala Direta");
+		btExportarMalaDireta.setEnabled(false);
+		btExportarMalaDireta.setBounds(807, 56, 150, 23);
+		pnPesquisa.add(btExportarMalaDireta);
 		
 		JButton btnExpMailmktLocaweb = new JButton("Exp. EmailMkt Locaweb");
 		btnExpMailmktLocaweb.setEnabled(false);
 		btnExpMailmktLocaweb.setBounds(807, 82, 150, 23);
 		pnPesquisa.add(btnExpMailmktLocaweb);
 		
+		JScrollPane spPesquisa = new JScrollPane();
+		spPesquisa.setBounds(10, 116, 947, 263);
+		pnPesquisa.add(spPesquisa);
+		
+		tbPesquisa = new JTable();
+		spPesquisa.setViewportView(tbPesquisa);
+		
+		JPanel pnItem = new JPanel();
+		tpPrincipal.addTab("Cadastro", null, pnItem, null);
+		pnItem.setLayout(null);
+		
 		JPanel pnCadastro = new JPanel();
-		tabbedPane.addTab("Cadastro", null, pnCadastro, null);
+		pnCadastro.setBounds(10, 11, 719, 517);
+		pnItem.add(pnCadastro);
 		pnCadastro.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(10, 11, 86, 20);
-		pnCadastro.add(textField);
-		textField.setColumns(10);
+		txCodigo = new JTextField();
+		txCodigo.setBounds(10, 11, 86, 20);
+		pnCadastro.add(txCodigo);
+		txCodigo.setEnabled(false);
+		txCodigo.setColumns(10);
 		
 		JLabel lblEmpresa = new JLabel("Empresa:");
-		lblEmpresa.setBounds(10, 60, 86, 14);
+		lblEmpresa.setBounds(10, 53, 86, 14);
 		pnCadastro.add(lblEmpresa);
 		
-		JLabel lblTelefone = new JLabel("Telefone:");
-		lblTelefone.setBounds(10, 116, 86, 14);
-		pnCadastro.add(lblTelefone);
-		
-		JLabel lblEndereo = new JLabel("Endere\u00E7o:");
-		lblEndereo.setBounds(10, 172, 86, 14);
-		pnCadastro.add(lblEndereo);
+		txEmpresa = new JTextField();
+		txEmpresa.setBounds(106, 50, 220, 20);
+		pnCadastro.add(txEmpresa);
+		txEmpresa.setColumns(10);
 		
 		JLabel lblResponsavel = new JLabel("Nome Contato:");
-		lblResponsavel.setBounds(10, 91, 86, 14);
+		lblResponsavel.setBounds(10, 84, 86, 14);
 		pnCadastro.add(lblResponsavel);
 		
+		txNomeContato = new JTextField();
+		txNomeContato.setBounds(106, 78, 86, 20);
+		pnCadastro.add(txNomeContato);
+		txNomeContato.setColumns(10);
+		
 		JLabel lblDepartamento = new JLabel("Departamento:");
-		lblDepartamento.setBounds(333, 88, 86, 14);
+		lblDepartamento.setBounds(333, 81, 86, 14);
 		pnCadastro.add(lblDepartamento);
 		
+		txDepartamento = new JTextField();
+		txDepartamento.setBounds(421, 78, 86, 20);
+		pnCadastro.add(txDepartamento);
+		txDepartamento.setColumns(10);
+		
+		JLabel lblTelefone = new JLabel("Telefone:");
+		lblTelefone.setBounds(10, 109, 86, 14);
+		pnCadastro.add(lblTelefone);
+		
+		txTelefone = new JTextField();
+		txTelefone.setBounds(106, 106, 86, 20);
+		pnCadastro.add(txTelefone);
+		txTelefone.setColumns(10);
+		
+		JLabel lbCelular = new JLabel("Celular:");
+		lbCelular.setBounds(333, 109, 86, 14);
+		pnCadastro.add(lbCelular);
+		
+		txCelular = new JTextField();
+		txCelular.setBounds(421, 106, 86, 20);
+		pnCadastro.add(txCelular);
+		txCelular.setColumns(10);
+		
 		JLabel lbMail = new JLabel("E-Mail:");
-		lbMail.setBounds(10, 144, 86, 14);
+		lbMail.setBounds(10, 137, 86, 14);
 		pnCadastro.add(lbMail);
 		
-		JLabel lblEmail = new JLabel("Celular:");
-		lblEmail.setBounds(333, 116, 86, 14);
-		pnCadastro.add(lblEmail);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(106, 57, 86, 20);
-		pnCadastro.add(textField_1);
-		textField_1.setColumns(10);
-		
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(106, 85, 86, 20);
-		pnCadastro.add(textField_2);
-		
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(106, 113, 86, 20);
-		pnCadastro.add(textField_3);
-		
-		textField_4 = new JTextField();
-		textField_4.setColumns(10);
-		textField_4.setBounds(106, 141, 86, 20);
-		pnCadastro.add(textField_4);
-		
-		textField_5 = new JTextField();
-		textField_5.setColumns(10);
-		textField_5.setBounds(421, 113, 86, 20);
-		pnCadastro.add(textField_5);
-		
-		textField_6 = new JTextField();
-		textField_6.setColumns(10);
-		textField_6.setBounds(421, 85, 86, 20);
-		pnCadastro.add(textField_6);
-		
-		JLabel lblTipoContato = new JLabel("Tipo de Contato:");
-		lblTipoContato.setBounds(333, 175, 86, 14);
-		pnCadastro.add(lblTipoContato);
-		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Nenhum", "E-Mail", "Mala Direta", "E-Mail e Mala Direta"}));
-		comboBox.setBounds(421, 172, 86, 20);
-		pnCadastro.add(comboBox);
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(421, 197, 86, 20);
-		pnCadastro.add(comboBox_1);
-		
-		JLabel lblLista = new JLabel("Lista:");
-		lblLista.setBounds(333, 200, 86, 14);
-		pnCadastro.add(lblLista);
-		
-		textField_8 = new JTextField();
-		textField_8.setColumns(10);
-		textField_8.setBounds(106, 169, 86, 20);
-		pnCadastro.add(textField_8);
-		
-		JCheckBox chckbxApresentaes = new JCheckBox("Convite para Eventos");
-		chckbxApresentaes.setBounds(333, 231, 140, 23);
-		pnCadastro.add(chckbxApresentaes);
-		
-		JCheckBox chckbxMaterial = new JCheckBox("Material");
-		chckbxMaterial.setBounds(333, 257, 97, 23);
-		pnCadastro.add(chckbxMaterial);
-		
-		JCheckBox chckbxNewsletter = new JCheckBox("Newsletter");
-		chckbxNewsletter.setBounds(333, 283, 97, 23);
-		pnCadastro.add(chckbxNewsletter);
+		txEmail = new JTextField();
+		txEmail.setBounds(106, 134, 150, 20);
+		pnCadastro.add(txEmail);
+		txEmail.setColumns(10);
 		
 		JLabel lbSite = new JLabel("Site:");
-		lbSite.setBounds(333, 144, 86, 14);
+		lbSite.setBounds(333, 137, 86, 14);
 		pnCadastro.add(lbSite);
 		
-		textField_7 = new JTextField();
-		textField_7.setColumns(10);
-		textField_7.setBounds(421, 141, 86, 20);
-		pnCadastro.add(textField_7);
+		txSite = new JTextField();
+		txSite.setBounds(421, 134, 86, 20);
+		pnCadastro.add(txSite);
+		txSite.setColumns(10);
 		
-		JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane_1.setBounds(10, 329, 497, 240);
-		pnCadastro.add(tabbedPane_1);
+		JLabel lblEndereo = new JLabel("Endere\u00E7o:");
+		lblEndereo.setBounds(10, 165, 86, 14);
+		pnCadastro.add(lblEndereo);
 		
-		JPanel panel_2 = new JPanel();
-		tabbedPane_1.addTab("Origem", null, panel_2, null);
-		panel_2.setLayout(null);
+		txEndereco = new JTextField();
+		txEndereco.setBounds(106, 162, 220, 20);
+		pnCadastro.add(txEndereco);
+		txEndereco.setColumns(10);
+		
+		JLabel lblTipoContato = new JLabel("Tipo de Contato:");
+		lblTipoContato.setBounds(333, 168, 86, 14);
+		pnCadastro.add(lblTipoContato);
+		
+		JComboBox<String> cbTipoContato = new JComboBox<String>();
+		cbTipoContato.setBounds(421, 165, 86, 20);
+		pnCadastro.add(cbTipoContato);
+		cbTipoContato.setModel(new DefaultComboBoxModel(new String[] {"Nenhum", "E-Mail", "Mala Direta", "E-Mail e Mala Direta"}));
+		
+		JCheckBox ckConviteEventos = new JCheckBox("Convite para Eventos");
+		ckConviteEventos.setBounds(333, 192, 140, 23);
+		pnCadastro.add(ckConviteEventos);
+		
+		JCheckBox ckMaterial = new JCheckBox("Material");
+		ckMaterial.setBounds(333, 218, 97, 23);
+		pnCadastro.add(ckMaterial);
+		
+		JCheckBox ckNewsletter = new JCheckBox("Newsletter");
+		ckNewsletter.setBounds(333, 244, 97, 23);
+		pnCadastro.add(ckNewsletter);
+		
+		JTabbedPane tpSubCadastro = new JTabbedPane(JTabbedPane.TOP);
+		tpSubCadastro.setBounds(0, 266, 719, 240);
+		pnCadastro.add(tpSubCadastro);
+		
+		JPanel pnCadastroOrigem = new JPanel();
+		tpSubCadastro.addTab("Origem", null, pnCadastroOrigem, null);
+		pnCadastroOrigem.setLayout(null);
 		
 		JLabel lblOrigem = new JLabel("Origem:");
 		lblOrigem.setBounds(10, 81, 46, 14);
-		panel_2.add(lblOrigem);
+		pnCadastroOrigem.add(lblOrigem);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(175, 78, 130, 20);
-		panel_2.add(comboBox_2);
+		JComboBox cbOrigem = new JComboBox();
+		cbOrigem.setBounds(175, 78, 130, 20);
+		pnCadastroOrigem.add(cbOrigem);
 		
-		JLabel lblNewLabel = new JLabel("Detalhes da Origem:");
-		lblNewLabel.setBounds(10, 109, 155, 14);
-		panel_2.add(lblNewLabel);
+		JLabel lbDetalhesOrigem = new JLabel("Detalhes da Origem:");
+		lbDetalhesOrigem.setBounds(10, 109, 155, 14);
+		pnCadastroOrigem.add(lbDetalhesOrigem);
 		
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setToolTipText("");
-		scrollPane_1.setBounds(175, 109, 307, 92);
-		panel_2.add(scrollPane_1);
+		JScrollPane spDetalhesOrigem = new JScrollPane();
+		spDetalhesOrigem.setBounds(175, 109, 307, 92);
+		pnCadastroOrigem.add(spDetalhesOrigem);
 		
-		JTextArea textArea = new JTextArea();
-		scrollPane_1.setViewportView(textArea);
+		JTextArea txDetalhesDaOrigem = new JTextArea();
+		spDetalhesOrigem.setViewportView(txDetalhesDaOrigem);
 		
 		JTextPane txtpncomoTeveAcesso = new JTextPane();
 		txtpncomoTeveAcesso.setOpaque(false);
 		txtpncomoTeveAcesso.setEditable(false);
 		txtpncomoTeveAcesso.setText("Como teve acesso ao contato?\r\nLigou para empresa, enviou e-mail, indica\u00E7\u00E3o de algu\u00E9m, assinou newsletter, foi passado pelo marketing etc.");
 		txtpncomoTeveAcesso.setBounds(10, 11, 472, 59);
-		panel_2.add(txtpncomoTeveAcesso);
+		pnCadastroOrigem.add(txtpncomoTeveAcesso);
 		
-		JPanel panel_1 = new JPanel();
-		tabbedPane_1.addTab("Resumo", null, panel_1, null);
-		panel_1.setLayout(null);
+		JPanel pnCadastroResumo = new JPanel();
+		tpSubCadastro.addTab("Resumo", null, pnCadastroResumo, null);
+		pnCadastroResumo.setLayout(null);
 		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setToolTipText("");
-		scrollPane_2.setBounds(175, 70, 307, 131);
-		panel_1.add(scrollPane_2);
+		JScrollPane spResumoContato = new JScrollPane();
+		spResumoContato.setBounds(175, 70, 307, 131);
+		pnCadastroResumo.add(spResumoContato);
 		
-		JTextArea textArea_1 = new JTextArea();
-		scrollPane_2.setViewportView(textArea_1);
+		JTextArea txResumoContato = new JTextArea();
+		spResumoContato.setViewportView(txResumoContato);
 		
 		JLabel lblResumoDoContato = new JLabel("Resumo do Contato:");
 		lblResumoDoContato.setBounds(10, 70, 155, 14);
-		panel_1.add(lblResumoDoContato);
+		pnCadastroResumo.add(lblResumoDoContato);
 		
 		JTextPane txtpnTenteIrPara = new JTextPane();
 		txtpnTenteIrPara.setText("Tente ir para a reuni\u00E3o j\u00E1 sabendo o que espera por voc\u00EA, o que o cliente deseja e anote aqui um resumo de sua impress\u00E3o.");
 		txtpnTenteIrPara.setOpaque(false);
 		txtpnTenteIrPara.setEditable(false);
 		txtpnTenteIrPara.setBounds(10, 11, 472, 48);
-		panel_1.add(txtpnTenteIrPara);
+		pnCadastroResumo.add(txtpnTenteIrPara);
 		
-		JPanel panel_3 = new JPanel();
-		tabbedPane_1.addTab("Apresenta\u00E7\u00E3o sob Medida", null, panel_3, null);
-		panel_3.setLayout(null);
+		JPanel pnCadastroApresentacao = new JPanel();
+		tpSubCadastro.addTab("Apresenta\u00E7\u00E3o sob Medida", null, pnCadastroApresentacao, null);
+		pnCadastroApresentacao.setLayout(null);
 		
 		JTextPane txtpnTentePrepararUm = new JTextPane();
 		txtpnTentePrepararUm.setText("Tente preparar um material que se encaixe perfeitamente com as necessidades do cliente, resuma aqui os pontos principais de sua argumenta\u00E7\u00E3o.");
 		txtpnTentePrepararUm.setOpaque(false);
 		txtpnTentePrepararUm.setEditable(false);
 		txtpnTentePrepararUm.setBounds(10, 11, 472, 48);
-		panel_3.add(txtpnTentePrepararUm);
+		pnCadastroApresentacao.add(txtpnTentePrepararUm);
 		
 		JLabel lblApresentao = new JLabel("Apresenta\u00E7\u00E3o:");
 		lblApresentao.setBounds(10, 70, 155, 14);
-		panel_3.add(lblApresentao);
+		pnCadastroApresentacao.add(lblApresentao);
 		
-		JScrollPane scrollPane_3 = new JScrollPane();
-		scrollPane_3.setToolTipText("");
-		scrollPane_3.setBounds(175, 70, 307, 131);
-		panel_3.add(scrollPane_3);
+		JScrollPane spApresentacao = new JScrollPane();
+		spApresentacao.setBounds(175, 70, 307, 131);
+		pnCadastroApresentacao.add(spApresentacao);
 		
-		JTextArea textArea_2 = new JTextArea();
-		scrollPane_3.setViewportView(textArea_2);
+		JTextArea txApresentacao = new JTextArea();
+		spApresentacao.setViewportView(txApresentacao);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setBounds(517, 196, 35, 23);
-		pnCadastro.add(btnNewButton);
+		JPanel pnLista = new JPanel();
+		tpSubCadastro.addTab("Lista", null, pnLista, null);
+		pnLista.setLayout(null);
+		
+		JLabel lblLista = new JLabel("Lista:");
+		lblLista.setBounds(10, 15, 86, 14);
+		pnLista.add(lblLista);
+		
+		JComboBox cbLista = new JComboBox();
+		cbLista.setBounds(98, 12, 86, 20);
+		pnLista.add(cbLista);
+		
+		JButton btListaAdd = new JButton("+");
+		btListaAdd.setBounds(194, 11, 35, 23);
+		pnLista.add(btListaAdd);
+		
+		JLabel lbApresentacao = new JLabel("Apresenta\u00E7\u00E3o:");
+		lbApresentacao.setBounds(10, 60, 86, 14);
+		pnLista.add(lbApresentacao);
+		
+		JScrollPane spLista = new JScrollPane();
+		spLista.setBounds(98, 60, 384, 141);
+		pnLista.add(spLista);
+		
+		tbLista = new JTable();
+		spLista.setViewportView(tbLista);
+		
+		JButton btAdicionarALista = new JButton("+");
+		btAdicionarALista.setBounds(447, 11, 35, 23);
+		pnLista.add(btAdicionarALista);
+		
+		JPanel pnAuxiliar = new JPanel();
+		pnAuxiliar.setBounds(739, 11, 460, 363);
+		pnItem.add(pnAuxiliar);
+		pnAuxiliar.setLayout(null);
+		
+		JScrollPane spAuxiliar = new JScrollPane();
+		spAuxiliar.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		spAuxiliar.setBounds(0, 55, 450, 308);
+		pnAuxiliar.add(spAuxiliar);
+		
+		tbAuxiliar = new JTable();
+		spAuxiliar.setViewportView(tbAuxiliar);
+		
+		btNovaTarefa = new JButton();
+		btNovaTarefa.setText("Nova Tarefa");
+		btNovaTarefa.setName("Nova Tarefa");
+		btNovaTarefa.setFont(new Font("Dialog", Font.PLAIN, 10));
+		btNovaTarefa.setActionCommand("Nova Tarefa");
+		btNovaTarefa.setBounds(10, 11, 130, 25);
+		pnAuxiliar.add(btNovaTarefa);
+		
+		JButton btEsconder = new JButton("Esconder");
+		btEsconder.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btEsconder.setActionCommand("Esconder");
+		btEsconder.setBounds(330, 11, 120, 25);
+		pnAuxiliar.add(btEsconder);
+		
+		JButton btHistorico = new JButton();
+		btHistorico.setToolTipText("Tarefas");
+		btHistorico.setFont(new Font("Dialog", Font.PLAIN, 9));
+		btHistorico.setActionCommand("Historico");
+		btHistorico.setBounds(137, 532, 90, 25);
+		pnItem.add(btHistorico);
+		
+		JButton btNovo = new JButton();
+		btNovo.setToolTipText("Novo");
+		btNovo.setName("Novo");
+		btNovo.setFont(new Font("Dialog", Font.PLAIN, 9));
+		btNovo.setActionCommand("Novo");
+		btNovo.setBounds(237, 532, 90, 25);
+		pnItem.add(btNovo);
+		
+		JButton btEditar = new JButton();
+		btEditar.setToolTipText("Editar");
+		btEditar.setName("Editar");
+		btEditar.setFont(new Font("Dialog", Font.PLAIN, 9));
+		btEditar.setActionCommand("Editar");
+		btEditar.setBounds(337, 532, 90, 25);
+		pnItem.add(btEditar);
+		
+		JButton btSalvar = new JButton();
+		btSalvar.setToolTipText("Salvar");
+		btSalvar.setName("Salvar");
+		btSalvar.setFont(new Font("Dialog", Font.PLAIN, 9));
+		btSalvar.setActionCommand("Salvar");
+		btSalvar.setBounds(437, 532, 90, 25);
+		pnItem.add(btSalvar);
+		
+		JButton btCancelar = new JButton();
+		btCancelar.setToolTipText("Cancelar");
+		btCancelar.setName("Cancelar");
+		btCancelar.setFont(new Font("Dialog", Font.PLAIN, 9));
+		btCancelar.setActionCommand("Cancelar");
+		btCancelar.setBounds(537, 532, 90, 25);
+		pnItem.add(btCancelar);
+		
+		JButton btExcluir = new JButton();
+		btExcluir.setToolTipText("Excluir");
+		btExcluir.setName("Excluir");
+		btExcluir.setFont(new Font("Dialog", Font.PLAIN, 9));
+		btExcluir.setActionCommand("Excluir");
+		btExcluir.setBounds(637, 532, 90, 25);
+		pnItem.add(btExcluir);
+		pack();
+		setBounds(0, 0, 1250, 660);
+		
 	}
 }
