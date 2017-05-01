@@ -19,6 +19,7 @@ public class Tarefa implements Serializable{
 	private Pessoa pessoa;
 	private Empresa empresa;
 	private Negocio negocio;
+	private Prospeccao prospeccao;
 	private int finalizado;
 	private int alertaEnviado;
 	/**
@@ -152,6 +153,18 @@ public class Tarefa implements Serializable{
 	 */
 	public void setNegocio(Negocio negocio) {
 		this.negocio = negocio;
+	}
+	/**
+	 * @return the prospeccao
+	 */
+	public Prospeccao getProspeccao() {
+		return prospeccao;
+	}
+	/**
+	 * @param prospeccao the prospeccao to set
+	 */
+	public void setProspeccao(Prospeccao prospeccao) {
+		this.prospeccao = prospeccao;
 	}
 	/**
 	 * @return the finalizado

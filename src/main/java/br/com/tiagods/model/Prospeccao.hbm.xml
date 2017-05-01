@@ -8,9 +8,10 @@
 	<id name="id" column="PRO_COD" type="int">
 	<generator class="identity" />
 	</id>
-	<property name="nome" column="PRO_NOME" length="150" />
-	<property name="responsavel" column="PRO_RESPONSAVEL" length="150" />
+	<property name="nome" column="PRO_NOME" />
+	<property name="responsavel" column="PRO_RESPONSAVEL" />
 	<property name="departamento" column="PRO_DEPARTAMENTO" />
+	<property name="endereco" column="PRO_ENDERECO" />
 	<component name="pfpj">
 		<property name="telefone" column="PRO_TELEFONE" />
 		<property name="celular" column="PRO_CELULAR" />
@@ -33,9 +34,9 @@
 		</set>
 		 <many-to-one name="servico" column="PRO_SERVICO_COD" foreign-key="FK_PRO_SERVICO_COD"/>
 	</component>
-	<property name="conviteParaEventos" column="PRO_CONVITE_EVENTOS" type="integer"/>
-	<property name="material" column="PRO_MATERIAL" type="integer" />
-	<property name="newsletter" column="PRO_NEWSLETTER" type="integer" />
+	<property name="conviteParaEventos" column="PRO_CONVITE_EVENTOS" type="integer" length="1" />
+	<property name="material" column="PRO_MATERIAL" type="integer" length="1" />
+	<property name="newsletter" column="PRO_NEWSLETTER" type="integer" length="1" />
 	<many-to-one name="tipoContato" column="PRO_TIPO_CONTATO" foreign-key="FK_PRO_TIPO_CONTATO_COD" />
 	<set name="listas" table="PROSPECCAO_REL_LISTA" inverse="true">
 		<key column="PRO_REL_COD" />

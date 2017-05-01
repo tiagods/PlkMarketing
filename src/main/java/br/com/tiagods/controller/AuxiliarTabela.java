@@ -21,6 +21,7 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.TarefaDao;
@@ -74,6 +75,14 @@ public class AuxiliarTabela {
 					popularTabela(lista,(Pessoa)object, model);
 				}
 			}
+			else if(object instanceof Prospeccao){
+				if(lista.isEmpty())
+					new SemRegistrosJTable(this.table,"Registro de Prospeccao");
+				else{
+					DefaultTableModel model = gerarModel((Prospeccao)object);
+					popularTabela(lista,(Prospeccao)object, model);
+				}
+			}
 			else if(object instanceof Tarefa){
 				if(lista.isEmpty())
 					new SemRegistrosJTable(this.table,"Registro de Tarefa");
@@ -110,6 +119,18 @@ public class AuxiliarTabela {
 	}
 	@SuppressWarnings("serial")
 	private DefaultTableModel gerarModel(Pessoa pessoas){
+		return new DefaultTableModel(new Object[]{"ID","NOME","CRIADO EM","ATENDENTE"},0){
+			boolean[] canEdit = new boolean[]{
+					false,false,false,false
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+		};
+	}
+	@SuppressWarnings("serial")
+	private DefaultTableModel gerarModel(Prospeccao prospeccao){
 		return new DefaultTableModel(new Object[]{"ID","NOME","CRIADO EM","ATENDENTE"},0){
 			boolean[] canEdit = new boolean[]{
 					false,false,false,false
@@ -166,6 +187,20 @@ public class AuxiliarTabela {
 			o[4]=n.getEtapa().getNome();
 			o[5]=n.getStatus().getNome();
 			o[6]=n.getAtendente().getNome();
+			model.addRow(o);
+		}
+		table.setModel(model);
+		table.getColumnModel().getColumn(0).setPreferredWidth(40);
+	}
+	private void popularTabela(List<Prospeccao> lista, Prospeccao prospeccao, DefaultTableModel model){
+		Iterator<Prospeccao> iterator = lista.iterator();
+		while(iterator.hasNext()){
+			Prospeccao p = iterator.next();
+			Object[] o = new Object[model.getColumnCount()];
+			o[0]=p.getId();
+			o[1]=p.getNome();
+			o[2]=sdf.format(p.getPfpj().getCriadoEm());
+			o[3]=p.getPfpj().getAtendente().getNome();
 			model.addRow(o);
 		}
 		table.setModel(model);
@@ -241,14 +276,7 @@ public class AuxiliarTabela {
 		table.getColumnModel().getColumn(6).setPreferredWidth(30);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		table.setRowHeight(30);
-		
-		/*Removendo função de validar dentro da tabela, não será mais usada*/
-//		JCheckBox ckFinalizar = new JCheckBox();
-//		TableColumn col = table.getColumnModel().getColumn(6);
-//		col.setCellEditor(new DefaultCellEditor(ckFinalizar));
-//		ckFinalizar.setActionCommand("Finalizar");
-//		ckFinalizar.addActionListener(new AcaoInTable());
-		
+				
 		JButton btEdit = new ButtonColumnModel(table,5).getButton();
 		btEdit.setActionCommand("Editar");
 		btEdit.addActionListener(new AcaoInTable());
@@ -264,9 +292,6 @@ public class AuxiliarTabela {
 			Session session = HibernateFactory.getSession();
 			session.beginTransaction();
 			switch(e.getActionCommand()){
-//			case "Finalizar":
-//				finalizar(session);
-//				break;
 			case "Editar":
 				int valor = (int)table.getModel().getValueAt(table.getSelectedRow(), 0);
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
@@ -295,33 +320,6 @@ public class AuxiliarTabela {
 				buscar(session);
 		}
 	}
-//	String pendente = "Aberto";
-//	String fechado = "Finalizado";
-//	
-//	public void finalizar(Session session){
-//		boolean value = (boolean)table.getValueAt(table.getSelectedRow(), 6);
-//		int id = (int)table.getValueAt(table.getSelectedRow(), 0);
-//		String status = (String)table.getValueAt(table.getSelectedRow(), 5);
-//		if(!value && pendente.equals(status)){
-//			TarefaDao dao = new TarefaDao();
-//			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
-//			thisTar.setFinalizado(1);
-//			if(dao.salvar(thisTar, session)){
-//				table.setValueAt(fechado, table.getSelectedRow(), 4);
-//			}
-//
-//		}
-//		else if(value && fechado.equals(status)){
-//			TarefaDao dao = new TarefaDao();
-//			Tarefa thisTar = (Tarefa) dao.receberObjeto(Tarefa.class, id, session);
-//			thisTar.setFinalizado(0);
-//			if(dao.salvar(thisTar, session)){
-//				table.setValueAt(pendente, table.getSelectedRow(), 5);
-//			}
-//		}
-//		//buscar(session);
-//	}
-
 	@SuppressWarnings("unchecked")
 	private void buscar(Session session){
 		List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);

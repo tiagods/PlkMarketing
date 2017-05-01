@@ -30,6 +30,7 @@ import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Etapa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
@@ -143,6 +144,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				dialog =new SelecaoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
 			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
 				dialog =new SelecaoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
+			else if(cbObject.getSelectedItem().equals(Modelos.Prospeccao))
+				dialog =new SelecaoDialog(new Prospeccao(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -242,18 +245,28 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				tarefa.setEmpresa(empresa);
 				tarefa.setNegocio(null);
 				tarefa.setPessoa(null);
+				tarefa.setProspeccao(null);
 			}
 			else if(object instanceof Negocio){
 				object = dao.receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				tarefa.setNegocio((Negocio)object);
 				tarefa.setEmpresa(null);
 				tarefa.setPessoa(null);
+				tarefa.setProspeccao(null);
 			}
 			else if(object instanceof Pessoa){
 				Pessoa pessoa = (Pessoa) dao.receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				tarefa.setPessoa(pessoa);
 				tarefa.setEmpresa(null);
 				tarefa.setNegocio(null);
+				tarefa.setProspeccao(null);
+			}
+			else if(object instanceof Prospeccao){
+				Prospeccao prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				tarefa.setProspeccao(prospeccao);
+				tarefa.setEmpresa(null);
+				tarefa.setNegocio(null);
+				tarefa.setPessoa(null);
 			}
 		}
 		if(continuar){

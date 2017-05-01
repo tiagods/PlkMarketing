@@ -52,6 +52,7 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
@@ -64,6 +65,7 @@ import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
+import br.com.tiagods.view.ProspeccaoView;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
@@ -394,6 +396,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 					o[4] = t.getNegocio()==null?"Erro: Negocio desassociado":t.getNegocio().getNome();
 				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getPessoa()==null?"Erro: Pessoa desassociada":t.getPessoa().getNome();
+				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
+					o[4] = t.getProspeccao()==null?"Erro: Prospeccao desassociada":t.getProspeccao().getNome();
 				else
 					o[4] = "Erro";
 				if(t.getFinalizado()==0)
@@ -413,6 +417,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				}
 				else if("Negocio".equals(t.getClasse())){
 					imageName ="button_negocios.png";
+				}
+				else if("Prospeccao".equals(t.getClasse())){
+					imageName ="button_prospeccao.png";
 				}
 				else
 					imageName ="button_people.png";
@@ -557,6 +564,11 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			Pessoa pessoa = transfer.getPessoa();
 			PessoasView viewPessoa = new PessoasView(pessoa);
 			ControllerMenu.getInstance().abrirCorpo(viewPessoa);
+		}
+		else if("Prospeccao".equals(value)){
+			Prospeccao prospeccao = transfer.getProspeccao();
+			ProspeccaoView viewProspeccao = new ProspeccaoView(prospeccao);
+			ControllerMenu.getInstance().abrirCorpo(viewProspeccao);
 		}
 	}
 	private boolean validarDatas(){

@@ -43,6 +43,7 @@ public class NegociosView extends JInternalFrame {
     public static DefaultComboBox cbEtapa;
     public static DefaultComboBox cbEmpresa;
     public static DefaultComboBox cbPessoa;
+    public static DefaultComboBox cbProspeccao;
     private javax.swing.JPanel pnVisao;
     public static JPanel pnPrincipal;
     public static JPanel pnAndamento;
@@ -229,49 +230,55 @@ public class NegociosView extends JInternalFrame {
 		cbServicos.setModel(new DefaultComboBoxModel(new String[] { "Produtos/Servicos" }));
 		cbServicos.setName("Produtos/Servicos");
 		cbServicos.setBackground(new Color(250, 250, 250));
+		
+		cbProspeccao = new DefaultComboBox();
+		cbProspeccao.setModel(new DefaultComboBoxModel(new String[] {"Prospeccao"}));
+		cbProspeccao.setName("Prospeccao");
+		cbProspeccao.setBackground(new Color(250, 250, 250));
 
 		javax.swing.GroupLayout gl_pnPrincipal = new javax.swing.GroupLayout(pnPrincipal);
-		gl_pnPrincipal.setHorizontalGroup(gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_pnPrincipal.createSequentialGroup().addContainerGap()
-						.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE).addGap(10)
-						.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(cbPessoa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.UNRELATED)
-						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-						.addGap(221)));
-		gl_pnPrincipal.setVerticalGroup(gl_pnPrincipal.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_pnPrincipal.createSequentialGroup().addGap(33)
-						.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.BASELINE)
-								.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbPessoa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE)
-								.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										GroupLayout.PREFERRED_SIZE))
-						.addContainerGap()));
+		gl_pnPrincipal.setHorizontalGroup(
+			gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_pnPrincipal.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addGap(10)
+					.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(cbPessoa, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(cbProspeccao, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+					.addGap(71))
+		);
+		gl_pnPrincipal.setVerticalGroup(
+			gl_pnPrincipal.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_pnPrincipal.createSequentialGroup()
+					.addGap(33)
+					.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.BASELINE)
+						.addComponent(cbStatus, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbEtapa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbOrigem, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbEmpresa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbPessoa, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbNivel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbServicos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbProspeccao, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(cbAtendente, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap())
+		);
 		pnPrincipal.setLayout(gl_pnPrincipal);
 
 		lbBuscar.setBounds(10, 100, 53, 20);

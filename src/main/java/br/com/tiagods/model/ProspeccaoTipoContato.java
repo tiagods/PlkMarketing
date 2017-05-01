@@ -8,7 +8,7 @@ public class ProspeccaoTipoContato implements Serializable{
 	 */
 	private static final long serialVersionUID = 6128803021370214234L;
 	private int id;
-	private int nome;
+	private String nome;
 	/**
 	 * @return the id
 	 */
@@ -24,13 +24,13 @@ public class ProspeccaoTipoContato implements Serializable{
 	/**
 	 * @return the nome
 	 */
-	public int getNome() {
+	public String getNome() {
 		return nome;
 	}
 	/**
 	 * @param nome the nome to set
 	 */
-	public void setNome(int nome) {
+	public void setNome(String nome) {
 		this.nome = nome;
 	}
 	

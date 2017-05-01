@@ -139,14 +139,13 @@ public class ControllerMenu implements MouseListener{
         	new Thread(run).start();
         	break;
         case "Prospeccao":
-        	//invocarLoading();
+        	invocarLoading();
         	run = ()->{
         	prospeccao = new ProspeccaoView(null);
-            abrirCorpo(pessoas);
+            abrirCorpo(prospeccao);
         	};
         	new Thread(run).start();
         	break;
-        	
         case "Atualizar":
         	if(atualizar)
         		atualizarAgora();

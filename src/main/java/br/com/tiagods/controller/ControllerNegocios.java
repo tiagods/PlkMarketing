@@ -77,6 +77,7 @@ import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
+import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.model.ServicoContratado;
@@ -107,9 +108,9 @@ import jxl.write.WriteException;
 public class ControllerNegocios implements ActionListener,ItemListener,MouseListener, PropertyChangeListener, KeyListener{
 
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
-	Session session = null;
 	Negocio negocio = null;
 	Negocio negocioBackup = null;
+	Session session = null;
 	boolean telaEmEdicao = false;
 	List<Negocio> listarNegocios;
 	NegocioPerdaDialog dialogPerda;
@@ -515,6 +516,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
 					combos = new JComboBox[]{cbPessoa};
 					dialog = new SelecaoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
+				}
+				else if(cbObject.getSelectedItem().equals(Modelos.Prospeccao.toString())){
+					combos = new JComboBox[]{cbProspeccao};
+					dialog = new SelecaoDialog(new Prospeccao(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
 				}
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
@@ -1637,7 +1642,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
     	ImageIcon iconDocEnviar = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
     	btnEnviarArquivo.setIcon(recalculate(iconDocEnviar));
     	
-
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

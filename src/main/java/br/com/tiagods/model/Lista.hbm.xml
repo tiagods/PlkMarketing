@@ -9,6 +9,7 @@
 	<generator class="identity" />
 	</id>
 	<property name="nome" column="LIS_NOME" length="100"/>
+	<property name="detalhes" column="LIS_DETALHES"/>
 	<property name="criadoEm" column="LIS_CRIADOEM" type="timestamp"/>
 	<many-to-one name="criadoPor" column="LIS_CRIADOPOR_COD" foreign-key="FK_LIS_CRIADOPOR_COD"/>
 	<set name="prospects" table="PROSPECCAO_REL_LISTA" inverse="true">

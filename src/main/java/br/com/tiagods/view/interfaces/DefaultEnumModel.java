@@ -3,11 +3,12 @@ package br.com.tiagods.view.interfaces;
 import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.model.Prospeccao;
 
 public interface DefaultEnumModel {
 	
 	public enum Modelos{
-		Empresa, Negocio, Pessoa
+		Empresa, Negocio, Pessoa, Prospeccao
 	}
 	//classe empresas, pessoas
 	public enum Logradouro{
@@ -30,6 +31,9 @@ public interface DefaultEnumModel {
 		case "Pessoa":
 			novo = new Pessoa();
 			return novo;
+		case "Prospeccao":
+			novo = new Prospeccao();
+			return novo;
 		default:
 			break;
 		}
@@ -43,6 +47,8 @@ public interface DefaultEnumModel {
 			return Modelos.Empresa.toString();
 		case "Negocio":
 			return Modelos.Negocio.toString();
+		case "Prospeccao":
+			return Modelos.Prospeccao.toString();
 		default:
 			return "";
 		}

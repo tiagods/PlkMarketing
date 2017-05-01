@@ -30,6 +30,7 @@ public class Negocio implements Serializable{
 	private Set<Tarefa> tarefas = new LinkedHashSet<>();
 	private Empresa empresa;
 	private Pessoa pessoa;
+	private Prospeccao prospeccao;
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	private BigDecimal honorario;
 	private PfPj pessoaFisicaOrJuridica;
@@ -277,6 +278,18 @@ public class Negocio implements Serializable{
 	 */
 	public void setPessoa(Pessoa pessoa) {
 		this.pessoa = pessoa;
+	}
+	/**
+	 * @return the prospeccao
+	 */
+	public Prospeccao getProspeccao() {
+		return prospeccao;
+	}
+	/**
+	 * @param prospeccao the prospeccao to set
+	 */
+	public void setProspeccao(Prospeccao prospeccao) {
+		this.prospeccao = prospeccao;
 	}
 	/**
 	 * @return the servicosContratados

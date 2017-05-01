@@ -18,7 +18,8 @@ public class Prospeccao implements Serializable{
 	private int material=0;
 	private int newsletter=0;
 	private ProspeccaoTipoContato tipoContato;
-	private Set<Lista> listas = new LinkedHashSet<>();
+	private String endereco;
+	private Set<Lista> listas = new LinkedHashSet<Lista>();
 	/**
 	 * @return the id
 	 */
@@ -126,6 +127,18 @@ public class Prospeccao implements Serializable{
 	 */
 	public void setTipoContato(ProspeccaoTipoContato tipoContato) {
 		this.tipoContato = tipoContato;
+	}
+	/**
+	 * @return the endereco
+	 */
+	public String getEndereco() {
+		return endereco;
+	}
+	/**
+	 * @param endereco the endereco to set
+	 */
+	public void setEndereco(String endereco) {
+		this.endereco = endereco;
 	}
 	/**
 	 * @return the listas

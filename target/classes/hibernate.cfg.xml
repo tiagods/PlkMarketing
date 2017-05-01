@@ -25,12 +25,13 @@
   <mapping resource="br/com/tiagods/model/Empresa.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Etapa.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Funcao.hbm.xml"/>
-    <mapping resource="br/com/tiagods/model/Lista.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Lista.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Negocio.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Nivel.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Origem.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Pessoa.hbm.xml"/>
-   <mapping resource="br/com/tiagods/model/Prospeccao.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/Prospeccao.hbm.xml"/>
+  <mapping resource="br/com/tiagods/model/ProspeccaoTipoContato.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/Servico.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/ServicoContratado.hbm.xml"/>
   <mapping resource="br/com/tiagods/model/ServicoAgregado.hbm.xml"/>

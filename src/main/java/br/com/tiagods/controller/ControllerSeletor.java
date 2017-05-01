@@ -34,6 +34,7 @@ import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
+import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.modeldao.GenericDao;
@@ -117,6 +118,15 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			else if (object instanceof Pessoa){
 				List<Pessoa> lista = dao.items(Pessoa.class, session, criterion, Order.desc("id"));
+				linhas = new String[lista.size()][colunas.length];
+				for(int i=0;i<lista.size();i++){
+					linhas[i][0] = String.valueOf(lista.get(i).getId());
+					linhas[i][1] = lista.get(i).getNome();
+				}
+				view.setTitle("Relação de Pessoas");
+			}
+			else if (object instanceof Prospeccao){
+				List<Prospeccao> lista = dao.items(Prospeccao.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -262,6 +272,13 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 								comboNegocios[1].setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
 								comboNegocios[2].setSelectedItem(pessoa.getPessoaFisica().getNivel()==null?"":pessoa.getPessoaFisica().getNivel().getNome());
 								comboNegocios[3].setSelectedItem(pessoa.getPessoaFisica().getServico()==null?"":pessoa.getPessoaFisica().getServico().getNome());
+							}
+							else if(object instanceof Prospeccao){
+								Prospeccao prospeccao = (Prospeccao)dao.receberObjeto(Prospeccao.class, Integer.parseInt(txCodigo.getText()), session);
+								comboNegocios[0].setSelectedItem("");
+								comboNegocios[1].setSelectedItem(prospeccao.getPfpj().getOrigem()==null?"":prospeccao.getPfpj().getOrigem().getNome());
+								comboNegocios[2].setSelectedItem("");
+								comboNegocios[3].setSelectedItem(prospeccao.getPfpj().getServico()==null?"":prospeccao.getPfpj().getServico().getNome());
 							}
 							session.close();
 						}

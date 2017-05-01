@@ -2,6 +2,8 @@ package br.com.tiagods.modeldao;
 
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -21,6 +23,7 @@ public class GenericDao implements InterfaceDao{
 			return true;
 		}catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro ao salvar o registro!\nEntre em contato com o administrador do sistema:\nInforme o erro:"+e);
 			return false;
 		}
 	}
@@ -33,6 +36,7 @@ public class GenericDao implements InterfaceDao{
 			return true;
 		}catch (HibernateException e) {
 			session.getTransaction().rollback();
+			JOptionPane.showMessageDialog(null, "Erro ao excluir o registro!\nEntre em contato com o administrador do sistema:\nInforme o erro:"+e);
 			//relatarErro(object.getClass().getSimpleName(),"Excluir",e.getMessage());
 		}
 		return false;
@@ -47,10 +51,15 @@ public class GenericDao implements InterfaceDao{
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
-		return session.get(classe, id);
+		try{
+			return session.get(classe, id);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null, "Erro ao carregar o registro!\nEntre em contato com o administrador do sistema:\nInforme o erro:"+e);
+			return null;
+		}
 	}
 	
-	@SuppressWarnings({ "deprecation", "rawtypes" })
+	@SuppressWarnings("deprecation")
 	public Object receberObjeto(Class classe, Criterion[] criterions, Session session){
 		Criteria criteria = session.createCriteria(classe);
 		for(Criterion c : criterions)

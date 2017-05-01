@@ -31,6 +31,8 @@
 	</set>
 	<many-to-one name="empresa" column="NEG_EMPRESA_COD" foreign-key="FK_NEG_EMPRESA_COD"/>
 	<many-to-one name="pessoa" column="NEG_PESSOA_COD" foreign-key="FK_NEG_PESSOA_COD"/>
+    <many-to-one name="prospeccao" column="NEG_PROSPECCAO_COD" foreign-key="FK_NEG_PROSPECCAO_COD"/>
+    
     <set name="servicosContratados" inverse="true" cascade="save-update, delete" >
 		<key column="SER_CON_NEGOCIO_COD"/>
 		<one-to-many class="ServicoContratado"/>

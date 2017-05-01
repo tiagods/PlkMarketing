@@ -13,6 +13,7 @@ public class Lista implements Serializable{
 	private static final long serialVersionUID = 6089758005112336081L;
 	private int id;
 	private String nome;
+	private String detalhes;
 	private Date criadoEm;
 	private Usuario criadoPor;
 	private Set<Prospeccao> prospects = new LinkedHashSet<>();
@@ -39,6 +40,18 @@ public class Lista implements Serializable{
 	 */
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	/**
+	 * @return the detalhes
+	 */
+	public String getDetalhes() {
+		return detalhes;
+	}
+	/**
+	 * @param detalhes the detalhes to set
+	 */
+	public void setDetalhes(String detalhes) {
+		this.detalhes = detalhes;
 	}
 	/**
 	 * @return the criadoEm

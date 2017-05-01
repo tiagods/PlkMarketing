@@ -19,7 +19,8 @@
 	<many-to-one name="pessoa" column="TAR_PESSOA_COD" foreign-key="FK_TAR_PESSOA_COD"/>
 	<many-to-one name="empresa" column="TAR_EMPRESA_COD" foreign-key="FK_TAR_EMPRESA_COD"/>
 	<many-to-one name="negocio" column="TAR_NEGOCIO_COD" foreign-key="FK_TAR_NEGOCIO_COD"/>
-	<property name="finalizado" column="TAR_FINALIZADO" type="integer" length="1"/>
+	<many-to-one name="prospeccao" column="TAR_PROSPECCAO_COD" foreign-key="FK_TAR_PROSPECCAO_COD"/>
+    <property name="finalizado" column="TAR_FINALIZADO" type="integer" length="1"/>
 	<property name="alertaEnviado" column="TAR_ALERTAENVIADO" type="integer" length="1"/>
 	</class>
 </hibernate-mapping>
