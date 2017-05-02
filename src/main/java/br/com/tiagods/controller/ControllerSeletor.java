@@ -29,12 +29,14 @@ import org.hibernate.criterion.Restrictions;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Empresa;
+import br.com.tiagods.model.Lista;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Prospeccao;
+import br.com.tiagods.model.ProspeccaoTipoContato;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoAgregado;
 import br.com.tiagods.modeldao.GenericDao;
@@ -107,6 +109,15 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relação de Empresas");
 			}
+			if(object instanceof Lista){
+				List<Lista> lista = dao.items(Lista.class, session, criterion, Order.desc("id"));
+				linhas = new String[lista.size()][colunas.length];
+				for(int i=0;i<lista.size();i++){
+					linhas[i][0] = String.valueOf(lista.get(i).getId());
+					linhas[i][1] = lista.get(i).getNome();
+				}
+				view.setTitle("Relação de Listas");
+			}
 			else if(object instanceof Negocio){
 				List<Negocio> lista = dao.items(Negocio.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
@@ -132,8 +143,18 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
 				}
-				view.setTitle("Relação de Pessoas");
+				view.setTitle("Relação de Prospects");
 			}
+			else if (object instanceof ProspeccaoTipoContato){
+				List<ProspeccaoTipoContato> lista = dao.items(ProspeccaoTipoContato.class, session, criterion, Order.desc("id"));
+				linhas = new String[lista.size()][colunas.length];
+				for(int i=0;i<lista.size();i++){
+					linhas[i][0] = String.valueOf(lista.get(i).getId());
+					linhas[i][1] = lista.get(i).getNome();
+				}
+				view.setTitle("Relação de Tipo de Contato");
+			}
+
 			else if(object instanceof Categoria){
 				List<Categoria> lista = dao.items(Categoria.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
@@ -285,7 +306,9 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					}
 				}
 				view.dispose();
-			}else JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
+			}
+			else 
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Selecione um registro da tabela!");
 		}
 	}
 	
@@ -320,6 +343,14 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			else 
 				novoObjeto = (Empresa)dao.receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
 			((Empresa)novoObjeto).setNome(txNome.getText().trim());
+		}		
+		else if(object instanceof Lista){
+			if("".equals(txCodigo.getText())){
+				novoObjeto = new Lista();
+			}
+			else 
+				novoObjeto = (Lista)dao.receberObjeto(Lista.class, Integer.parseInt(txCodigo.getText()), session);
+			((Lista)novoObjeto).setNome(txNome.getText().trim());
 		}
 		else if(object instanceof Negocio){
 			if("".equals(txCodigo.getText())){
@@ -344,6 +375,27 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			else 
 				novoObjeto = (Pessoa)dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
 			((Pessoa)novoObjeto).setNome(txNome.getText().trim());
+		}
+		else if(object instanceof Prospeccao){
+			if("".equals(txCodigo.getText())){
+				novoObjeto = new Prospeccao();
+				PfPj pfpj = new PfPj();
+				pfpj.setCriadoEm(new Date());
+				pfpj.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+				pfpj.setAtendente(UsuarioLogado.getInstance().getUsuario());
+				((Prospeccao)novoObjeto).setPfpj(pfpj);
+			}
+			else 
+				novoObjeto = (Prospeccao)dao.receberObjeto(Prospeccao.class, Integer.parseInt(txCodigo.getText()), session);
+			((Prospeccao)novoObjeto).setNome(txNome.getText().trim());
+		}
+		else if(object instanceof ProspeccaoTipoContato){
+			if("".equals(txCodigo.getText())){
+				novoObjeto = new ProspeccaoTipoContato();
+			}
+			else 
+				novoObjeto = (ProspeccaoTipoContato)dao.receberObjeto(ProspeccaoTipoContato.class, Integer.parseInt(txCodigo.getText()), session);
+			((ProspeccaoTipoContato)novoObjeto).setNome(txNome.getText().trim());
 		}
 		else if(object instanceof Categoria){
 			if("".equals(txCodigo.getText())){

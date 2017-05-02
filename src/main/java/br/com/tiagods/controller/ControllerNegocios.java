@@ -415,9 +415,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@SuppressWarnings("unchecked")
 	private void preencherComboBox(JPanel panel){
 		for(Component component : panel.getComponents()){
-			if(component instanceof JComboBox)
+			if(component instanceof JComboBox|| component.getName()!=null)
 				padrao.preencherCombo((JComboBox<String>)component, session, null);
-			
 		}
 	}
 
