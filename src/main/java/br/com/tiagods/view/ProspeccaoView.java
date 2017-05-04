@@ -11,10 +11,12 @@ import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import br.com.tiagods.controller.ControllerProspeccao;
 import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 
 import javax.swing.JComboBox;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -46,24 +48,26 @@ public class ProspeccaoView extends JInternalFrame {
 	public static JTable tbLista;
 	public static JTable tbAuxiliar;
 	public static JTable tbPrincipal;
-	public static JCheckBox ckConviteEventosCad,ckMaterialCad,ckNewsletterCad,ckConviteEventos,ckMaterial,ckNewsletter;
+	public static JCheckBox ckConviteEventosCad,ckMaterialCad,ckNewsletterCad,ckConviteEventosPesquisa,ckMaterialPesquisa,ckNewsletterPesquisa;
 	public static JTextArea txDetalhesDaOrigem,txResumoContato,txApresentacao;
 	public static DefaultComboBox cbTipoContatoCad,cbAtendenteCad;
 	public static DefaultComboBox cbListaCad,cbOrigemCad;
-	public static DefaultComboBox cbTipoContatoPesquisa,cbOrigem,cbLista,cbAtendente,cbServicos;
+	public static DefaultComboBox cbTipoContatoPesquisa,cbOrigem,cbLista,cbAtendente,cbServicos,cbServicosCad;
 	public static JComboBox<String> cbBuscarPor,cbOrdenacao;
 	public static JButton btNovaTarefa, btEsconder, btHistorico, btNovo, btEditar, btSalvar, btCancelar, btExcluir, btEmail, btSite;
 	public static JRadioButton rbCrescente, rbDecrescente;
 	public static JTabbedPane tabbedPane;
-	public static JPanel pnPesquisa, pnCadastro,pnCadastroOrigem, pnAuxiliar;
+	public static JPanel pnPesquisa, pnCadastro,pnCadastroOrigem, pnAuxiliar, pnLista;
 	public static JDateChooser data1, data2;
 	public static JButton btOrigemAdd;
 	public static JTextField txDataCadastro;
 	public static JTextField txCadastradoPor;
-	public static JButton btTipoContatoAdd;
+	public static JButton btTipoContatoAdd,btServicosAdd,btListaAdd,btAdicionarALista;
 	public static JButton btExportarMalaDireta,btnExpMailmktLocaweb;
 	public static JTextField txContadorRegistros;
 	
+	ControllerProspeccao controller = new ControllerProspeccao();
+	private JLabel label_1;
 	/**
 	 * Launch the application.
 	 */
@@ -83,13 +87,16 @@ public class ProspeccaoView extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings("unchecked")
 	public ProspeccaoView(Prospeccao prospeccao) {
-		
+		setBorder(null);
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
+		panel.setBackground(new Color(250,250,250));
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBackground(new Color(250,250,250));
 		tabbedPane.setBounds(10, 11, 1214, 608);
 		panel.add(tabbedPane);
 		
@@ -122,35 +129,35 @@ public class ProspeccaoView extends JInternalFrame {
 		cbAtendente.setBounds(451, 11, 97, 20);
 		pnPesquisa.add(cbAtendente);
 		
-		ckConviteEventos = new JCheckBox("Convite para Eventos");
-		ckConviteEventos.setBounds(554, 11, 142, 23);
-		pnPesquisa.add(ckConviteEventos);
+		ckConviteEventosPesquisa = new JCheckBox("Convite para Eventos");
+		ckConviteEventosPesquisa.setBounds(554, 11, 170, 23);
+		pnPesquisa.add(ckConviteEventosPesquisa);
 		
-		ckMaterial = new JCheckBox("Material");
-		ckMaterial.setBounds(698, 12, 97, 23);
-		pnPesquisa.add(ckMaterial);
+		ckMaterialPesquisa = new JCheckBox("Material");
+		ckMaterialPesquisa.setBounds(737, 11, 97, 23);
+		pnPesquisa.add(ckMaterialPesquisa);
 		
-		ckNewsletter = new JCheckBox("Newsletter");
-		ckNewsletter.setBounds(797, 12, 97, 23);
-		pnPesquisa.add(ckNewsletter);
+		ckNewsletterPesquisa = new JCheckBox("Newsletter");
+		ckNewsletterPesquisa.setBounds(836, 11, 97, 23);
+		pnPesquisa.add(ckNewsletterPesquisa);
 		
 		JLabel lblBuscar = new JLabel("Buscar:");
 		lblBuscar.setBounds(10, 63, 46, 14);
 		pnPesquisa.add(lblBuscar);
 		
 		txBuscar = new JTextField();
-		txBuscar.setBounds(66, 57, 86, 20);
+		txBuscar.setBounds(66, 57, 139, 20);
 		pnPesquisa.add(txBuscar);
 		txBuscar.setColumns(10);
 		
 		JLabel lblPor = new JLabel("por:");
 		lblPor.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPor.setBounds(162, 63, 46, 14);
+		lblPor.setBounds(220, 63, 46, 14);
 		pnPesquisa.add(lblPor);
 		
 		cbBuscarPor = new JComboBox<String>();
-		cbBuscarPor.setModel(new DefaultComboBoxModel<String>(new String[] {"ID", "Nome", "Responsavel"}));
-		cbBuscarPor.setBounds(218, 57, 103, 20);
+		cbBuscarPor.setModel(new DefaultComboBoxModel<String>(new String[] {"C\u00F3digo", "Nome", "Responsavel"}));
+		cbBuscarPor.setBounds(276, 57, 80, 20);
 		pnPesquisa.add(cbBuscarPor);
 		
 		JLabel lblClassificarPor = new JLabel("Classificar por:");
@@ -159,18 +166,19 @@ public class ProspeccaoView extends JInternalFrame {
 		
 		cbOrdenacao = new JComboBox<String>();
 		cbOrdenacao.setToolTipText("Voc\u00EA consegue organizar com duplo clique no nome da coluna dentro da tabela abaixo, mas campos como DATA E CODIGO n\u00E3o s\u00E3o possiveis de ordenar, por isso dispon\u00EDvel essa fun\u00E7\u00E3o atrav\u00E9s dessa caixa.");
-		cbOrdenacao.setModel(new DefaultComboBoxModel<String>(new String[] {"C\u00F3digo", "Data de Cadastro"}));
+		cbOrdenacao.setModel(new DefaultComboBoxModel<String>(new String[] {"C\u00F3digo", "Nome", "Data Cria\u00E7\u00E3o"}));
 		cbOrdenacao.setBounds(494, 57, 121, 20);
 		pnPesquisa.add(cbOrdenacao);
 		
+		ButtonGroup group = new ButtonGroup();
 		rbCrescente = new JRadioButton("Crescente");
 		rbCrescente.setBounds(623, 56, 109, 23);
 		pnPesquisa.add(rbCrescente);
-		
+		group.add(rbCrescente);
 		rbDecrescente = new JRadioButton("Decrescente");
 		rbDecrescente.setBounds(623, 82, 109, 23);
 		pnPesquisa.add(rbDecrescente);
-		
+		group.add(rbDecrescente);
 		JPanel pnData = new JPanel();
 		pnData.setLayout(null);
 		pnData.setOpaque(false);
@@ -199,13 +207,16 @@ public class ProspeccaoView extends JInternalFrame {
 		pnData.add(data2);
 		
 		btExportarMalaDireta = new JButton("Exportar Mala Direta");
+		btExportarMalaDireta.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		btExportarMalaDireta.setEnabled(false);
-		btExportarMalaDireta.setBounds(1049, 56, 150, 23);
+		btExportarMalaDireta.setBounds(1049, 11, 150, 23);
 		pnPesquisa.add(btExportarMalaDireta);
 		
-		btnExpMailmktLocaweb = new JButton("Exp. EmailMkt Locaweb");
-		btnExpMailmktLocaweb.setEnabled(false);
-		btnExpMailmktLocaweb.setBounds(1049, 82, 150, 23);
+		btnExpMailmktLocaweb = new JButton("Exportar TXT Locaweb");
+		btnExpMailmktLocaweb.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnExpMailmktLocaweb.setToolTipText("Exportar Lista de Resultados para o padr\u00E3o E-Mail Marketing Locaweb");
+		btnExpMailmktLocaweb.setActionCommand("ExportarEMailMarketingLocaweb");
+		btnExpMailmktLocaweb.setBounds(1049, 37, 150, 23);
 		pnPesquisa.add(btnExpMailmktLocaweb);
 		
 		JScrollPane spPesquisa = new JScrollPane();
@@ -220,11 +231,17 @@ public class ProspeccaoView extends JInternalFrame {
 		txContadorRegistros.setBounds(967, 555, 152, 14);
 		pnPesquisa.add(txContadorRegistros);
 		
+		label_1 = new JLabel("Pressione <Enter>");
+		label_1.setHorizontalAlignment(SwingConstants.CENTER);
+		label_1.setBounds(66, 88, 139, 14);
+		pnPesquisa.add(label_1);
+		
 		JPanel pnItem = new JPanel();
 		tabbedPane.addTab("Cadastro", null, pnItem, null);
 		pnItem.setLayout(null);
 		
 		pnCadastro = new JPanel();
+		pnCadastro.setOpaque(false);
 		pnCadastro.setBounds(10, 11, 719, 517);
 		pnItem.add(pnCadastro);
 		pnCadastro.setLayout(null);
@@ -347,17 +364,17 @@ public class ProspeccaoView extends JInternalFrame {
 		txEndereco.setColumns(10);
 		
 		JLabel lblTipoContato = new JLabel("Tipo de Contato:");
-		lblTipoContato.setBounds(333, 168, 86, 14);
+		lblTipoContato.setBounds(10, 235, 86, 20);
 		pnCadastro.add(lblTipoContato);
 		
 		cbTipoContatoCad = new DefaultComboBox();
 		cbTipoContatoCad.setName("TipoContatoCad");
-		cbTipoContatoCad.setBounds(421, 165, 86, 20);
+		cbTipoContatoCad.setBounds(108, 235, 113, 20);
 		pnCadastro.add(cbTipoContatoCad);
-		cbTipoContatoCad.setModel(new DefaultComboBoxModel<String>(new String[] {"Nenhum", "E-Mail", "Mala Direta", "E-Mail e Mala Direta"}));
+		cbTipoContatoCad.setModel(new DefaultComboBoxModel<Object>(new String[] {"Nenhum", "E-Mail", "Mala Direta", "E-Mail e Mala Direta"}));
 		
 		ckConviteEventosCad = new JCheckBox("Convite para Eventos");
-		ckConviteEventosCad.setBounds(333, 192, 140, 23);
+		ckConviteEventosCad.setBounds(333, 192, 174, 23);
 		pnCadastro.add(ckConviteEventosCad);
 		
 		ckMaterialCad = new JCheckBox("Material");
@@ -369,6 +386,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastro.add(ckNewsletterCad);
 		
 		JTabbedPane tpSubCadastro = new JTabbedPane(JTabbedPane.TOP);
+		tpSubCadastro.setBackground(new Color(250,250,250));
 		tpSubCadastro.setBounds(0, 266, 719, 240);
 		pnCadastro.add(tpSubCadastro);
 		
@@ -404,6 +422,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastroOrigem.add(txtpncomoTeveAcesso);
 		
 		btOrigemAdd = new JButton("");
+		btOrigemAdd.setActionCommand("CriarOrigem");
 		btOrigemAdd.setName("CriarOrigem");
 		btOrigemAdd.setBounds(315, 77, 50, 25);
 		pnCadastroOrigem.add(btOrigemAdd);
@@ -452,45 +471,72 @@ public class ProspeccaoView extends JInternalFrame {
 		txApresentacao = new JTextArea();
 		spApresentacao.setViewportView(txApresentacao);
 		
-		JPanel pnLista = new JPanel();
+		pnLista = new JPanel();
 		tpSubCadastro.addTab("Lista", null, pnLista, null);
 		pnLista.setLayout(null);
 		
 		JLabel lblLista = new JLabel("Lista:");
-		lblLista.setBounds(10, 15, 86, 14);
+		lblLista.setBounds(10, 68, 86, 14);
 		pnLista.add(lblLista);
 		
 		cbListaCad = new DefaultComboBox();
 		cbListaCad.setName("ListaCad");
-		cbListaCad.setBounds(98, 12, 86, 20);
+		cbListaCad.setBounds(98, 65, 86, 20);
 		pnLista.add(cbListaCad);
 		
-		JButton btListaAdd = new JButton("+");
-		btListaAdd.setBounds(194, 11, 35, 23);
+		btListaAdd = new JButton();
+		btListaAdd.setActionCommand("CriarLista");
+		btListaAdd.setBounds(194, 64, 35, 23);
 		pnLista.add(btListaAdd);
 		
-		JLabel lbApresentacao = new JLabel("Apresenta\u00E7\u00E3o:");
-		lbApresentacao.setBounds(10, 60, 86, 14);
+		JLabel lbApresentacao = new JLabel("Listas:");
+		lbApresentacao.setBounds(10, 98, 86, 14);
 		pnLista.add(lbApresentacao);
 		
 		JScrollPane spLista = new JScrollPane();
-		spLista.setBounds(98, 60, 384, 141);
+		spLista.setBounds(98, 97, 384, 104);
 		pnLista.add(spLista);
 		
 		tbLista = new JTable();
 		spLista.setViewportView(tbLista);
 		
-		JButton btAdicionarALista = new JButton("+");
-		btAdicionarALista.setBounds(447, 11, 35, 23);
+		btAdicionarALista = new JButton();
+		btAdicionarALista.setActionCommand("AdicionarLista");
+		btAdicionarALista.setToolTipText("Vincule o registro a uma ou mais listas");
+		btAdicionarALista.setBounds(239, 65, 35, 23);
 		pnLista.add(btAdicionarALista);
 		
+		JTextPane txtpnVinculeOCadastro = new JTextPane();
+		txtpnVinculeOCadastro.setText("Vincule o cadastro a uma ou mais listas. Essas listas podem ser exportadas, no padr\u00E3o Mala Direta ou E-Mail Marketing. Selecione um valor do combo e salve para vincular a lista ao contato.");
+		txtpnVinculeOCadastro.setOpaque(false);
+		txtpnVinculeOCadastro.setEditable(false);
+		txtpnVinculeOCadastro.setBounds(10, 11, 472, 48);
+		pnLista.add(txtpnVinculeOCadastro);
+		
 		btTipoContatoAdd = new JButton("");
+		btTipoContatoAdd.setEnabled(false);
 		btTipoContatoAdd.setActionCommand("TipoContatoAdd");
 		btTipoContatoAdd.setName("CriarOrigem");
-		btTipoContatoAdd.setBounds(519, 165, 50, 25);
+		btTipoContatoAdd.setBounds(231, 235, 36, 25);
 		pnCadastro.add(btTipoContatoAdd);
 		
+		JLabel lbRamo = new JLabel();
+		lbRamo.setText("Ramo:");
+		lbRamo.setBounds(10, 196, 80, 19);
+		pnCadastro.add(lbRamo);
+		
+		cbServicosCad = new DefaultComboBox();
+		cbServicosCad.setName("ServicosCad");
+		cbServicosCad.setBounds(105, 196, 116, 20);
+		pnCadastro.add(cbServicosCad);
+		
+		btServicosAdd = new JButton();
+		btServicosAdd.setActionCommand("CriarServico");
+		btServicosAdd.setBounds(231, 193, 36, 25);
+		pnCadastro.add(btServicosAdd);
+		
 		pnAuxiliar = new JPanel();
+		pnAuxiliar.setOpaque(false);
 		pnAuxiliar.setBounds(739, 11, 460, 363);
 		pnItem.add(pnAuxiliar);
 		pnAuxiliar.setLayout(null);
@@ -565,5 +611,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnItem.add(btExcluir);
 		pack();
 		setBounds(0, 0, 1250, 660);
+		
+		controller.iniciar(prospeccao);
 	}
 }

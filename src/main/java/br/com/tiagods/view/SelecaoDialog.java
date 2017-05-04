@@ -40,6 +40,9 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 	public static JButton btnNovo,btnEditar,btnSalvar,btnExcluir,btnCancelar,btOkDialog,btCancelDialog,btnImportarCadastro;
 	public static JComboBox<String> comboFiltro;
 	ControllerSeletor controller = new ControllerSeletor();
+	public static JTextField txDetalhes;
+	private JLabel lbDetalhes;
+	private JLabel lbNome;
 /**
 	 * Create the dialog.
 	 */
@@ -77,7 +80,9 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
-				.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
+				.addGroup(Alignment.TRAILING, gl_contentPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
 		);
 		contentPanel.setLayout(gl_contentPanel);
 
@@ -114,7 +119,7 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 		
 		
 		pnCadastrar = new JPanel();
-		pnCadastrar.setBounds(10, 42, 564, 33);
+		pnCadastrar.setBounds(10, 42, 564, 70);
 		getContentPane().add(pnCadastrar);
 		pnCadastrar.setLayout(null);
 		
@@ -124,7 +129,7 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 		pnCadastrar.add(txCodigo);
 		
 		txNome = new JTextField();
-		txNome.setBounds(26, 2, 129, 25);
+		txNome.setBounds(108, 6, 129, 25);
 		pnCadastrar.add(txNome);
 		txNome.setColumns(10);
 		
@@ -139,7 +144,7 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 		btnSalvar = new JButton("");
 		btnSalvar.setToolTipText("Salvar");
 		btnSalvar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnSalvar.setBounds(174, 1, 75, 25);
+		btnSalvar.setBounds(256, 5, 75, 25);
 		btnSalvar.setActionCommand("Salvar");
 		btnSalvar.addActionListener(controller);
 		pnCadastrar.add(btnSalvar);
@@ -147,7 +152,7 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 		btnCancelar = new JButton("");
 		btnCancelar.setToolTipText("Cancelar");
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnCancelar.setBounds(260, 2, 75, 25);
+		btnCancelar.setBounds(342, 6, 75, 25);
 		btnCancelar.setActionCommand("Cancelar");
 		btnCancelar.addActionListener(controller);
 		pnCadastrar.add(btnCancelar);
@@ -155,10 +160,23 @@ public class SelecaoDialog extends JDialog implements DefaultEnumModel{
 		btnExcluir = new JButton("");
 		btnExcluir.setToolTipText("Excluir");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		btnExcluir.setBounds(342, 1, 75, 25);
+		btnExcluir.setBounds(424, 5, 75, 25);
 		btnExcluir.setActionCommand("Excluir");
 		btnExcluir.addActionListener(controller);
 		pnCadastrar.add(btnExcluir);
+		
+		txDetalhes = new JTextField();
+		txDetalhes.setColumns(10);
+		txDetalhes.setBounds(108, 34, 309, 25);
+		pnCadastrar.add(txDetalhes);
+		
+		lbDetalhes = new JLabel("Detalhes:");
+		lbDetalhes.setBounds(31, 39, 67, 14);
+		pnCadastrar.add(lbDetalhes);
+		
+		lbNome = new JLabel("Nome:");
+		lbNome.setBounds(31, 11, 61, 14);
+		pnCadastrar.add(lbNome);
 		
 		btnImportarCadastro = new JButton("Importar Cadastro");
 		btnImportarCadastro.setToolTipText("Aguarde...em breve ser\u00E1 possivel importar seus contatos atraves da base de clientes Prolink (Cadastro). Previs\u00E3o de entrega em 05/01/2017.");

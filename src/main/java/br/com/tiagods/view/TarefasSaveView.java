@@ -187,8 +187,8 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         pnRelacionamento.add(txCodigoObjeto);
         
         txNomeObjeto = new JTextField("");
-        txNomeObjeto.setColumns(30);
         txNomeObjeto.setEnabled(false);
+        txNomeObjeto.setColumns(20);
         txNomeObjeto.setBackground(Color.WHITE);
         txNomeObjeto.setOpaque(true);
         txNomeObjeto.setForeground(Color.BLUE);

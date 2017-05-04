@@ -1,7 +1,7 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Prospeccao implements Serializable{
@@ -19,7 +19,7 @@ public class Prospeccao implements Serializable{
 	private int newsletter=0;
 	private ProspeccaoTipoContato tipoContato;
 	private String endereco;
-	private Set<Lista> listas = new LinkedHashSet<Lista>();
+	private Set<Lista> listas = new HashSet<>();
 	/**
 	 * @return the id
 	 */

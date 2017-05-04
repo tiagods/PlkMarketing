@@ -7,10 +7,10 @@ import javax.swing.JOptionPane;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 
-import br.com.tiagods.view.SubmeterErroDialog;
 import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class GenericDao implements InterfaceDao{
@@ -27,7 +27,7 @@ public class GenericDao implements InterfaceDao{
 			return false;
 		}
 	}
-
+	
 	@Override
 	public boolean excluir(Object object, Session session) {
 		try{
@@ -58,8 +58,8 @@ public class GenericDao implements InterfaceDao{
 			return null;
 		}
 	}
-	
-	@SuppressWarnings("deprecation")
+
+	@SuppressWarnings({ "deprecation", "rawtypes" })
 	public Object receberObjeto(Class classe, Criterion[] criterions, Session session){
 		Criteria criteria = session.createCriteria(classe);
 		for(Criterion c : criterions)
@@ -74,6 +74,17 @@ public class GenericDao implements InterfaceDao{
 			for(Criterion c : criterion)
 				criteria.add(c);
 		}
+		criteria.addOrder(order);
+		return criteria.list();
+	}
+	@SuppressWarnings({ "deprecation", "rawtypes" })
+	public List items(Class classe, Session session, List<Criterion> criterion, String[] alias, Conjunction conjunction, Order order){
+		Criteria criteria = session.createCriteria(classe).createAlias(alias[0], alias[1]);
+		if(!criterion.isEmpty()){
+			for(Criterion c : criterion)
+				criteria.add(c);
+		}
+		criteria.add(conjunction);
 		criteria.addOrder(order);
 		return criteria.list();
 	}

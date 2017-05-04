@@ -93,6 +93,7 @@ import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegocioPerdaDialog;
 import br.com.tiagods.view.PessoasView;
+import br.com.tiagods.view.ProspeccaoView;
 import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
@@ -280,6 +281,14 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			txFone.setText(n.getPessoa().getPessoaFisica().getTelefone());
 			txCelular.setText(n.getPessoa().getPessoaFisica().getCelular());
 		}
+		else if(n.getClasse().equals(Prospeccao.class.getSimpleName())){
+			txCodObjeto.setText(""+n.getProspeccao().getId());
+			txNomeObjeto.setText(n.getProspeccao().getNome());
+			txEmail.setText(n.getProspeccao().getPfpj().getEmail());
+			site = n.getProspeccao().getPfpj().getSite();
+			txFone.setText(n.getProspeccao().getPfpj().getTelefone());
+			txCelular.setText(n.getProspeccao().getPfpj().getCelular());
+		}
 		txCodigo.setText(""+n.getId());
 		txNome.setText(n.getNome());
 		txDataCadastro.setText(n.getCriadoEm()!=null?sdf.format(n.getCriadoEm()):"");
@@ -415,7 +424,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	@SuppressWarnings("unchecked")
 	private void preencherComboBox(JPanel panel){
 		for(Component component : panel.getComponents()){
-			if(component instanceof JComboBox|| component.getName()!=null)
+			if(component.getName()!=null && component instanceof JComboBox)
 				padrao.preencherCombo((JComboBox<String>)component, session, null);
 		}
 	}
@@ -594,7 +603,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		case "OpenURL":
 			URI browser = null;
 			try{
-				if(site.trim().length()>0){
+				if(site!=null && site.trim().length()>0){
 					browser = new URI(site);
 					Desktop.getDesktop().browse(browser);
 				}
@@ -674,7 +683,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
         	documento = new Documento();
         	documento.setNegocio(negocio);
         	documento.setNome(txDocumentoNome.getText());
-        	documento.setNome(txDocumentoDescricao.getText());
+        	documento.setDescricao(txDocumentoDescricao.getText());
         	documento.setData(new Date());
         	documento.setUrl(nomeArquivo);
         	documento.setUsuario(UsuarioLogado.getInstance().getUsuario());
@@ -977,11 +986,20 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setClasse("Empresa");
 			negocio.setEmpresa(o);
 			negocio.setPessoa(null);
+			negocio.setProspeccao(null);
 		}
 		else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
 			Object o = dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodObjeto.getText()), session);
 			negocio.setClasse("Pessoa");
 			negocio.setPessoa((Pessoa)o);
+			negocio.setEmpresa(null);
+			negocio.setProspeccao(null);
+		}
+		else if(cbObject.getSelectedItem().equals(Modelos.Prospeccao.toString())){
+			Object o = dao.receberObjeto(Prospeccao.class, Integer.parseInt(txCodObjeto.getText()), session);
+			negocio.setClasse("Prospeccao");
+			negocio.setPessoa(null);
+			negocio.setProspeccao((Prospeccao)o);
 			negocio.setEmpresa(null);
 		}
 		negocio.setEtapa(receberEtapa(negocio));
@@ -1380,7 +1398,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 
 			Icon icoEmp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_empresas.png"));
 			Icon icoPes = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_people.png"));
-
+			Icon icoPro = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_prospeccao.png"));
+			
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 			Negocio neg = (Negocio) dao.receberObjeto(Negocio.class, id, session);
 			if(icoEmp.toString().equals(value.toString())){
@@ -1392,6 +1411,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				Pessoa pessoa = neg.getPessoa();
 				PessoasView viewPessoa = new PessoasView(pessoa);
 				ControllerMenu.getInstance().abrirCorpo(viewPessoa);
+			}
+			else if(icoPro.toString().equals(value.toString())){
+				Prospeccao prospeccao = neg.getProspeccao();
+				ProspeccaoView viewProspeccao = new ProspeccaoView(prospeccao);
+				ControllerMenu.getInstance().abrirCorpo(viewProspeccao);
 			}
 			session.close();
 		}

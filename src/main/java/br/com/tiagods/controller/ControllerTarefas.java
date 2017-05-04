@@ -7,6 +7,7 @@ import static br.com.tiagods.view.TarefasView.*;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -15,6 +16,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -33,12 +36,14 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -69,13 +74,15 @@ import br.com.tiagods.view.ProspeccaoView;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
+import br.com.tiagods.view.interfaces.ExcelGenerico;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
+import jxl.write.WriteException;
 /*
  * @author Tiago
  */
 public class ControllerTarefas implements ActionListener, MouseListener,PropertyChangeListener,ItemListener {
-	Calendar data1;
-	Calendar data2;
+	Calendar data1= Calendar.getInstance();
+	Calendar data2 = Calendar.getInstance();
 	Usuario userSessao;
 	Session session;
 	int finalizado=0;
@@ -135,7 +142,6 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			setarIcons();
 		}catch (NullPointerException e) {
 		}
-
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
 	}
@@ -143,20 +149,28 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		jData1.addPropertyChangeListener(this);
 		jData2.addPropertyChangeListener(this);
 		cbAtendentes.addItemListener(this);
+		tbPrincipal.addMouseListener(this);
 	}
 	public void ativarBotao(JCheckBox radio){
 		radio.setSelected(true);
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(validarDatas())
+		if(validarDatas()){
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
 			buscar();
+			session.close();
+		}
 			
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getStateChange()==ItemEvent.DESELECTED){
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
 			buscar();
+			session.close();
 		}
 	}
 	@Override
@@ -171,13 +185,19 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			JCheckBox ck = (JCheckBox)e.getComponent();
 			if(ck.isSelected()){
 				tipoTarefas.add(tipoTarefasMapa.get(ck.getName()));
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
 				buscar();
+				session.close();
 //				ck.setOpaque(true);
 //				ck.setBackground(Color.orange);
 			}
 			else{
 				tipoTarefas.remove(tipoTarefasMapa.get(ck.getName()));
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
 				buscar();
+				session.close();
 //				ck.setOpaque(false);
 			}
 		}
@@ -200,7 +220,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			view.setVisible(true);
 			break;
 		case "Status":
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
 			buscar();
+			session.close();
 			break;
 		case "Prazo":
 			boolean value =false;
@@ -212,13 +235,111 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				jData1.setDate(new Date());
 				jData2.setDate(new Date());
 			}
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
 			buscar();
+			session.close();
+			break;
+		case "Exportar":
+			exportar();
 			break;
 		default:
 			break;
 		}
 		
 	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void exportar(){
+		DefaultTableModel model = (DefaultTableModel)tbPrincipal.getModel();
+		if(model.getColumnCount()>1){
+			int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
+					+"Todos os registros serão exportados para o formato excel, deseja imprimir o filtro realizado",
+					"Exportar Negocios",JOptionPane.YES_NO_OPTION);
+			if(opcao==JOptionPane.YES_OPTION){
+				String export = carregarArquivo("Salvar arquivo");
+				if(!"".equals(export)){
+					session = HibernateFactory.getSession();
+					session.beginTransaction();
+					buscar();
+					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+					Integer[] colunasLenght = new Integer[]{10,18,14,10,30,10,10,10,20,15,15};
+					String[] cabecalho = new String[]{
+							"Tarefa","Prazo","Andamento","Status","Detalhes",
+							"Tipo","Registro","Nome","Status_Negocio","Atendente","Criado_Por"};
+					listaImpressao.add(new ArrayList<>());
+					for(String c : cabecalho){
+						listaImpressao.get(0).add(c);
+					}
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+					for(int i = 0;i<listaTarefas.size();i++){
+						listaImpressao.add(new ArrayList<String>());
+						Tarefa t = listaTarefas.get(i);
+						listaImpressao.get(i+1).add(""+t.getId());
+						listaImpressao.get(i+1).add(sdf.format(t.getDataEvento()));
+						listaImpressao.get(i+1).add(t.getTipoTarefa().getNome());
+						listaImpressao.get(i+1).add(t.getFinalizado()==0?"Pendente":"Encerrado");
+						listaImpressao.get(i+1).add(t.getDescricao());
+						listaImpressao.get(i+1).add(t.getClasse());
+						String[] dados = new String[3];
+						if(t.getClasse().equals(Empresa.class.getSimpleName())){
+							dados[0]=""+t.getEmpresa().getId();
+							dados[1]=t.getEmpresa().getNome();
+							dados[2]="";
+						}
+						else if(t.getClasse().equals(Negocio.class.getSimpleName())){
+							dados[0]=""+t.getNegocio().getId();
+							dados[1]=t.getNegocio().getNome();
+							dados[2]=t.getNegocio().getStatus().getNome();
+						}
+						else if(t.getClasse().equals(Pessoa.class.getSimpleName())){
+							dados[0]=""+t.getPessoa().getId();
+							dados[1]=t.getPessoa().getNome();
+							dados[2]="";
+						}
+						else if(t.getClasse().equals(Prospeccao.class.getSimpleName())){
+							dados[0]=""+t.getProspeccao().getId();
+							dados[1]=t.getProspeccao().getNome();
+							dados[2]="";
+						}
+						listaImpressao.get(i+1).add(dados[0]);
+						listaImpressao.get(i+1).add(dados[1]);
+						listaImpressao.get(i+1).add(dados[2]);
+						listaImpressao.get(i+1).add(t.getAtendente().getNome());
+						listaImpressao.get(i+1).add(t.getCriadoPor().getNome());
+						
+					}
+					ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
+					try {
+						planilha.gerarExcel();
+						JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
+						Desktop.getDesktop().open(new File(export+".xls"));
+					} catch (WriteException e1) {
+						JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+						e1.printStackTrace();
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+					} finally{
+						session.close();
+					}
+				}
+			}
+		}
+		else{
+			JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
+		}
+	}
+	private String carregarArquivo(String title){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setDialogTitle(title);
+        String local = "";
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+        int retorno = chooser.showSaveDialog(null);
+        if(retorno==JFileChooser.APPROVE_OPTION){
+        	local = chooser.getSelectedFile().getAbsolutePath(); //
+        }
+        return local;
+    }
 	@SuppressWarnings("unchecked")
 	private void carregarAtendentes(){
 		List<Usuario> lista = new UsuarioDao().listar(Usuario.class,session);
@@ -306,13 +427,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			Criterion criterion = Restrictions.eq("atendente", atendentes.get(cbAtendentes.getSelectedItem()));
 			criterios.add(criterion);
 		}
-		session = HibernateFactory.getSession();
-		session.beginTransaction();
 		Order order = Order.desc("dataEvento");
 		listaTarefas = (List<Tarefa>)(new GenericDao().items(Tarefa.class, session, criterios, order));
 		preencherTabela(tbPrincipal, listaTarefas, txContador);
-		tbPrincipal.addMouseListener(this);
-		session.close();
 		return true;
 	}
 	
@@ -396,7 +513,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 					o[4] = t.getNegocio()==null?"Erro: Negocio desassociado":t.getNegocio().getNome();
 				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getPessoa()==null?"Erro: Pessoa desassociada":t.getPessoa().getNome();
-				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
+				else if(Prospeccao.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getProspeccao()==null?"Erro: Prospeccao desassociada":t.getProspeccao().getNome();
 				else
 					o[4] = "Erro";
@@ -461,11 +578,15 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
-			table.getColumnModel().getColumn(0).setPreferredWidth(40);
-//			table.getColumnModel().getColumn(0).setMaxWidth(0);
-//			table.getColumnModel().getColumn(0).setMinWidth(0);
-			table.getColumnModel().getColumn(1).setPreferredWidth(100);
-			table.getColumnModel().getColumn(6).setPreferredWidth(100);
+			table.getColumnModel().getColumn(0).setMaxWidth(40);
+			table.getColumnModel().getColumn(1).setMinWidth(100);
+			table.getColumnModel().getColumn(1).setMaxWidth(100);
+			table.getColumnModel().getColumn(2).setMaxWidth(70);
+			table.getColumnModel().getColumn(3).setMaxWidth(60);
+			table.getColumnModel().getColumn(4).setMaxWidth(100);
+			table.getColumnModel().getColumn(5).setMaxWidth(50);
+			table.getColumnModel().getColumn(7).setMaxWidth(70);
+			table.getColumnModel().getColumn(8).setMaxWidth(70);
 			table.getColumnModel().getColumn(9).setMaxWidth(40);
 			table.getColumnModel().getColumn(10).setMaxWidth(40);
 			table.getColumnModel().getColumn(11).setMaxWidth(40);
@@ -523,7 +644,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				tbPrincipal.setValueAt(pendente, tbPrincipal.getSelectedRow(), 5);
 			}
 		}
+		session = HibernateFactory.getSession();
+		session.beginTransaction();
 		buscar();
+		session.close();
 	}
 	public void excluir(Session session){
 		int row = tbPrincipal.getSelectedRow();
@@ -536,8 +660,10 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
 			Tarefa tRemove = (Tarefa)dao.receberObjeto(Tarefa.class, id, session);
 			if(tRemove.getCriadoPor()== UsuarioLogado.getInstance().getUsuario()){
-				if(dao.excluir(tRemove, session))
+				if(dao.excluir(tRemove, session)){
+					session.beginTransaction();
 					buscar();
+				}
 			}
 			else{
 				JOptionPane.showConfirmDialog(MenuView.jDBody, "Apenas o criador da Tarefa ("+tRemove.getCriadoPor().getNome()+")pode excluir esse registro",
@@ -672,10 +798,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
         ImageIcon iconVisita = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_visita.png"));
         ckVisita.setIcon(recalculate(iconVisita));  
         ckVisita.setBorderPainted(true);
-        
         ImageIcon iconTaskNew = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
         btNovaTarefa.setIcon(recalculate(iconTaskNew));
-        
         ImageIcon iconFin = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/ok.png"));
         ckFinalizados.setIcon(recalculate(iconFin));
         ckFinalizados.setBorderPainted(true);
@@ -694,8 +818,8 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
         ImageIcon iconDefinir = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_person.png"));
         rbDefinirData.setIcon(recalculate(iconDefinir));
         rbDefinirData.setBorderPainted(true);
-        
-        
+    	ImageIcon iconExp = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+    	btExportarFiltro.setIcon(recalculate(iconExp));
 	}
 	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

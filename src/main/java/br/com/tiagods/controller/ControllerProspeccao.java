@@ -3,6 +3,7 @@ package br.com.tiagods.controller;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -13,14 +14,24 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -31,9 +42,11 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -42,14 +55,20 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Lista;
+import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Prospeccao;
+import br.com.tiagods.model.ProspeccaoTipoContato;
+import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
+import br.com.tiagods.view.interfaces.ButtonColumnModel;
+import br.com.tiagods.view.interfaces.SemRegistrosJTable;
 
 import static br.com.tiagods.view.ProspeccaoView.*;
 
@@ -57,11 +76,10 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 	private Session session = null;
 	boolean telaEmEdicao = false;
 	Prospeccao prospeccao;
-	List<Prospeccao> listarProspeccao = new ArrayList<Prospeccao>();
+	List<Prospeccao> listarProspeccao = new ArrayList<>();
 	Prospeccao prospeccaoBackup;
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
 	
-	String site;
 	GenericDao dao = new GenericDao();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
 	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
@@ -70,13 +88,13 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 	public void iniciar(Prospeccao prospeccao){
 		this.prospeccao=prospeccao;
 		boolean aberta = abrirSessao();
-		JPanel[] panels = {pnPesquisa,pnCadastro,pnCadastroOrigem};
+		rbCrescente.setSelected(true);
+		JPanel[] panels = {pnPesquisa,pnCadastro,pnCadastroOrigem,pnLista};
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
 		}
 		List<Criterion> criterion = new ArrayList<>();
-		//criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));  //departamento não se acostumou com a nova regra
-		
+		criterion.add(Restrictions.eq("pfpj.atendente", UsuarioLogado.getInstance().getUsuario()));
 		listarProspeccao = dao.items(Prospeccao.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		if(this.prospeccao==null && !listarProspeccao.isEmpty()){
@@ -95,6 +113,9 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
 	}
+	private void abrirModelo(){
+		
+	}
 	private boolean abrirSessao(){
 		try{
 			this.session = HibernateFactory.getSession();
@@ -104,30 +125,85 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			return false;
 		}
 	}
+	private void abrirUrl(){
+		URI browser = null;
+		try{
+			if(txSite.getText().trim().length()>0){
+				browser = new URI(txSite.getText().trim());
+				Desktop.getDesktop().browse(browser);
+			}
+			else
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não possui site",
+						"Nenhuma Pagina foi encontrada",JOptionPane.INFORMATION_MESSAGE);
+		}catch(IOException | URISyntaxException ex){
+			ex.printStackTrace();
+		}
+	}
+	private void adicionarLista(){
+		DefaultTableModel model = (DefaultTableModel) tbLista.getModel();
+		boolean contains = false;
+		boolean open = abrirSessao();
+		Lista lista = padrao.getListas(cbListaCad.getSelectedItem().toString());
+		for(int i = 0 ; i<model.getRowCount();i++){
+			if(Integer.parseInt(String.valueOf(model.getValueAt(i, 0)))==lista.getId()){
+				contains = true;
+			}
+		}
+		if(!contains){
+			Object[] o = new Object[5];
+			o[0]=""+lista.getId();
+			o[1]=lista.getNome();
+			o[2]=lista.getDetalhes();
+			o[3]=lista.getCriadoEm()==null?"":sdf.format(lista.getCriadoEm());
+			o[4] = recalculate(new ImageIcon(ControllerProspeccao.class
+					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
+			model.addRow(o);
+			tbLista.setModel(model);
+		}
+		else
+			JOptionPane.showMessageDialog(MenuView.jDBody, "Registro ja se encontra na lista selecionada!");
+		fecharSessao(open);
+	}
+	public class AcaoTabelaListaContatos implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(telaEmEdicao){
+				int row = tbLista.getSelectedRow();
+				Object value = tbLista.getValueAt(row, 0);
+				int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody,
+						"Deseja excluir a seguinte lista: \n"+tbLista.getValueAt(row, 0)+" \nNome: "+tbLista.getValueAt(row, 1)+
+						"\nDetalhes: "+tbLista.getValueAt(row, 2)+"?","Pedido de remoção!",JOptionPane.YES_NO_OPTION);
+				if(i==JOptionPane.OK_OPTION){
+					if(!"".equals(value.toString())){
+						boolean abrir = abrirSessao();
+						Prospeccao sec = (Prospeccao) dao.receberObjeto(Prospeccao.class, Integer.parseInt(value.toString()), session);
+						if(dao.excluir(sec, session)){
+							removerDaLista(row);
+						}
+						fecharSessao(abrir);
+					}
+					else{
+						removerDaLista(row);
+					}
+				}
+			}
+			else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de realizar qualquer alteração!");
+		}
+	}
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JComboBox[] combos = null;
 		switch(e.getActionCommand()){
 		case "Ordenar":
-			recebeSessao();
+			boolean open = abrirSessao();
 			realizarFiltro();
-			fechaSessao(true);
+			fecharSessao(open);
 			break;
 		case "Novo":
-			site="";
 			limparFormulario(pnCadastro);
 			novoEditar();
 			telaEmEdicao = true;
-			negocio = new Negocio();
-			negocio.setHonorario(new BigDecimal("0.00"));
-			txHonorario.setText("0,00");
-			dataInicio.setDate(new Date());
-			txEmail.setText("");
-			txCelular.setText("");
-			txFone.setText("");
-//			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
-//			while(serv.getRowCount()>0)
-//				serv.removeRow(0);
+			prospeccao = new Prospeccao();		
 			pnAuxiliar.setVisible(false);
 			break;
 		case "Editar":
@@ -137,89 +213,55 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			break;
 		case "Cancelar":
 			telaEmEdicao = false;
-			if(negocioBackup!=null){
-				negocio = negocioBackup;
-				session = HibernateFactory.getSession();
-				session.beginTransaction();
-				negocio = (Negocio)dao.receberObjeto(Negocio.class, negocio.getId(), session);
-				preencherFormulario(negocio);
-				session.close();
+			if(prospeccaoBackup!=null){
+				prospeccao = prospeccaoBackup;
+				open = abrirSessao();
+				prospeccao = (Prospeccao)dao.receberObjeto(Prospeccao.class, prospeccao.getId(), session);
+				preencherFormulario(prospeccao);
+				fecharSessao(open);
 			}
 			salvarCancelar();
 			break;
 		case "Excluir":
-			String mensagem = "Se quiser usar o mesmo numero da proposta "+txCodigo.getText()+",\n"
-					+ "prefira alterar as informações desse negocio usando a proposta de numero "+txCodigo.getText()+" no lugar de Excluir\n"
-							+ "Para cancelar a exclusão clique em Não ou Sim para continuar!";
-			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, mensagem,"Alerta de Exclusão",JOptionPane.YES_NO_OPTION);
-			if(escolha==JOptionPane.YES_OPTION){
-				if(UsuarioLogado.getInstance().getUsuario()==negocio.getCriadoPor()){
-					invocarExclusao();
-				}
-				else
-					JOptionPane.showMessageDialog(MenuView.jDBody, "Esse negocio so pode ser excluido pelo criador( "+txCadastradoPor.getText()+" )!","Exclusão não autorizada",JOptionPane.WARNING_MESSAGE);
+			if(UsuarioLogado.getInstance().getUsuario()==prospeccao.getPfpj().getCriadoPor()){
+				invocarExclusao();
 			}
+			else
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Esse registro so pode ser excluido pelo criador( "+txCadastradoPor.getText()+" )!","Exclusão não autorizada",JOptionPane.WARNING_MESSAGE);
 			telaEmEdicao = false;
 			break;
 		case "Salvar":
-			if(verificarCondicao()) {
 				invocarSalvamento();
 				telaEmEdicao = false;
-			}
 			break;
 		case "Historico":
 			if(!txCodigo.getText().equals("") && !telaEmEdicao){
 				pnAuxiliar.setVisible(true);
-				boolean open = recebeSessao();
+				open = abrirSessao();
 				List<Criterion>criterios = new ArrayList<>();
-				Criterion criterion = Restrictions.eq("negocio", negocio);
+				Criterion criterion = Restrictions.eq("prospeccao", prospeccao);
 				criterios.add(criterion);
 				Order order = Order.desc("dataEvento");
 				List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
 				new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
-				fechaSessao(open);
+				fecharSessao(open);
 			}
 			break;
 		case "Esconder":
 			pnAuxiliar.setVisible(false);
 			break;
-		case "VincularObjeto":
-			SelecaoDialog dialog = null;
-			if(!telaEmEdicao){
-				JOptionPane.showMessageDialog(jDBody, "Para selecionar uma Empresa ou Pessoa, clique em Novo ou Editar para uma nova associação!","Somente em edição...",JOptionPane.INFORMATION_MESSAGE);
-			}
-			else{
-
-				JComboBox[] comboNegocios = new JComboBox[]{cbCategoriaCad,cbOrigemCad,cbNivelCad,cbServicosCad};
-				if(cbObject.getSelectedItem().equals(Modelos.Empresa.toString())){
-					combos = new JComboBox[]{cbEmpresa};
-					dialog =new SelecaoDialog(new Empresa(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
-				}
-				else if(cbObject.getSelectedItem().equals(Modelos.Pessoa.toString())){
-					combos = new JComboBox[]{cbPessoa};
-					dialog = new SelecaoDialog(new Pessoa(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
-				}
-				else if(cbObject.getSelectedItem().equals(Modelos.Prospeccao.toString())){
-					combos = new JComboBox[]{cbProspeccao};
-					dialog = new SelecaoDialog(new Prospeccao(),txCodObjeto,txNomeObjeto,combos,comboNegocios,MenuView.getInstance(),true);
-				}
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
-				txCodObjeto.addPropertyChangeListener(new MudarCliente());
-			}
-			break;
-		case "CriarCategoria":
-			dialog = new SelecaoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},null,MenuView.getInstance(),true);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			break;
-		case "CriarNivel":
-			dialog = new SelecaoDialog(new Nivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},null,MenuView.getInstance(),true);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			break;
 		case "CriarOrigem":
-			dialog = new SelecaoDialog(new Origem(), null, null, new JComboBox[]{cbOrigem,cbOrigemCad},null,MenuView.getInstance(),true);
+			SelecaoDialog dialog = new SelecaoDialog(new Origem(), null, null, new JComboBox[]{cbOrigem,cbOrigemCad},null,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarLista":
+			dialog = new SelecaoDialog(new Lista(), null, null, new JComboBox[]{cbLista,cbListaCad},null,MenuView.getInstance(),true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			break;
+		case "CriarTipo":
+			dialog = new SelecaoDialog(new ProspeccaoTipoContato(), null, null, new JComboBox[]{cbTipoContatoPesquisa,cbTipoContatoCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -228,38 +270,26 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
-		case "AdicionarServicoAgregado":
-			if(telaEmEdicao){
-				try{
-					Double.parseDouble(txValorServico.getText().trim().replace(",", "."));
-					adicionarServico();
-				}catch (NumberFormatException ex) {
-					JOptionPane.showMessageDialog(MenuView.jDBody, "Valor informado está incorreto! User o padrao 0,00");
-				}
-			}
-			else 
-				JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de tentar qualquer alteração!");
-			break;
-		case "NovoServicoContratado":
-			dialog = new SelecaoDialog(new ServicoAgregado(), null, null, new JComboBox[]{cbServicosAgregados},null,MenuView.getInstance(),true);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-			break;
 		case "Nova Tarefa":
 			if("".equals(txCodigo.getText())){
 				String valor;
 				if(telaEmEdicao){
-					valor="Salve o registro atual e depois clique no Botao Nova Tarefa para criar uma nova tarefa para esse negocio!\nOu selecione um registro da tabela!";
+					valor="Salve o registro atual e depois clique no Botao Nova Tarefa para criar uma nova tarefa para esse cadastro!\nOu selecione um registro da tabela!";
 				}
 				else
-					valor="Selecione um registro da tabela ou crie um Novo Negocio";
-				JOptionPane.showMessageDialog(MenuView.jDBody, "Não pode criar uma tarefa para um negócio que ainda não existe!\n"
+					valor="Selecione um registro da tabela ou crie um Novo Registro";
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar uma tarefa pois o registro ainda não existe!\n"
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.prospeccao, MenuView.getInstance(),true);
 				taskView.setVisible(true);
 			}
+			break;
+		case "AdicionarLista":
+			if(telaEmEdicao)
+				adicionarLista();
+			else JOptionPane.showMessageDialog(MenuView.jDBody, "Clique em editar antes de realizar qualquer alteração!");
 			break;
 		case "MailTo":
 			URI urlMail = null;
@@ -275,93 +305,78 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			}
 			break;
 		case "OpenURL":
-			URI browser = null;
-			try{
-				if(site.trim().length()>0){
-					browser = new URI(site);
-					Desktop.getDesktop().browse(browser);
-				}
-				else
-					JOptionPane.showMessageDialog(MenuView.jDBody, "Não possui site",
-							"Nenhuma Pagina foi encontrada",JOptionPane.INFORMATION_MESSAGE);
-			}catch(IOException | URISyntaxException ex){
-				ex.printStackTrace();
-			}
+			abrirUrl();
+			break;
+		case "ExportarEMailMarketingLocaweb":
+			if(validarQuantidadeRegistros(tbPrincipal))
+				exportarTxtEmails();
+			else
+				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
 			break;
 		case "Exportar":
-			DefaultTableModel model = (DefaultTableModel)tbPrincipal.getModel();
-			if(model.getColumnCount()>1){
+			if(validarQuantidadeRegistros(tbPrincipal))
 				exportarExcel();
-			}
-			else{
+			else
 				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
-			}
 			break;
-		case "VerPerda":
-			if("Perdido".equals(cbStatusCad.getSelectedItem()) && !"".equals(txCodigo.getText())){
-				if(dialogPerda!=null)
-					dialogPerda.dispose();
-				dialogPerda = new NegocioPerdaDialog(MenuView.getInstance(),true,negocio);
-				dialogPerda.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialogPerda.setVisible(true);
-			}
-			break;
-		case "Enviar Documento":
-			if("".equals(txDocumentoNome.getText())){
-				JOptionPane.showMessageDialog(null, "Anexe um documento antes de enviar!","Não existe arquivo...",JOptionPane.ERROR_MESSAGE);
-			}
-			else{
-				session = HibernateFactory.getSession();
-				session.beginTransaction();
-		        Documento doc = gerarSerial(new File(txDocumentoPath.getText()));
-				if(doc!=null){
-					Set<Documento> documentos = negocio.getDocumentos();
-					documentos.add(doc);
-					negocio.setDocumentos(documentos);
-					dao.salvar(negocio, session);
-					preencherDocumentos(negocio.getDocumentos());
-					
-					txDocumentoNome.setText("");
-					txDocumentoPath.setText("");
-					txDocumentoDescricao.setText("");
-				}
-				session.close();
-			}
-			break;
-		case "Anexar Documento":
-			 if("".equals(txCodigo.getText())){
-		         JOptionPane.showMessageDialog(null, "Antes, salve o Negocio para depois anexar itens!");
-		     }
-			 else if(!telaEmEdicao){
-				 JOptionPane.showMessageDialog(null, "Clique em editar para anexar um documento!");	 
-			 }
-			 else if("".equals(txDocumentoNome.getText().trim())){
-		            JOptionPane.showMessageDialog(null, "Insira um nome!");
-		     }
-			 else{
-		    	 File file = carregarArquivo();
-		    	 txDocumentoPath.setText(file.getAbsolutePath());
-		     }
+		case "ImportarNovosContatos":
+			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody,"Antes de realizar a importação é importante usar um modelo padrão. \n"
+					+ "No formato xls e xlsx, colunas com nomes e identificadores corretos.\n Deseja abrir um Modelo?","",JOptionPane.YES_NO_OPTION);
+			if(escolha==JOptionPane.YES_OPTION)
+				abrirModelo();
+			else
+				iniciarImportacao();
 			break;
 		default:
+			if(!telaEmEdicao){
+				open = abrirSessao();
+				realizarFiltro();
+				fecharSessao(open);
+			}
 			break;
 		}	
 	}
+	
+	
 	private void definirAcoes(){
 		data1.addPropertyChangeListener(this);
 		data2.addPropertyChangeListener(this);
 		tbPrincipal.addMouseListener(this);
+ 		cbTipoContatoPesquisa.addItemListener(this);
 		cbOrigem.addItemListener(this);
 		cbServicos.addItemListener(this);
 		cbOrdenacao.addItemListener(this);
 		cbBuscarPor.addItemListener(this);
-		rbCrescente.addItemListener(this);
-		rbDecrescente.addItemListener(this);
 		cbAtendente.addItemListener(this);
+		cbLista.addItemListener(this);
+		ckConviteEventosPesquisa.addActionListener(this);
+		ckMaterialPesquisa.addActionListener(this);
+		ckNewsletterPesquisa.addActionListener(this);
+		rbCrescente.addActionListener(this);
+		rbDecrescente.addActionListener(this);
 		txBuscar.addKeyListener(this);
-		rbCrescente.addItemListener(this);
+		tabbedPane.addMouseListener(this);
+		btCancelar.addActionListener(this);
+		btEditar.addActionListener(this);
+		btEmail.addActionListener(this);
+		btEsconder.addActionListener(this);
+		btExcluir.addActionListener(this);
+		btExportarMalaDireta.addActionListener(this);
+		btHistorico.addActionListener(this);
+		btnExpMailmktLocaweb.addActionListener(this);
+		btNovaTarefa.addActionListener(this);
+		btNovo.addActionListener(this);
+		btOrigemAdd.addActionListener(this);
+		btSalvar.addActionListener(this);
+		btSite.addActionListener(this);
+		btTipoContatoAdd.addActionListener(this);
+		btServicosAdd.addActionListener(this);
+		btListaAdd.addActionListener(this);
+		btAdicionarALista.addActionListener(this);
+		txBuscar.addKeyListener(this);
 		tabbedPane.addMouseListener(this);
 	}
+	@SuppressWarnings("rawtypes")
 	private void desbloquearFormulario(boolean desbloquear,Container container){
 		for(Component c : container.getComponents()){
 			if(c instanceof JTextField){
@@ -388,13 +403,135 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			}
 		}
 	}
+	private void exportarExcel(){
+		
+	}
+	private void exportarTxtEmails() {
+		boolean open = abrirSessao();
+		realizarFiltro();
+		
+		if(listarProspeccao.size()>0){
+			String separator = System.getProperty("line.separator");
+			StringBuilder builder = new StringBuilder();
+			builder.append("email");
+			builder.append("\t");
+			builder.append("nome");
+			listarProspeccao.forEach(p->{
+				if(p.getPfpj().getEmail().trim().length()>0){
+					builder.append(separator);
+					builder.append(p.getPfpj().getEmail());
+					builder.append("\t");
+					builder.append(p.getNome());
+				}
+			});
+			JOptionPane.showMessageDialog(MenuView.jDBody, "Se houver Contatos com e-mails em branco, ele não serão exportados");
+			File txtTemp = new File(
+					System.getProperty("java.io.tmpdir")
+					+"/contacts"
+					+new SimpleDateFormat("ddMMyyyyHHmmss").format(new Date())+".txt");
+			try{
+				txtTemp.createNewFile();
+				FileWriter fw = new FileWriter(txtTemp);
+				fw.write(builder.toString());
+				fw.flush();
+				fw.close();
+				Desktop.getDesktop().open(txtTemp);
+				int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, 
+						"Deseja abrir a página E-Mail Marketing Locaweb?",
+						"Abrir URL",JOptionPane.YES_NO_OPTION);
+				if(escolha==JOptionPane.YES_OPTION){
+					Desktop.getDesktop().browse(new URI("http://emailmkt2.locaweb.com.br/admin"));
+				}
+			}catch(IOException ex){
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Não foi possivel gerar o arquivo solicitado:\nInforme o erro ao seu administrador de sistema:\n"+ex, "Ops...",JOptionPane.ERROR_MESSAGE);
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+			JOptionPane.showMessageDialog(MenuView.jDBody, "Nenhum registro foi encontrado usando o filtro atual.");
+		fecharSessao(open);
+	}
 	private void fecharSessao(boolean fechar){
 		if(fechar) session.close();
 	}
-	@Override
-	public void itemStateChanged(ItemEvent arg0) {
+	private void iniciarImportacao() {
+		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getStateChange()==ItemEvent.DESELECTED && !telaEmEdicao){
+			boolean openHere = abrirSessao();
+			realizarFiltro();
+			fecharSessao(openHere);
+		}
+	}
+	@SuppressWarnings("unchecked")
+	private void invocarExclusao(){
+		int escolha = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, "Você deseja excluir esse registro? "
+				+ "\nTodos os historicos serão perdidos, lembre-se que essa ação não terá mais volta!","Tentativa de Exclusao", JOptionPane.YES_NO_OPTION);
+		if(escolha==JOptionPane.YES_OPTION){
+			boolean openHere = abrirSessao();
+			boolean excluiu = dao.excluir(prospeccao,session);
+			if(excluiu){
+				limparFormulario(pnPesquisa);
+				listarProspeccao = (List<Prospeccao>)dao.listar(Prospeccao.class, session);
+		    	preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
+		    }
+			fecharSessao(openHere);
+		}
+	}
+	private void invocarSalvamento(){
+		abrirSessao();
+		PfPj pfpj = new PfPj();
+		if("".equals(txCodigo.getText())){
+			prospeccao = new Prospeccao();
+			pfpj.setAtendente(UsuarioLogado.getInstance().getUsuario());
+			pfpj.setCriadoEm(new Date());
+			pfpj.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+		}
+		else
+			pfpj = prospeccao.getPfpj();
+		prospeccao.setNome(txEmpresa.getText());
+		prospeccao.setResponsavel(txNomeContato.getText());
+		prospeccao.setDepartamento(txDepartamento.getText());
+		pfpj.setAtendente(padrao.getAtendentes(cbAtendenteCad.getSelectedItem().toString()));
+		pfpj.setTelefone(txTelefone.getText());
+		pfpj.setCelular(txCelular.getText());
+		pfpj.setEmail(txEmail.getText());
+		pfpj.setSite(txSite.getText());
+		pfpj.setServico(padrao.getServicos(cbServicosCad.getSelectedItem().toString()));
+		pfpj.setOrigem(padrao.getOrigens(cbOrigemCad.getSelectedItem().toString()));
+		pfpj.setDetalhesOrigem(txDetalhesDaOrigem.getText());
+		pfpj.setResumo(txResumoContato.getText());
+		pfpj.setApresentacao(txApresentacao.getText());
+		prospeccao.setEndereco(txEndereco.getText());
+		prospeccao.setTipoContato(padrao.getTipoContatos(cbTipoContatoCad.getSelectedItem().toString()));
+		prospeccao.setConviteParaEventos(ckConviteEventosCad.isSelected()?1:0);
+		prospeccao.setMaterial(ckMaterialCad.isSelected()?1:0);
+		prospeccao.setNewsletter(ckNewsletterCad.isSelected()?1:0);
+		prospeccao.setPfpj(pfpj);
+		
+		DefaultTableModel model = (DefaultTableModel) tbLista.getModel();
+		Set<Lista> listas = new HashSet<>();
+		for(int i = 0; i<model.getRowCount(); i++){
+			String valor = String.valueOf(model.getValueAt(i, 1));
+			Lista l = padrao.getListas(valor);
+			listas.add(l);
+		}
+		prospeccao.setListas(listas);
+		if(dao.salvar(prospeccao, session)){
+			session.beginTransaction();
+			telaEmEdicao = false;
+			realizarFiltro();
+			preencherFormulario(prospeccao);
+			salvarCancelar();
+		}
+		fecharSessao(true);
+	}
+	@SuppressWarnings("rawtypes")
 	private void limparFormulario(Container container){
 		for(Component c : container.getComponents()){
 			if(c instanceof JScrollPane){
@@ -404,8 +541,10 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			else if(c instanceof JTabbedPane || c instanceof JPanel){
 				limparFormulario((Container)c);
 			}
+			else if(c instanceof JCheckBox){
+				((JCheckBox)c).setSelected(false);
+			}
 			else if(c instanceof JComboBox){
-				((JComboBox)c).setSelectedIndex(0);
 				((JComboBox)c).setSelectedItem("");
 			}
 			else if(c instanceof JTable){
@@ -429,9 +568,12 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		
 	}
 	@Override
-	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-		
+	public void keyPressed(KeyEvent e) {
+		if(e.getKeyCode()==KeyEvent.VK_ENTER){
+			boolean aberto = abrirSessao();
+			realizarFiltro();
+			fecharSessao(aberto);
+		}
 	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
@@ -444,8 +586,36 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		
 	}
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+	public void mouseClicked(MouseEvent e) {
+		if(e.getComponent() instanceof JTable && tbPrincipal.getSelectedRow()>=0 &&
+				tbPrincipal.getColumnCount()>1 && !telaEmEdicao){
+			boolean open = abrirSessao();
+			DefaultTableModel model = (DefaultTableModel) tbLista.getModel();
+			while(model.getRowCount()>0){
+				model.removeRow(0);
+			}
+			tbLista.setModel(model);
+			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
+			this.prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class, id, session);
+			if(!pnAuxiliar.isVisible()) 
+				pnAuxiliar.setVisible(true);
+			limparFormulario(pnCadastro);
+			preencherFormulario(this.prospeccao);
+			tabbedPane.setSelectedIndex(1);
+			fecharSessao(open);
+			salvarCancelar();
+		}
+		else if(e.getComponent() instanceof JTabbedPane && telaEmEdicao && ((JTabbedPane)e.getComponent()).getSelectedIndex()==0){
+			JOptionPane.showMessageDialog(MenuView.jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!",
+					"Em edicao...",JOptionPane.INFORMATION_MESSAGE);
+			tabbedPane.setSelectedIndex(1);
+		}
+		else if(e.getComponent() instanceof JRadioButton || e.getComponent() instanceof JCheckBox){
+			boolean open = abrirSessao();
+			realizarFiltro();
+			fecharSessao(open);
+		}
+		
 		
 	}
 	@Override
@@ -477,10 +647,10 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		btCancelar.setEnabled(true);
 		btExcluir.setEnabled(false);
 		cbAtendenteCad.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
-		txEmail.setEditable(false);
-		if(this.prospeccao.getId()>0)
+		if(this.prospeccao!=null && this.prospeccao.getId()>0)
 			prospeccaoBackup=prospeccao;	
 	}
+	@SuppressWarnings("unchecked")
 	private void preencherComboBox(JPanel panel){
 		for(Component component : panel.getComponents()){
 			if(component.getName()!=null && component instanceof JComboBox)
@@ -490,40 +660,148 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 	}
 	private void preencherFormulario(Prospeccao p){
 		txCodigo.setText(""+p.getId());
+		
+		txCadastradoPor.setText(p.getPfpj().getCriadoPor().getNome());
+		txDataCadastro.setText(p.getPfpj().getCriadoEm()==null?"":sdf.format(p.getPfpj().getCriadoEm()));
+		
 		txEmpresa.setText(p.getNome());
 		txNomeContato.setText(p.getResponsavel());
 		txDepartamento.setText(p.getDepartamento());
-		
 		txEndereco.setText(p.getEndereco());
 		PfPj pp = p.getPfpj();  
+		cbAtendenteCad.setSelectedItem(pp.getAtendente().getNome());
 		txTelefone.setText(pp.getTelefone());
 		txCelular.setText(pp.getCelular());
 		txEmail.setText(pp.getEmail());
 		txSite.setText(pp.getSite());
 		
 		cbTipoContatoCad.setSelectedItem(p.getTipoContato()!=null?p.getTipoContato().getNome():"");
-		ckConviteEventos.setSelected(p.getConviteParaEventos()==1?true:false);
-		ckMaterial.setSelected(p.getMaterial()==1?true:false);
-		ckNewsletter.setSelected(p.getNewsletter()==1?true:false);
+		ckConviteEventosCad.setSelected(p.getConviteParaEventos()==1?true:false);
+		ckMaterialCad.setSelected(p.getMaterial()==1?true:false);
+		ckNewsletterCad.setSelected(p.getNewsletter()==1?true:false);
 		
+		cbServicosCad.setSelectedItem(pp.getServico()==null?"":pp.getServico().getNome());
 		cbOrigemCad.setSelectedItem(pp.getOrigem()==null?"":pp.getOrigem().getNome());
 		txDetalhesDaOrigem.setText(pp.getDetalhesOrigem());
+		
+		txResumoContato.setText(pp.getResumo());
+		txApresentacao.setText(pp.getApresentacao());
 		Set<Lista> listas = p.getListas();
-		preencherListas(listas);
-		Set<Tarefa> tarefas = pp.getTarefas();
-		preencherTarefas(tarefas);		
+		preencherListas(listas, tbLista);
+		preencherTarefas(p);		
 	}
-	private void preencherListas(Set<Lista> listas){
-		
+	private void preencherListas(Set<Lista> lista, JTable tabela){
+		DefaultTableModel model = new DefaultTableModel(new Object[]{"ID","NOME","DETALHES","CRIADO EM","EXCLUIR"},0){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			boolean[] canEdit = new boolean[]{
+					false,false,false,false,true
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+			
+		};
+		Iterator<Lista> iterator = lista.iterator();
+		while(iterator.hasNext()){
+			Lista s = iterator.next();
+			Object[] o = new Object[5];
+			o[0] = s.getId();
+			o[1] = s.getNome();
+			o[2] = s.getDetalhes();
+			o[3] = s.getCriadoEm()==null?"":sdf.format(s.getCriadoEm());
+			o[4] = recalculate(new ImageIcon(ControllerProspeccao.class
+					.getResource("/br/com/tiagods/utilitarios/button_trash.png")));
+			model.addRow(o);
+		}
+		tabela.setRowHeight(25);
+		tabela.setModel(model);
+		JButton btRem  = new ButtonColumnModel(tabela,4).getButton();
+		btRem.setToolTipText("Clique para remover o registro");
+		btRem.addActionListener(new AcaoTabelaListaContatos());
+		tabela.getColumnModel().getColumn(0).setMaxWidth(0);
+		tabela.getColumnModel().getColumn(0).setMinWidth(0);
+		tabela.getColumnModel().getColumn(0).setMaxWidth(0);
+		tabela.getColumnModel().getColumn(2).setPreferredWidth(40);
+		tabela.getColumnModel().getColumn(3).setPreferredWidth(40);
+		tabela.setAutoCreateRowSorter(true);
 	}
-	private void preencherTarefas(Set<Tarefa> tarefas){
-		
+	private void preencherTarefas(Prospeccao p){
+		if(pnAuxiliar.isVisible()){
+			List<Criterion>criterios = new ArrayList<>();
+			Criterion criterion = Restrictions.eq("prospeccao", p);
+			criterios.add(criterion);
+			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(p.getPfpj().getTarefas()),
+					criterios,
+					Order.desc("dataEvento"));
+		}
 	}
-	private void preencherTabela(List<Prospeccao> listaProspects, JTable tabela, JTextField txContador){
-		
+	private void preencherTabela(List<Prospeccao> lista, JTable table, JTextField txContadorRegistros){
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		if(lista.isEmpty()){
+			new SemRegistrosJTable(table,"Relação de Negócios");
+		}
+		else{
+			Object [] tableHeader = {"ID","NOME","CONTATO","TIPO DE CONTATO","ORIGEM","PRODUTOS/SERVICOS","CONVITE P/EVENTOS","MATERIAL","NEWSLETTER","LISTAS",
+					"CRIADO EM","ATENDENTE"};
+			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+
+				private static final long serialVersionUID = -8716692364710569296L;
+				boolean[] canEdit = new boolean[]{
+						false,false,false,false,false,false,false,false,false,false,false,false
+				};
+				@Override
+				public boolean isCellEditable(int rowIndex, int columnIndex) {
+					return canEdit [columnIndex];
+				}
+			};
+			for(int i=0;i<lista.size();i++){
+				Prospeccao n = lista.get(i);
+				Object[] linha = new Object[12];
+				linha[0] = ""+n.getId();
+				linha[1] = n.getNome();
+				linha[2] = n.getResponsavel();
+				linha[3] = n.getTipoContato().getNome();
+				linha[4] = n.getPfpj().getOrigem()==null?"":n.getPfpj().getOrigem().getNome();
+				linha[5] = n.getPfpj().getServico()==null?"":n.getPfpj().getServico().getNome();
+				linha[6] = n.getConviteParaEventos()==1?"Sim":"Não";
+				linha[7] = n.getMaterial()==1?"Sim":"Não";
+				linha[8] = n.getNewsletter()==1?"Sim":"Não";
+				linha[9] = n.getListas().size()+" lista(s)";
+				try{
+					Date criadoEm = n.getPfpj().getCriadoEm();
+					linha[10] = sdf.format(criadoEm);
+				}catch (NumberFormatException e) {
+					linha[10] = "";
+				}
+				linha[11] = n.getPfpj().getAtendente()==null?"":n.getPfpj().getAtendente().getNome();
+				model.addRow(linha);
+			}
+			table.setRowHeight(30);
+			table.setModel(model);
+			table.setAutoCreateRowSorter(true);
+			table.setSelectionBackground(Color.ORANGE);
+			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			table.getColumnModel().getColumn(0).setMaxWidth(40);
+			table.getColumnModel().getColumn(2).setMaxWidth(60);
+		}
+		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		try{
+			Date data01 = data1.getDate();
+			Date data02 = data2.getDate();
+			if(data02.compareTo(data01)>=0){
+				boolean open  = abrirSessao();
+				realizarFiltro();
+				fecharSessao(open);
+			}
+		}catch (NullPointerException e) {
+		}
 	}
 	private Criterion realizarBusca(){
 		Criterion c = null;
@@ -542,6 +820,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		return c;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void realizarFiltro() {
 		if(!telaEmEdicao){
 			List<Criterion> criterios = new ArrayList<>();
@@ -550,11 +829,17 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			Criterion c = realizarBusca();
 			if(c!=null) 
 				criterios.add(c);
-			listarNegocios = dao.items(Negocio.class, session, criterios, order);
-			preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
+			if(!"Lista".equals(cbLista.getSelectedItem())){
+				Conjunction e = Restrictions.conjunction();
+				e.add(Restrictions.eqOrIsNull("l", padrao.getListas(cbLista.getSelectedItem().toString())));
+				listarProspeccao = dao.items(Prospeccao.class, session, criterios, new String[]{"listas","l"},e, order);
+			}
+			else
+				listarProspeccao = dao.items(Prospeccao.class, session, criterios, order);
+			preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		}
 		else
-			JOptionPane.showMessageDialog(jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(MenuView.jDBody, "Por favor salve o registro em edicao ou cancele para poder realizar novas buscas!","Em edicao...",JOptionPane.INFORMATION_MESSAGE);
 	}
 	private List<Criterion> receberFiltroSuperior(){
 		List<Criterion> criterios = new ArrayList<>();
@@ -567,22 +852,26 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			criterios.add(c);
 		}
 		if(!"Atendente".equals(cbAtendente.getSelectedItem())){
-			Criterion c = Restrictions.eq("atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
+			Criterion c = Restrictions.eq("pfpj.atendente", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
 			criterios.add(c);
 		}
 		if(!"TipoContato".equals(cbTipoContatoPesquisa.getSelectedItem())){
-			Criterion c = Restrictions.eq("tipoContato", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
+			Criterion c = Restrictions.eq("tipoContato", padrao.getAtendentes((String)cbTipoContatoPesquisa.getSelectedItem()));
 			criterios.add(c);
 		}
-		if(!"Lista".equals(cbLista.getSelectedItem())){
-			Criterion c = Restrictions.eq("tipoContato", padrao.getAtendentes((String)cbAtendente.getSelectedItem()));
-			criterios.add(c);
-		}
+		
+		if(ckConviteEventosPesquisa.isSelected())
+			criterios.add(Restrictions.eq("conviteParaEventos", 1));
+		if(ckMaterialPesquisa.isSelected())
+			criterios.add(Restrictions.eq("material", 1));
+		if(ckNewsletterPesquisa.isSelected())
+			criterios.add(Restrictions.eq("newsletter", 1));
+		
 		try{
 			Date data01 = data1.getDate();
 			Date data02 = data2.getDate();
 			if(data02.compareTo(data01)>=0){
-				criterios.add(Restrictions.between("criadoEm", data01, data02));
+				criterios.add(Restrictions.between("pfpj.criadoEm", data01, data02));
 			}
 		}catch(NullPointerException e){
 		}
@@ -600,13 +889,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			campo = "nome";
 			break;
 		case "Data Criação":
-			campo = "criadoEm";
-			break;
-		case "Data Vencimento":
-			campo = "dataFim";
-			break;
-		case "Data Finalização":
-			campo = "dataFinalizacao";
+			campo = "pfpj.criadoEm";
 			break;
 		default:
 			campo="id";
@@ -617,6 +900,11 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		else
 			order = Order.desc(campo);
 		return order;
+	}
+	public void removerDaLista(int row){
+		DefaultTableModel model = (DefaultTableModel) tbLista.getModel();
+		model.removeRow(row);
+		tbLista.setModel(model);
 	}
 	private void salvarCancelar(){
 		btSalvar.setEnabled(false);
@@ -634,10 +922,15 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
     	btNovo.setIcon(recalculate(iconNovo));
     	btOrigemAdd.setIcon(iconNovo);
     	btTipoContatoAdd.setIcon(iconNovo);
+    	btServicosAdd.setIcon(iconNovo);
+    	btListaAdd.setIcon(iconNovo);
+    	
     	ImageIcon iconEdit = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
     	btEditar.setIcon(recalculate(iconEdit));
     	ImageIcon iconSave = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
     	btSalvar.setIcon(recalculate(iconSave));
+    	btAdicionarALista.setIcon(iconSave);
+    	
     	ImageIcon iconCancel = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
     	btCancelar.setIcon(recalculate(iconCancel));
     	ImageIcon iconTrash = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
@@ -659,8 +952,8 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 //    	ImageIcon iconImp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
 //    	btnImportar.setIcon(recalculate(iconImp));
 //
-//    	ImageIcon iconExp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
-//    	btnExportar.setIcon(recalculate(iconExp));
+    	ImageIcon iconExp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+    	btnExpMailmktLocaweb.setIcon(recalculate(iconExp));
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
@@ -670,6 +963,8 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
     	return icon;
     }
-	
-	
+    private boolean validarQuantidadeRegistros(JTable table){
+    	DefaultTableModel model = (DefaultTableModel)table.getModel();
+		return model.getColumnCount()>1;
+    }
 }

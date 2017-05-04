@@ -409,6 +409,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				txCodigoObjeto.setText(((Pessoa)object).getId()+"");
 				txNomeObjeto.setText(((Pessoa)object).getNome());
 			}
+			else if(object instanceof Prospeccao){
+				cbObject.setSelectedItem(Modelos.valueOf("Prospeccao"));
+				txCodigoObjeto.setText(((Prospeccao)object).getId()+"");
+				txNomeObjeto.setText(((Prospeccao)object).getNome());
+			}
 			cbObject.setEnabled(false);
 			btnAssociacao.setEnabled(false);
 		}

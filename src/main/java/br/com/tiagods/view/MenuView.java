@@ -117,7 +117,6 @@ public class MenuView extends JFrame implements DefaultUtilities{
         menuBar.add(mnPessoas);
         
         mnProspeccao = new JMenu("Prospec\u00E7\u00E3o");
-        mnProspeccao.setEnabled(false);
         mnProspeccao.setName("Prospeccao");
         mnProspeccao.addMouseListener(controller);
         menuBar.add(mnProspeccao);

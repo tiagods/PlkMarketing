@@ -5,8 +5,8 @@ import java.util.Date;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JInternalFrame;
-import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
@@ -25,7 +25,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	private static final long serialVersionUID = -2621283794064432106L;
 	public static JDateChooser jData1;
 	public static JDateChooser jData2;
-	public static javax.swing.JButton btNovaTarefa;
+	public static javax.swing.JButton btNovaTarefa, btExportarFiltro;
 	public static javax.swing.JCheckBox ckEmail;
 	public static javax.swing.JCheckBox ckProposta;
 	public static javax.swing.JCheckBox ckReuniao;
@@ -46,9 +46,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
     public static javax.swing.JRadioButton rbTudo;
     public static javax.swing.JRadioButton rbEssaSemana;
     public static javax.swing.JRadioButton rbHoje;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
-    public static javax.swing.JTable jTable1;
     public static javax.swing.JTable tbPrincipal;
     private javax.swing.ButtonGroup group;
     
@@ -273,23 +271,11 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.add(rbEssaSemana);
         jPanel1.add(rbDefinirData);
         jPanel1.add(pnData);
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jScrollPane1.setBounds(975, 102, 171, 126);
-        jPanel1.add(jScrollPane1);
-        jTable1 = new javax.swing.JTable();
-
-        jTable1.setModel(new DefaultTableModel(
-        	new Object[][] {
-        		
-        	},
-        	new String[] {
-        		"Tipo", "Qtde"
-        	}
-        ));
-        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setViewportView(jTable1);
-        jScrollPane1.setVisible(false);
+        btExportarFiltro = new JButton("Exportar");
+        btExportarFiltro.setActionCommand("Exportar");
+        btExportarFiltro.setBounds(1001, 59, 145, 23);
+        btExportarFiltro.addActionListener(controller);
+        jPanel1.add(btExportarFiltro);
         setBounds(0, 0, 1250, 660);
     }
-
 }

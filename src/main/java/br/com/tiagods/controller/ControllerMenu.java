@@ -3,15 +3,7 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.MenuView.jDBody;
-import static br.com.tiagods.view.MenuView.mnAtualizacao;
-import static br.com.tiagods.view.MenuView.mnEmpresas;
-import static br.com.tiagods.view.MenuView.mnExtra;
-import static br.com.tiagods.view.MenuView.mnInicio;
-import static br.com.tiagods.view.MenuView.mnNegocios;
-import static br.com.tiagods.view.MenuView.mnPessoas;
-import static br.com.tiagods.view.MenuView.mnRelatorios;
-import static br.com.tiagods.view.MenuView.mnTarefas;
+import static br.com.tiagods.view.MenuView.*;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -198,7 +190,9 @@ public class ControllerMenu implements MouseListener{
     	mnEmpresas.setIcon(recalculate(iconEmpresas));
     	ImageIcon iconPessoas = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_people.png"));
     	mnPessoas.setIcon(recalculate(iconPessoas));
-    	ImageIcon iconNegocios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_negocios.png"));
+    	ImageIcon iconProspeccao = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_prospeccao.png"));
+        mnProspeccao.setIcon(recalculate(iconProspeccao));
+        ImageIcon iconNegocios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_negocios.png"));
     	mnNegocios.setIcon(recalculate(iconNegocios));
     	ImageIcon iconRelatorios = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_report.png"));
         mnRelatorios.setIcon(recalculate(iconRelatorios));
@@ -206,6 +200,7 @@ public class ControllerMenu implements MouseListener{
         mnExtra.setIcon(recalculate(iconExtra));
         ImageIcon iconAbout = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/menu_about.png"));
         mnAtualizacao.setIcon(recalculate(iconAbout));
+        
         //https://icons8.com/web-app/category/all/User-Interface
 
         //https://icons8.com/web-app/category/all/Business

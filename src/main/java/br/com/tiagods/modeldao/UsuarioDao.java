@@ -24,11 +24,13 @@ public class UsuarioDao implements InterfaceDao{
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object receberObjeto(Class classe, int id, Session session) {
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List listar(Class classe, Session session) {
 		return session.createQuery("from "+classe.getSimpleName()).getResultList();

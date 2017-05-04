@@ -38,7 +38,7 @@
 	<property name="material" column="PRO_MATERIAL" type="integer" length="1" />
 	<property name="newsletter" column="PRO_NEWSLETTER" type="integer" length="1" />
 	<many-to-one name="tipoContato" column="PRO_TIPO_CONTATO" foreign-key="FK_PRO_TIPO_CONTATO_COD" />
-	<set name="listas" table="PROSPECCAO_REL_LISTA" inverse="true">
+	<set name="listas" table="PROSPECCAO_REL_LISTA" inverse="false" lazy="true" fetch="select" cascade="all">
 		<key column="PRO_REL_COD" />
 		<many-to-many column="LIS_REL_COD" class="Lista" />
 	</set>

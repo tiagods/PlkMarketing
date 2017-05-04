@@ -2,7 +2,7 @@ package br.com.tiagods.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Lista implements Serializable{
@@ -16,7 +16,7 @@ public class Lista implements Serializable{
 	private String detalhes;
 	private Date criadoEm;
 	private Usuario criadoPor;
-	private Set<Prospeccao> prospects = new LinkedHashSet<>();
+	private Set<Prospeccao> prospects = new HashSet<>();
 	/**
 	 * @return the id
 	 */

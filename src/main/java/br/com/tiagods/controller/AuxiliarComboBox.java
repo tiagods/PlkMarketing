@@ -157,7 +157,6 @@ public class AuxiliarComboBox {
     		break;
     	case "ListaCad":
     		combo.removeAllItems();
-    		combo.addItem("");
     		if(!listarListas.isEmpty()){
     			listarListas.forEach(c->{
     				combo.addItem(c.getNome());
@@ -253,7 +252,14 @@ public class AuxiliarComboBox {
     		}
         	combo.setSelectedItem(combo.getName());
     		break;
-    	
+    	case "TipoContatoCad":
+    		combo.removeAllItems();
+    		if(!listarTipoContatos.isEmpty()){
+    			listarTipoContatos.forEach(c->{
+    				combo.addItem(c.getNome());
+    			});
+    		}
+    		break;
     	case "ServicoAgregadoCad":
     		combo.removeAllItems();
     		combo.addItem("");
@@ -409,5 +415,18 @@ public class AuxiliarComboBox {
 	 */
 	 public ServicoAgregado getServicosAgregados(String key){
 		 return servicosAgregados.get(key);
+	 }
+	 /**
+	  * @return the tipo contato
+	 *
+	 */
+	 public ProspeccaoTipoContato getTipoContatos(String key){
+		 return tipoContatos.get(key);
+	 }
+	 /**
+	  * @return the lista
+	  */
+	 public Lista getListas(String key){
+		 return listas.get(key);
 	 }
 }
