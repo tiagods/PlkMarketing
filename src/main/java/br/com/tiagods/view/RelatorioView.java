@@ -2,183 +2,250 @@ package br.com.tiagods.view;
 
 import java.awt.Color;
 
+import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.TitledBorder;
 
+import com.toedter.calendar.JDateChooser;
+
+import br.com.tiagods.controller.ControllerRelatorios;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 
 @SuppressWarnings("serial")
 public class RelatorioView extends JInternalFrame implements DefaultUtilities {
-	private JPanel jPanel1;
-		
+	public static JPanel pnPrincipal;
+	ControllerRelatorios controller	= new ControllerRelatorios();
 	@Override
 	public Color getColor() {
 		return DefaultUtilities.super.getColor();		
 	}
 	public RelatorioView() {
-	
 		initComponents();
+		controller.iniciar();
 	}
 	private void initComponents() {
 		
-		jPanel1 = new javax.swing.JPanel();
+		pnPrincipal = new javax.swing.JPanel();
         setBounds(0, 0, 1250, 660);
         setBorder(null);
-        jPanel1.setBackground(getColor());
+        pnPrincipal.setBackground(getColor());
         
-        JPanel pnDetalhes = new JPanel();
+        JPanel pnModulos = new JPanel();
+        pnModulos.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Escolha um M\u00F3dulo:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         
-        pnDetalhes.setBackground(getColor());
+        JPanel pnTarefas = new JPanel();
         
-        JScrollPane scrollPane = new JScrollPane();
-        
-        JScrollPane scrollPane_1 = new JScrollPane();
-        
-        JPanel panel_2 = new JPanel();
-        
-        JPanel panel_1 = new JPanel();
-        
-        JCheckBox chckbxDepartamento = new JCheckBox("Departamento");
-        
-        JCheckBox chckbxUsurio = new JCheckBox("Criado Por");
-        
-        JCheckBox chckbxAtendente = new JCheckBox("Atendente");
-        
-        JCheckBox chckbxEmpresa = new JCheckBox("Empresa");
-        
-        JCheckBox chckbxNegcio = new JCheckBox("Neg\u00F3cio");
-        
-        JCheckBox chckbxPessoa = new JCheckBox("Pessoa");
-        
-        JCheckBox chckbxMs = new JCheckBox("M\u00EAs");
-        
-        JCheckBox chckbxAno = new JCheckBox("Ano");
-        GroupLayout gl_panel_1 = new GroupLayout(panel_1);
-        gl_panel_1.setHorizontalGroup(
-        	gl_panel_1.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel_1.createSequentialGroup()
-        			.addGap(6)
-        			.addGroup(gl_panel_1.createParallelGroup(Alignment.LEADING)
-        				.addComponent(chckbxDepartamento)
-        				.addComponent(chckbxUsurio, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxAtendente, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxEmpresa, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxNegcio, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxPessoa, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxMs, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(chckbxAno, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)))
-        );
-        gl_panel_1.setVerticalGroup(
-        	gl_panel_1.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_panel_1.createSequentialGroup()
-        			.addGap(7)
-        			.addComponent(chckbxDepartamento)
-        			.addComponent(chckbxUsurio)
-        			.addComponent(chckbxAtendente)
-        			.addComponent(chckbxEmpresa)
-        			.addComponent(chckbxNegcio)
-        			.addComponent(chckbxPessoa)
-        			.addComponent(chckbxMs)
-        			.addComponent(chckbxAno))
-        );
-        panel_1.setLayout(gl_panel_1);
-        
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1Layout.setHorizontalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        		.addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout gl_pnPrincipal = new javax.swing.GroupLayout(pnPrincipal);
+        gl_pnPrincipal.setHorizontalGroup(
+        	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnPrincipal.createSequentialGroup()
         			.addContainerGap()
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addComponent(pnDetalhes, GroupLayout.DEFAULT_SIZE, 1230, Short.MAX_VALUE)
-        				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.UNRELATED)
-        					.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 170, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.UNRELATED)
-        					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap())
+        			.addComponent(pnModulos, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE)
+        			.addGap(31)
+        			.addComponent(pnTarefas, GroupLayout.PREFERRED_SIZE, 617, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(417, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-        	jPanel1Layout.createParallelGroup(Alignment.TRAILING)
-        		.addGroup(jPanel1Layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addGroup(jPanel1Layout.createParallelGroup(Alignment.LEADING)
-        						.addComponent(panel_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        						.addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 213, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 192, GroupLayout.PREFERRED_SIZE))
-        					.addPreferredGap(ComponentPlacement.RELATED, 35, Short.MAX_VALUE))
-        				.addGroup(jPanel1Layout.createSequentialGroup()
-        					.addComponent(panel_1, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE)
-        					.addPreferredGap(ComponentPlacement.RELATED)))
-        			.addComponent(pnDetalhes, GroupLayout.PREFERRED_SIZE, 363, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap())
+        gl_pnPrincipal.setVerticalGroup(
+        	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnPrincipal.createSequentialGroup()
+        			.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+        				.addGroup(gl_pnPrincipal.createSequentialGroup()
+        					.addGap(21)
+        					.addComponent(pnModulos, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE))
+        				.addGroup(gl_pnPrincipal.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(pnTarefas, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(396, Short.MAX_VALUE))
         );
-        panel_2.setLayout(null);
+        pnTarefas.setLayout(null);
         
-        JCheckBox chckbxVisita = new JCheckBox("Visita");
-        chckbxVisita.setBounds(6, 99, 145, 23);
-        panel_2.add(chckbxVisita);
+        JPanel pnTarefasRelatorioTipo = new JPanel();
+        pnTarefasRelatorioTipo.setLayout(null);
+        pnTarefasRelatorioTipo.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Tipo:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        pnTarefasRelatorioTipo.setBounds(220, 130, 175, 80);
+        pnTarefas.add(pnTarefasRelatorioTipo);
         
-        JCheckBox chckbxReunio = new JCheckBox("Reuni\u00E3o");
-        chckbxReunio.setBounds(6, 76, 145, 23);
-        panel_2.add(chckbxReunio);
+        JRadioButton rdbtnResumo = new JRadioButton("Resumida");
+        rdbtnResumo.setBounds(17, 19, 109, 23);
+        pnTarefasRelatorioTipo.add(rdbtnResumo);
         
-        JCheckBox chckbxProposta = new JCheckBox("Proposta");
-        chckbxProposta.setBounds(6, 53, 145, 23);
-        panel_2.add(chckbxProposta);
+        JRadioButton rdbtnDetalhada = new JRadioButton("Detalhada");
+        rdbtnDetalhada.setBounds(17, 45, 109, 23);
+        pnTarefasRelatorioTipo.add(rdbtnDetalhada);
         
-        JCheckBox chckbxLigao = new JCheckBox("Liga\u00E7\u00E3o");
-        chckbxLigao.setBounds(6, 30, 145, 23);
-        panel_2.add(chckbxLigao);
+        JPanel pnTarefasOrdenar = new JPanel();
+        pnTarefasOrdenar.setLayout(null);
+        pnTarefasOrdenar.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ordenar", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        pnTarefasOrdenar.setBounds(220, 10, 175, 80);
+        pnTarefas.add(pnTarefasOrdenar);
         
-        JCheckBox chckbxEmail = new JCheckBox("E-mail");
-        chckbxEmail.setBounds(6, 7, 145, 23);
-        panel_2.add(chckbxEmail);
+        JRadioButton rbTarefasAtendenteOrdenar = new JRadioButton("Atendente");
+        rbTarefasAtendenteOrdenar.setBounds(17, 19, 109, 23);
+        pnTarefasOrdenar.add(rbTarefasAtendenteOrdenar);
         
-        JPanel panel = new JPanel();
-        scrollPane.setViewportView(panel);
-        JCheckBox chckbxQuantidadeDeEmpresas = new JCheckBox("Quantidade de Empresas");
-        chckbxQuantidadeDeEmpresas.setBounds(6, 40, 145, 23);
-        JCheckBox chckbxQuantidadeDeNegocios = new JCheckBox("Quantidade de Negocios");
-        chckbxQuantidadeDeNegocios.setBounds(6, 63, 145, 23);
-        JCheckBox chckbxQuantidadeDePessoas = new JCheckBox("Quantidade de Pessoas");
-        chckbxQuantidadeDePessoas.setBounds(6, 86, 145, 23);
-        JCheckBox chckbxQuantidadeDeTarefas = new JCheckBox("Quantidade de Tarefas");
-        chckbxQuantidadeDeTarefas.setBounds(6, 109, 145, 23);
-        JCheckBox chckbxValoresDosNegcios = new JCheckBox("Valores dos Neg\u00F3cios");
-        chckbxValoresDosNegcios.setBounds(6, 132, 145, 23);
-        JCheckBox chckbxValoresDasTarefas = new JCheckBox("Descri\u00E7\u00E3o das Tarefas");
-        chckbxValoresDasTarefas.setBounds(6, 155, 145, 23);
-        panel.setLayout(null);
-        panel.add(chckbxQuantidadeDeEmpresas);
-        panel.add(chckbxQuantidadeDeNegocios);
-        panel.add(chckbxQuantidadeDePessoas);
-        panel.add(chckbxQuantidadeDeTarefas);
-        panel.add(chckbxValoresDosNegcios);
-        panel.add(chckbxValoresDasTarefas);
-        pnDetalhes.setLayout(null);
+        JRadioButton rbTarefasStatusOrdenar = new JRadioButton("Status");
+        rbTarefasStatusOrdenar.setBounds(17, 45, 109, 23);
+        pnTarefasOrdenar.add(rbTarefasStatusOrdenar);
         
-        jPanel1.setLayout(jPanel1Layout);
+        JPanel pnTarefasDatar = new JPanel();
+        pnTarefasDatar.setBorder(new TitledBorder(null, "Per\u00EDodo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        pnTarefasDatar.setLayout(null);
+        pnTarefasDatar.setOpaque(false);
+        pnTarefasDatar.setBackground(new Color(250, 250, 250));
+        pnTarefasDatar.setBounds(430, 10, 175, 80);
+        pnTarefas.add(pnTarefasDatar);
+        
+        JLabel lbData1 = new JLabel();
+        lbData1.setText("de:");
+        lbData1.setHorizontalAlignment(SwingConstants.LEFT);
+        lbData1.setBounds(10, 27, 22, 20);
+        pnTarefasDatar.add(lbData1);
+        
+        JLabel lbData2 = new JLabel();
+        lbData2.setText("at\u00E9");
+        lbData2.setHorizontalAlignment(SwingConstants.LEFT);
+        lbData2.setBounds(10, 49, 22, 20);
+        pnTarefasDatar.add(lbData2);
+        
+        JDateChooser data1 = new JDateChooser();
+        data1.setBounds(36, 27, 100, 20);
+        pnTarefasDatar.add(data1);
+        
+        JDateChooser data2 = new JDateChooser();
+        data2.setBounds(36, 49, 100, 20);
+        pnTarefasDatar.add(data2);
+        
+        JButton btnTarefasExportar = new JButton("Exportar");
+        btnTarefasExportar.setBounds(510, 187, 89, 23);
+        pnTarefas.add(btnTarefasExportar);
+        
+        JButton btnTarefasRelatorio = new JButton("Relat\u00F3rio");
+        btnTarefasRelatorio.setBounds(510, 153, 89, 23);
+        pnTarefas.add(btnTarefasRelatorio);
+        
+        JScrollPane spTarefasFiltro = new JScrollPane();
+        spTarefasFiltro.setBounds(10, 10, 200, 200);
+        pnTarefas.add(spTarefasFiltro);
+        
+        JPanel pnTarefasFiltro = new JPanel();
+        spTarefasFiltro.setViewportView(pnTarefasFiltro);
+        pnTarefasFiltro.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Filtro:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        
+        JCheckBox ckTarefasVisita = new JCheckBox("Visita");
+        
+        JCheckBox ckTarefasReuniao = new JCheckBox("Reuni\u00E3o");
+        
+        JCheckBox ckTarefasProposta = new JCheckBox("Proposta");
+        
+        JCheckBox ckTarefasLigacao = new JCheckBox("Liga\u00E7\u00E3o");
+        
+        JCheckBox ckTarefasEmailFiltro = new JCheckBox("E-mail");
+        
+        JCheckBox ckTarefasFinalizadasFiltro = new JCheckBox("Tarefas Finalizadas");
+        
+        JCheckBox ckTarefasPendentesFiltro = new JCheckBox("Tarefas Pendentes");
+        
+        JCheckBox ckTarefasEmpresasFiltro = new JCheckBox("Empresas");
+        
+        JCheckBox ckTarefaNegociosFiltro = new JCheckBox("Neg\u00F3cios");
+        
+        JCheckBox ckTarefasPessoasFiltro = new JCheckBox("Pessoas");
+        
+        JCheckBox ckTarefasProspeccaoFiltro = new JCheckBox("Prospec\u00E7\u00E3o");
+        
+        JButton btnTarefasIncluir = new JButton("Avancar");
+        GroupLayout gl_pnTarefasFiltro = new GroupLayout(pnTarefasFiltro);
+        gl_pnTarefasFiltro.setHorizontalGroup(
+        	gl_pnTarefasFiltro.createParallelGroup(Alignment.LEADING)
+        		.addComponent(ckTarefasEmailFiltro, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasLigacao, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasProposta, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasReuniao, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasVisita, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasFinalizadasFiltro, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasPendentesFiltro, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasEmpresasFiltro, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefaNegociosFiltro, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasPessoasFiltro, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        		.addComponent(ckTarefasProspeccaoFiltro, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        		.addGroup(Alignment.TRAILING, gl_pnTarefasFiltro.createSequentialGroup()
+        			.addContainerGap(39, Short.MAX_VALUE)
+        			.addComponent(btnTarefasIncluir, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+        			.addGap(35))
+        );
+        gl_pnTarefasFiltro.setVerticalGroup(
+        	gl_pnTarefasFiltro.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnTarefasFiltro.createSequentialGroup()
+        			.addComponent(btnTarefasIncluir)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(ckTarefasEmailFiltro)
+        			.addComponent(ckTarefasLigacao)
+        			.addComponent(ckTarefasProposta)
+        			.addComponent(ckTarefasReuniao)
+        			.addComponent(ckTarefasVisita)
+        			.addGap(3)
+        			.addComponent(ckTarefasFinalizadasFiltro)
+        			.addGap(2)
+        			.addComponent(ckTarefasPendentesFiltro)
+        			.addGap(3)
+        			.addComponent(ckTarefasEmpresasFiltro)
+        			.addGap(3)
+        			.addComponent(ckTarefaNegociosFiltro)
+        			.addGap(3)
+        			.addComponent(ckTarefasPessoasFiltro)
+        			.addGap(3)
+        			.addComponent(ckTarefasProspeccaoFiltro))
+        );
+        pnTarefasFiltro.setLayout(gl_pnTarefasFiltro);
+        pnModulos.setLayout(null);
+        ButtonGroup groupModulos = new ButtonGroup();
+        JRadioButton rbEmpresas = new JRadioButton("Empresas");
+        rbEmpresas.setBounds(16, 52, 109, 23);
+        pnModulos.add(rbEmpresas);
+        groupModulos.add(rbEmpresas);
+        JRadioButton rbNegocios = new JRadioButton("Neg\u00F3cios");
+        rbNegocios.setBounds(16, 78, 109, 23);
+        pnModulos.add(rbNegocios);
+        groupModulos.add(rbNegocios);
+        JRadioButton rbPessoas = new JRadioButton("Pessoas");
+        rbPessoas.setBounds(16, 104, 109, 23);
+        pnModulos.add(rbPessoas);
+        
+        JRadioButton rbProspeccao = new JRadioButton("Prospec\u00E7\u00E3o");
+        rbProspeccao.setBounds(16, 130, 109, 23);
+        pnModulos.add(rbProspeccao);
+        
+        JRadioButton rbTarefas = new JRadioButton("Tarefas");
+        rbTarefas.setBounds(16, 156, 109, 23);
+        pnModulos.add(rbTarefas);
+        
+        JButton btnAvancarModulo = new JButton("Avancar");
+        btnAvancarModulo.setBounds(76, 22, 89, 23);
+        pnModulos.add(btnAvancarModulo);
+        
+        pnPrincipal.setLayout(gl_pnPrincipal);
         
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }
 }

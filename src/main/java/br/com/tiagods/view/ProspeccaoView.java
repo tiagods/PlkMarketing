@@ -101,6 +101,7 @@ public class ProspeccaoView extends JInternalFrame {
 		panel.add(tabbedPane);
 		
 		pnPesquisa = new JPanel();
+		pnPesquisa.setBackground(panel.getBackground());
 		tabbedPane.addTab("Pesquisa", null, pnPesquisa, null);
 		pnPesquisa.setLayout(null);
 		
@@ -164,7 +165,7 @@ public class ProspeccaoView extends JInternalFrame {
 		lblClassificarPor.setBounds(366, 60, 110, 14);
 		pnPesquisa.add(lblClassificarPor);
 		
-		cbOrdenacao = new JComboBox<String>();
+		cbOrdenacao = new JComboBox<>();
 		cbOrdenacao.setToolTipText("Voc\u00EA consegue organizar com duplo clique no nome da coluna dentro da tabela abaixo, mas campos como DATA E CODIGO n\u00E3o s\u00E3o possiveis de ordenar, por isso dispon\u00EDvel essa fun\u00E7\u00E3o atrav\u00E9s dessa caixa.");
 		cbOrdenacao.setModel(new DefaultComboBoxModel<String>(new String[] {"C\u00F3digo", "Nome", "Data Cria\u00E7\u00E3o"}));
 		cbOrdenacao.setBounds(494, 57, 121, 20);
@@ -237,11 +238,13 @@ public class ProspeccaoView extends JInternalFrame {
 		pnPesquisa.add(label_1);
 		
 		JPanel pnItem = new JPanel();
+		pnItem.setBackground(panel.getBackground());
 		tabbedPane.addTab("Cadastro", null, pnItem, null);
 		pnItem.setLayout(null);
 		
 		pnCadastro = new JPanel();
 		pnCadastro.setOpaque(false);
+		pnCadastro.setBackground(panel.getBackground());
 		pnCadastro.setBounds(10, 11, 719, 517);
 		pnItem.add(pnCadastro);
 		pnCadastro.setLayout(null);
@@ -391,6 +394,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastro.add(tpSubCadastro);
 		
 		pnCadastroOrigem = new JPanel();
+		pnCadastroOrigem.setBackground(panel.getBackground());
 		tpSubCadastro.addTab("Origem", null, pnCadastroOrigem, null);
 		pnCadastroOrigem.setLayout(null);
 		
@@ -428,6 +432,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastroOrigem.add(btOrigemAdd);
 		
 		JPanel pnCadastroResumo = new JPanel();
+		pnCadastroResumo.setBackground(panel.getBackground());
 		tpSubCadastro.addTab("Resumo", null, pnCadastroResumo, null);
 		pnCadastroResumo.setLayout(null);
 		
@@ -450,6 +455,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastroResumo.add(txtpnTenteIrPara);
 		
 		JPanel pnCadastroApresentacao = new JPanel();
+		pnCadastroApresentacao.setBackground(panel.getBackground());
 		tpSubCadastro.addTab("Apresenta\u00E7\u00E3o sob Medida", null, pnCadastroApresentacao, null);
 		pnCadastroApresentacao.setLayout(null);
 		
@@ -472,6 +478,7 @@ public class ProspeccaoView extends JInternalFrame {
 		spApresentacao.setViewportView(txApresentacao);
 		
 		pnLista = new JPanel();
+		pnLista.setBackground(panel.getBackground());
 		tpSubCadastro.addTab("Lista", null, pnLista, null);
 		pnLista.setLayout(null);
 		
@@ -536,6 +543,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastro.add(btServicosAdd);
 		
 		pnAuxiliar = new JPanel();
+		pnAuxiliar.setBackground(panel.getBackground());
 		pnAuxiliar.setOpaque(false);
 		pnAuxiliar.setBounds(739, 11, 460, 363);
 		pnItem.add(pnAuxiliar);

@@ -32,6 +32,7 @@ import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.ProspeccaoView;
+import br.com.tiagods.view.RelatorioView;
 import br.com.tiagods.view.SobreDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
@@ -49,6 +50,7 @@ public class ControllerMenu implements MouseListener{
     NegociosView negocios;
     MenuView view;
     ProspeccaoView prospeccao;
+    RelatorioView relatorio;
     VersaoSistema descricao = new VersaoSistema();
     VerificarAtualizacao atualizacao = new VerificarAtualizacao();
     boolean atualizar = false;
@@ -137,6 +139,15 @@ public class ControllerMenu implements MouseListener{
             abrirCorpo(prospeccao);
         	};
         	new Thread(run).start();
+        	break;
+        case "Relatorios":
+        	//invocarLoading();
+        	run = ()->{
+        	relatorio = new RelatorioView();
+            abrirCorpo(relatorio);
+        	};
+        	new Thread(run).start();
+        	JOptionPane.showMessageDialog(jDBody, "Esse modulo ainda esta em fase de desenvolvimento, mas você pode visualizar o layout e dar sugestões...!","Modulo em Desenvolvimento!",JOptionPane.OK_OPTION);
         	break;
         case "Atualizar":
         	if(atualizar)
