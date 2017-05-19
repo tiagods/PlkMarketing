@@ -112,7 +112,7 @@ public class LoginDialog extends JDialog {
 		pnRecuperarConta.add(btnBack);
 		
 		pnLogin = new JPanel();
-		pnLogin.setBackground(Color.WHITE);
+		pnLogin.setBackground(new Color(250,250,250));
 		
 		pnLogin.setBounds(183, 72, 291, 228);
 		contentPanel.add(pnLogin);
@@ -168,7 +168,7 @@ public class LoginDialog extends JDialog {
 		pnLogin.add(lbEsqueciAConta);
 		
 		pnGerarSenha = new JPanel();
-		pnGerarSenha.setBackground(Color.WHITE);
+		pnGerarSenha.setBackground(new Color(250,250,250));
 		pnGerarSenha.setBounds(183, 72, 291, 228);
 		contentPanel.add(pnGerarSenha);
 		pnGerarSenha.setLayout(null);

@@ -394,6 +394,9 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			else if(c instanceof JRadioButton){
 				((JRadioButton)c).setEnabled(desbloquear);
 			}
+			else if(c instanceof JCheckBox){
+				((JCheckBox)c).setEnabled(desbloquear);
+			}
 			else if(c instanceof JScrollPane){
 				JViewport viewPort = ((JScrollPane)c).getViewport();
 				desbloquearFormulario(desbloquear,(Container)viewPort);

@@ -34,6 +34,7 @@ public class SobreDialog extends JDialog {
 	public void initComponents(){
 		setBounds(100, 100, 500, 350);
 		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBackground(new Color(250,250,250));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
@@ -54,6 +55,7 @@ public class SobreDialog extends JDialog {
 		contentPanel.add(lbVersaoBanco);
 		
 		JTextPane textPane = new JTextPane();
+		textPane.setOpaque(false);
 		textPane.setEditable(false);
 		textPane.setBackground(new Color(240,240,240));
 		textPane.setBounds(20, 173, 454, 70);
@@ -74,6 +76,7 @@ public class SobreDialog extends JDialog {
     	lbIcon.setIcon(iconTheme);
 		lbIcon.setBounds(10, 42, 120, 120);
 		contentPanel.add(lbIcon);
+		
 		JButton okButton = new JButton("");
 		okButton.setBounds(427, 279, 50, 25);
 		contentPanel.add(okButton);

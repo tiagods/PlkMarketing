@@ -221,7 +221,7 @@ public class EmpresasView extends JInternalFrame {
 		btnImportar.setFont(new Font("Dialog", Font.PLAIN, 10));
 		btnImportar.setActionCommand("Importar");
 		btnImportar.addActionListener(controller);
-		btnImportar.setBounds(780, 90, 130, 25);
+		btnImportar.setBounds(780, 107, 130, 25);
 		pnVisao.add(btnImportar);
 		
 		btnExportar = new JButton();
@@ -231,7 +231,7 @@ public class EmpresasView extends JInternalFrame {
 		btnExportar.setFont(new Font("Dialog", Font.PLAIN, 10));
 		btnExportar.setActionCommand("Exportar");
 		btnExportar.addActionListener(controller);
-		btnExportar.setBounds(780, 126, 130, 25);
+		btnExportar.setBounds(780, 143, 130, 25);
 		pnVisao.add(btnExportar);
         
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

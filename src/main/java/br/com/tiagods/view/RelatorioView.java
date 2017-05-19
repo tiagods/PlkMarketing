@@ -25,7 +25,16 @@ import br.com.tiagods.view.interfaces.DefaultUtilities;
 
 @SuppressWarnings("serial")
 public class RelatorioView extends JInternalFrame implements DefaultUtilities {
-	public static JPanel pnPrincipal;
+	public static JPanel pnPrincipal,pnTarefas,pnModulos;
+    public static JRadioButton rbEmpresas,rbNegocios,rbPessoas,rbProspeccao,rbTarefas;
+    public static JRadioButton rbTarefasAtendenteOrdenar,rbTarefasStatusOrdenar,rdTarefasResumo,rbTarefasDetalhes;
+    public static JCheckBox ckTarefasVisita,ckTarefasReuniao,ckTarefasProposta,ckTarefasLigacao,
+    ckTarefasEmailFiltro,ckTarefasFinalizadasFiltro,ckTarefasPendentesFiltro,
+    ckTarefasEmpresasFiltro,ckTarefaNegociosFiltro,ckTarefasPessoasFiltro,ckTarefasProspeccaoFiltro;
+    public static JScrollPane spTarefasFiltro;
+    public static JPanel pnTarefasFiltro;
+
+    
 	ControllerRelatorios controller	= new ControllerRelatorios();
 	@Override
 	public Color getColor() {
@@ -42,10 +51,14 @@ public class RelatorioView extends JInternalFrame implements DefaultUtilities {
         setBorder(null);
         pnPrincipal.setBackground(getColor());
         
-        JPanel pnModulos = new JPanel();
+        pnModulos = new JPanel();
         pnModulos.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Escolha um M\u00F3dulo:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         
-        JPanel pnTarefas = new JPanel();
+        pnTarefas = new JPanel();
+        pnTarefas.setOpaque(false);
+        
+        JButton btnTarefasExportar = new JButton("Exportar");
+        JButton btnTarefasRelatorio = new JButton("Relat\u00F3rio");
         
         javax.swing.GroupLayout gl_pnPrincipal = new javax.swing.GroupLayout(pnPrincipal);
         gl_pnPrincipal.setHorizontalGroup(
@@ -55,115 +68,49 @@ public class RelatorioView extends JInternalFrame implements DefaultUtilities {
         			.addComponent(pnModulos, GroupLayout.PREFERRED_SIZE, 175, GroupLayout.PREFERRED_SIZE)
         			.addGap(31)
         			.addComponent(pnTarefas, GroupLayout.PREFERRED_SIZE, 617, GroupLayout.PREFERRED_SIZE)
-        			.addContainerGap(417, Short.MAX_VALUE))
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
+        				.addComponent(btnTarefasRelatorio, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(btnTarefasExportar, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
+        			.addContainerGap(318, Short.MAX_VALUE))
         );
         gl_pnPrincipal.setVerticalGroup(
         	gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_pnPrincipal.createSequentialGroup()
-        			.addGroup(gl_pnPrincipal.createParallelGroup(Alignment.LEADING)
-        				.addGroup(gl_pnPrincipal.createSequentialGroup()
-        					.addGap(21)
-        					.addComponent(pnModulos, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE))
-        				.addGroup(gl_pnPrincipal.createSequentialGroup()
-        					.addContainerGap()
-        					.addComponent(pnTarefas, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(396, Short.MAX_VALUE))
+        			.addGap(21)
+        			.addComponent(pnModulos, GroupLayout.PREFERRED_SIZE, 191, GroupLayout.PREFERRED_SIZE))
+        		.addGroup(gl_pnPrincipal.createSequentialGroup()
+        			.addContainerGap()
+        			.addComponent(pnTarefas, GroupLayout.PREFERRED_SIZE, 226, GroupLayout.PREFERRED_SIZE))
+        		.addGroup(gl_pnPrincipal.createSequentialGroup()
+        			.addGap(164)
+        			.addComponent(btnTarefasRelatorio)
+        			.addGap(11)
+        			.addComponent(btnTarefasExportar))
         );
         pnTarefas.setLayout(null);
         
-        JPanel pnTarefasRelatorioTipo = new JPanel();
-        pnTarefasRelatorioTipo.setLayout(null);
-        pnTarefasRelatorioTipo.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Tipo:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        pnTarefasRelatorioTipo.setBounds(220, 130, 175, 80);
-        pnTarefas.add(pnTarefasRelatorioTipo);
-        
-        JRadioButton rdbtnResumo = new JRadioButton("Resumida");
-        rdbtnResumo.setBounds(17, 19, 109, 23);
-        pnTarefasRelatorioTipo.add(rdbtnResumo);
-        
-        JRadioButton rdbtnDetalhada = new JRadioButton("Detalhada");
-        rdbtnDetalhada.setBounds(17, 45, 109, 23);
-        pnTarefasRelatorioTipo.add(rdbtnDetalhada);
-        
-        JPanel pnTarefasOrdenar = new JPanel();
-        pnTarefasOrdenar.setLayout(null);
-        pnTarefasOrdenar.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ordenar", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-        pnTarefasOrdenar.setBounds(220, 10, 175, 80);
-        pnTarefas.add(pnTarefasOrdenar);
-        
-        JRadioButton rbTarefasAtendenteOrdenar = new JRadioButton("Atendente");
-        rbTarefasAtendenteOrdenar.setBounds(17, 19, 109, 23);
-        pnTarefasOrdenar.add(rbTarefasAtendenteOrdenar);
-        
-        JRadioButton rbTarefasStatusOrdenar = new JRadioButton("Status");
-        rbTarefasStatusOrdenar.setBounds(17, 45, 109, 23);
-        pnTarefasOrdenar.add(rbTarefasStatusOrdenar);
-        
-        JPanel pnTarefasDatar = new JPanel();
-        pnTarefasDatar.setBorder(new TitledBorder(null, "Per\u00EDodo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        pnTarefasDatar.setLayout(null);
-        pnTarefasDatar.setOpaque(false);
-        pnTarefasDatar.setBackground(new Color(250, 250, 250));
-        pnTarefasDatar.setBounds(430, 10, 175, 80);
-        pnTarefas.add(pnTarefasDatar);
-        
-        JLabel lbData1 = new JLabel();
-        lbData1.setText("de:");
-        lbData1.setHorizontalAlignment(SwingConstants.LEFT);
-        lbData1.setBounds(10, 27, 22, 20);
-        pnTarefasDatar.add(lbData1);
-        
-        JLabel lbData2 = new JLabel();
-        lbData2.setText("at\u00E9");
-        lbData2.setHorizontalAlignment(SwingConstants.LEFT);
-        lbData2.setBounds(10, 49, 22, 20);
-        pnTarefasDatar.add(lbData2);
-        
-        JDateChooser data1 = new JDateChooser();
-        data1.setBounds(36, 27, 100, 20);
-        pnTarefasDatar.add(data1);
-        
-        JDateChooser data2 = new JDateChooser();
-        data2.setBounds(36, 49, 100, 20);
-        pnTarefasDatar.add(data2);
-        
-        JButton btnTarefasExportar = new JButton("Exportar");
-        btnTarefasExportar.setBounds(510, 187, 89, 23);
-        pnTarefas.add(btnTarefasExportar);
-        
-        JButton btnTarefasRelatorio = new JButton("Relat\u00F3rio");
-        btnTarefasRelatorio.setBounds(510, 153, 89, 23);
-        pnTarefas.add(btnTarefasRelatorio);
-        
-        JScrollPane spTarefasFiltro = new JScrollPane();
+        spTarefasFiltro = new JScrollPane();
+        spTarefasFiltro.setOpaque(false);
         spTarefasFiltro.setBounds(10, 10, 200, 200);
         pnTarefas.add(spTarefasFiltro);
         
-        JPanel pnTarefasFiltro = new JPanel();
+        pnTarefasFiltro = new JPanel();
+        pnTarefasFiltro.setOpaque(false);
         spTarefasFiltro.setViewportView(pnTarefasFiltro);
         pnTarefasFiltro.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Filtro:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
         
-        JCheckBox ckTarefasVisita = new JCheckBox("Visita");
-        
-        JCheckBox ckTarefasReuniao = new JCheckBox("Reuni\u00E3o");
-        
-        JCheckBox ckTarefasProposta = new JCheckBox("Proposta");
-        
-        JCheckBox ckTarefasLigacao = new JCheckBox("Liga\u00E7\u00E3o");
-        
-        JCheckBox ckTarefasEmailFiltro = new JCheckBox("E-mail");
-        
-        JCheckBox ckTarefasFinalizadasFiltro = new JCheckBox("Tarefas Finalizadas");
-        
-        JCheckBox ckTarefasPendentesFiltro = new JCheckBox("Tarefas Pendentes");
-        
-        JCheckBox ckTarefasEmpresasFiltro = new JCheckBox("Empresas");
-        
-        JCheckBox ckTarefaNegociosFiltro = new JCheckBox("Neg\u00F3cios");
-        
-        JCheckBox ckTarefasPessoasFiltro = new JCheckBox("Pessoas");
-        
-        JCheckBox ckTarefasProspeccaoFiltro = new JCheckBox("Prospec\u00E7\u00E3o");
+        ckTarefasVisita = new JCheckBox("Visita");
+        ckTarefasReuniao = new JCheckBox("Reuni\u00E3o");
+        ckTarefasProposta = new JCheckBox("Proposta");
+        ckTarefasLigacao = new JCheckBox("Liga\u00E7\u00E3o");
+        ckTarefasEmailFiltro = new JCheckBox("E-mail");
+        ckTarefasFinalizadasFiltro = new JCheckBox("Tarefas Finalizadas");
+        ckTarefasPendentesFiltro = new JCheckBox("Tarefas Pendentes");
+        ckTarefasEmpresasFiltro = new JCheckBox("Empresas");
+        ckTarefaNegociosFiltro = new JCheckBox("Neg\u00F3cios");
+        ckTarefasPessoasFiltro = new JCheckBox("Pessoas");
+        ckTarefasProspeccaoFiltro = new JCheckBox("Prospec\u00E7\u00E3o");
         
         JButton btnTarefasIncluir = new JButton("Avancar");
         GroupLayout gl_pnTarefasFiltro = new GroupLayout(pnTarefasFiltro);
@@ -209,28 +156,100 @@ public class RelatorioView extends JInternalFrame implements DefaultUtilities {
         			.addComponent(ckTarefasProspeccaoFiltro))
         );
         pnTarefasFiltro.setLayout(gl_pnTarefasFiltro);
+        JPanel pnTarefasOrdenar = new JPanel();
+        pnTarefasOrdenar.setOpaque(false);
+        pnTarefasOrdenar.setLayout(null);
+        pnTarefasOrdenar.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), 
+        		"Ordenar", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        pnTarefasOrdenar.setBounds(220, 10, 175, 80);
+        pnTarefas.add(pnTarefasOrdenar);
+        
+        ButtonGroup groupTarefaOrdenacao = new ButtonGroup();
+        
+        rbTarefasAtendenteOrdenar = new JRadioButton("Atendente");
+        rbTarefasAtendenteOrdenar.setBounds(17, 19, 109, 23);
+        pnTarefasOrdenar.add(rbTarefasAtendenteOrdenar);
+        groupTarefaOrdenacao.add(rbTarefasAtendenteOrdenar);
+        
+        rbTarefasStatusOrdenar = new JRadioButton("Status");
+        rbTarefasStatusOrdenar.setBounds(17, 45, 109, 23);
+        pnTarefasOrdenar.add(rbTarefasStatusOrdenar);
+        groupTarefaOrdenacao.add(rbTarefasStatusOrdenar);
+        
+        JPanel pnTarefasRelatorioTipo = new JPanel();
+        pnTarefasRelatorioTipo.setOpaque(false);
+        pnTarefasRelatorioTipo.setLayout(null);
+        pnTarefasRelatorioTipo.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), 
+        		"Tipo:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+        pnTarefasRelatorioTipo.setBounds(220, 130, 175, 80);
+        pnTarefas.add(pnTarefasRelatorioTipo);
+        
+        ButtonGroup groupTarefaTipo = new ButtonGroup();
+        rdTarefasResumo = new JRadioButton("Resumida");
+        rdTarefasResumo.setBounds(17, 19, 109, 23);
+        pnTarefasRelatorioTipo.add(rdTarefasResumo);
+        groupTarefaTipo.add(rdTarefasResumo);
+        
+        rbTarefasDetalhes = new JRadioButton("Detalhada");
+        rbTarefasDetalhes.setBounds(17, 45, 109, 23);
+        pnTarefasRelatorioTipo.add(rbTarefasDetalhes);
+        groupTarefaTipo.add(rbTarefasDetalhes);
+        
+        JPanel pnTarefasData = new JPanel();
+        pnTarefasData.setBorder(new TitledBorder(null, "Per\u00EDodo", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        pnTarefasData.setLayout(null);
+        pnTarefasData.setOpaque(false);
+        pnTarefasData.setBackground(new Color(250, 250, 250));
+        pnTarefasData.setBounds(430, 10, 175, 80);
+        pnTarefas.add(pnTarefasData);
+        
+        JLabel lbTarefasData1 = new JLabel();
+        lbTarefasData1.setText("de:");
+        lbTarefasData1.setHorizontalAlignment(SwingConstants.LEFT);
+        lbTarefasData1.setBounds(10, 27, 22, 20);
+        pnTarefasData.add(lbTarefasData1);
+        
+        JLabel lbTarefasData2 = new JLabel();
+        lbTarefasData2.setText("at\u00E9");
+        lbTarefasData2.setHorizontalAlignment(SwingConstants.LEFT);
+        lbTarefasData2.setBounds(10, 49, 22, 20);
+        pnTarefasData.add(lbTarefasData2);
+        
+        JDateChooser dataTarefas1 = new JDateChooser();
+        dataTarefas1.setBounds(36, 27, 100, 20);
+        pnTarefasData.add(dataTarefas1);
+        
+        JDateChooser dataTarefas2 = new JDateChooser();
+        dataTarefas2.setBounds(36, 49, 100, 20);
+        pnTarefasData.add(dataTarefas2);
         pnModulos.setLayout(null);
+        
         ButtonGroup groupModulos = new ButtonGroup();
-        JRadioButton rbEmpresas = new JRadioButton("Empresas");
+        
+        rbEmpresas = new JRadioButton("Empresas");
+        rbEmpresas.setEnabled(false);
         rbEmpresas.setBounds(16, 52, 109, 23);
         pnModulos.add(rbEmpresas);
         groupModulos.add(rbEmpresas);
-        JRadioButton rbNegocios = new JRadioButton("Neg\u00F3cios");
+        rbNegocios = new JRadioButton("Neg\u00F3cios");
+        rbNegocios.setEnabled(false);
         rbNegocios.setBounds(16, 78, 109, 23);
         pnModulos.add(rbNegocios);
         groupModulos.add(rbNegocios);
-        JRadioButton rbPessoas = new JRadioButton("Pessoas");
+        rbPessoas = new JRadioButton("Pessoas");
+        rbPessoas.setEnabled(false);
         rbPessoas.setBounds(16, 104, 109, 23);
         pnModulos.add(rbPessoas);
-        
-        JRadioButton rbProspeccao = new JRadioButton("Prospec\u00E7\u00E3o");
+        groupModulos.add(rbPessoas);
+        rbProspeccao = new JRadioButton("Prospec\u00E7\u00E3o");
+        rbProspeccao.setEnabled(false);
         rbProspeccao.setBounds(16, 130, 109, 23);
         pnModulos.add(rbProspeccao);
-        
-        JRadioButton rbTarefas = new JRadioButton("Tarefas");
+        groupModulos.add(rbProspeccao);
+        rbTarefas = new JRadioButton("Tarefas");
         rbTarefas.setBounds(16, 156, 109, 23);
         pnModulos.add(rbTarefas);
-        
+        groupModulos.add(rbTarefas);
         JButton btnAvancarModulo = new JButton("Avancar");
         btnAvancarModulo.setBounds(76, 22, 89, 23);
         pnModulos.add(btnAvancarModulo);
