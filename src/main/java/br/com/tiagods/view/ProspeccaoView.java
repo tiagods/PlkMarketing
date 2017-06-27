@@ -63,7 +63,7 @@ public class ProspeccaoView extends JInternalFrame {
 	public static JTextField txDataCadastro;
 	public static JTextField txCadastradoPor;
 	public static JButton btTipoContatoAdd,btServicosAdd,btListaAdd,btAdicionarALista;
-	public static JButton btExportarMalaDireta,btnExpMailmktLocaweb;
+	public static JButton btExportarMalaDireta,btnExpMailmktLocaweb,btnExportar;
 	public static JTextField txContadorRegistros;
 	
 	ControllerProspeccao controller = new ControllerProspeccao();
@@ -236,6 +236,12 @@ public class ProspeccaoView extends JInternalFrame {
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setBounds(66, 88, 139, 14);
 		pnPesquisa.add(label_1);
+		
+		btnExportar = new JButton("Exportar");
+		btnExportar.setToolTipText("Exportar Excel");
+		btnExportar.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnExportar.setBounds(1049, 65, 150, 23);
+		pnPesquisa.add(btnExportar);
 		
 		JPanel pnItem = new JPanel();
 		pnItem.setBackground(panel.getBackground());

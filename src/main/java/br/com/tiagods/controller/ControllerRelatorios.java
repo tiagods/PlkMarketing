@@ -56,12 +56,12 @@ public class ControllerRelatorios {
 		esconderPainel(pnPrincipal);
 		pnTarefas.setVisible(true);
 		recriarFiltro(pnTarefasFiltro);
-		
-		if(rbTarefasDetalhes.isSelected()){
-
-			processarDetalhes();
-		}
-		else
+//		
+//		if(rbTarefasDetalhes.isSelected()){
+//
+//			processarDetalhes();
+//		}
+//		else
 		
 	}
 	private void recriarFiltro(Container container){

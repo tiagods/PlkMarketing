@@ -19,6 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +33,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,6 +45,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Session;
@@ -55,11 +58,13 @@ import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Lista;
+import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.ProspeccaoTipoContato;
 import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -68,7 +73,9 @@ import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.interfaces.ButtonColumnModel;
+import br.com.tiagods.view.interfaces.ExcelGenerico;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
+import jxl.write.WriteException;
 
 import static br.com.tiagods.view.ProspeccaoView.*;
 
@@ -94,7 +101,6 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			preencherComboBox(panel);
 		}
 		List<Criterion> criterion = new ArrayList<>();
-		criterion.add(Restrictions.eq("pfpj.atendente", UsuarioLogado.getInstance().getUsuario()));
 		listarProspeccao = dao.items(Prospeccao.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		if(this.prospeccao==null && !listarProspeccao.isEmpty()){
@@ -336,8 +342,18 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			break;
 		}	
 	}
-	
-	
+	private String carregarArquivo(String title){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setDialogTitle(title);
+        String local = "";
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+        int retorno = chooser.showSaveDialog(null);
+        if(retorno==JFileChooser.APPROVE_OPTION){
+        	local = chooser.getSelectedFile().getAbsolutePath(); //
+        }
+        return local;
+    }
 	private void definirAcoes(){
 		data1.addPropertyChangeListener(this);
 		data2.addPropertyChangeListener(this);
@@ -375,6 +391,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		btAdicionarALista.addActionListener(this);
 		txBuscar.addKeyListener(this);
 		tabbedPane.addMouseListener(this);
+		btnExportar.addActionListener(this);
 	}
 	@SuppressWarnings("rawtypes")
 	private void desbloquearFormulario(boolean desbloquear,Container container){
@@ -406,8 +423,121 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			}
 		}
 	}
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void exportarExcel(){
-		
+
+int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
+				+"Todos os registros serão exportados para o formato excel, deseja imprimir o filtro realizado",
+				"Exportar Negocios",JOptionPane.YES_NO_OPTION);
+		if(opcao==JOptionPane.YES_OPTION){
+			String export = carregarArquivo("Salvar arquivo");
+			if(!"".equals(export)){
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				realizarFiltro();
+				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+				
+				Integer[] colunasLenght = new Integer[]{6,29,9,13,5,15,13,14,14,13,12,11,14,10,10,16,10,19,16,30,16,10,19,16,30};
+				String[] cabecalho = new String[]{
+						"Cod","Nome", "Responsavel","Departamento","Tipo de Contato","Convite para Eventos","Material","Newsletter",
+						"E-mail","Site","Telefone","Celular","Criado Em","Atendente","Endereço",
+						"Servicos/Produtos","Origem","Detalhes da Origem","Resumo","Apresentação","Listas","Qtde Negócios",
+						"Status Negocio","Honorário","Outros Serviços"};
+				listaImpressao.add(new ArrayList<>());
+				for(String c : cabecalho){
+					listaImpressao.get(0).add(c);
+				}
+				for(int i = 0;i<listarProspeccao.size();i++){
+					listaImpressao.add(new ArrayList());
+					Prospeccao p = listarProspeccao.get(i);
+					listaImpressao.get(i+1).add(p.getId());
+					listaImpressao.get(i+1).add(p.getNome());
+					listaImpressao.get(i+1).add(p.getResponsavel());
+					listaImpressao.get(i+1).add(p.getDepartamento());
+					listaImpressao.get(i+1).add(p.getTipoContato().getNome());
+					listaImpressao.get(i+1).add(p.getConviteParaEventos()==1?"Sim":"Não");
+					listaImpressao.get(i+1).add(p.getMaterial()==1?"Sim":"Não");
+					listaImpressao.get(i+1).add(p.getNewsletter()==1?"Sim":"Não");
+					
+					PfPj pfpj = p.getPfpj();
+					listaImpressao.get(i+1).add(pfpj.getEmail());
+					listaImpressao.get(i+1).add(pfpj.getSite());
+					listaImpressao.get(i+1).add(pfpj.getTelefone());
+					listaImpressao.get(i+1).add(pfpj.getCelular());
+					listaImpressao.get(i+1).add(sdf.format(pfpj.getCriadoEm()));
+					listaImpressao.get(i+1).add(pfpj.getAtendente().getNome());
+					listaImpressao.get(i+1).add(p.getEndereco());
+					
+					listaImpressao.get(i+1).add(pfpj.getServico()==null?"":pfpj.getServico().getNome());
+					listaImpressao.get(i+1).add(pfpj.getOrigem()==null?"":pfpj.getOrigem().getNome());
+					listaImpressao.get(i+1).add(pfpj.getDetalhesOrigem());
+					
+					listaImpressao.get(i+1).add(pfpj.getResumo());
+					listaImpressao.get(i+1).add(pfpj.getApresentacao());
+					StringBuilder listas = new StringBuilder();
+					Iterator<Lista> iterator = p.getListas().iterator();
+					int qtdListas = 0;
+					while(iterator.hasNext()){
+						listas.append(iterator.next().getNome());
+						listas.append("\n");
+					}
+					listaImpressao.get(i+1).add(listas.toString());		
+					
+					int qtdNegocios=0;
+					StringBuilder valorHonorario = new StringBuilder();
+					StringBuilder statusNegocio = new StringBuilder();
+					StringBuilder statusServicosNegocios = new StringBuilder();
+					
+					List<Criterion> criterios = new ArrayList<>();
+					criterios.add(Restrictions.eq("prospeccao", p));
+					List<Negocio> listaNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+					if(!listaNegocios.isEmpty()){
+						for(Negocio negocio : listaNegocios){
+							qtdNegocios++;
+	
+							valorHonorario.append(negocio.getId());
+							valorHonorario.append("-");
+							valorHonorario.append(NumberFormat.getCurrencyInstance().format(negocio.getHonorario()));
+							valorHonorario.append("\n ");
+	
+							statusNegocio.append(negocio.getId());
+							statusNegocio.append("-");
+							statusNegocio.append(negocio.getStatus().getNome());
+							statusNegocio.append("\n ");
+	
+							Set<ServicoContratado> servicos = negocio.getServicosContratados();
+							for(ServicoContratado sc : servicos){
+								statusServicosNegocios.append(negocio.getId());
+								statusServicosNegocios.append(" - ");
+								statusServicosNegocios.append(sc.getServicosAgregados().getNome());
+								statusServicosNegocios.append(" - ");
+								statusServicosNegocios.append(NumberFormat.getCurrencyInstance().format(sc.getValor()));
+								statusServicosNegocios.append("\n ");
+							}
+							
+						}
+					}
+					listaImpressao.get(i+1).add(qtdNegocios);//possui negocio
+					listaImpressao.get(i+1).add(statusNegocio.toString());//status do negocio
+					listaImpressao.get(i+1).add(valorHonorario.toString());//valor do negocio
+					listaImpressao.get(i+1).add(statusServicosNegocios.toString());//valor do negocio
+				}
+				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
+				try {
+					planilha.gerarExcel();
+					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
+					Desktop.getDesktop().open(new File(export+".xls"));
+				} catch (WriteException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao criar a planilha "+e1);
+				} finally{
+					session.close();
+				}
+			}
+		}
 	}
 	private void exportarTxtEmails() {
 		boolean open = abrirSessao();
@@ -748,7 +878,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			new SemRegistrosJTable(table,"Relação de Negócios");
 		}
 		else{
-			Object [] tableHeader = {"ID","NOME","CONTATO","TIPO DE CONTATO","ORIGEM","PRODUTOS/SERVICOS","CONVITE P/EVENTOS","MATERIAL","NEWSLETTER","LISTAS",
+			Object [] tableHeader = {"ID","NOME","RESPONSAVEL","TIPO","ORIGEM","PRODUTOS/SERVICOS","CONVITE P/EVENTOS","MATERIAL","NEWSLETTER","LISTAS",
 					"CRIADO EM","ATENDENTE"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 
@@ -773,7 +903,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 				linha[6] = n.getConviteParaEventos()==1?"Sim":"Não";
 				linha[7] = n.getMaterial()==1?"Sim":"Não";
 				linha[8] = n.getNewsletter()==1?"Sim":"Não";
-				linha[9] = n.getListas().size()+" lista(s)";
+				linha[9] = n.getListas().size();
 				try{
 					Date criadoEm = n.getPfpj().getCriadoEm();
 					linha[10] = sdf.format(criadoEm);
@@ -789,7 +919,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			table.setSelectionBackground(Color.ORANGE);
 			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			table.getColumnModel().getColumn(0).setMaxWidth(40);
-			table.getColumnModel().getColumn(2).setMaxWidth(60);
+			table.getColumnModel().getColumn(2).setPreferredWidth(80);;
 		}
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
@@ -957,6 +1087,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 //
     	ImageIcon iconExp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
     	btnExpMailmktLocaweb.setIcon(recalculate(iconExp));
+    	btnExportar.setIcon(iconExp);
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

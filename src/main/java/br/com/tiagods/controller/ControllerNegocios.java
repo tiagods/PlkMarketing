@@ -765,7 +765,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					listaImpressao.get(i+1).add(n.getId());
 					listaImpressao.get(i+1).add(n.getNome());
 					
-					PfPj pfpj = n.getPessoa()!=null?n.getPessoa().getPessoaFisica():n.getEmpresa().getPessoaJuridica();
+					PfPj pfpj = n.getPessoa()!=null?n.getPessoa().getPessoaFisica():
+						(n.getEmpresa()!=null?n.getEmpresa().getPessoaJuridica():n.getProspeccao().getPfpj());
 					listaImpressao.get(i+1).add(pfpj.getEmail());
 					listaImpressao.get(i+1).add(pfpj.getTelefone());
 					listaImpressao.get(i+1).add(pfpj.getCelular());
