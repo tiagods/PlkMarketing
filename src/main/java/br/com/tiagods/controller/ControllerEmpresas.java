@@ -74,6 +74,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -115,6 +117,7 @@ import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
+import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoContratado;
@@ -216,12 +219,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		case "Historico":
 			pnAuxiliar.setVisible(true);
 			boolean open = recebeSessao();
-			List<Criterion> criterios = new ArrayList<>();
-			Criterion criterion = Restrictions.eq("empresa", empresa);
-			criterios.add(criterion);
-			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios, order);
+			preencherTarefas(empresa);
 			fechaSessao(open);
 			break;
 		case "Pessoas":
@@ -231,10 +229,10 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		case "Negocios":
 			pnAuxiliar.setVisible(true);
 			open = recebeSessao();
-			criterios = new ArrayList<>();
-			criterion = Restrictions.eq("empresa", empresa);
+			List<Criterion> criterios = new ArrayList<>();
+			Criterion criterion = Restrictions.eq("empresa", empresa);
 			criterios.add(criterion);
-			order = Order.desc("id");		
+			Order order = Order.desc("id");		
 			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios,criterios, order);
 			fechaSessao(open);
@@ -280,6 +278,52 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			else{
 				TarefasSaveView taskView = new TarefasSaveView(null, this.empresa, MenuView.getInstance(),true);
 				taskView.setVisible(true);
+				taskView.addWindowListener(new WindowListener() {
+					
+					@Override
+					public void windowOpened(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowIconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeiconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeactivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosing(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosed(WindowEvent e) {
+						boolean open = recebeSessao();
+						empresa = (Empresa) dao.receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
+						preencherTarefas(empresa);
+						fechaSessao(open);
+					}
+					
+					@Override
+					public void windowActivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 			}
 			break;
 		case "MailTo":
@@ -316,6 +360,14 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		default:
 			break;
 		}
+	}
+	private void preencherTarefas(Empresa empresa) {
+		List<Criterion> criterios = new ArrayList<>();
+		Criterion criterion = Restrictions.eq("empresa", empresa);
+		criterios.add(criterion);
+		Order order = Order.desc("dataEvento");		
+		List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
+		new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios, order);
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void exportarExcel(){

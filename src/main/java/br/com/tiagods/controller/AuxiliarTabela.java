@@ -3,6 +3,8 @@ package br.com.tiagods.controller;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
@@ -289,25 +291,74 @@ public class AuxiliarTabela {
 	public class AcaoInTable implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Session session = HibernateFactory.getSession();
-			session.beginTransaction();
+			
 			switch(e.getActionCommand()){
 			case "Editar":
 				int valor = (int)table.getModel().getValueAt(table.getSelectedRow(), 0);
+				Session session = HibernateFactory.getSession();
+				session.beginTransaction();
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
 				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,object,MenuView.getInstance(),true);
 				viewTarefas.setVisible(true);
+				viewTarefas.addWindowListener(new WindowListener() {
+					@Override
+					public void windowOpened(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowIconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeiconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeactivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosing(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosed(WindowEvent e) {
+						Session session = HibernateFactory.getSession();
+						session.beginTransaction();
+						buscar(session);
+						session.close();
+					}
+					
+					@Override
+					public void windowActivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+				if(session.isOpen())
+					session.close();
 				break;
 			case "Excluir":
-				excluir(session);
+				excluir();
 				break;
 			default:
 				break;
 			}
-			session.close();
 		}
 	}
-	public void excluir(Session session){
+	public void excluir(){
+		Session session = HibernateFactory.getSession();
+		session.beginTransaction();
 		int row = table.getSelectedRow();
 		int i = JOptionPane.showConfirmDialog(br.com.tiagods.view.MenuView.jDBody, 
 				"Deseja excluir a seguinte tarefa: "+table.getValueAt(row, 0)+"?",
@@ -319,12 +370,13 @@ public class AuxiliarTabela {
 			if(dao.excluir(tRemove, session))
 				buscar(session);
 		}
+		session.close();
 	}
 	@SuppressWarnings("unchecked")
 	private void buscar(Session session){
 		List<Tarefa> tarefas = (List<Tarefa>) new GenericDao().items(Tarefa.class, session, criterios, order);
-		AuxiliarTabela aux = new AuxiliarTabela(object, table, tarefas, criterios, order);
-		aux.analizarEntidades();
+		this.lista = tarefas;
+		analizarEntidades();
 	}
 	
 	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{

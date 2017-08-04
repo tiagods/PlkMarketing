@@ -315,6 +315,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		Set<Documento> documentos = n.getDocumentos();
 		preencherServicos(servicos);
 		preencherDocumentos(documentos);
+		preencherTarefas(n);
+	}
+	private void preencherTarefas(Negocio n){
 		if(pnAuxiliar.isVisible()){
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", n);
@@ -497,12 +500,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			if(!txCodigo.getText().equals("") && !telaEmEdicao){
 				pnAuxiliar.setVisible(true);
 				boolean open = recebeSessao();
-				List<Criterion>criterios = new ArrayList<>();
-				Criterion criterion = Restrictions.eq("negocio", negocio);
-				criterios.add(criterion);
-				Order order = Order.desc("dataEvento");
-				List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-				new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
+				preencherTarefas(negocio);
 				fechaSessao(open);
 			}
 			break;
@@ -585,6 +583,51 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			else{
 				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, MenuView.getInstance(),true);
 				taskView.setVisible(true);
+				taskView.addWindowListener(new WindowListener() {
+					
+					@Override
+					public void windowOpened(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowIconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeiconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeactivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosing(WindowEvent e) {
+						
+					}
+					
+					@Override
+					public void windowClosed(WindowEvent e) {
+						boolean open = recebeSessao();
+						negocio = (Negocio) dao.receberObjeto(Negocio.class, Integer.parseInt(txCodigo.getText()), session);
+						preencherTarefas(negocio);
+						fechaSessao(open);
+					}
+					
+					@Override
+					public void windowActivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 			}
 			break;
 		case "MailTo":
@@ -953,6 +996,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			negocio.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			negocio.setNome("".equals(txNome.getText().trim())?txNomeObjeto.getText():txNome.getText());
 		}
+		else
+			negocio.setNome(txNome.getText().trim());
 		Status s = padrao.getStatus((String)cbStatusCad.getSelectedItem());
 		if(s!=null && s.getId()!=1 && negocio.getStatus()!=s ){
 			negocio.setDataFinalizacao(new Date());

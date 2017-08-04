@@ -514,7 +514,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getPessoa()==null?"Erro: Pessoa desassociada":t.getPessoa().getNome();
 				else if(Prospeccao.class.getSimpleName().equals(t.getClasse()))
-					o[4] = t.getProspeccao()==null?"Erro: Prospeccao desassociada":t.getProspeccao().getNome();
+					o[4] = t.getProspeccao()==null?"Erro: Prospeccao desassociada":t.getProspeccao().getResponsavel();
 				else
 					o[4] = "Erro";
 				if(t.getFinalizado()==0)

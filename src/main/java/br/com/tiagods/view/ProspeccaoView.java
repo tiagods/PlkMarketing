@@ -131,14 +131,17 @@ public class ProspeccaoView extends JInternalFrame {
 		pnPesquisa.add(cbAtendente);
 		
 		ckConviteEventosPesquisa = new JCheckBox("Convite para Eventos");
+		ckConviteEventosPesquisa.setOpaque(false);
 		ckConviteEventosPesquisa.setBounds(554, 11, 170, 23);
 		pnPesquisa.add(ckConviteEventosPesquisa);
 		
 		ckMaterialPesquisa = new JCheckBox("Material");
+		ckMaterialPesquisa.setOpaque(false);
 		ckMaterialPesquisa.setBounds(737, 11, 97, 23);
 		pnPesquisa.add(ckMaterialPesquisa);
 		
 		ckNewsletterPesquisa = new JCheckBox("Newsletter");
+		ckNewsletterPesquisa.setOpaque(false);
 		ckNewsletterPesquisa.setBounds(836, 11, 97, 23);
 		pnPesquisa.add(ckNewsletterPesquisa);
 		
@@ -173,10 +176,12 @@ public class ProspeccaoView extends JInternalFrame {
 		
 		ButtonGroup group = new ButtonGroup();
 		rbCrescente = new JRadioButton("Crescente");
+		rbCrescente.setOpaque(false);
 		rbCrescente.setBounds(623, 56, 109, 23);
 		pnPesquisa.add(rbCrescente);
 		group.add(rbCrescente);
 		rbDecrescente = new JRadioButton("Decrescente");
+		rbDecrescente.setOpaque(false);
 		rbDecrescente.setBounds(623, 82, 109, 23);
 		pnPesquisa.add(rbDecrescente);
 		group.add(rbDecrescente);

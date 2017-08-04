@@ -236,7 +236,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		Object object = getObject(cbObject.getSelectedItem().toString());
 		if("".equals(txCodigoObjeto.getText())){
 			continuar=false;
-			builder.append("Nenhuma Empresa/Pessoa ou Negocio foi escolhido");
+			builder.append("Nenhuma Empresa/Pessoa/Proscepçção ou Negocio foi escolhido");
 			builder.append("\n");
 		}
 		else{
@@ -348,6 +348,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				id = tarefa.getPessoa().getId();
 				nome = tarefa.getPessoa().getNome().split(" ");
 				cbObject.setSelectedItem(Modelos.valueOf("Pessoa"));
+			}
+			else if("Prospeccao".equals(tarefa.getClasse())){
+				id = tarefa.getProspeccao().getId();
+				nome = tarefa.getProspeccao().getResponsavel().split("11");
+				cbObject.setSelectedItem(Modelos.valueOf("Prospeccao"));
 			}
 			enviarDados(radio, tarefa, nome[0],String.valueOf(id));
 		}

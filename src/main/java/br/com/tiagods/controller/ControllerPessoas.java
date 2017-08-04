@@ -18,6 +18,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -159,12 +161,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		case "Historico":
 			pnAuxiliar.setVisible(true);
 			boolean open = recebeSessao();
-			List<Criterion> criterios = new ArrayList<>();
-			Criterion criterion = Restrictions.eq("pessoa", pessoa);
-			criterios.add(criterion);
-			Order order = Order.desc("dataEvento");		
-			List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas,criterios,order);
+			preencherTarefas(pessoa);
 			fechaSessao(open);
 			break;
 		case "Empresas":
@@ -174,10 +171,10 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		case "Negocios":
 			pnAuxiliar.setVisible(true);
 			open = recebeSessao();
-			criterios = new ArrayList<>();
-			criterion = Restrictions.eq("pessoa", pessoa);
+			List<Criterion> criterios = new ArrayList<>();
+			Criterion criterion = Restrictions.eq("pessoa", pessoa);
 			criterios.add(criterion);
-			order = Order.desc("id");		
+			Order order = Order.desc("id");		
 			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
 			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios, criterios,order);
 			fechaSessao(open);
@@ -223,6 +220,52 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			else{
 				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, MenuView.getInstance(),true);
 				taskView.setVisible(true);
+				taskView.addWindowListener(new WindowListener() {
+					
+					@Override
+					public void windowOpened(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowIconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeiconified(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowDeactivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosing(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void windowClosed(WindowEvent e) {
+						boolean open = recebeSessao();
+						pessoa = (Pessoa) dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
+						preencherTarefas(pessoa);
+						fechaSessao(open);
+					}
+					
+					@Override
+					public void windowActivated(WindowEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
 			}
 			break;
 		case "MailTo":
@@ -259,6 +302,15 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		default:
 			break;
 		}
+	}
+	private void preencherTarefas(Pessoa pessoa) {
+		List<Criterion> criterios = new ArrayList<>();
+		Criterion criterion = Restrictions.eq("pessoa", pessoa);
+		criterios.add(criterion);
+		Order order = Order.desc("dataEvento");		
+		List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
+		new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas,criterios,order);
+		
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void exportarExcel(){

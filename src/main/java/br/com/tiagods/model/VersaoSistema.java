@@ -2,10 +2,10 @@ package br.com.tiagods.model;
 
 public class VersaoSistema {
 	private String nome="Negócios";
-	private String versao="1.0.21";
-	private String data="27/06/2017";
+	private String versao="1.0.24";
+	private String data="04/08/2017";
 	private String versaoBanco="1.0.3";
-	private String detalhes="Tela de Prospecções e Botão Exportar Planilha\nAlteração no Filtro de Pesquisa";
+	private String detalhes="Permitindo alteração do nome em Negocios";
 	/*
 	 */
 	/**
