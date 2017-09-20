@@ -33,6 +33,7 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Map;
 
 public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	/**
@@ -50,7 +51,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public static JLabel txQuantidade ;
 	public static JFormattedTextField txHora;
 	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar, btnAssociacao;
-	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnVisita, rdbtnTelefone; 
+	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnWhatsApp, rdbtnTelefone; 
 	public static JCheckBox ckFinalizado;
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
 	@Override	public Color getColor() {
@@ -65,10 +66,10 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	/**
 	 * Create the frame.
 	 */
-	public TarefasSaveView(Tarefa tarefa,Object object, JFrame frame, boolean modal) {
+	public TarefasSaveView(Tarefa tarefa,Object object, Map<String,JRadioButton> parametroNegocios, JFrame frame, boolean modal) {
 		super(frame,modal);
 		initComponents();
-		controller.iniciar(this,tarefa, object);
+		controller.iniciar(this,tarefa, object, parametroNegocios);
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initComponents(){
@@ -130,12 +131,12 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         group.add(rdbtnTelefone);
         pnItem.add(rdbtnTelefone);
         
-        rdbtnVisita = new JRadioButton("Visita");
-        rdbtnVisita.setOpaque(false);
-        rdbtnVisita.setActionCommand("Visita");
-        rdbtnVisita.addActionListener(controller);
-        group.add(rdbtnVisita);
-        pnItem.add(rdbtnVisita);
+        rdbtnWhatsApp = new JRadioButton("WhatsApp");
+        rdbtnWhatsApp.setOpaque(false);
+        rdbtnWhatsApp.setActionCommand("WhatsApp");
+        rdbtnWhatsApp.addActionListener(controller);
+        group.add(rdbtnWhatsApp);
+        pnItem.add(rdbtnWhatsApp);
         
         txQuantidade = new JLabel("");
         txQuantidade.setFont(new Font("Tahoma", Font.BOLD, 11));

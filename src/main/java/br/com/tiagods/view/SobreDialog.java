@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import java.awt.Font;
+import javax.swing.JScrollPane;
 
 public class SobreDialog extends JDialog {
 
@@ -54,13 +55,16 @@ public class SobreDialog extends JDialog {
 		lbVersaoBanco.setBounds(185, 114, 289, 14);
 		contentPanel.add(lbVersaoBanco);
 		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(20, 173, 454, 70);
+		contentPanel.add(scrollPane);
+		
 		JTextPane textPane = new JTextPane();
+		scrollPane.setViewportView(textPane);
 		textPane.setOpaque(false);
 		textPane.setEditable(false);
 		textPane.setBackground(new Color(240,240,240));
-		textPane.setBounds(20, 173, 454, 70);
 		textPane.setText(versao.getDetalhes());
-		contentPanel.add(textPane);
 		
 		
 		JLabel lblProlinkContabil = new JLabel("Prolink Contabil 2017 - Todos os direitos reservados - Autor: github.com/tiagods");

@@ -6,12 +6,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -39,16 +43,18 @@ public class AuxiliarTabela {
 	List lista;
 	List<Criterion> criterios;
 	Order order;
+	Map<String,JRadioButton> rbNegocioAndamento;
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
 	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
 	
 	@SuppressWarnings("rawtypes")
-	public AuxiliarTabela(Object classe, JTable tabela, List lista,List<Criterion> criterios, Order order){
+	public AuxiliarTabela(Object classe, JTable tabela, List lista,List<Criterion> criterios, Order order, Map<String,JRadioButton> rbNegocioAndamento){
 		this.object=classe;
 		this.table=tabela;
 		this.lista=lista;
 		this.criterios = criterios;
 		this.order = order;
+		this.rbNegocioAndamento = rbNegocioAndamento;
 		analizarEntidades();
 	}
 	@SuppressWarnings("unchecked")
@@ -223,13 +229,13 @@ public class AuxiliarTabela {
 		table.getColumnModel().getColumn(0).setPreferredWidth(40);
 	}
 	private void popularTabela(List<Tarefa> lista, Tarefa tarefa, DefaultTableModel model){
+		lista.sort((a,b)-> b.getDataEvento().compareTo(a.getDataEvento()));//ordenar por ordem data decrescente
 		Iterator<Tarefa> iterator = lista.iterator();
 		while(iterator.hasNext()){
 			Tarefa t = iterator.next();
 			Object[] o = new Object[model.getColumnCount()];
 			o[0]=t.getId();
 			o[1]=sdf.format(t.getDataEvento()) + " às "+ sdh.format(t.getDataEvento());
-
 			String statusValue = "";
 			switch(t.getTipoTarefa().getId()){
 			case 1:
@@ -246,6 +252,9 @@ public class AuxiliarTabela {
 				break;
 			case 5:
 				statusValue = "tarefas_email";
+				break;
+			case 6:
+				statusValue = "tarefas_whatsapp";
 				break;
 			default:
 				statusValue = "button_question";
@@ -298,7 +307,7 @@ public class AuxiliarTabela {
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
-				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,object,MenuView.getInstance(),true);
+				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,object,rbNegocioAndamento,MenuView.getInstance(),true);
 				viewTarefas.setVisible(true);
 				viewTarefas.addWindowListener(new WindowListener() {
 					@Override

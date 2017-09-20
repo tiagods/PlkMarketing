@@ -97,7 +97,8 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 	public void iniciar(Prospeccao prospeccao){
 		this.prospeccao=prospeccao;
 		boolean aberta = abrirSessao();
-		rbCrescente.setSelected(true);
+		rbDecrescente.setSelected(true);
+		cbLista.setEnabled(false);
 		JPanel[] panels = {pnPesquisa,pnCadastro,pnCadastroOrigem,pnLista};
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
@@ -251,7 +252,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 				criterios.add(criterion);
 				Order order = Order.desc("dataEvento");
 				List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-				new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order);
+				new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios,order,null);
 				fecharSessao(open);
 			}
 			break;
@@ -290,7 +291,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.prospeccao, MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.prospeccao,null, MenuView.getInstance(),true);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					@Override
@@ -905,7 +906,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			criterios.add(criterion);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(p.getPfpj().getTarefas()),
 					criterios,
-					Order.desc("dataEvento"));
+					Order.desc("dataEvento"),null);
 		}
 	}
 	private void preencherTabela(List<Prospeccao> lista, JTable table, JTextField txContadorRegistros){
@@ -975,7 +976,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 	private Criterion realizarBusca(){
 		Criterion c = null;
 		if(!"".equals(txBuscar.getText().trim())){
-			if("Código".equals(cbBuscarPor.getSelectedItem())){
+			if("Código".equals(cbBuscarPor.getSelectedItem().toString())){
 				try{
 					int num = Integer.parseInt(txBuscar.getText());
 					c = Restrictions.eq("id",num);
@@ -983,8 +984,12 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 					c = null;
 				} 
 			}
-			else
+			else if("Nome".equals(cbBuscarPor.getSelectedItem().toString())) {
 				c = Restrictions.ilike("nome", txBuscar.getText().trim()+"%");
+			}
+			else {
+				c = Restrictions.ilike("responsavel", txBuscar.getText().trim()+"%");
+			}
 		}
 		return c;
 	}
@@ -998,12 +1003,14 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			Criterion c = realizarBusca();
 			if(c!=null) 
 				criterios.add(c);
-			if(!"Lista".equals(cbLista.getSelectedItem())){
-				Conjunction e = Restrictions.conjunction();
-				e.add(Restrictions.eqOrIsNull("l", padrao.getListas(cbLista.getSelectedItem().toString())));
-				listarProspeccao = dao.items(Prospeccao.class, session, criterios, new String[]{"listas","l"},e, order);
-			}
-			else
+//			if(!"Lista".equals(cbLista.getSelectedItem())){
+//				Conjunction e = Restrictions.conjunction();
+//				criterios.add(Restrictions.in("listas", .asList(padrao.getListas(cbLista.getSelectedItem().toString()))));
+//				listarProspeccao = dao.items(Prospeccao.class,  session, criterios, order);
+//				//e.add(Restrictions.eqOrIsNull("listas", padrao.getListas(cbLista.getSelectedItem().toString())));
+//				//listarProspeccao = dao.items(Prospeccao.class, session, criterios, new String[]{"listas","l"},e, order);
+//			}
+//			else
 				listarProspeccao = dao.items(Prospeccao.class, session, criterios, order);
 			preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		}
@@ -1028,14 +1035,12 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			Criterion c = Restrictions.eq("tipoContato", padrao.getAtendentes((String)cbTipoContatoPesquisa.getSelectedItem()));
 			criterios.add(c);
 		}
-		
 		if(ckConviteEventosPesquisa.isSelected())
 			criterios.add(Restrictions.eq("conviteParaEventos", 1));
 		if(ckMaterialPesquisa.isSelected())
 			criterios.add(Restrictions.eq("material", 1));
 		if(ckNewsletterPesquisa.isSelected())
 			criterios.add(Restrictions.eq("newsletter", 1));
-		
 		try{
 			Date data01 = data1.getDate();
 			Date data02 = data2.getDate();

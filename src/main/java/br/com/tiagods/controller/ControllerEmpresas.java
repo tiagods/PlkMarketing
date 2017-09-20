@@ -234,7 +234,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			criterios.add(criterion);
 			Order order = Order.desc("id");		
 			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
-			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios,criterios, order);
+			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios,criterios, order,null);
 			fechaSessao(open);
 			break;
 		case "Esconder":
@@ -276,7 +276,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.empresa, MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.empresa, null,MenuView.getInstance(),true);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					
@@ -367,7 +367,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		criterios.add(criterion);
 		Order order = Order.desc("dataEvento");		
 		List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-		new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios, order);
+		new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas, criterios, order,null);
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void exportarExcel(){

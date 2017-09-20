@@ -33,9 +33,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.Icon;
@@ -114,8 +116,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	Session session = null;
 	boolean telaEmEdicao = false;
 	List<Negocio> listarNegocios;
+	Map<String,JRadioButton> radiosAndamento = new HashMap<>();
+		
 	NegocioPerdaDialog dialogPerda;
-
 	String site;
 	GenericDao dao = new GenericDao();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
@@ -126,10 +129,15 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		this.negocio=negocio;
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
+		
 		JPanel[] panels = {pnPrincipal,pnAndamento,pnCadastro,pnServicosContratados,pnFiltros};
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
 		}
+		radiosAndamento.put("Contato", rbContato);
+		radiosAndamento.put("Envio de Proposta", rbEnvioProposta);
+		radiosAndamento.put("Follow-up", rbFollowup);
+		
 		List<Criterion> criterion = new ArrayList<>();
 		//criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));  //departamento não se acostumou com a nova regra
 		
@@ -324,7 +332,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			criterios.add(criterion);
 			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(n.getTarefas()),
 					criterios,
-					Order.desc("dataEvento"));
+					Order.desc("dataEvento"),radiosAndamento);
 		}
 	}
 	private void preencherDocumentos(Set<Documento> documentos) {
@@ -461,8 +469,11 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			break;
 		case "Editar":
 			telaEmEdicao = true;
-			if(!"".equals(txCodigo.getText()))
+			if(!"".equals(txCodigo.getText())) {
+				recebeSessao();
 				novoEditar();
+				fechaSessao(true);
+			}
 			break;
 		case "Cancelar":
 			telaEmEdicao = false;
@@ -581,7 +592,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, MenuView.getInstance(),true);
+				
+				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, radiosAndamento, MenuView.getInstance(),true);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					

@@ -30,7 +30,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
 	public static javax.swing.JCheckBox ckProposta;
 	public static javax.swing.JCheckBox ckReuniao;
 	public static javax.swing.JCheckBox ckTelefone;
-	public static javax.swing.JCheckBox ckVisita;
+	public static javax.swing.JCheckBox ckWhatsApp;
 	public static DefaultComboBox cbAtendentes;
     public static javax.swing.JLabel txContador;
     private javax.swing.JLabel jLabel2;
@@ -103,8 +103,8 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         
-        ckVisita = new javax.swing.JCheckBox();
-        ckVisita.setBounds(523, 10, 73, 25);
+        ckWhatsApp = new javax.swing.JCheckBox();
+        ckWhatsApp.setBounds(523, 10, 120, 25);
         jLabel3 = new javax.swing.JLabel();
         jLabel3.setBounds(89, 14, 40, 14);
         ckEmail = new javax.swing.JCheckBox();
@@ -233,11 +233,11 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         ckTelefone.setActionCommand(commandFiltro);
         ckTelefone.addMouseListener(controller);
         
-        ckVisita.setBackground(getColor());
-        ckVisita.setText("Visita");
-        ckVisita.setName("Visita");
-        ckVisita.setActionCommand(commandFiltro);
-        ckVisita.addMouseListener(controller);
+        ckWhatsApp.setBackground(getColor());
+        ckWhatsApp.setText("WhatsApp");
+        ckWhatsApp.setName("WhatsApp");
+        ckWhatsApp.setActionCommand(commandFiltro);
+        ckWhatsApp.addMouseListener(controller);
         
         jPanel4.setLayout(null);
         jPanel4.add(jScrollPane3);
@@ -259,7 +259,7 @@ public class TarefasView extends JInternalFrame implements DefaultUtilities{
         jPanel1.add(ckProposta);
         jPanel1.add(ckReuniao);
         jPanel1.add(ckTelefone);
-        jPanel1.add(ckVisita);
+        jPanel1.add(ckWhatsApp);
         jPanel1.add(txContador);
         jPanel1.add(jLabel2);
         jPanel1.add(cbAtendentes);

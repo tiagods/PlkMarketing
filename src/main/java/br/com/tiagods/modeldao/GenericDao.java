@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 
 import br.com.tiagods.view.interfaces.InterfaceDao;
 
@@ -88,4 +89,9 @@ public class GenericDao implements InterfaceDao{
 		criteria.addOrder(order);
 		return criteria.list();
 	}
+	public int uniqueResult(Class classe, Session session, List<Criterion> criterion){
+        Criteria criteria = session.createCriteria(classe);
+        criterion.forEach(c -> criteria.add(c));
+        return criteria.setProjection(Projections.rowCount()).uniqueResult().hashCode();
+    }
 }

@@ -539,7 +539,7 @@ public class ProspeccaoView extends JInternalFrame {
 		pnCadastro.add(btTipoContatoAdd);
 		
 		JLabel lbRamo = new JLabel();
-		lbRamo.setText("Ramo:");
+		lbRamo.setText("Servi\u00E7o:");
 		lbRamo.setBounds(10, 196, 80, 19);
 		pnCadastro.add(lbRamo);
 		

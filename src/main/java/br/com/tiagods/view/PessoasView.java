@@ -334,7 +334,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(lbNum);
 
         JLabel lbCelular = new JLabel();
-        lbCelular.setText("Celular");
+        lbCelular.setText("Celular:");
         lbCelular.setBounds(385, 154, 51, 19);
         pnPrincipal.add(lbCelular);
 
@@ -417,7 +417,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(txEmail);
 
         JLabel lbEmail1 = new JLabel();
-        lbEmail1.setText("E-mail");
+        lbEmail1.setText("E-mail:");
         lbEmail1.setBounds(10, 183, 56, 20);
         pnPrincipal.add(lbEmail1);
 
@@ -426,7 +426,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(txSite);
 
         JLabel lbSite = new JLabel();
-        lbSite.setText("Site");
+        lbSite.setText("Site:");
         lbSite.setBounds(385, 184, 43, 20);
         pnPrincipal.add(lbSite);
 
@@ -589,7 +589,7 @@ public class PessoasView extends JInternalFrame {
         pnPrincipal.add(lbOrigemCad);
         
         JLabel lbServicosCad = new JLabel();
-        lbServicosCad.setText("Ramo");
+        lbServicosCad.setText("Servi\u00E7o:");
         lbServicosCad.setBounds(384, 126, 44, 17);
         pnPrincipal.add(lbServicosCad);
         

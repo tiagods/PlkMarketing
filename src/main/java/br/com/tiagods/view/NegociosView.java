@@ -734,7 +734,7 @@ public class NegociosView extends JInternalFrame {
 		JLabel lbServicosCad = new JLabel();
 		lbServicosCad.setBounds(48, 115, 80, 17);
 		pnFiltros.add(lbServicosCad);
-		lbServicosCad.setText("Ramo:");
+		lbServicosCad.setText("Servi\u00E7o:");
 
 		JLabel lbNivelCad = new JLabel();
 		lbNivelCad.setBounds(48, 85, 78, 18);

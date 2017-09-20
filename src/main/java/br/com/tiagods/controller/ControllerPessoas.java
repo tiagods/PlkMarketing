@@ -176,7 +176,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 			criterios.add(criterion);
 			Order order = Order.desc("id");		
 			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
-			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios, criterios,order);
+			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios, criterios,order,null);
 			fechaSessao(open);
 			break;
 		case "Esconder":
@@ -218,7 +218,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, null,MenuView.getInstance(),true);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					
@@ -309,7 +309,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 		criterios.add(criterion);
 		Order order = Order.desc("dataEvento");		
 		List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-		new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas,criterios,order);
+		new AuxiliarTabela(new Tarefa(),tbAuxiliar, tarefas,criterios,order,null);
 		
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })

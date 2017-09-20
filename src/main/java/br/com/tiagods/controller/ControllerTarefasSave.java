@@ -53,6 +53,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	String item = "";
 	Object object;
 	TarefasSaveView view;
+	Map<String,JRadioButton> parametroNegocios;
 	SelecaoDialog dialog = null;
 	AuxiliarComboBox padrao = new AuxiliarComboBox();
 
@@ -63,10 +64,11 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	
 	GenericDao dao = new GenericDao();
 	//se for null o formulario nao sera preenchido
-	public void iniciar(TarefasSaveView view,Tarefa tarefa, Object object){
+	public void iniciar(TarefasSaveView view,Tarefa tarefa, Object object, Map<String,JRadioButton> parametroNegocios){
 		this.tarefa = tarefa;
 		this.object = object;
 		this.view = view;
+		this.parametroNegocios = parametroNegocios;//atualiza andamento negocios caso seja dele a tela aberta
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
 		carregarAtendentes();
@@ -296,23 +298,29 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			switch(escolha){
 			case "Email":
 			case "Telefone":
-				negocio.setEtapa(etapas.get("Contato"));
-				negocio.setContato(new Date());
-				dao.salvar(negocio, session);
-				System.out.println("salvo contato");
+			case "WhatsApp":
+				if(negocio.getContato()==null) {
+					negocio.setEtapa(etapas.get("Contato"));
+					negocio.setContato(new Date());
+					dao.salvar(negocio, session);
+					if(parametroNegocios!=null) parametroNegocios.get("Contato").setSelected(true);
+				}
 				break;
 			case "Proposta":
-				negocio.setEtapa(etapas.get("Envio de Proposta"));
-				negocio.setEnvioProposta(new Date());
-				dao.salvar(negocio, session);
-				System.out.println("salvo proposta");
+				if(negocio.getEnvioProposta()==null) {
+					negocio.setEtapa(etapas.get("Envio de Proposta"));
+					negocio.setEnvioProposta(new Date());
+					dao.salvar(negocio, session);
+					if(parametroNegocios!=null) parametroNegocios.get("Envio de Proposta").setSelected(true);
+				}
 				break;
 			case "Reuniao":
-			case "Visita":
-				negocio.setEtapa(etapas.get("Follow-up"));
-				negocio.setFollowUp(new Date());
-				dao.salvar(negocio, session);
-				System.out.println("salvo follow-up");
+				if(negocio.getFollowUp()==null) {
+					negocio.setEtapa(etapas.get("Follow-up"));
+					negocio.setFollowUp(new Date());
+					dao.salvar(negocio, session);
+					if(parametroNegocios!=null) parametroNegocios.get("Follow-up").setSelected(true);
+				}
 				break;
 			default:
 				break;
@@ -367,7 +375,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		else if("Telefone".equals(item))
 			return rdbtnTelefone;
 		else
-			return rdbtnVisita;
+			return rdbtnWhatsApp;
 	}
 	private void enviarDados(JRadioButton rb, Tarefa tarefa, String nome,String id){
 		rb.setSelected(true);
@@ -460,13 +468,13 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		else{
 			rdbtnTelefone.setOpaque(false);
 		}
-		if(rdbtnVisita.isSelected()){
-			item = "Visita";
-			rdbtnVisita.setOpaque(true);
-			rdbtnVisita.setBackground(color);
+		if(rdbtnWhatsApp.isSelected()){
+			item = "WhatsApp";
+			rdbtnWhatsApp.setOpaque(true);
+			rdbtnWhatsApp.setBackground(color);
 		}
 		else{
-			rdbtnVisita.setOpaque(false);
+			rdbtnWhatsApp.setOpaque(false);
 		}
 	}
 	@Override
@@ -487,9 +495,10 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
         ImageIcon iconPhone = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_fone.png"));
         rdbtnTelefone.setIcon(recalculate(iconPhone));
         rdbtnTelefone.setBorderPainted(true);
-        ImageIcon iconVisita = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_visita.png"));
-        rdbtnVisita.setIcon(recalculate(iconVisita));        
-        rdbtnVisita.setBorderPainted(true);
+        
+        ImageIcon iconWhatsApp = new ImageIcon(TarefasSaveView.class.getResource("/br/com/tiagods/utilitarios/tarefas_whatsapp.png"));
+        rdbtnWhatsApp.setIcon(recalculate(iconWhatsApp));        
+        rdbtnWhatsApp.setBorderPainted(true);
         
         ImageIcon iconNew = new ImageIcon(ControllerTarefasSave.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
         btnNovo.setIcon(recalculate(iconNew));

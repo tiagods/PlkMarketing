@@ -29,6 +29,7 @@ import org.hibernate.criterion.Restrictions;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioAcesso;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.SendEmail;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -146,7 +147,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 				
 			}
 			else
-				JOptionPane.showMessageDialog(null, "A senha deve conter números, e ao menos uma letra maiuscula e uma minuscula!\n"
+				JOptionPane.showMessageDialog(null, "A senha deve conter números, e ao menos uma letra!\n"
 						+ "Não é permitido senhas que contenham {123456,00000,11111,987654,prolink}",
 						"Senha não permitida!", JOptionPane.ERROR_MESSAGE);
 		}
@@ -224,6 +225,11 @@ public class ControllerLogin implements ActionListener, MouseListener {
 		if(usuario!=null){
 			usuario.setUltimoAcesso(new Date());
 			dao.salvar(usuario, session);
+			session.beginTransaction();
+			UsuarioAcesso acesso = new UsuarioAcesso();
+			acesso.setData(new Date());
+			acesso.setUsuario(usuario);
+			dao.salvar(acesso, session);
 			UsuarioLogado.getInstance().setUsuario(usuario);
 			LoadingView loading = LoadingView.getInstance();
 			loading.inicializar(false);
@@ -243,21 +249,20 @@ public class ControllerLogin implements ActionListener, MouseListener {
 		if(senha.length()<8)
 			return false;
 		else{
-			boolean upper=false;
-			boolean lower=false; 
+			boolean letras=false; 
 			boolean number=false;
 			char[] lista = senha.toCharArray();
 			for(char c : lista){
-				if(upper && lower && number) 
+				if(letras && number) 
 					break;
 				if(caracteres.contains(String.valueOf(c))) 
-					lower = true;
-				if(maiusculas.contains(String.valueOf(c))) 
-					upper = true;
+					letras = true;
+				else if(maiusculas.contains(String.valueOf(c))) 
+					letras = true;
 				if(numeros.contains(String.valueOf(c))) 
 					number = true;
 			}
-			if(upper && lower && number) 
+			if(letras && number) 
 				return true;
 		}
 		return false;
@@ -285,7 +290,6 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	}
 	private String criptografar(String senha){
 		String criptografia;
-
 		StringBuilder builder = new StringBuilder();
 		try {
 			MessageDigest algorithm = MessageDigest.getInstance("SHA-256");

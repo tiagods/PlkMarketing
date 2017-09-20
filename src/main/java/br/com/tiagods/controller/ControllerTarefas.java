@@ -101,7 +101,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	@SuppressWarnings("unchecked")
 	public void iniciar(Date data1, Date data2, Usuario usuario){
 		this.userSessao=usuario;
-		ativarBotao(ckVisita);
+		ativarBotao(ckWhatsApp);
 		ativarBotao(ckReuniao);
 		ativarBotao(ckProposta);
 		ativarBotao(ckTelefone);
@@ -216,7 +216,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "CriarTarefa":
-			TarefasSaveView view = new TarefasSaveView(null,null,MenuView.getInstance(),true);
+			TarefasSaveView view = new TarefasSaveView(null,null,null,MenuView.getInstance(),true);
 			view.setVisible(true);
 			break;
 		case "Status":
@@ -609,7 +609,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			case "Editar":
 				int valor = (int) tbPrincipal.getModel().getValueAt(tbPrincipal.getSelectedRow(), 0);
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
-				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,null,MenuView.getInstance(),true);
+				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,null,null,MenuView.getInstance(),true);
 				viewTarefas.setVisible(true);
 				break;
 			case "Excluir":
@@ -659,7 +659,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			TarefaDao dao = new TarefaDao();
 			int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
 			Tarefa tRemove = (Tarefa)dao.receberObjeto(Tarefa.class, id, session);
-			if(tRemove.getCriadoPor()== UsuarioLogado.getInstance().getUsuario()){
+			if(tRemove.getCriadoPor().getId()== UsuarioLogado.getInstance().getUsuario().getId()){
 				if(dao.excluir(tRemove, session)){
 					session.beginTransaction();
 					buscar();
@@ -795,9 +795,9 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
         ImageIcon iconPhone = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_fone.png"));
         ckTelefone.setIcon(recalculate(iconPhone));
         ckTelefone.setBorderPainted(true);
-        ImageIcon iconVisita = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_visita.png"));
-        ckVisita.setIcon(recalculate(iconVisita));  
-        ckVisita.setBorderPainted(true);
+        ImageIcon iconVisita = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/tarefas_whatsapp.png"));
+        ckWhatsApp.setIcon(recalculate(iconVisita));  
+        ckWhatsApp.setBorderPainted(true);
         ImageIcon iconTaskNew = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
         btNovaTarefa.setIcon(recalculate(iconTaskNew));
         ImageIcon iconFin = new ImageIcon(TarefasView.class.getResource("/br/com/tiagods/utilitarios/ok.png"));

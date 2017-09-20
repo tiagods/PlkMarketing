@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +30,7 @@ import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioAcesso;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
@@ -69,6 +71,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		carregarDataAgora();
 		carregarAtendentes();
 		carregarTarefasHoje(UsuarioLogado.getInstance().getUsuario());
+		preencherUltimosAcessos(session, UsuarioLogado.getInstance().getUsuario());
 		preencherTabelaNegocios(session);
 		preencherTabelaTarefas(session);
 		long fim = System.currentTimeMillis();
@@ -85,9 +88,24 @@ public class ControllerInicio implements ActionListener,MouseListener{
 	//carregar tarefas pendentes
 	private void carregarTarefasHoje(Usuario usuario) {
 		//verificar permiss�o e carregar tarefas do's usuarios
-		int quant = new TarefaDao().getQuantidade(usuario, new Date(), new Date(),session);
-		String[] nome = usuario.getNome().split(" ");
+		Calendar calendar1 = Calendar.getInstance();
+		calendar1.set(Calendar.HOUR_OF_DAY, 0);
+		calendar1.set(Calendar.MINUTE, 0);
+		calendar1.set(Calendar.SECOND, 0);
 		
+		Calendar calendar2 = Calendar.getInstance();
+		calendar2.set(Calendar.HOUR_OF_DAY, 23);
+		calendar2.set(Calendar.MINUTE, 59);
+		calendar2.set(Calendar.SECOND, 59);
+		
+		List<Criterion> criterios = new ArrayList<>();
+		criterios.add(Restrictions.eq("atendente", usuario));
+		criterios.add(Restrictions.eq("finalizado", 0));
+		criterios.add(Restrictions.between("dataEvento", calendar1.getTime(), calendar2.getTime()));
+		
+		int quant = new GenericDao().uniqueResult(Tarefa.class, session, criterios);
+		
+		String[] nome = usuario.getNome().split(" ");
 		LocalDateTime time = LocalDateTime.now();
 		String hey;
 		if(time.getHour()>=0 &&time.getHour()<12){
@@ -107,11 +125,9 @@ public class ControllerInicio implements ActionListener,MouseListener{
 			String v2 = hey+" "+nome[0]+",  você tem 1 tarefa pendente para hoje! Clique aqui...";
 			lbInfoTarefas.setText(v2);
 			break;
-		case 3:
+		default:
 			String v3 = hey+" "+nome[0]+", você tem "+quant+" tarefas pendentes para hoje! Clique aqui...";
 			lbInfoTarefas.setText(v3);
-			break;
-		default:
 			break;
 		}
 	}
@@ -387,6 +403,29 @@ public class ControllerInicio implements ActionListener,MouseListener{
 			model.addRow(o);
 		}
 		tbTarefas.setModel(model);
+	}
+	@SuppressWarnings({ "serial", "unchecked" })
+	private void preencherUltimosAcessos(Session session, Usuario usuario) {
+		Object [] tableHeader = {"ULTIMOS ACESSOS"};
+		DefaultTableModel model = new DefaultTableModel(tableHeader,0){
+			boolean[] canEdit = new boolean[]{
+					false
+			};
+			@Override
+			public boolean isCellEditable(int rowIndex, int columnIndex) {
+				return canEdit [columnIndex];
+			}
+		};
+		List<Criterion> criterios = new ArrayList<>();
+		criterios.add(Restrictions.eq("usuario", usuario));
+		List<UsuarioAcesso> lista = dao.items(UsuarioAcesso.class, session, criterios, Order.desc("data"));
+		for(int i = 0; i<lista.size(); i++) {
+			if(i==10) break;
+			model.addRow(new Object[] {
+					new SimpleDateFormat("dd/MM/yyy HH:mm:ss").format(lista.get(i).getData())		
+			});
+		}
+		tbAcessos.setModel(model);		
 	}
 	private void setarIcons() throws NullPointerException {
 		ImageIcon iconOk = new ImageIcon(InicioView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
