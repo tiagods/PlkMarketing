@@ -1,5 +1,8 @@
 package br.com.tiagods.modeldao;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -12,6 +15,8 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioLog;
 import br.com.tiagods.view.interfaces.InterfaceDao;
 
 public class GenericDao implements InterfaceDao{
@@ -89,6 +94,22 @@ public class GenericDao implements InterfaceDao{
 		criteria.addOrder(order);
 		return criteria.list();
 	}
+	public boolean salvarLog(Session session,Usuario u, String menu, String acao, String descricao) {
+		UsuarioLog log = new UsuarioLog();
+		log.setData(new Date());
+		log.setUsuario(u);
+		log.setMenu(menu);
+		log.setAcao(acao);
+		log.setDescricao(descricao);
+		try {
+			InetAddress net = InetAddress.getLocalHost();
+			log.setMaquina(net.getHostName());
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return salvar(log, session);
+	}
+	
 	public int uniqueResult(Class classe, Session session, List<Criterion> criterion){
         Criteria criteria = session.createCriteria(classe);
         criterion.forEach(c -> criteria.add(c));

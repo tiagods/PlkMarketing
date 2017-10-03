@@ -307,7 +307,7 @@ public class AuxiliarTabela {
 				Session session = HibernateFactory.getSession();
 				session.beginTransaction();
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
-				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,object,rbNegocioAndamento,MenuView.getInstance(),true);
+				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,object,rbNegocioAndamento,MenuView.getInstance(),true,null, false);
 				viewTarefas.setVisible(true);
 				viewTarefas.addWindowListener(new WindowListener() {
 					@Override

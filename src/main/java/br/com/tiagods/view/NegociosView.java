@@ -131,14 +131,16 @@ public class NegociosView extends JInternalFrame {
 	public static JRadioButton rbCrescente, rbDecrescente;
 	ControllerNegocios controller = new ControllerNegocios();
 	private JLabel lblPesquisarenter;
+	private JButton btnLote;
 	
 	/**
 	 * Create the frame.
 	 */
 	public NegociosView(Negocio negocio) {
 		initComponents();
-		controller.iniciar(negocio);                                                                                                                                                                                                       lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-                                                                                                                                                                                                                                                                                                                                                                        lbTitulo.setFont(new Font("Tahoma", Font.BOLD, 20));
+		controller.iniciar(negocio);
+		lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        btnLote.setVisible(false);                                                                                                                                                                                                                                                                                                                                                                lbTitulo.setFont(new Font("Tahoma", Font.BOLD, 20));
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initComponents() {
@@ -316,7 +318,7 @@ public class NegociosView extends JInternalFrame {
 		panel.add(data1);
 
 		btnExportar = new JButton();
-		btnExportar.setBounds(972, 118, 130, 25);
+		btnExportar.setBounds(972, 98, 145, 25);
 		pnPesquisa.add(btnExportar);
 		btnExportar.setToolTipText(
 				"Exporte o registro atual ou todos os registros da tabela para uma planilha Modelo Excel");
@@ -327,7 +329,7 @@ public class NegociosView extends JInternalFrame {
 
 		btnImportar = new JButton();
 		btnImportar.setEnabled(false);
-		btnImportar.setBounds(972, 82, 130, 25);
+		btnImportar.setBounds(972, 71, 145, 25);
 		pnPesquisa.add(btnImportar);
 		btnImportar.setToolTipText("Importe um novo registro a partir de uma planilha Modelo Excel");
 		btnImportar.setText("Importar");
@@ -420,6 +422,13 @@ public class NegociosView extends JInternalFrame {
 		lblPesquisarenter.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPesquisarenter.setBounds(74, 131, 139, 14);
 		pnPesquisa.add(lblPesquisarenter);
+		
+		btnLote = new JButton("Tarefas em Lote");
+		btnLote.setToolTipText("Salvar tarefas em Lote");
+		btnLote.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnLote.setActionCommand("Lote");
+		btnLote.setBounds(972, 127, 145, 23);
+		pnPesquisa.add(btnLote);
 
 		pnCadastros = new JPanel();
 		pnCadastros.setBackground(new Color(250,250,250));
@@ -970,6 +979,7 @@ public class NegociosView extends JInternalFrame {
 		btnNovaTarefa.addActionListener(controller);
 		btnImportar.addActionListener(controller);
 		btnExportar.addActionListener(controller);
+		btnLote.addActionListener(controller);
 
 		lbTitulo = new JLabel("Cadastro de Negocios");
 		lbTitulo.setBounds(10, 11, 1230, 25);

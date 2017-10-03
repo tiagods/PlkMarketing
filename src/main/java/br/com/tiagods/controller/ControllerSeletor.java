@@ -1,4 +1,4 @@
-	package br.com.tiagods.controller;
+package br.com.tiagods.controller;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -84,8 +84,6 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			session.beginTransaction();
 			String[] colunas = {"ID", "NOME"};
 			String[][] linhas = null;
-			comboFiltro.setModel(new DefaultComboBoxModel(new String[] {"NOME", "ID"}));
-			comboFiltro.setSelectedItem(atributo.toUpperCase());
 			List<Criterion> criterion = new ArrayList<>();
 			if(!"".equals(buscarValor)){
 				if("id".equals(atributo)){
@@ -140,10 +138,12 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			else if (object instanceof Prospeccao){
 				List<Prospeccao> lista = dao.items(Prospeccao.class, session, criterion, Order.desc("id"));
+				colunas = new String[]{"ID","NOME","RESPONSAVEL"};
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
 					linhas[i][1] = lista.get(i).getNome();
+					linhas[i][2] = lista.get(i).getResponsavel();
 				}
 				view.setTitle("Relação de Prospects");
 			}
@@ -202,6 +202,9 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relacao de Serviços a Contratar");
 			}
+			comboFiltro.setModel(new DefaultComboBoxModel(colunas));
+			comboFiltro.setSelectedItem(atributo.toUpperCase());
+			
 			tbRelacao.setModel(new DefaultTableModel(linhas,colunas));
 			tbRelacao.setAutoCreateRowSorter(true);
 			tbRelacao.getColumnModel().getColumn(0).setMaxWidth(40);
@@ -445,13 +448,16 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				novoObjeto = (ServicoAgregado)dao.receberObjeto(ServicoAgregado.class, Integer.parseInt(txCodigo.getText()), session);
 			((ServicoAgregado)novoObjeto).setNome(txNome.getText().trim());
 		}
-		if(dao.salvar(novoObjeto,session)){
-			limparFormulario(pnCadastrar);
-			processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
-			
-			reprocessarListaCombo(session);
-			salvarCancelar();
+		if(novoObjeto!=null) {
+			if(dao.salvar(novoObjeto,session)){
+				limparFormulario(pnCadastrar);
+				processarObjeto(this.object,comboFiltro.getSelectedItem().toString().toLowerCase(),"");
+				reprocessarListaCombo(session);
+				salvarCancelar();
+			}
 		}
+		else
+			JOptionPane.showMessageDialog(null, "Não permitido para esse tipo de registro.");
 		session.close();
 	}
 	public void invocarExclusao(){
@@ -489,6 +495,9 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			else if(object instanceof Origem){
 				novoObjeto = dao.receberObjeto(Origem.class, id, session);
 			}
+			else if(object instanceof Prospeccao){
+				novoObjeto = dao.receberObjeto(Prospeccao.class, id, session);
+			}
 			else if(object instanceof Servico){
 				novoObjeto = dao.receberObjeto(Servico.class, id, session);
 			}
@@ -524,7 +533,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		}
 		else if(object instanceof Prospeccao){
 			id=((Prospeccao) object).getId();
-			value=((Prospeccao) object).getNome();
+			value=((Prospeccao) object).getResponsavel();
 		}
 		else if(object instanceof Categoria){
 			id=((Categoria) object).getId();

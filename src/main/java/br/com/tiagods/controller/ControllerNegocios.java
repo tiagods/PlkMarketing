@@ -212,6 +212,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		rbCrescente.addItemListener(this);
 		tbServicosContratados.addMouseListener(new AcaoTabelaServicosContratados());
 		tabbedPane.addMouseListener(this);
+		
 	}
 	public class InvocarDialogPerda implements ItemListener{
 		@Override
@@ -593,7 +594,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 			else{
 				
-				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, radiosAndamento, MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.negocio, radiosAndamento, MenuView.getInstance(),true,null,false);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					
@@ -724,6 +725,17 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		    	 txDocumentoPath.setText(file.getAbsolutePath());
 		     }
 			break;
+		case "Lote":
+			Set<Integer> lotes = new HashSet<>();
+			DefaultTableModel md2 = (DefaultTableModel)tbPrincipal.getModel();
+			int i = 0;
+			while(md2.getRowCount()>i) {
+				lotes.add(Integer.parseInt(String.valueOf(md2.getValueAt(i, 0))));
+				i++;
+			}
+			TarefasSaveView taskView = new TarefasSaveView(null, new Negocio(),null, MenuView.getInstance(),true,lotes,true);
+			taskView.setVisible(true);
+			break;
 		default:
 			break;
 		}
@@ -853,6 +865,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 				try {
 					planilha.gerarExcel();
+					dao.salvarLog(session, UsuarioLogado.getInstance().getUsuario(), "Negocio", "Exportar", "Exportou relatorio xls");
 					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
 					Desktop.getDesktop().open(new File(export+".xls"));
 				} catch (WriteException e1) {

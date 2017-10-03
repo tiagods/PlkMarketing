@@ -9,7 +9,8 @@
 	<generator class="identity"/>
 	</id>
 	<property name="data" column="USU_ACE_DATA" type="timestamp"/>
-	<many-to-one name="usuario" column="USU_ACE_USUARIO_ID" foreign-key="FK_USU_ACE_DATA_ID"></many-to-one>
+	<many-to-one name="usuario" column="USU_ACE_USUARIO_ID" foreign-key="FK_USU_ACE_USUARIO_ID"></many-to-one>
+	<property name="maquina" column="USU_ACE_MAQUINA" length="100"/>
 	</class>
 </hibernate-mapping>
 

@@ -216,7 +216,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "CriarTarefa":
-			TarefasSaveView view = new TarefasSaveView(null,null,null,MenuView.getInstance(),true);
+			TarefasSaveView view = new TarefasSaveView(null,null,null,MenuView.getInstance(),true,null,false);
 			view.setVisible(true);
 			break;
 		case "Status":
@@ -311,6 +311,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 					ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 					try {
 						planilha.gerarExcel();
+						dao.salvarLog(session, UsuarioLogado.getInstance().getUsuario(), "Tarefa", "Exportar", "Exportou relatorio xls");
 						JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
 						Desktop.getDesktop().open(new File(export+".xls"));
 					} catch (WriteException e1) {
@@ -609,7 +610,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 			case "Editar":
 				int valor = (int) tbPrincipal.getModel().getValueAt(tbPrincipal.getSelectedRow(), 0);
 				Tarefa tarefa = (Tarefa)new TarefaDao().receberObjeto(Tarefa.class, valor, session);
-				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,null,null,MenuView.getInstance(),true);
+				TarefasSaveView viewTarefas = new TarefasSaveView(tarefa,null,null,MenuView.getInstance(),true,null,false);
 				viewTarefas.setVisible(true);
 				break;
 			case "Excluir":

@@ -33,14 +33,16 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static JPanel pnItem,pnRelacionamento,pnDetalhes, pnBotoes;
+	public static JPanel pnItem,pnRelacionamento,pnDetalhes,pnBotoes,pnLote;
 	private JPanel panel;
 	public static JDateChooser txData;
 	@SuppressWarnings("rawtypes")
@@ -53,6 +55,7 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	public static JButton btnNovo, btnEditar, btnSalvar, btnCancelar, btnAssociacao;
 	public static JRadioButton rdbtnReuniao, rdbtnProposta, rdbtnEmail,rdbtnWhatsApp, rdbtnTelefone; 
 	public static JCheckBox ckFinalizado;
+	public static JLabel lbDetalhesLote;
 	ControllerTarefasSave controller  = new ControllerTarefasSave();
 	@Override	public Color getColor() {
 		// TODO Auto-generated method stub
@@ -66,10 +69,10 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	/**
 	 * Create the frame.
 	 */
-	public TarefasSaveView(Tarefa tarefa,Object object, Map<String,JRadioButton> parametroNegocios, JFrame frame, boolean modal) {
+	public TarefasSaveView(Tarefa tarefa,Object object,Map<String,JRadioButton> parametroNegocios, JFrame frame,boolean modal,Set<Integer> listaLote,boolean salvarLote) {
 		super(frame,modal);
 		initComponents();
-		controller.iniciar(this,tarefa, object, parametroNegocios);
+		controller.iniciar(this,tarefa, object, parametroNegocios,listaLote,salvarLote);
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void initComponents(){
@@ -197,6 +200,15 @@ public class TarefasSaveView extends JDialog implements DefaultUtilities {
         pnRelacionamento.add(txNomeObjeto);
         btnAssociacao.addActionListener(controller);
         cbObject.addItemListener(controller);
+        
+        pnLote = new JPanel();
+        pnLote.setOpaque(false);
+        pnLote.setBounds(10, 263, 560, 41);
+        panel.add(pnLote);
+        pnLote.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        
+        lbDetalhesLote = new JLabel("");
+        pnLote.add(lbDetalhesLote);
         
         JPanel panEscolha = new JPanel();
         FlowLayout fl_panEscolha = (FlowLayout) panEscolha.getLayout();

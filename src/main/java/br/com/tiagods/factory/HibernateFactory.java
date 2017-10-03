@@ -29,6 +29,5 @@ public class HibernateFactory {
 	}
 	public static Session getSession() throws HibernateException{
 		return fabrica.openSession();
-		
 	}	
 }

@@ -12,11 +12,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -35,7 +37,6 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
@@ -52,6 +53,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	Tarefa tarefaBackup;
 	String item = "";
 	Object object;
+	Set<Integer> listaLote;
+	boolean salvarLote = false;
 	TarefasSaveView view;
 	Map<String,JRadioButton> parametroNegocios;
 	SelecaoDialog dialog = null;
@@ -59,16 +62,19 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
 	HashMap<String, Usuario> usuarios = new HashMap<>();  
-
+	Map<String,Etapa> etapas = new HashMap<>();
+	
 	Session session = null;
 	
 	GenericDao dao = new GenericDao();
 	//se for null o formulario nao sera preenchido
-	public void iniciar(TarefasSaveView view,Tarefa tarefa, Object object, Map<String,JRadioButton> parametroNegocios){
+	public void iniciar(TarefasSaveView view, Tarefa tarefa, Object object, Map<String,JRadioButton> parametroNegocios,Set<Integer> listaLote, boolean salvarLote){
 		this.tarefa = tarefa;
 		this.object = object;
 		this.view = view;
 		this.parametroNegocios = parametroNegocios;//atualiza andamento negocios caso seja dele a tela aberta
+		this.listaLote = listaLote;
+		this.salvarLote = salvarLote;//salvar tarefas em lote
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
 		carregarAtendentes();
@@ -86,7 +92,21 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			preencherFormulario(tarefa);
 			novoEditar();
 		}
-		verificarObjeto();
+		if(salvarLote) {
+			pnRelacionamento.setVisible(false);
+			pnLote.setVisible(true);
+			lbDetalhesLote.setText("Foram escolhidos: "+listaLote.size()+" registro(s)");
+		}
+		else {
+			pnRelacionamento.setVisible(true);
+			pnLote.setVisible(false);
+			lbDetalhesLote.setText("");
+			verificarObjeto();
+		}
+		List<Etapa> lista = dao.listar(Etapa.class, session);
+		lista.forEach(c->{
+			etapas.put(c.getNome(),c);
+		});
 		session.close();
 		setarSelecao();
 		txQuantidade.setText("Total "+txDetalhes.getText().trim().length()+" caracteres");
@@ -96,8 +116,6 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		}catch (NullPointerException e) {
 		}
 	}
-
-
 	public class contadorDigitos implements KeyListener{
 		@Override
 		public void keyTyped(KeyEvent e) {
@@ -121,7 +139,6 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			usuarios.put(u.getLogin(), u);
 		});
 	}
-	@SuppressWarnings("unused")
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		switch(arg0.getActionCommand()){
@@ -152,32 +169,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			dialog.setVisible(true);
 			break;
 		case "Salvar":
-			boolean continuar;
-			StringBuilder builder = new StringBuilder();
-			if(tarefa==null){
-				tarefa = new Tarefa();
-				tarefa.setCriadoEm(new Date());
-				tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
-				tarefa.setAlertaEnviado(0);
-			}
-			tarefa.setAtendente(usuarios.get(cbAtendente.getSelectedItem()));
-			tarefa.setClasse(cbObject.getSelectedItem().toString());
-			try{
-				Date dataEvento = txData.getDate();
-				continuar=true;
-			}catch(Exception e){
-				continuar=false;
-				builder.append("Data incorreta");
-				builder.append("\n");
-			}
-			tarefa.setDescricao(txDetalhes.getText());
-			if(ckFinalizado.isSelected())
-				tarefa.setFinalizado(1);
-			else
-				tarefa.setFinalizado(0);
-			if(continuar){
-				invocarSalvamento(tarefa,builder.toString());
-			}
+			invocarSalvamento();
 			break;
 		case "Cancelar":
 			if(tarefaBackup!=null){
@@ -192,108 +184,131 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			break;
 		}
 	}
-	private void invocarSalvamento(Tarefa tarefa,String texto){
-		StringBuilder builder = new StringBuilder();
-		builder.append(texto);
-		String hora = txHora.getText();
-		boolean continuar = true;
-		if(hora.length()==5){
-			String horas = hora.substring(0, 2);
-			String minutos = hora.substring(3);
-			try{
-				if(Integer.parseInt(horas)>=0 && Integer.parseInt(horas)<24){
-					if(Integer.parseInt(minutos)>=0 && Integer.parseInt(minutos)<60){
-						continuar=true;
-						LocalTime lt = LocalTime.of(Integer.parseInt(horas), Integer.parseInt(minutos));
-						Calendar calendar = Calendar.getInstance();
-						calendar.setTime(txData.getDate());
-
-						Calendar calendar2 = Calendar.getInstance();
-						calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
-								lt.getHour(), lt.getMinute());
-						calendar2.set(Calendar.SECOND, 0);
-						calendar2.set(Calendar.MILLISECOND, 0);
-						tarefa.setDataEvento(calendar2.getTime());
-					}else{
-						builder.append("Valor da Hora incorreta");
-						builder.append("\n");
-						continuar=false;
-					}
-				}else{
-					builder.append("Hora incorreta");
-					builder.append("\n");
-					continuar=false;
+	private void invocarSalvamento() {
+		Calendar calendar = validarHora();
+		if(calendar==null) return;
+		if(salvarLote) {
+			List<Integer> lista = new ArrayList<>();
+			lista.addAll(listaLote);
+			lbDetalhesLote.setText("Salvando");
+			session = HibernateFactory.getSession();
+			session.beginTransaction();
+			for(int i = 0 ; i<lista.size(); i++) {
+				if(i%100==0) {
+					session.flush();
+					session.clear();
 				}
-			}catch (NumberFormatException e) {
-				builder.append("Hora incorreta");
-				builder.append("\n");
-				continuar=false;
-			}	
+				lbDetalhesLote.setText("Recebendo "+(i+1)+" de "+lista);
+				int valor = lista.get(i);
+				if(calendar!=null) {
+					salvar(object,calendar,null,valor);
+				}
+			}
+			try {
+				lbDetalhesLote.setText("Salvando...");
+				session.getTransaction().commit();
+				salvarCancelar();
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Salvo com sucesso!");
+				view.dispose();
+			}catch(Exception e ) {
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Erro ao salvar em lote: \n"+e);
+			}finally {
+				session.close();
+			}
 		}
-		session = HibernateFactory.getSession();
-		session.beginTransaction();
+		else {
+			if("".equals(txCodigoObjeto.getText())){
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Nenhuma Empresa/Pessoa/Proscepçção ou Negocio foi escolhido");
+				return;
+			}
+			Object object = getObject(cbObject.getSelectedItem().toString());
+			try {
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				if(object instanceof Negocio)
+					object = (Negocio) dao.receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				if(salvar(object,calendar,tarefa,Integer.parseInt(txCodigoObjeto.getText()))) {
+					if(object instanceof Negocio) atualizaNegocios(session,(Negocio)object,item);
+					session.getTransaction().commit();
+					salvarCancelar();
+					JOptionPane.showMessageDialog(MenuView.jDBody, "Salvo com sucesso!");
+					view.dispose();
+				}
+			}catch (Exception ex) {
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Erro ao salvar a Tarefa\n "+ex);
+			}finally {
+				session.close();
+			}
+		}
+	}
+	private boolean salvar(Object obj, Calendar calendar, Tarefa tarefa, int cod){//obt  classe, calendar= data evento, cod = id da classe pai
+		StringBuilder builder = new StringBuilder();
+		if(tarefa==null){
+			tarefa = new Tarefa();
+			tarefa.setCriadoEm(new Date());
+			tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+			tarefa.setAlertaEnviado(0);
+		}
+		tarefa.setAtendente(usuarios.get(cbAtendente.getSelectedItem()));
+		tarefa.setClasse(cbObject.getSelectedItem().toString());
+		tarefa.setDescricao(txDetalhes.getText());
+		if(ckFinalizado.isSelected())
+			tarefa.setFinalizado(1);
+		else
+			tarefa.setFinalizado(0);
+		tarefa.setDataEvento(calendar.getTime());
+//		session = HibernateFactory.getSession();
+//		session.beginTransaction();
 		setarSelecao();
 		tarefa.setTipoTarefa(tipoTarefas.get(item));
-		
-		Object object = getObject(cbObject.getSelectedItem().toString());
-		if("".equals(txCodigoObjeto.getText())){
-			continuar=false;
-			builder.append("Nenhuma Empresa/Pessoa/Proscepçção ou Negocio foi escolhido");
-			builder.append("\n");
-		}
-		else{
-			if(object instanceof Empresa){
-				Empresa empresa = (Empresa) dao.receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+			if(obj instanceof Empresa){
+				//object = dao.receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				Empresa empresa = new Empresa();
+				empresa.setId(cod);
+				//tarefa.setEmpresa((Empresa)object);
 				tarefa.setEmpresa(empresa);
 				tarefa.setNegocio(null);
 				tarefa.setPessoa(null);
 				tarefa.setProspeccao(null);
 			}
-			else if(object instanceof Negocio){
-				object = dao.receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
-				tarefa.setNegocio((Negocio)object);
+			else if(obj instanceof Negocio){
+				//tarefa.setNegocio((Negocio)object);
+//				Negocio negocio = new Negocio();
+//				negocio.setId(cod);
+				tarefa.setNegocio((Negocio)obj);
 				tarefa.setEmpresa(null);
 				tarefa.setPessoa(null);
 				tarefa.setProspeccao(null);
 			}
-			else if(object instanceof Pessoa){
-				Pessoa pessoa = (Pessoa) dao.receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+			else if(obj instanceof Pessoa){
+				//Pessoa pessoa = (Pessoa) dao.receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				//tarefa.setPessoa(pessoa);
+				Pessoa pessoa = new Pessoa();
+				pessoa.setId(cod);
 				tarefa.setPessoa(pessoa);
 				tarefa.setEmpresa(null);
 				tarefa.setNegocio(null);
 				tarefa.setProspeccao(null);
 			}
-			else if(object instanceof Prospeccao){
-				Prospeccao prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+			else if(obj instanceof Prospeccao){
+				//Prospeccao prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				//tarefa.setProspeccao(prospeccao);
+				Prospeccao prospeccao = new Prospeccao();
+				prospeccao.setId(cod);
 				tarefa.setProspeccao(prospeccao);
 				tarefa.setEmpresa(null);
 				tarefa.setNegocio(null);
 				tarefa.setPessoa(null);
 			}
+		try {
+			session.saveOrUpdate(tarefa);
+			return true;
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(MenuView.jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
+			return false;
 		}
-		if(continuar){
-			if(new TarefaDao().salvar(tarefa,session)){
-				if(object instanceof Negocio){
-					session.beginTransaction();
-					atualizaNegocios(session,(Negocio)object,item);
-				}
-				salvarCancelar();
-				view.dispose();
-			}
-		}else{
-			JOptionPane.showMessageDialog(jDBody,builder.toString(),"Erro ao salvar", JOptionPane.ERROR_MESSAGE);
-		}
-		session.close();
 	}
-	@SuppressWarnings("unchecked")
 	private void atualizaNegocios(Session session,Negocio negocio,String escolha){
-		GenericDao dao = new GenericDao();
-		Map<String,Etapa> etapas = new HashMap<>();
-		List<Etapa> lista = dao.listar(Etapa.class, session);
-		lista.forEach(c->{
-			etapas.put(c.getNome(),c);
-		});
-		System.out.println("Status pego: "+escolha);
 		if(!"Fechamento".equals(negocio.getEtapa().getNome()) && !"Indefinida".equals(negocio.getEtapa().getNome())){
 			switch(escolha){
 			case "Email":
@@ -302,7 +317,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				if(negocio.getContato()==null) {
 					negocio.setEtapa(etapas.get("Contato"));
 					negocio.setContato(new Date());
-					dao.salvar(negocio, session);
+					session.update(negocio);
 					if(parametroNegocios!=null) parametroNegocios.get("Contato").setSelected(true);
 				}
 				break;
@@ -310,7 +325,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				if(negocio.getEnvioProposta()==null) {
 					negocio.setEtapa(etapas.get("Envio de Proposta"));
 					negocio.setEnvioProposta(new Date());
-					dao.salvar(negocio, session);
+					session.update(negocio);
 					if(parametroNegocios!=null) parametroNegocios.get("Envio de Proposta").setSelected(true);
 				}
 				break;
@@ -318,7 +333,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				if(negocio.getFollowUp()==null) {
 					negocio.setEtapa(etapas.get("Follow-up"));
 					negocio.setFollowUp(new Date());
-					dao.salvar(negocio, session);
+					session.update(negocio);
 					if(parametroNegocios!=null) parametroNegocios.get("Follow-up").setSelected(true);
 				}
 				break;
@@ -516,4 +531,39 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
     	return icon;
     }
+	private Calendar validarHora() {
+		if(txData.getDate()== null) return null;
+		String hora = txHora.getText();
+		if(hora.length()==5){
+			String horas = hora.substring(0, 2);
+			String minutos = hora.substring(3);
+			try{
+				if(Integer.parseInt(horas)>=0 && Integer.parseInt(horas)<24){
+					if(Integer.parseInt(minutos)>=0 && Integer.parseInt(minutos)<60){
+						LocalTime lt = LocalTime.of(Integer.parseInt(horas), Integer.parseInt(minutos));
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(txData.getDate());
+						Calendar calendar2 = Calendar.getInstance();
+						calendar2.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 
+								lt.getHour(), lt.getMinute());
+						calendar2.set(Calendar.SECOND, 0);
+						calendar2.set(Calendar.MILLISECOND, 0);
+						return calendar2;
+						//tarefa.setDataEvento(calendar2.getTime());
+					}else{
+						JOptionPane.showMessageDialog(MenuView.jDBody, "Valor da Hora incorreta");
+						return null;
+					}
+				}else{
+					JOptionPane.showMessageDialog(MenuView.jDBody, "Valor da Hora incorreta");
+					return null;
+				}
+			}catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(MenuView.jDBody, "Valor da Hora incorreta");
+				return null;
+			}	
+		}
+		else
+			return null;
+	}
 }

@@ -63,7 +63,7 @@ public class ProspeccaoView extends JInternalFrame {
 	public static JTextField txDataCadastro;
 	public static JTextField txCadastradoPor;
 	public static JButton btTipoContatoAdd,btServicosAdd,btListaAdd,btAdicionarALista;
-	public static JButton btExportarMalaDireta,btnExpMailmktLocaweb,btnExportar;
+	public static JButton btExportarMalaDireta,btnExpMailmktLocaweb,btnExportar,btnLote;
 	public static JTextField txContadorRegistros;
 	
 	ControllerProspeccao controller = new ControllerProspeccao();
@@ -247,6 +247,13 @@ public class ProspeccaoView extends JInternalFrame {
 		btnExportar.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		btnExportar.setBounds(1049, 65, 150, 23);
 		pnPesquisa.add(btnExportar);
+		
+		btnLote = new JButton("Tarefas em Lote");
+		btnLote.setActionCommand("Lote");
+		btnLote.setToolTipText("Salvar tarefas em Lote");
+		btnLote.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnLote.setBounds(1049, 95, 150, 23);
+		pnPesquisa.add(btnLote);
 		
 		JPanel pnItem = new JPanel();
 		pnItem.setBackground(panel.getBackground());

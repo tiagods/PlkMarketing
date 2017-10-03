@@ -76,7 +76,7 @@ public class PessoasView extends JInternalFrame {
 	public static JTextField txBuscar;
 	public static JTable tbPrincipal;
 	public static JTextField txCodigo;
-	public static JButton btnLink,btnEmail,btnImportar, btnExportar;
+	public static JButton btnLink,btnEmail,btnImportar, btnExportar,btnLote;
 	public static JTextField txApelido;
 	private JLabel lbApelido;
 	
@@ -234,7 +234,15 @@ public class PessoasView extends JInternalFrame {
 		btnExportar.addActionListener(controller);
 		btnExportar.setBounds(780, 143, 130, 25);
 		pnVisao.add(btnExportar);
-        
+		
+		btnLote = new JButton("Tarefas em Lote");
+		btnLote.setToolTipText("Salvar tarefas em Lote");
+		btnLote.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		btnLote.setActionCommand("Lote");
+		btnLote.addActionListener(controller);
+		btnLote.setBounds(780, 179, 130, 23);
+		pnVisao.add(btnLote);
+		
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(

@@ -30,6 +30,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -218,7 +219,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, null,MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.pessoa, null,MenuView.getInstance(),true,null,false);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					
@@ -299,9 +300,67 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
 			}
 			break;
+		case "Lote":
+			Set<Integer> lotes = receberLotes();
+			if(lotes!=null && !lotes.isEmpty())
+				new TarefasSaveView(null, new Pessoa(),null, MenuView.getInstance(),true,lotes,true)
+				.setVisible(true);
+			break;
 		default:
 			break;
 		}
+	}
+	private Set<Integer> receberLotes(){
+		Set<Integer> lotes = new HashSet<>();
+		Object[] opcao = {"Filtro do Sistema","Digitar registros","Cancelar"};
+		int n = JOptionPane.showOptionDialog(null, "Deseja usar os registros filtrados pelo sistema ou informar manualmente\nos registros que devem ser atualizados?", 
+				"Escolha uma opção", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcao, opcao[2]);
+		if(n == JOptionPane.NO_OPTION) {
+			JTextArea ta = new JTextArea(20, 10);
+			Object[] acao = {"Concluir","Cancelar"};
+			int escolha = JOptionPane.showOptionDialog(null, new JScrollPane(ta),"Informe o texto dentro da caixa",JOptionPane.YES_NO_OPTION,JOptionPane.YES_NO_OPTION, null, acao, acao[1]);
+			if(escolha == JOptionPane.YES_OPTION) {
+				//System.out.println(ta.getText());
+				String[] value = ta.getText().split(" |\n|,|;");
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				try {
+					boolean naoExiste = false;
+					for(String s : value) {
+						try {
+							int i = Integer.parseInt(s);
+							Pessoa p = (Pessoa)dao.receberObjeto(Pessoa.class, i, session);
+							if(p!=null)
+								lotes.add(i);
+						}catch(Exception ex) {
+							JOptionPane.showMessageDialog(MenuView.jDBody,"Os registros devem ser informados como numero ex:{1,2,3,4,5}!\n"+ex);
+						}
+					}
+					if(naoExiste) 
+						JOptionPane.showMessageDialog(MenuView.jDBody,"Algun(s) registros não foram reconhecidos pois não existem no sistema!");
+				}catch (Exception e) {
+					JOptionPane.showMessageDialog(MenuView.jDBody,"Os registros devem ser informados como numero ex:{1,2,3,4,5}!");
+					if(lotes.isEmpty()) return null;
+				}finally {
+					session.close();
+				}
+				
+			}
+		}
+		else if(n == JOptionPane.YES_OPTION){
+			DefaultTableModel md2 = (DefaultTableModel)tbPrincipal.getModel();
+			int i = 0;
+			if(md2.getRowCount()==0) {
+				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado na tabela!");
+				return null;
+			}
+			while(md2.getRowCount()>i) {
+				lotes.add(Integer.parseInt(String.valueOf(md2.getValueAt(i, 0))));
+				i++;
+			}
+		}	
+		else return null;
+		return lotes;
 	}
 	private void preencherTarefas(Pessoa pessoa) {
 		List<Criterion> criterios = new ArrayList<>();
@@ -416,6 +475,7 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
 				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 				try {
 					planilha.gerarExcel();
+					dao.salvarLog(session, UsuarioLogado.getInstance().getUsuario(), "Pessoa", "Exportar", "Exportou relatorio xls");
 					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
 					Desktop.getDesktop().open(new File(export+".xls"));
 				} catch (WriteException e1) {
@@ -827,10 +887,12 @@ public class ControllerPessoas implements ActionListener,KeyListener,ItemListene
     	ImageIcon iconURL = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
     	btnLink.setIcon(recalculate(iconURL));
     	
-    	ImageIcon iconImp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
+    	ImageIcon iconImp = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
     	btnImportar.setIcon(recalculate(iconImp));
-    	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+    	ImageIcon iconExp = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
     	btnExportar.setIcon(recalculate(iconExp));
+    	ImageIcon iconLote = new ImageIcon(ControllerPessoas.class.getResource("/br/com/tiagods/utilitarios/button_cascata.png"));
+    	btnLote.setIcon(recalculate(iconLote));
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

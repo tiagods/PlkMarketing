@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -229,6 +231,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 			UsuarioAcesso acesso = new UsuarioAcesso();
 			acesso.setData(new Date());
 			acesso.setUsuario(usuario);
+			try {acesso.setMaquina(InetAddress.getLocalHost().getHostName());}catch (UnknownHostException e) {}
 			dao.salvar(acesso, session);
 			UsuarioLogado.getInstance().setUsuario(usuario);
 			LoadingView loading = LoadingView.getInstance();

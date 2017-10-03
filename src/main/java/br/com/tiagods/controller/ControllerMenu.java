@@ -106,7 +106,7 @@ public class ControllerMenu implements MouseListener{
         case "TarefasSave":
         	invocarLoading();
         	run = ()->{
-        		tarefasSave = new TarefasSaveView(null,null,null,MenuView.getInstance(),true);
+        		tarefasSave = new TarefasSaveView(null,null,null,MenuView.getInstance(),true,null,false);
         		tarefasSave.setVisible(true);
         	};
         	new Thread(run).start();

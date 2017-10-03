@@ -3,63 +3,7 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.EmpresasView.btEsconder;
-import static br.com.tiagods.view.EmpresasView.btnCancelar;
-import static br.com.tiagods.view.EmpresasView.btnCategoriaAdd;
-import static br.com.tiagods.view.EmpresasView.btnEditar;
-import static br.com.tiagods.view.EmpresasView.btnEmail;
-import static br.com.tiagods.view.EmpresasView.btnExcluir;
-import static br.com.tiagods.view.EmpresasView.btnExportar;
-import static br.com.tiagods.view.EmpresasView.btnHistorico;
-import static br.com.tiagods.view.EmpresasView.btnImportar;
-import static br.com.tiagods.view.EmpresasView.btnLink;
-import static br.com.tiagods.view.EmpresasView.btnNegocios;
-import static br.com.tiagods.view.EmpresasView.btnNivelAdd;
-import static br.com.tiagods.view.EmpresasView.btnNovaTarefa;
-import static br.com.tiagods.view.EmpresasView.btnNovo;
-import static br.com.tiagods.view.EmpresasView.btnOrigemAdd;
-import static br.com.tiagods.view.EmpresasView.btnPessoas;
-import static br.com.tiagods.view.EmpresasView.btnSalvar;
-import static br.com.tiagods.view.EmpresasView.btnServicoAdd;
-import static br.com.tiagods.view.EmpresasView.cbAtendente;
-import static br.com.tiagods.view.EmpresasView.cbAtendenteCad;
-import static br.com.tiagods.view.EmpresasView.cbCategoria;
-import static br.com.tiagods.view.EmpresasView.cbCategoriaCad;
-import static br.com.tiagods.view.EmpresasView.cbCidade;
-import static br.com.tiagods.view.EmpresasView.cbEmpresa;
-import static br.com.tiagods.view.EmpresasView.cbEstado;
-import static br.com.tiagods.view.EmpresasView.cbLogradouro;
-import static br.com.tiagods.view.EmpresasView.cbNivel;
-import static br.com.tiagods.view.EmpresasView.cbNivelCad;
-import static br.com.tiagods.view.EmpresasView.cbOrigem;
-import static br.com.tiagods.view.EmpresasView.cbOrigemCad;
-import static br.com.tiagods.view.EmpresasView.cbProdServicos;
-import static br.com.tiagods.view.EmpresasView.cbProdServicosCad;
-import static br.com.tiagods.view.EmpresasView.data1;
-import static br.com.tiagods.view.EmpresasView.data2;
-import static br.com.tiagods.view.EmpresasView.pnAuxiliar;
-import static br.com.tiagods.view.EmpresasView.pnCabecalho;
-import static br.com.tiagods.view.EmpresasView.pnPrincipal;
-import static br.com.tiagods.view.EmpresasView.tbAuxiliar;
-import static br.com.tiagods.view.EmpresasView.tbPrincipal;
-import static br.com.tiagods.view.EmpresasView.txApelido;
-import static br.com.tiagods.view.EmpresasView.txBairro;
-import static br.com.tiagods.view.EmpresasView.txBuscar;
-import static br.com.tiagods.view.EmpresasView.txCadastradoPor;
-import static br.com.tiagods.view.EmpresasView.txCelular;
-import static br.com.tiagods.view.EmpresasView.txCep;
-import static br.com.tiagods.view.EmpresasView.txCnpj;
-import static br.com.tiagods.view.EmpresasView.txCodigo;
-import static br.com.tiagods.view.EmpresasView.txComplemento;
-import static br.com.tiagods.view.EmpresasView.txContador;
-import static br.com.tiagods.view.EmpresasView.txDataCadastro;
-import static br.com.tiagods.view.EmpresasView.txEmail;
-import static br.com.tiagods.view.EmpresasView.txLogradouro;
-import static br.com.tiagods.view.EmpresasView.txNome;
-import static br.com.tiagods.view.EmpresasView.txNum;
-import static br.com.tiagods.view.EmpresasView.txRazaoSocial;
-import static br.com.tiagods.view.EmpresasView.txSite;
-import static br.com.tiagods.view.EmpresasView.txTelefone;
+import static br.com.tiagods.view.EmpresasView.*;
 import static br.com.tiagods.view.MenuView.jDBody;
 
 import java.awt.Color;
@@ -86,6 +30,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -276,7 +221,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.empresa, null,MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.empresa, null,MenuView.getInstance(),true,null, false);
 				taskView.setVisible(true);
 				taskView.addWindowListener(new WindowListener() {
 					
@@ -357,9 +302,69 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado!");
 			}
 			break;
+		case "Lote":
+			Set<Integer> lotes = receberLotes();
+			if(lotes!=null && !lotes.isEmpty())
+				new TarefasSaveView(null, new Empresa(),null, MenuView.getInstance(),true,lotes,true)
+				.setVisible(true);
+			break;	
 		default:
 			break;
 		}
+	}
+	private Set<Integer> receberLotes(){
+		Set<Integer> lotes = new HashSet<>();
+		Object[] opcao = {"Filtro do Sistema","Digitar registros","Cancelar"};
+		int n = JOptionPane.showOptionDialog(null, "Deseja usar os registros filtrados pelo sistema ou informar manualmente\nos registros que devem ser atualizados?", 
+				"Escolha uma opção", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcao, opcao[2]);
+		if(n == JOptionPane.NO_OPTION) {
+			JTextArea ta = new JTextArea(20, 10);
+			Object[] acao = {"Concluir","Cancelar"};
+			int escolha = JOptionPane.showOptionDialog(null, new JScrollPane(ta),"Informe o texto dentro da caixa",JOptionPane.YES_NO_OPTION,JOptionPane.YES_NO_OPTION, null, acao, acao[1]);
+			if(escolha == JOptionPane.YES_OPTION) {
+				//System.out.println(ta.getText());
+				String[] value = ta.getText().split(" |\n|,|;");
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				try {
+					boolean naoExiste = false;
+					for(String s : value) {
+						try {
+							int i = Integer.parseInt(s);
+							Empresa e = (Empresa)dao.receberObjeto(Empresa.class, i, session);
+							if(e!=null)
+								lotes.add(i);
+							else
+								naoExiste = true;
+						}catch(Exception ex) {
+							JOptionPane.showMessageDialog(MenuView.jDBody,"Os registros devem ser informados como numero ex:{1,2,3,4,5}\n!"+ex);
+						}
+					}
+					if(naoExiste) 
+						JOptionPane.showMessageDialog(MenuView.jDBody,"Algun(s) registros não foram reconhecidos pois não existem no sistema!");
+				}catch (Exception e) {
+					JOptionPane.showMessageDialog(MenuView.jDBody,"Os registros devem ser informados como numero ex:{1,2,3,4,5}!");
+					if(lotes.isEmpty()) return null;
+				}finally {
+					session.close();
+				}
+				
+			}
+		}
+		else if(n ==  JOptionPane.YES_OPTION){
+			DefaultTableModel md2 = (DefaultTableModel)tbPrincipal.getModel();
+			int i = 0;
+			if(md2.getRowCount()==0) {
+				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado na tabela!");
+				return null;
+			}
+			while(md2.getRowCount()>i) {
+				lotes.add(Integer.parseInt(String.valueOf(md2.getValueAt(i, 0))));
+				i++;
+			}
+		}		
+		else return null;
+		return lotes;
 	}
 	private void preencherTarefas(Empresa empresa) {
 		List<Criterion> criterios = new ArrayList<>();
@@ -473,6 +478,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 				try {
 					planilha.gerarExcel();
+					dao.salvarLog(session, UsuarioLogado.getInstance().getUsuario(), "Empresa", "Exportar", "Exportou relatorio xls");
 					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
 					Desktop.getDesktop().open(new File(export+".xls"));
 				} catch (WriteException e1) {
@@ -895,6 +901,9 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	
     	ImageIcon iconExp = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
     	btnExportar.setIcon(recalculate(iconExp));
+    	
+    	ImageIcon iconLote = new ImageIcon(ControllerNegocios.class.getResource("/br/com/tiagods/utilitarios/button_cascata.png"));
+    	btnLote.setIcon(recalculate(iconLote));
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));

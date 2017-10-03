@@ -25,6 +25,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -88,17 +89,16 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 	List<Prospeccao> listarProspeccao = new ArrayList<>();
 	Prospeccao prospeccaoBackup;
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
-	
+
 	GenericDao dao = new GenericDao();
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
 	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
-	
+
 	@SuppressWarnings("unchecked")
 	public void iniciar(Prospeccao prospeccao){
 		this.prospeccao=prospeccao;
 		boolean aberta = abrirSessao();
-		rbDecrescente.setSelected(true);
-		cbLista.setEnabled(false);
+		rbDecrescente.setSelected(true);		
 		JPanel[] panels = {pnPesquisa,pnCadastro,pnCadastroOrigem,pnLista};
 		for (JPanel panel : panels) {
 			preencherComboBox(panel);
@@ -123,7 +123,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		loading.fechar();
 	}
 	private void abrirModelo(){
-		
+
 	}
 	private boolean abrirSessao(){
 		try{
@@ -240,8 +240,8 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			telaEmEdicao = false;
 			break;
 		case "Salvar":
-				invocarSalvamento();
-				telaEmEdicao = false;
+			invocarSalvamento();
+			telaEmEdicao = false;
 			break;
 		case "Historico":
 			if(!txCodigo.getText().equals("") && !telaEmEdicao){
@@ -291,27 +291,28 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 						+ valor);
 			}
 			else{
-				TarefasSaveView taskView = new TarefasSaveView(null, this.prospeccao,null, MenuView.getInstance(),true);
+				TarefasSaveView taskView = new TarefasSaveView(null, this.prospeccao,null, MenuView.getInstance(),true,null,false);
 				taskView.setVisible(true);
+				
 				taskView.addWindowListener(new WindowListener() {
 					@Override
 					public void windowOpened(WindowEvent e) {
-						
+
 					}
-					
+
 					@Override
 					public void windowIconified(WindowEvent e) {
-						
+
 					}
-					
+
 					@Override
 					public void windowDeiconified(WindowEvent e) {
 					}
-					
+
 					@Override
 					public void windowDeactivated(WindowEvent e) {
 					}
-					
+
 					@Override
 					public void windowClosing(WindowEvent e) {
 					}
@@ -324,7 +325,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 					}
 					@Override
 					public void windowActivated(WindowEvent e) {
-						
+
 					}
 				});
 			}
@@ -370,6 +371,12 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			else
 				iniciarImportacao();
 			break;
+		case "Lote":
+			Set<Integer> lotes = receberLotes();
+			if(lotes!=null && !lotes.isEmpty())
+				new TarefasSaveView(null, new Prospeccao(),null, MenuView.getInstance(),true,lotes,true)
+				.setVisible(true);
+			break;
 		default:
 			if(!telaEmEdicao){
 				open = abrirSessao();
@@ -379,23 +386,76 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 			break;
 		}	
 	}
+	private Set<Integer> receberLotes(){
+		Set<Integer> lotes = new HashSet<>();
+		Object[] opcao = {"Filtro do Sistema","Digitar registros","Cancelar"};
+		int n = JOptionPane.showOptionDialog(null, "Deseja usar os registros filtrados pelo sistema ou informar manualmente\nos registros que devem ser atualizados?", 
+				"Escolha uma opção", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, opcao, opcao[2]);
+		if(n == JOptionPane.NO_OPTION) {
+			JTextArea ta = new JTextArea(20, 10);
+			Object[] acao = {"Concluir","Cancelar"};
+			int escolha = JOptionPane.showOptionDialog(null, new JScrollPane(ta),"Informe o texto dentro da caixa",JOptionPane.YES_NO_OPTION,JOptionPane.YES_NO_OPTION, null, acao, acao[1]);
+			if(escolha == JOptionPane.YES_OPTION) {
+				//System.out.println(ta.getText());
+				String[] value = ta.getText().split(" |\n|,|;");
+				session = HibernateFactory.getSession();
+				session.beginTransaction();
+				try {
+					boolean naoExiste = false;
+					for(String s : value) {
+						try {
+							int i = Integer.parseInt(s);
+							Prospeccao p = (Prospeccao)dao.receberObjeto(Prospeccao.class, i, session);
+							if(p!=null)
+								lotes.add(i);
+							else
+								naoExiste = true;
+						}catch(Exception ex) {
+							JOptionPane.showMessageDialog(MenuView.jDBody,"Os registros devem ser informados como numero ex:{1,2,3,4,5}!\n"+ex);
+						}
+					}
+					if(naoExiste) 
+						JOptionPane.showMessageDialog(MenuView.jDBody,"Algun(s) registros não foram reconhecidos pois não existem no sistema!");
+				}catch (Exception e) {
+					JOptionPane.showMessageDialog(MenuView.jDBody,"Os registros devem ser informados como numero ex:{1,2,3,4,5}!");
+				}finally {
+					session.close();
+				}
+				
+			}
+		}
+		else if(n ==  JOptionPane.YES_OPTION){
+			DefaultTableModel md2 = (DefaultTableModel)tbPrincipal.getModel();
+			int i = 0;
+			if(md2.getRowCount()==0) {
+				JOptionPane.showMessageDialog(MenuView.jDBody,"Nenhum registro foi encontrado na tabela!");
+				return null;
+			}
+			while(md2.getRowCount()>i) {
+				lotes.add(Integer.parseInt(String.valueOf(md2.getValueAt(i, 0))));
+				i++;
+			}
+		}		
+		else return null;
+		return lotes;
+	}
 	private String carregarArquivo(String title){
-        JFileChooser chooser = new JFileChooser();
-        chooser.setAcceptAllFileFilterUsed(false);
-        chooser.setDialogTitle(title);
-        String local = "";
-        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
-        int retorno = chooser.showSaveDialog(null);
-        if(retorno==JFileChooser.APPROVE_OPTION){
-        	local = chooser.getSelectedFile().getAbsolutePath(); //
-        }
-        return local;
-    }
+		JFileChooser chooser = new JFileChooser();
+		chooser.setAcceptAllFileFilterUsed(false);
+		chooser.setDialogTitle(title);
+		String local = "";
+		chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+		int retorno = chooser.showSaveDialog(null);
+		if(retorno==JFileChooser.APPROVE_OPTION){
+			local = chooser.getSelectedFile().getAbsolutePath(); //
+		}
+		return local;
+	}
 	private void definirAcoes(){
 		data1.addPropertyChangeListener(this);
 		data2.addPropertyChangeListener(this);
 		tbPrincipal.addMouseListener(this);
- 		cbTipoContatoPesquisa.addItemListener(this);
+		cbTipoContatoPesquisa.addItemListener(this);
 		cbOrigem.addItemListener(this);
 		cbServicos.addItemListener(this);
 		cbOrdenacao.addItemListener(this);
@@ -429,6 +489,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 		txBuscar.addKeyListener(this);
 		tabbedPane.addMouseListener(this);
 		btnExportar.addActionListener(this);
+		btnLote.addActionListener(this);
 	}
 	@SuppressWarnings("rawtypes")
 	private void desbloquearFormulario(boolean desbloquear,Container container){
@@ -462,8 +523,7 @@ public class ControllerProspeccao implements ActionListener,ItemListener,MouseLi
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void exportarExcel(){
-
-int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
+		int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, realize um filtro\n"
 				+"Todos os registros serão exportados para o formato excel, deseja imprimir o filtro realizado",
 				"Exportar Negocios",JOptionPane.YES_NO_OPTION);
 		if(opcao==JOptionPane.YES_OPTION){
@@ -474,7 +534,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 				realizarFiltro();
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-				
+
 				Integer[] colunasLenght = new Integer[]{6,29,9,13,5,15,13,14,14,13,12,11,14,10,10,16,10,19,16,30,16,10,19,16,30};
 				String[] cabecalho = new String[]{
 						"Cod","Nome", "Responsavel","Departamento","Tipo de Contato","Convite para Eventos","Material","Newsletter",
@@ -496,7 +556,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 					listaImpressao.get(i+1).add(p.getConviteParaEventos()==1?"Sim":"Não");
 					listaImpressao.get(i+1).add(p.getMaterial()==1?"Sim":"Não");
 					listaImpressao.get(i+1).add(p.getNewsletter()==1?"Sim":"Não");
-					
+
 					PfPj pfpj = p.getPfpj();
 					listaImpressao.get(i+1).add(pfpj.getEmail());
 					listaImpressao.get(i+1).add(pfpj.getSite());
@@ -505,11 +565,11 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 					listaImpressao.get(i+1).add(sdf.format(pfpj.getCriadoEm()));
 					listaImpressao.get(i+1).add(pfpj.getAtendente().getNome());
 					listaImpressao.get(i+1).add(p.getEndereco());
-					
+
 					listaImpressao.get(i+1).add(pfpj.getServico()==null?"":pfpj.getServico().getNome());
 					listaImpressao.get(i+1).add(pfpj.getOrigem()==null?"":pfpj.getOrigem().getNome());
 					listaImpressao.get(i+1).add(pfpj.getDetalhesOrigem());
-					
+
 					listaImpressao.get(i+1).add(pfpj.getResumo());
 					listaImpressao.get(i+1).add(pfpj.getApresentacao());
 					StringBuilder listas = new StringBuilder();
@@ -520,29 +580,29 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 						listas.append("\n");
 					}
 					listaImpressao.get(i+1).add(listas.toString());		
-					
+
 					int qtdNegocios=0;
 					StringBuilder valorHonorario = new StringBuilder();
 					StringBuilder statusNegocio = new StringBuilder();
 					StringBuilder statusServicosNegocios = new StringBuilder();
-					
+
 					List<Criterion> criterios = new ArrayList<>();
 					criterios.add(Restrictions.eq("prospeccao", p));
 					List<Negocio> listaNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
 					if(!listaNegocios.isEmpty()){
 						for(Negocio negocio : listaNegocios){
 							qtdNegocios++;
-	
+
 							valorHonorario.append(negocio.getId());
 							valorHonorario.append("-");
 							valorHonorario.append(NumberFormat.getCurrencyInstance().format(negocio.getHonorario()));
 							valorHonorario.append("\n ");
-	
+
 							statusNegocio.append(negocio.getId());
 							statusNegocio.append("-");
 							statusNegocio.append(negocio.getStatus().getNome());
 							statusNegocio.append("\n ");
-	
+
 							Set<ServicoContratado> servicos = negocio.getServicosContratados();
 							for(ServicoContratado sc : servicos){
 								statusServicosNegocios.append(negocio.getId());
@@ -552,7 +612,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 								statusServicosNegocios.append(NumberFormat.getCurrencyInstance().format(sc.getValor()));
 								statusServicosNegocios.append("\n ");
 							}
-							
+
 						}
 					}
 					listaImpressao.get(i+1).add(qtdNegocios);//possui negocio
@@ -563,6 +623,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 				try {
 					planilha.gerarExcel();
+					dao.salvarLog(session, UsuarioLogado.getInstance().getUsuario(), "Prospeccao", "Exportar", "Exportou relatorio xls");
 					JOptionPane.showMessageDialog(null, "Gerado com sucesso em : "+export+".xls");
 					Desktop.getDesktop().open(new File(export+".xls"));
 				} catch (WriteException e1) {
@@ -579,7 +640,6 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 	private void exportarTxtEmails() {
 		boolean open = abrirSessao();
 		realizarFiltro();
-		
 		if(listarProspeccao.size()>0){
 			String separator = System.getProperty("line.separator");
 			StringBuilder builder = new StringBuilder();
@@ -605,6 +665,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 				fw.write(builder.toString());
 				fw.flush();
 				fw.close();
+				dao.salvarLog(session, UsuarioLogado.getInstance().getUsuario(), "Prospeccao", "Exportar", "Exportou relatorio txt de Mala Direta");
 				Desktop.getDesktop().open(txtTemp);
 				int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, 
 						"Deseja abrir a página E-Mail Marketing Locaweb?",
@@ -628,7 +689,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 	}
 	private void iniciarImportacao() {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void itemStateChanged(ItemEvent e) {
@@ -648,8 +709,8 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			if(excluiu){
 				limparFormulario(pnPesquisa);
 				listarProspeccao = (List<Prospeccao>)dao.listar(Prospeccao.class, session);
-		    	preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
-		    }
+				preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
+			}
 			fecharSessao(openHere);
 		}
 	}
@@ -683,7 +744,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 		prospeccao.setMaterial(ckMaterialCad.isSelected()?1:0);
 		prospeccao.setNewsletter(ckNewsletterCad.isSelected()?1:0);
 		prospeccao.setPfpj(pfpj);
-		
+
 		DefaultTableModel model = (DefaultTableModel) tbLista.getModel();
 		Set<Lista> listas = new HashSet<>();
 		for(int i = 0; i<model.getRowCount(); i++){
@@ -734,8 +795,8 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 				((JFormattedTextField)c).setText("");
 			}			
 		}
-		
-		
+
+
 	}
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -748,12 +809,12 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -785,28 +846,28 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			realizarFiltro();
 			fecharSessao(open);
 		}
-		
-		
+
+
 	}
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	private void novoEditar(){
 		desbloquearFormulario(true, pnCadastro);
@@ -830,10 +891,10 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 	}
 	private void preencherFormulario(Prospeccao p){
 		txCodigo.setText(""+p.getId());
-		
+
 		txCadastradoPor.setText(p.getPfpj().getCriadoPor().getNome());
 		txDataCadastro.setText(p.getPfpj().getCriadoEm()==null?"":sdf.format(p.getPfpj().getCriadoEm()));
-		
+
 		txEmpresa.setText(p.getNome());
 		txNomeContato.setText(p.getResponsavel());
 		txDepartamento.setText(p.getDepartamento());
@@ -844,16 +905,16 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 		txCelular.setText(pp.getCelular());
 		txEmail.setText(pp.getEmail());
 		txSite.setText(pp.getSite());
-		
+
 		cbTipoContatoCad.setSelectedItem(p.getTipoContato()!=null?p.getTipoContato().getNome():"");
 		ckConviteEventosCad.setSelected(p.getConviteParaEventos()==1?true:false);
 		ckMaterialCad.setSelected(p.getMaterial()==1?true:false);
 		ckNewsletterCad.setSelected(p.getNewsletter()==1?true:false);
-		
+
 		cbServicosCad.setSelectedItem(pp.getServico()==null?"":pp.getServico().getNome());
 		cbOrigemCad.setSelectedItem(pp.getOrigem()==null?"":pp.getOrigem().getNome());
 		txDetalhesDaOrigem.setText(pp.getDetalhesOrigem());
-		
+
 		txResumoContato.setText(pp.getResumo());
 		txApresentacao.setText(pp.getApresentacao());
 		Set<Lista> listas = p.getListas();
@@ -873,7 +934,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
-			
+
 		};
 		Iterator<Lista> iterator = lista.iterator();
 		while(iterator.hasNext()){
@@ -1003,14 +1064,11 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 			Criterion c = realizarBusca();
 			if(c!=null) 
 				criterios.add(c);
-//			if(!"Lista".equals(cbLista.getSelectedItem())){
-//				Conjunction e = Restrictions.conjunction();
-//				criterios.add(Restrictions.in("listas", .asList(padrao.getListas(cbLista.getSelectedItem().toString()))));
-//				listarProspeccao = dao.items(Prospeccao.class,  session, criterios, order);
-//				//e.add(Restrictions.eqOrIsNull("listas", padrao.getListas(cbLista.getSelectedItem().toString())));
-//				//listarProspeccao = dao.items(Prospeccao.class, session, criterios, new String[]{"listas","l"},e, order);
-//			}
-//			else
+			if(!"Lista".equals(cbLista.getSelectedItem())){
+				Conjunction e = Restrictions.conjunction();
+				e.add(Restrictions.in("l.nome", cbLista.getSelectedItem().toString()));
+				listarProspeccao = dao.items(Prospeccao.class, session, criterios, new String[]{"listas","l"}, e, order);
+			}else
 				listarProspeccao = dao.items(Prospeccao.class, session, criterios, order);
 			preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		}
@@ -1051,7 +1109,7 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 		}
 		return criterios;
 	}
-	
+
 	private Order receberOrdenacao(){
 		Order order=null;
 		String campo = "";
@@ -1089,57 +1147,59 @@ int opcao = JOptionPane.showConfirmDialog(MenuView.jDBody, "Para exportar, reali
 		if("".equals(txCodigo.getText()))
 			btExcluir.setEnabled(false);
 		desbloquearFormulario(false, pnCadastro);
-		
+
 	}
 	public void setarIcones() throws NullPointerException{
-    	ImageIcon iconNovo = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
-    	btNovo.setIcon(recalculate(iconNovo));
-    	btOrigemAdd.setIcon(iconNovo);
-    	btTipoContatoAdd.setIcon(iconNovo);
-    	btServicosAdd.setIcon(iconNovo);
-    	btListaAdd.setIcon(iconNovo);
-    	
-    	ImageIcon iconEdit = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
-    	btEditar.setIcon(recalculate(iconEdit));
-    	ImageIcon iconSave = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
-    	btSalvar.setIcon(recalculate(iconSave));
-    	btAdicionarALista.setIcon(iconSave);
-    	
-    	ImageIcon iconCancel = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
-    	btCancelar.setIcon(recalculate(iconCancel));
-    	ImageIcon iconTrash = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
-    	btExcluir.setIcon(recalculate(iconTrash));
+		ImageIcon iconNovo = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_add.png"));
+		btNovo.setIcon(recalculate(iconNovo));
+		btOrigemAdd.setIcon(iconNovo);
+		btTipoContatoAdd.setIcon(iconNovo);
+		btServicosAdd.setIcon(iconNovo);
+		btListaAdd.setIcon(iconNovo);
 
-    	ImageIcon iconNewTask = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_addtask.png"));
-    	btNovaTarefa.setIcon(recalculate(iconNewTask));
-    	ImageIcon iconTask = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_task.png"));
-    	btHistorico.setIcon(recalculate(iconTask));
+		ImageIcon iconEdit = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_edit.png"));
+		btEditar.setIcon(recalculate(iconEdit));
+		ImageIcon iconSave = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_save.png"));
+		btSalvar.setIcon(recalculate(iconSave));
+		btAdicionarALista.setIcon(iconSave);
 
-    	ImageIcon iconEsconder = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_nofixar.png"));
-    	btEsconder.setIcon(recalculate(iconEsconder));
+		ImageIcon iconCancel = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_cancel.png"));
+		btCancelar.setIcon(recalculate(iconCancel));
+		ImageIcon iconTrash = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_trash.png"));
+		btExcluir.setIcon(recalculate(iconTrash));
 
-        ImageIcon iconMail = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_mail.png"));
-    	btEmail.setIcon(recalculate(iconMail));
-    	ImageIcon iconURL = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
-    	btSite.setIcon(recalculate(iconURL));
+		ImageIcon iconNewTask = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_addtask.png"));
+		btNovaTarefa.setIcon(recalculate(iconNewTask));
+		ImageIcon iconTask = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_task.png"));
+		btHistorico.setIcon(recalculate(iconTask));
 
-//    	ImageIcon iconImp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
-//    	btnImportar.setIcon(recalculate(iconImp));
-//
-    	ImageIcon iconExp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
-    	btnExpMailmktLocaweb.setIcon(recalculate(iconExp));
-    	btnExportar.setIcon(iconExp);
-    }
-    public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
-    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
-    	return icon;
-    }
-    public ImageIcon recalculate(ImageIcon icon, int valor) throws NullPointerException{
-    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
-    	return icon;
-    }
-    private boolean validarQuantidadeRegistros(JTable table){
-    	DefaultTableModel model = (DefaultTableModel)table.getModel();
+		ImageIcon iconEsconder = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_nofixar.png"));
+		btEsconder.setIcon(recalculate(iconEsconder));
+
+		ImageIcon iconMail = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_mail.png"));
+		btEmail.setIcon(recalculate(iconMail));
+		ImageIcon iconURL = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_chrome.png"));
+		btSite.setIcon(recalculate(iconURL));
+
+		//    	ImageIcon iconImp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_import.png"));
+		//    	btnImportar.setIcon(recalculate(iconImp));
+		//
+		ImageIcon iconExp = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_export.png"));
+		btnExpMailmktLocaweb.setIcon(recalculate(iconExp));
+		btnExportar.setIcon(iconExp);
+		ImageIcon iconLote = new ImageIcon(ControllerProspeccao.class.getResource("/br/com/tiagods/utilitarios/button_cascata.png"));
+		btnLote.setIcon(recalculate(iconLote));
+	}
+	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
+		icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+		return icon;
+	}
+	public ImageIcon recalculate(ImageIcon icon, int valor) throws NullPointerException{
+		icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
+		return icon;
+	}
+	private boolean validarQuantidadeRegistros(JTable table){
+		DefaultTableModel model = (DefaultTableModel)table.getModel();
 		return model.getColumnCount()>1;
-    }
+	}
 }
