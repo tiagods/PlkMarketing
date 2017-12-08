@@ -1,10 +1,10 @@
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.dialog.SubmeterErroDialog.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
-import static br.com.tiagods.view.SubmeterErroDialog.*;
 
 public class ControllerErro implements ActionListener{
 

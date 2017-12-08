@@ -1,13 +1,15 @@
-package br.com.tiagods.view;
+package br.com.tiagods.view.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -15,8 +17,10 @@ import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import br.com.tiagods.config.FTPConfig;
 import br.com.tiagods.controller.ControllerLogin;
 import br.com.tiagods.model.VersaoSistema;
+import br.com.tiagods.view.MenuView;
 
 public class LoginDialog extends JDialog {
 	
@@ -43,7 +47,10 @@ public class LoginDialog extends JDialog {
 			ion.setImage(ion.getImage().getScaledInstance(100, 100, 100));
 			this.setIconImage(ion.getImage());
 		}catch (NullPointerException e) {
+			JOptionPane.showMessageDialog(null, e);
 		}
+		
+		
 		controller.iniciar(this);
 		
 	}

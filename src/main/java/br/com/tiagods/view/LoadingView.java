@@ -58,6 +58,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.plaf.LayerUI;
 
+import br.com.tiagods.view.dialog.LoginDialog;
+
 public class LoadingView extends JFrame{
 	/**
 	 * 

@@ -33,9 +33,9 @@ import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.PessoasView;
 import br.com.tiagods.view.ProspeccaoView;
 import br.com.tiagods.view.RelatorioView;
-import br.com.tiagods.view.SobreDialog;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.TarefasView;
+import br.com.tiagods.view.dialog.SobreDialog;
 
 /**
  *

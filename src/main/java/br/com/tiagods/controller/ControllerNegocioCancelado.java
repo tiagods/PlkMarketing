@@ -1,5 +1,7 @@
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.dialog.NegocioPerdaDialog.*;
+
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,9 +13,7 @@ import javax.swing.JRadioButton;
 
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.view.MenuView;
-import br.com.tiagods.view.NegocioPerdaDialog;
-
-import static br.com.tiagods.view.NegocioPerdaDialog.*;
+import br.com.tiagods.view.dialog.NegocioPerdaDialog;
 
 public class ControllerNegocioCancelado implements ActionListener{
 

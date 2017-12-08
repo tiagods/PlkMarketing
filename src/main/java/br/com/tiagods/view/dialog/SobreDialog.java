@@ -1,4 +1,4 @@
-package br.com.tiagods.view;
+package br.com.tiagods.view.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import br.com.tiagods.model.VersaoSistema;
+import br.com.tiagods.view.MenuView;
 
 import javax.swing.JLabel;
 import javax.swing.JTextPane;

@@ -1,5 +1,7 @@
 package br.com.tiagods.controller;
 
+import static br.com.tiagods.view.dialog.LoginDialog.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -28,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
+import br.com.tiagods.config.IconsConfig;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Usuario;
@@ -37,9 +40,8 @@ import br.com.tiagods.modeldao.SendEmail;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.modeldao.VerificarAtualizacao;
 import br.com.tiagods.view.LoadingView;
-import br.com.tiagods.view.LoginDialog;
 import br.com.tiagods.view.MenuView;
-import static br.com.tiagods.view.LoginDialog.*;
+import br.com.tiagods.view.dialog.LoginDialog;
 
 public class ControllerLogin implements ActionListener, MouseListener {
 	String caracteres = "abcdefghijklmnopqrstuvwxyz";
@@ -260,8 +262,6 @@ public class ControllerLogin implements ActionListener, MouseListener {
 					break;
 				if(caracteres.contains(String.valueOf(c))) 
 					letras = true;
-				else if(maiusculas.contains(String.valueOf(c))) 
-					letras = true;
 				if(numeros.contains(String.valueOf(c))) 
 					number = true;
 			}
@@ -307,21 +307,28 @@ public class ControllerLogin implements ActionListener, MouseListener {
 		return criptografia;
 	}
 	private void setarIcones(){
-		ImageIcon iconTheme = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));
+		
+		try {
+		IconsConfig icons = IconsConfig.getInstance();
+		
+		ImageIcon iconTheme = icons.getIconName("theme.png");
 		int nAlt = lbIcon.getHeight();
 		iconTheme.setImage(iconTheme.getImage().getScaledInstance(iconTheme.getIconWidth()/iconTheme.getIconHeight()*nAlt, nAlt, 100));
 		lbIcon.setIcon(iconTheme);
 		
-		ImageIcon iconOk = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
+		ImageIcon iconOk = icons.getIconName("button_ok.png");
 		btnOk.setIcon(recalculate(iconOk));
 		btnSubmeterSenha.setIcon(iconOk);
 		btnMinhaConta.setIcon(iconOk);
 		
-		ImageIcon iconCancelar = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_exit.png"));
+		ImageIcon iconCancelar = icons.getIconName("button_exit.png");
 		btnCancelarSenha.setIcon(recalculate(iconCancelar));
 		
-		ImageIcon iconReturn = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_return.png"));
+		ImageIcon iconReturn = icons.getIconName("button_return.png");
 		btnBack.setIcon(recalculate(iconReturn));
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{

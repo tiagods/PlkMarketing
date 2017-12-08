@@ -40,8 +40,8 @@ import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
-import br.com.tiagods.view.SelecaoDialog;
 import br.com.tiagods.view.TarefasSaveView;
+import br.com.tiagods.view.dialog.SelecaoDialog;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 
 public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, ItemListener{

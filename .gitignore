@@ -1,12 +1,4 @@
 *.class
-hibernate.cfg.xml
-hibernate.properties
-ConnectionFactory.java
-SendEmail.java
-SendMail.java
-FTPDownload.java
-FTPUpload.java
-
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -73,3 +65,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 /target/
+
+#Credentials
+ftp.properties
+mail.properties
+database_other.properties
+

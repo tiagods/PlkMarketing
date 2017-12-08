@@ -1,4 +1,4 @@
-package br.com.tiagods.view;
+package br.com.tiagods.view.dialog;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
