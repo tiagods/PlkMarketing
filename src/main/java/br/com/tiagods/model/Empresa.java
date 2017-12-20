@@ -15,6 +15,7 @@ public class Empresa implements Serializable{
 	private PfPj pessoaJuridica;
 	private String cnpj;
 	private Set<Pessoa> pessoas = new LinkedHashSet<>();
+	private Negocio ultimoNegocio;
 	
 	/**
 	 * @return the id
@@ -87,6 +88,18 @@ public class Empresa implements Serializable{
 	 */
 	public void setPessoaJuridica(PfPj pessoaJuridica) {
 		this.pessoaJuridica = pessoaJuridica;
+	}
+	/**
+	 * @return the ultimoNegocio
+	 */
+	public Negocio getUltimoNegocio() {
+		return ultimoNegocio;
+	}
+	/**
+	 * @param ultimoNegocio the ultimoNegocio to set
+	 */
+	public void setUltimoNegocio(Negocio ultimoNegocio) {
+		this.ultimoNegocio = ultimoNegocio;
 	}
 	
 }

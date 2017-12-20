@@ -20,6 +20,7 @@ public class Prospeccao implements Serializable{
 	private ProspeccaoTipoContato tipoContato;
 	private String endereco;
 	private Set<Lista> listas = new HashSet<>();
+	private Negocio ultimoNegocio;
 	/**
 	 * @return the id
 	 */
@@ -152,6 +153,17 @@ public class Prospeccao implements Serializable{
 	public void setListas(Set<Lista> listas) {
 		this.listas = listas;
 	}
-
+	/**
+	 * @return the ultimoNegocio
+	 */
+	public Negocio getUltimoNegocio() {
+		return ultimoNegocio;
+	}
+	/**
+	 * @param ultimoNegocio the ultimoNegocio to set
+	 */
+	public void setUltimoNegocio(Negocio ultimoNegocio) {
+		this.ultimoNegocio = ultimoNegocio;
+	}
 
 }

@@ -42,5 +42,6 @@
 		<key column="PRO_REL_COD" />
 		<many-to-many column="LIS_REL_COD" class="Lista" />
 	</set>
+	<many-to-one name="ultimoNegocio" column="PRO_ULT_NEGOCIO_COD" foreign-key="FK_PRO_ULT_NEGOCIO_COD" />
 	</class>
 </hibernate-mapping>

@@ -43,7 +43,7 @@
 		<property name="apelido" column="PES_APELIDO_COD"/>
 		<property name="razao" column="PES_RAZAO_COD"/>
 	</component>
-	
+	<many-to-one name="ultimoNegocio" column="PES_ULT_NEGOCIO_COD" foreign-key="FK_PES_ULT_NEGOCIO_COD" />
 	</class>
 </hibernate-mapping>
 

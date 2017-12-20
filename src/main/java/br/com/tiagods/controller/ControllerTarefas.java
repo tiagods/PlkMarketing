@@ -684,7 +684,7 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		}
 		else if("Negocio".equals(value)){
 			Negocio negocio = transfer.getNegocio();
-			NegociosView viewNegocios = new NegociosView(negocio);
+			NegociosView viewNegocios = new NegociosView(negocio,null);
 			ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 		}
 		else if("Pessoa".equals(value)){

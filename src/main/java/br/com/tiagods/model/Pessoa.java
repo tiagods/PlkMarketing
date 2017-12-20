@@ -13,6 +13,22 @@ public class Pessoa implements Serializable{
 	private String dataNascimento="";
 	private PfPj pessoaFisica;
 	private Endereco endereco;
+	private Negocio ultimoNegocio;
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	private String status;
 	
 	/**
 	 * @return the id
@@ -97,4 +113,20 @@ public class Pessoa implements Serializable{
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
+
+	/**
+	 * @return the ultimoNegocio
+	 */
+	public Negocio getUltimoNegocio() {
+		return ultimoNegocio;
+	}
+
+	/**
+	 * @param ultimoNegocio the ultimoNegocio to set
+	 */
+	public void setUltimoNegocio(Negocio ultimoNegocio) {
+		this.ultimoNegocio = ultimoNegocio;
+	}
+	
+	
 }

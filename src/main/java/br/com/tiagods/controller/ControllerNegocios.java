@@ -125,7 +125,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
 	
 	@SuppressWarnings("unchecked")
-	public void iniciar(Negocio negocio){
+	public void iniciar(Negocio negocio, Object objeto){
 		this.negocio=negocio;
 		session = HibernateFactory.getSession();
 		session.beginTransaction();
@@ -138,15 +138,55 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		radiosAndamento.put("Envio de Proposta", rbEnvioProposta);
 		radiosAndamento.put("Follow-up", rbFollowup);
 		
+		salvarCancelar();
+		
 		List<Criterion> criterion = new ArrayList<>();
 		//criterion.add(Restrictions.eq("atendente", UsuarioLogado.getInstance().getUsuario()));  //departamento não se acostumou com a nova regra
 		
 		listarNegocios = dao.items(Negocio.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		if(this.negocio==null && !listarNegocios.isEmpty()){
-			this.negocio=listarNegocios.get(0);
-			preencherFormulario(this.negocio);
-			tabbedPane.setSelectedIndex(0);
+			if(!listarNegocios.isEmpty() && objeto==null) {
+				this.negocio=listarNegocios.get(0);
+				preencherFormulario(this.negocio);
+				tabbedPane.setSelectedIndex(0);
+			}
+			else if(objeto!=null) {
+				novo();
+				cbStatusCad.setSelectedIndex(0);
+				if(objeto instanceof Empresa) {
+					cbObject.setSelectedItem("Empresa");
+					txCodObjeto.setText(((Empresa)objeto).getId()+"");
+					txNomeObjeto.setText(((Empresa)objeto).getNome());
+					txEmail.setText(((Empresa)objeto).getPessoaJuridica().getEmail());
+					site = ((Empresa)objeto).getPessoaJuridica().getSite();
+					txFone.setText(((Empresa)objeto).getPessoaJuridica().getTelefone());
+					txCelular.setText(((Empresa)objeto).getPessoaJuridica().getCelular());
+				}
+				else if(objeto instanceof Pessoa) {
+					cbObject.setSelectedItem("Pessoa");
+					txCodObjeto.setText(((Pessoa)objeto).getId()+"");
+					txNomeObjeto.setText(((Pessoa)objeto).getNome());
+					txEmail.setText(((Pessoa)objeto).getPessoaFisica().getEmail());
+					site = ((Pessoa)objeto).getPessoaFisica().getSite();
+					txFone.setText(((Pessoa)objeto).getPessoaFisica().getTelefone());
+					txCelular.setText(((Pessoa)objeto).getPessoaFisica().getCelular());
+				}
+				else if(objeto instanceof Prospeccao) {
+					cbObject.setSelectedItem("Prospeccao");
+					txCodObjeto.setText(((Prospeccao)objeto).getId()+"");
+					txNomeObjeto.setText(((Prospeccao)objeto).getNome());
+					txEmail.setText(((Prospeccao)objeto).getPfpj().getEmail());
+					site = ((Prospeccao)objeto).getPfpj().getSite();
+					txFone.setText(((Prospeccao)objeto).getPfpj().getTelefone());
+					txCelular.setText(((Prospeccao)objeto).getPfpj().getCelular());
+				}
+				txCodObjeto.setOpaque(true);
+				txCodObjeto.setForeground(Color.BLUE);
+				txNomeObjeto.setOpaque(true);
+				txNomeObjeto.setForeground(Color.BLUE);
+				tabbedPane.setSelectedIndex(1);
+			}
 		}
 		else if(this.negocio!=null){
 			preencherFormulario(this.negocio);
@@ -159,8 +199,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		definirAcoes();
 //		desbloquerFormulario(false, pnCadastro);
 //		desbloquerFormulario(false, pnAndamento);
-		salvarCancelar();
-
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
     }
@@ -274,6 +312,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		txCodObjeto.setForeground(Color.BLUE);
 		txNomeObjeto.setOpaque(true);
 		txNomeObjeto.setForeground(Color.BLUE);
+		
 		if(n.getClasse().equals(Empresa.class.getSimpleName())){
 			txCodObjeto.setText(""+n.getEmpresa().getId());
 			txNomeObjeto.setText(n.getEmpresa().getNome());
@@ -452,21 +491,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			fechaSessao(true);
 			break;
 		case "Novo":
-			site="";
-			limparFormulario(pnCadastro);
-			novoEditar();
-			telaEmEdicao = true;
-			negocio = new Negocio();
-			negocio.setHonorario(new BigDecimal("0.00"));
-			txHonorario.setText("0,00");
-			dataInicio.setDate(new Date());
-			txEmail.setText("");
-			txCelular.setText("");
-			txFone.setText("");
-//			DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
-//			while(serv.getRowCount()>0)
-//				serv.removeRow(0);
-			pnAuxiliar.setVisible(false);
+			novo();
 			break;
 		case "Editar":
 			telaEmEdicao = true;
@@ -494,7 +519,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 							+ "Para cancelar a exclusão clique em Não ou Sim para continuar!";
 			int escolha = JOptionPane.showConfirmDialog(MenuView.jDBody, mensagem,"Alerta de Exclusão",JOptionPane.YES_NO_OPTION);
 			if(escolha==JOptionPane.YES_OPTION){
-				if(UsuarioLogado.getInstance().getUsuario()==negocio.getCriadoPor()){
+				if(UsuarioLogado.getInstance().getUsuario().getId()==negocio.getCriadoPor().getId()){
 					invocarExclusao();
 				}
 				else
@@ -1015,6 +1040,23 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 
 	}
+	public void novo() {
+		site="";
+		limparFormulario(pnCadastro);
+		novoEditar();
+		telaEmEdicao = true;
+		negocio = new Negocio();
+		negocio.setHonorario(new BigDecimal("0.00"));
+		txHonorario.setText("0,00");
+		dataInicio.setDate(new Date());
+		txEmail.setText("");
+		txCelular.setText("");
+		txFone.setText("");
+//		DefaultTableModel serv = (DefaultTableModel)tbServicosContratados.getModel();
+//		while(serv.getRowCount()>0)
+//			serv.removeRow(0);
+		pnAuxiliar.setVisible(false);
+	}
 	private void invocarSalvamento(){
 		if("".equals(txCodigo.getText())){
 			negocio.setCriadoEm(new Date());
@@ -1204,7 +1246,8 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			boolean openHere = recebeSessao();
 			boolean excluiu = dao.excluir(negocio,session);
 			if(excluiu){
-				limparFormulario(pnPesquisa);
+				limparFormulario(pnCadastro);
+				limparFormulario(pnAuxiliar);
 				listarNegocios = (List<Negocio>)dao.listar(Negocio.class, session);
 		    	preencherTabela(listarNegocios, tbPrincipal, txContadorRegistros);
 		    }
@@ -1236,7 +1279,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		btnExcluir.setEnabled(false);
 		cbAtendenteCad.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getNome());
 		txEmail.setEditable(false);
-		if(this.negocio.getId()>0)
+		if(this.negocio!=null && this.negocio.getId()>0)
 			negocioBackup=negocio;
 		
 	}

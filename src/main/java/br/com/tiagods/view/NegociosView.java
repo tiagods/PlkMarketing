@@ -136,9 +136,9 @@ public class NegociosView extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
-	public NegociosView(Negocio negocio) {
+	public NegociosView(Negocio negocio, Object objeto) {
 		initComponents();
-		controller.iniciar(negocio);
+		controller.iniciar(negocio,objeto);
 		lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         btnLote.setVisible(false);                                                                                                                                                                                                                                                                                                                                                                lbTitulo.setFont(new Font("Tahoma", Font.BOLD, 20));
 	}

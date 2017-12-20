@@ -114,7 +114,7 @@ public class ControllerMenu implements MouseListener{
         case "Negocios":
         	invocarLoading();
         	run = ()->{
-        		negocios = new NegociosView(null);
+        		negocios = new NegociosView(null,null);
         		abrirCorpo(negocios);
         	};
         	new Thread(run).start();

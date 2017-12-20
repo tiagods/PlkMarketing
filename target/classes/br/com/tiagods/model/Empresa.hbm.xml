@@ -42,6 +42,7 @@
 		<property name="apelido" column="EMP_APELIDO_COD"/>
 		<property name="razao" column="EMP_RAZAO_COD"/>
 	</component>
+	<many-to-one name="ultimoNegocio" column="EMP_ULT_NEGOCIO_COD" foreign-key="FK_EMP_ULT_NEGOCIO_COD" />
 	</class>
 </hibernate-mapping>
 

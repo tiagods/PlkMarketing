@@ -2,11 +2,11 @@ package br.com.tiagods.model;
 
 public class VersaoSistema {
 	private String nome="Negócios";
-	private String versao="1.0.35";
-	private String data="03/10/2017";
-	private String versaoBanco="1.0.4";
+	private String versao="1.0.40";
+	private String data="20/12/2017";
+	private String versaoBanco="1.0.5";
 	private String detalhes=
-			"Possibilidade de tabalhar com lotes de tarefas - Empresas, Pessoas e Prospeccao";
+			"Possibilidade de ver e criar Negocios atraves da tabela de Empresas,Pessoas,Prospeccao";
 	/*
 	 */
 	/**

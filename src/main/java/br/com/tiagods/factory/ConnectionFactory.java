@@ -9,13 +9,8 @@ import br.com.tiagods.config.SecundaryDatabaseConfig;
 public class ConnectionFactory {
 	public Connection getConnection(){
 		try{
-			SecundaryDatabaseConfig cf = SecundaryDatabaseConfig.getInstance();
-			Class.forName(cf.getValue("classForName"));
-			return DriverManager.getConnection(
-					cf.getValue("url"),
-					cf.getValue("user"),
-					cf.getValue("password")
-			);
+			Class.forName("com.mysql.jdbc.Driver");
+			return DriverManager.getConnection("jdbc:mysql://54.207.2.225/negocios", "negocios", "negocios");
 		}catch(ClassNotFoundException e){
 			return null;
 		}catch(SQLException e){

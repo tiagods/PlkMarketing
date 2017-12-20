@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -71,8 +72,10 @@ import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
+import br.com.tiagods.view.NegociosView;
 import br.com.tiagods.view.TarefasSaveView;
 import br.com.tiagods.view.dialog.SelecaoDialog;
+import br.com.tiagods.view.interfaces.ButtonColumnModel;
 import br.com.tiagods.view.interfaces.DefaultEnumModel;
 import br.com.tiagods.view.interfaces.ExcelGenerico;
 import br.com.tiagods.view.interfaces.SemRegistrosJTable;
@@ -824,19 +827,27 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			new SemRegistrosJTable(table,"Relação de Empresas");
 		}
 		else{
-			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE"};
+			String[] tableHeader = {"ID","NOME","NIVEL","CATEGORIA","ORIGEM","CRIADO EM","ATENDENTE","NEGOCIO",""};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 				boolean[] canEdit = new boolean[]{
-						false,false,false,false,false,false,false
+						false,false,false,false,false,false,false,false,true
 				};
 				@Override
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
 					return canEdit [columnIndex];
 				}
+				@Override
+				public Class getColumnClass(int columnIndex) {
+					try {
+						return getValueAt(0, columnIndex).getClass();
+					}catch(NullPointerException e) {
+						return ImageIcon.class;
+					}
+				}
 			};
 			for(int i=0;i<lista.size();i++){
 				Empresa em= lista.get(i);
-				Object[] linha = new Object[7];
+				Object[] linha = new Object[9];
 				linha[0] = ""+em.getId(); 
 				linha[1] = em.getNome();
 				linha[2] = em.getPessoaJuridica().getNivel()==null?"":em.getPessoaJuridica().getNivel().getNome();
@@ -850,14 +861,50 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 					linha[5] = "";
 				}
 				linha[6] = em.getPessoaJuridica().getAtendente()==null?"":em.getPessoaJuridica().getAtendente().getNome();
+				
+				if(em.getUltimoNegocio()!=null){
+					if("Ganho".equals(em.getUltimoNegocio().getStatus().getNome())){
+						linha[7] =recalculate(new ImageIcon(ControllerEmpresas.class
+								.getResource("/br/com/tiagods/utilitarios/button_winner.png")),15);
+					}else if ("Perdido".equals(em.getUltimoNegocio().getStatus().getNome()) || 
+							"Sem Movimento".equals(em.getUltimoNegocio().getStatus().getNome())) {
+						linha[7] = recalculate(new ImageIcon(ControllerEmpresas.class
+								.getResource("/br/com/tiagods/utilitarios/button_sad.png")),15);
+					}	
+					else if("Em Andamento".equals(em.getUltimoNegocio().getStatus().getNome())){
+						linha[7] = recalculate(new ImageIcon(ControllerEmpresas.class
+								.getResource("/br/com/tiagods/utilitarios/button_deadline.png")),15);
+					}
+				}
+				String bt = em.getUltimoNegocio()==null?"button_add.png":"button_negocios.png";
+				linha[8] = recalculate(new ImageIcon(ControllerEmpresas.class
+						.getResource("/br/com/tiagods/utilitarios/"+bt)));
 				model.addRow(linha);
 			}
 			txContadorRegistros.setText("Total: "+lista.size()+" registros");
-			table.setRowHeight(25);
+			table.setRowHeight(30);
 			table.setModel(model);
 			table.setAutoCreateRowSorter(true);
 			table.setSelectionBackground(Color.orange);
 			table.getColumnModel().getColumn(0).setPreferredWidth(40);
+			
+			JButton btAbrir = new ButtonColumnModel(table,8).getButton();
+			btAbrir.setActionCommand("Abrir");
+			btAbrir.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					String value =tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0).toString();
+					int id = Integer.parseInt(value);
+					session = HibernateFactory.getSession();
+					session.beginTransaction();
+					Empresa e = (Empresa)new GenericDao().receberObjeto(Empresa.class, id, session);
+					Negocio negocio = e.getUltimoNegocio();
+					NegociosView viewNegocios = new NegociosView(negocio,e);
+					ControllerMenu.getInstance().abrirCorpo(viewNegocios);
+					session.close();
+				}
+			});
 		}	
 	}
 	public void setarIcones() throws NullPointerException{
@@ -907,6 +954,10 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     }
     public ImageIcon recalculate(ImageIcon icon) throws NullPointerException{
     	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()/2, icon.getIconHeight()/2, 100));
+    	return icon;
+    }
+    public ImageIcon recalculate(ImageIcon icon, int valor) throws NullPointerException{
+    	icon.setImage(icon.getImage().getScaledInstance(icon.getIconWidth()-valor, icon.getIconHeight()-valor, 100));
     	return icon;
     }
 }

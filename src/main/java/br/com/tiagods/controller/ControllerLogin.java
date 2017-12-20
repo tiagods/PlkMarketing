@@ -234,12 +234,12 @@ public class ControllerLogin implements ActionListener, MouseListener {
 			acesso.setData(new Date());
 			acesso.setUsuario(usuario);
 			try {acesso.setMaquina(InetAddress.getLocalHost().getHostName());}catch (UnknownHostException e) {}
-			dao.salvar(acesso, session);
-			UsuarioLogado.getInstance().setUsuario(usuario);
-			LoadingView loading = LoadingView.getInstance();
-			loading.inicializar(false);
-			Runnable run = ()->{
-				MenuView.getInstance();
+				dao.salvar(acesso, session);
+				UsuarioLogado.getInstance().setUsuario(usuario);
+				LoadingView loading = LoadingView.getInstance();
+				loading.inicializar(false);
+				Runnable run = ()->{
+					MenuView.getInstance();
 			};
 			new Thread(run).start();
 			view.dispose();
@@ -309,22 +309,20 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	private void setarIcones(){
 		
 		try {
-		IconsConfig icons = IconsConfig.getInstance();
 		
-		ImageIcon iconTheme = icons.getIconName("theme.png");
-		int nAlt = lbIcon.getHeight();
+		ImageIcon iconTheme = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/theme.png"));int nAlt = lbIcon.getHeight();
 		iconTheme.setImage(iconTheme.getImage().getScaledInstance(iconTheme.getIconWidth()/iconTheme.getIconHeight()*nAlt, nAlt, 100));
 		lbIcon.setIcon(iconTheme);
 		
-		ImageIcon iconOk = icons.getIconName("button_ok.png");
+		ImageIcon iconOk = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_ok.png"));
 		btnOk.setIcon(recalculate(iconOk));
 		btnSubmeterSenha.setIcon(iconOk);
 		btnMinhaConta.setIcon(iconOk);
 		
-		ImageIcon iconCancelar = icons.getIconName("button_exit.png");
+		ImageIcon iconCancelar = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_exit.png"));
 		btnCancelarSenha.setIcon(recalculate(iconCancelar));
 		
-		ImageIcon iconReturn = icons.getIconName("button_return.png");
+		ImageIcon iconReturn = new ImageIcon(MenuView.class.getResource("/br/com/tiagods/utilitarios/button_return.png"));
 		btnBack.setIcon(recalculate(iconReturn));
 		}catch(Exception e) {
 			e.printStackTrace();
