@@ -9,14 +9,14 @@ public class SendEmail {
 	private String errorMessage="";
 	
     public boolean enviaAlerta(String conta, String titulo, String mensagem){
-    MailConfig cf = MailConfig.getInstance();
+    //MailConfig cf = MailConfig.getInstance();
     	
     HtmlEmail email = new HtmlEmail();
-    email.setHostName(cf.getValue("host"));
-    email.setSmtpPort(Integer.parseInt(cf.getValue("port")));
-    email.setAuthenticator( new DefaultAuthenticator(cf.getValue("user"),cf.getValue("password")) );
+    email.setHostName("email-ssl.com.br");
+    email.setSmtpPort(587);
+    email.setAuthenticator( new DefaultAuthenticator("suporte.ti@prolinkcontabil.com.br","plkc2004") );
     try {
-        email.setFrom(cf.getValue("user"),cf.getValue("from"));
+        email.setFrom("suporte.ti@prolinkcontabil.com.br","Suporte Prolink");
         email.setSubject( titulo );
         email.setHtmlMsg( mensagem );
         email.addTo(conta);

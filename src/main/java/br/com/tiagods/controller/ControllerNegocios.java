@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.RescaleOp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -841,12 +842,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 				
-				Integer[] colunasLenght = new Integer[]{8,26,11,11,8,14,16,14,13,17,9,12,19,30,10,10,10,30,11};
+				Integer[] colunasLenght = new Integer[]{8,26,11,11,8,14,16,14,13,17,9,12,19,30,10,10,10,30,11,11};
 				String[] cabecalho = new String[]{
 						"Negocio","Nome", "E-mail","Fone","Celular",
 						"Data Inicio","Data Limite","Tipo","Criador","Etapa","Status","Atendente",
 						"Origem","Categoria","Nivel","Servicos/Produtos","Descricao",
-						"Honorario","Servicos Contratados","Motivo da Perda","Detalhe da Perda","Data da Perda"};
+						"Honorario","Servicos Contratados","Motivo da Perda","Detalhe da Perda","Data da Perda","Data Finalização"};
 				listaImpressao.add(new ArrayList<>());
 				for(String c : cabecalho){
 					listaImpressao.get(0).add(c);
@@ -886,6 +887,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					listaImpressao.get(i+1).add(n.getMotivoPerda());
 					listaImpressao.get(i+1).add(n.getDetalhesPerda());
 					listaImpressao.get(i+1).add(n.getDataPerda()==null?"":dateFormat.format(n.getDataPerda()));
+					listaImpressao.get(i+1).add(n.getDataFinalizacao()==null?"":dateFormat.format(n.getDataFinalizacao()));
 				}
 				ExcelGenerico planilha = new ExcelGenerico(export+".xls",listaImpressao,colunasLenght);
 				try {
@@ -1019,7 +1021,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			Date data01 = data1.getDate();
 			Date data02 = data2.getDate();
 			if(data02.compareTo(data01)>=0){
-				criterios.add(Restrictions.between("criadoEm", data01, data02));
+				Criterion crit1 = Restrictions.between("dataPerda", data01, data02);
+				Criterion crit2 = Restrictions.between("dataFinalizacao", data01, data02);
+				criterios.add(Restrictions.or(crit1,crit2));
 			}
 		}catch(NullPointerException e){
 		}
@@ -1367,12 +1371,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			new SemRegistrosJTable(table,"Relação de Negócios");
 		}
 		else{
-			Object [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","VENCIMENTO","CRIADO EM","ATENDENTE","ABRIR"};
+			Object [] tableHeader = {"ID","NOME","STATUS","ETAPA","ORIGEM","NIVEL","CRIADO EM","VENCIMENTO","CONCLUSAO","ATENDENTE","ABRIR"};
 			DefaultTableModel model = new DefaultTableModel(tableHeader,0){
 
 				private static final long serialVersionUID = -8716692364710569296L;
 				boolean[] canEdit = new boolean[]{
-						false,false,false,false,false,false,false,false,false,true
+						false,false,false,false,false,false,false,false,false,false,true
 				};
 				@Override
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1381,7 +1385,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			};
 			for(int i=0;i<lista.size();i++){
 				Negocio n = lista.get(i);
-				Object[] linha = new Object[10];
+				Object[] linha = new Object[11];
 				linha[0] = ""+n.getId();
 				linha[1] = n.getNome();
 				
@@ -1412,31 +1416,28 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 					linha[4] = n.getPessoaFisicaOrJuridica().getOrigem()==null?"":n.getPessoaFisicaOrJuridica().getOrigem().getNome();
 					linha[5] = n.getPessoaFisicaOrJuridica().getNivel()==null?"":n.getPessoaFisicaOrJuridica().getNivel().getNome();
 				}
-				linha[6] = "";
+				linha[6]=n.getCriadoEm()==null?"":sdf.format(n.getCriadoEm());
+				linha[7]=n.getDataFim()==null?"":sdf.format(n.getDataFim());
 //				if("Em Andamento".equals(n.getStatus().getNome())
-//						&& n.getDataFim()!=null
-//						&& new Date().compareTo(n.getDataFim())==1){
-//					long diferenca = (new Date().getTime() - n.getDataFim().getTime()) + 3600000;
-//					long qtd = (diferenca / 86400000L);
-//					if(qtd>0)
-//					linha[6]=qtd+" dia(s) atrasado(s)";
-//				}
-				linha[6]=n.getDataFim()==null?"":sdf.format(n.getDataFim());
-				try{
-					Date criadoEm = n.getCriadoEm();
-					
-					linha[7] = sdf.format(criadoEm);
-				}catch (NumberFormatException e) {
-					linha[7] = "";
-				}
-				linha[8] = n.getAtendente()==null?"":n.getAtendente().getNome();
+//				&& n.getDataFim()!=null
+//				&& new Date().compareTo(n.getDataFim())==1){
+//			long diferenca = (new Date().getTime() - n.getDataFim().getTime()) + 3600000;
+//			long qtd = (diferenca / 86400000L);
+//			if(qtd>0)
+//			linha[6]=qtd+" dia(s) atrasado(s)";
+//		}
+				
+				linha[8] = n.getDataFinalizacao()!=null? sdf.format(n.getDataFinalizacao()):
+					(n.getDataPerda()!=null?sdf.format(n.getDataPerda()):"");
+				linha[9] = n.getAtendente()==null?"":n.getAtendente().getNome();
+				
 				String imageName ="";
 				if("Empresa".equals(n.getClasse())){
 					imageName ="button_empresas.png";
 				}
 				else
 					imageName ="button_people.png";
-				linha[9]= recalculate(new ImageIcon(ControllerTarefas.class
+				linha[10]= recalculate(new ImageIcon(ControllerTarefas.class
 						.getResource("/br/com/tiagods/utilitarios/"+imageName)));
 				model.addRow(linha);
 			}
@@ -1457,10 +1458,10 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 //	        tbPrincipal.getColumnModel().getColumn(2);
 //	        column2.setCellRenderer(tcr2);
 
-			JButton btAbrir = new ButtonColumnModel(table,9).getButton();
+			JButton btAbrir = new ButtonColumnModel(table,10).getButton();
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new AcaoInTable());
-			table.getColumnModel().getColumn(9).setPreferredWidth(40);
+			table.getColumnModel().getColumn(10).setPreferredWidth(40);
 		}
 		txContadorRegistros.setText("Total: "+lista.size()+" registro(s)");
 	}
