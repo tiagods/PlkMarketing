@@ -802,7 +802,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	private void adicionarServico(){
 		DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
 		Object[] o = new Object[4];
-		
 		o[0]=txIdServicoContratado.getText();
 		ServicoAgregado sa = padrao.getServicosAgregados((String) cbServicosAgregados.getSelectedItem());
 		o[1]=sa.getNome();
@@ -1475,7 +1474,6 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
-			
 		};
 		Iterator<ServicoContratado> iterator = servicos.iterator();
 		while(iterator.hasNext()){
@@ -1594,9 +1592,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				tbPrincipal.getColumnCount()>1 && !telaEmEdicao){
 			boolean open = recebeSessao();
 			DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
-			while(model.getRowCount()>0){
-				model.removeRow(0);
-			}
+			try {
+				while(model.getRowCount()>0) model.removeRow(0);
+			}catch(Exception ex) {}
 			tbServicosContratados.setModel(model);
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 			this.negocio = (Negocio) dao.receberObjeto(Negocio.class, id, session);
