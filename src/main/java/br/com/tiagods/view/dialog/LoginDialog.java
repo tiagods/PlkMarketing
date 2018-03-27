@@ -7,6 +7,7 @@ import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 import br.com.tiagods.config.FTPConfig;
 import br.com.tiagods.controller.ControllerLogin;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.view.MenuView;
 
@@ -28,7 +30,8 @@ public class LoginDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	public static JPanel pnLogin,pnGerarSenha,pnRecuperarConta;
-	public static JTextField txUsuario,txEmail;
+	public static JComboBox<Usuario> cbUsuario;
+	public static JTextField txEmail;
 	public static JPasswordField txSenha;
 	public static JLabel lbNome, lbIcon;
 	public static JPasswordField txNovaSenha;
@@ -133,12 +136,10 @@ public class LoginDialog extends JDialog {
 		
 		
 		getRootPane().setDefaultButton(btnOk);
-		txUsuario = new JTextField();
-		txUsuario.setFont(new Font("Tahoma", Font.BOLD, 12));
-		txUsuario.setHorizontalAlignment(SwingConstants.CENTER);
-		txUsuario.setBounds(71, 60, 150, 25);
-		pnLogin.add(txUsuario);
-		txUsuario.setColumns(10);
+		cbUsuario = new JComboBox<>();
+		cbUsuario.setFont(new Font("Tahoma", Font.BOLD, 12));
+		cbUsuario.setBounds(71, 60, 150, 25);
+		pnLogin.add(cbUsuario);
 		
 		txSenha = new JPasswordField();
 		txSenha.setEchoChar('*');

@@ -281,7 +281,6 @@ public class ControllerMenu implements MouseListener{
         			mnAtualizacao.setText("Versão "+atualizacao.versaoDisponivel()+" Disponível");
                 	Thread.sleep(2000);
         			mnAtualizacao.setText("Clique aqui para atualizar!");
-                	
         			Thread.sleep(2000);
         			AlertarAtualizacao();
         		}catch(InterruptedException e){

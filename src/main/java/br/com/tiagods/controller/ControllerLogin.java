@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,9 +29,8 @@ import javax.swing.JOptionPane;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
-import br.com.tiagods.config.IconsConfig;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Usuario;
@@ -64,26 +64,31 @@ public class ControllerLogin implements ActionListener, MouseListener {
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
 	}
+	@SuppressWarnings("unchecked")
 	private void verificacao() {
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
+		//carregando usuarios
+		List<Criterion> criterios = Arrays.asList(Restrictions.eq("ativo", 1));
+		List<Usuario> usuarios = (List<Usuario>)dao.items(Usuario.class, session, criterios, Order.asc("login"));
+		usuarios.forEach(c->cbUsuario.addItem(c));
 		pnGerarSenha.setVisible(false);
 		pnLogin.setVisible(true);
 		String[] nome = System.getProperty("user.name").split(" ");
-		if(!"user".equalsIgnoreCase(nome[0])){
+		//if(!"user".equalsIgnoreCase(nome[0])){
 			Criterion[] criterion = new Criterion[]{Restrictions.eq("login", nome[0]),Restrictions.eqOrIsNull("senha", "")};
 			usuario = (Usuario) dao.receberObjeto(Usuario.class, criterion, session);
 			if(usuario!=null){
 				pnGerarSenha.setVisible(true);
 				pnLogin.setVisible(false);
-				txUsuario.setText(usuario.getLogin());	
+				cbUsuario.setSelectedItem(usuario);
 				String mensagem = "Inserimos uma senha de acesso ao sistema\n"
 						+ "que impossibilita o acesso de outras pessoas usando sua conta.\n"
 						+ "Portanto seu acesso é criptografado e confidencial.\n"
 						+ "Você deve criar uma nova senha para ter o acesso liberado!";
 				JOptionPane.showMessageDialog(null, "Olá "+System.getProperty("user.name")+"!\n"+mensagem);
 			}
-		}
+		//}
 		pnRecuperarConta.setVisible(false);
 		session.close();
 	}
@@ -92,7 +97,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "Entrar":
-			if("".equals(txUsuario.getText().trim()) || "".equals(new String(txSenha.getPassword()))){
+			if(cbUsuario.getSelectedItem()==null || "".equals(new String(txSenha.getPassword()))){
 				JOptionPane.showMessageDialog(null, "Usuario e/ou senha incorreta", "Erro de Credenciais", JOptionPane.ERROR_MESSAGE);
 			}
 			else
@@ -169,7 +174,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 			pnLogin.setVisible(true);
 			pnRecuperarConta.setVisible(false);
 			txEmail.setText("");
-			txUsuario.setText(usuario.getLogin());
+			cbUsuario.setSelectedItem(usuario);
 		}
 		else
 			JOptionPane.showMessageDialog(null, "E-mail incorreto ou não existe");
@@ -191,7 +196,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 				pnLogin.setVisible(true);
 				pnRecuperarConta.setVisible(false);
 				txEmail.setText("");
-				txUsuario.setText(usuario.getLogin());
+				cbUsuario.setSelectedItem(usuario);
 				String novaSenha = gerarSenha();
 				String senhaCripto = criptografar(novaSenha);
 				usuario.setSenha(senhaCripto);
@@ -223,7 +228,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	private void logar(){
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
-		Criterion[] criterions = new Criterion[]{Restrictions.eq("login", txUsuario.getText().trim()),
+		Criterion[] criterions = new Criterion[]{Restrictions.eq("login", cbUsuario.getSelectedItem().toString()),
 				Restrictions.eq("senha", criptografar(new String(txSenha.getPassword())))};
 		usuario = (Usuario)dao.receberObjeto(Usuario.class, criterions, session);
 		if(usuario!=null){

@@ -2,10 +2,10 @@ package br.com.tiagods.model;
 
 public class VersaoSistema {
 	private String nome="Negócios";
-	private String versao="1.0.41";
-	private String data="09/01/2017";
-	private String versaoBanco="1.0.5";
-	private String detalhes="Possibilidade de ver a data de finalização dos Negocios na tabela principal";
+	private String versao="1.0.43";
+	private String data="27/03/2017";
+	private String versaoBanco="1.0.6";
+	private String detalhes="Alterando login de caixa de texto para combo box";
 	/*
 	 */
 	/**
