@@ -26,8 +26,6 @@
 	<many-to-one name="funcao" column="USU_FUNCAO_COD" foreign-key="FK_USU_FUNCAO_COD"/>
 	
 	<property name="totalVendas" column="USU_TOTALVENDAS" type="big_decimal"/>
-	
-	<property name="ativo" column="USU_ATIVO" type="int"/>
 	</class>
 </hibernate-mapping>
 
