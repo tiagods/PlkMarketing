@@ -22,25 +22,19 @@ import br.com.tiagods.config.FTPConfig;
  */
 public class FTPDownload {
     private File novoArquivo;
-    String server="ftp.prolinkcontabil.com.br";
-    		int port=21;
-    		String user="prolinkcontabil";
-    		String pass="plk*link815";
-    		String dirFTP="documentos_negocio";
-    		String dirTemp="documentos_negocio_temp";
+    
     public File returnFile(){
         return this.novoArquivo;
     }
     public boolean downloadFile(String arquivo){
-    	//FTPConfig cf = FTPConfig.getInstance();
+    	FTPConfig cf = FTPConfig.getInstance();
     	FTPClient ftp = new FTPClient();
         try{
-            ftp.connect(server,port);
-            ftp.login(user,pass);
-            ftp.enterLocalPassiveMode();
+        	ftp.connect(cf.getValue("host"),Integer.parseInt(cf.getValue("port")));
+        	ftp.login(cf.getValue("user"),cf.getValue("pass"));
+        	ftp.enterLocalPassiveMode();
             ftp.setFileType(FTP.BINARY_FILE_TYPE);
-            String remoteFile1 = dirFTP+"/"+arquivo;
-            
+            String remoteFile1 = cf.getValue("dirFTP")+"/"+arquivo;
             novoArquivo= new File(System.getProperty("java.io.tmpdir")+"/"+arquivo);
             try (OutputStream outputStream1 = new BufferedOutputStream(new FileOutputStream(novoArquivo))) {
                 boolean success = ftp.retrieveFile(remoteFile1, outputStream1);

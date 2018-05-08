@@ -3,22 +3,19 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.RelatorioView.*;
+import static br.com.tiagods.view.RelatorioView.pnModulos;
+import static br.com.tiagods.view.RelatorioView.pnPrincipal;
+import static br.com.tiagods.view.RelatorioView.pnTarefas;
+import static br.com.tiagods.view.RelatorioView.pnTarefasFiltro;
+import static br.com.tiagods.view.RelatorioView.rbTarefas;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
-
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Restrictions;
 /**
  *
  * @author Tiago
@@ -42,9 +39,6 @@ public class ControllerRelatorios {
 				((JPanel)c).setVisible(false);
 		}
 		pnModulos.setVisible(true);
-	}
-	private void limparFormulario(Container container){
-		
 	}
 	
 	private void processar(){
@@ -78,9 +72,5 @@ public class ControllerRelatorios {
 				((JCheckBox)c).setSelected(true);
 			}
 		}
-	}
-	
-	private void validarSelecaoFiltroTarefas(){
-		
 	}
 }

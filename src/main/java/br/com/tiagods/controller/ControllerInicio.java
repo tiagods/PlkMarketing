@@ -1,6 +1,16 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.InicioView.*;
+import static br.com.tiagods.view.InicioView.btnOk;
+import static br.com.tiagods.view.InicioView.btnOkResumo;
+import static br.com.tiagods.view.InicioView.cbAtendentes;
+import static br.com.tiagods.view.InicioView.dataResumo1;
+import static br.com.tiagods.view.InicioView.dataResumo2;
+import static br.com.tiagods.view.InicioView.jData1;
+import static br.com.tiagods.view.InicioView.jData2;
+import static br.com.tiagods.view.InicioView.lbInfoTarefas;
+import static br.com.tiagods.view.InicioView.tbAcessos;
+import static br.com.tiagods.view.InicioView.tbNegocios;
+import static br.com.tiagods.view.InicioView.tbTarefas;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,13 +36,12 @@ import org.hibernate.criterion.Restrictions;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioAcesso;
+import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.modeldao.VerificarAtualizacao;

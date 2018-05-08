@@ -110,6 +110,7 @@ public class GenericDao implements InterfaceDao{
 		return salvar(log, session);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "deprecation" })
 	public int uniqueResult(Class classe, Session session, List<Criterion> criterion){
         Criteria criteria = session.createCriteria(classe);
         criterion.forEach(c -> criteria.add(c));

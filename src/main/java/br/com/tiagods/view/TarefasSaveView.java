@@ -4,10 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
@@ -18,6 +23,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.text.MaskFormatter;
 
 import com.toedter.calendar.JDateChooser;
@@ -29,13 +35,6 @@ import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import br.com.tiagods.view.interfaces.DefaultUtilities;
-import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class TarefasSaveView extends JDialog implements DefaultUtilities {
 	/**

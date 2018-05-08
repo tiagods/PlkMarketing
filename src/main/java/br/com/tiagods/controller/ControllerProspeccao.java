@@ -616,7 +616,7 @@ public class ControllerProspeccao
 				session = HibernateFactory.getSession();
 				session.beginTransaction();
 				realizarFiltro();
-				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				//SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 
 				Integer[] colunasLenght = new Integer[] { 6, 29, 9, 13, 5, 15, 13, 14, 14, 13, 12, 11, 14, 10, 10, 16,
@@ -659,7 +659,7 @@ public class ControllerProspeccao
 					listaImpressao.get(i + 1).add(pfpj.getApresentacao());
 					StringBuilder listas = new StringBuilder();
 					Iterator<Lista> iterator = p.getListas().iterator();
-					int qtdListas = 0;
+					//int qtdListas = 0;
 					while (iterator.hasNext()) {
 						listas.append(iterator.next().getNome());
 						listas.append("\n");
@@ -1090,6 +1090,7 @@ public class ControllerProspeccao
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
 					return canEdit [columnIndex];
 				}
+				@SuppressWarnings({ "unchecked", "rawtypes" })
 				@Override
 				public Class getColumnClass(int columnIndex) {
 					try {
@@ -1154,6 +1155,7 @@ public class ControllerProspeccao
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new ActionListener() {
 
+				@SuppressWarnings("static-access")
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					String value = tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0).toString();

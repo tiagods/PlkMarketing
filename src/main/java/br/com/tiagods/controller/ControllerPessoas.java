@@ -433,6 +433,7 @@ public class ControllerPessoas
 		return lotes;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void preencherTarefas(Pessoa pessoa) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criterion criterion = Restrictions.eq("pessoa", pessoa);
@@ -926,6 +927,7 @@ public class ControllerPessoas
 					return canEdit[columnIndex];
 				}
 
+				@SuppressWarnings({ "unchecked", "rawtypes" })
 				@Override
 				public Class getColumnClass(int columnIndex) {
 					try {
@@ -984,6 +986,7 @@ public class ControllerPessoas
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new ActionListener() {
 
+				@SuppressWarnings("static-access")
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					String value = tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0).toString();

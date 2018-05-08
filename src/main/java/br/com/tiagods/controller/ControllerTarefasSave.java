@@ -1,7 +1,27 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.MenuView.jDBody;
-import static br.com.tiagods.view.TarefasSaveView.*;
+import static br.com.tiagods.view.TarefasSaveView.btnAssociacao;
+import static br.com.tiagods.view.TarefasSaveView.btnCancelar;
+import static br.com.tiagods.view.TarefasSaveView.btnEditar;
+import static br.com.tiagods.view.TarefasSaveView.btnNovo;
+import static br.com.tiagods.view.TarefasSaveView.btnSalvar;
+import static br.com.tiagods.view.TarefasSaveView.cbAtendente;
+import static br.com.tiagods.view.TarefasSaveView.cbObject;
+import static br.com.tiagods.view.TarefasSaveView.ckFinalizado;
+import static br.com.tiagods.view.TarefasSaveView.lbDetalhesLote;
+import static br.com.tiagods.view.TarefasSaveView.pnLote;
+import static br.com.tiagods.view.TarefasSaveView.pnRelacionamento;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnEmail;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnProposta;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnReuniao;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnTelefone;
+import static br.com.tiagods.view.TarefasSaveView.rdbtnWhatsApp;
+import static br.com.tiagods.view.TarefasSaveView.txCodigoObjeto;
+import static br.com.tiagods.view.TarefasSaveView.txData;
+import static br.com.tiagods.view.TarefasSaveView.txDetalhes;
+import static br.com.tiagods.view.TarefasSaveView.txHora;
+import static br.com.tiagods.view.TarefasSaveView.txNomeObjeto;
+import static br.com.tiagods.view.TarefasSaveView.txQuantidade;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -68,6 +88,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	
 	GenericDao dao = new GenericDao();
 	//se for null o formulario nao sera preenchido
+	@SuppressWarnings("unchecked")
 	public void iniciar(TarefasSaveView view, Tarefa tarefa, Object object, Map<String,JRadioButton> parametroNegocios,Set<Integer> listaLote, boolean salvarLote){
 		this.tarefa = tarefa;
 		this.object = object;

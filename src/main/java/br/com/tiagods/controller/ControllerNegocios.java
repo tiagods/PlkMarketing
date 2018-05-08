@@ -4,7 +4,91 @@
 package br.com.tiagods.controller;
 
 import static br.com.tiagods.view.MenuView.jDBody;
-import static br.com.tiagods.view.NegociosView.*;
+import static br.com.tiagods.view.NegociosView.btAddEmpresaPessoa;
+import static br.com.tiagods.view.NegociosView.btAddServicoAgregado;
+import static br.com.tiagods.view.NegociosView.btEsconder;
+import static br.com.tiagods.view.NegociosView.btnAnexarDocumento;
+import static br.com.tiagods.view.NegociosView.btnCancelar;
+import static br.com.tiagods.view.NegociosView.btnCategoriaAdd;
+import static br.com.tiagods.view.NegociosView.btnEditar;
+import static br.com.tiagods.view.NegociosView.btnEmail;
+import static br.com.tiagods.view.NegociosView.btnEnviarArquivo;
+import static br.com.tiagods.view.NegociosView.btnExcluir;
+import static br.com.tiagods.view.NegociosView.btnExportar;
+import static br.com.tiagods.view.NegociosView.btnHistorico;
+import static br.com.tiagods.view.NegociosView.btnImportar;
+import static br.com.tiagods.view.NegociosView.btnLink;
+import static br.com.tiagods.view.NegociosView.btnNivelAdd;
+import static br.com.tiagods.view.NegociosView.btnNovaTarefa;
+import static br.com.tiagods.view.NegociosView.btnNovo;
+import static br.com.tiagods.view.NegociosView.btnNovoServicoAgregado;
+import static br.com.tiagods.view.NegociosView.btnOrigemAdd;
+import static br.com.tiagods.view.NegociosView.btnSalvar;
+import static br.com.tiagods.view.NegociosView.btnServicoAdd;
+import static br.com.tiagods.view.NegociosView.btnVerPerda;
+import static br.com.tiagods.view.NegociosView.cbAtendente;
+import static br.com.tiagods.view.NegociosView.cbAtendenteCad;
+import static br.com.tiagods.view.NegociosView.cbBuscarPor;
+import static br.com.tiagods.view.NegociosView.cbCategoria;
+import static br.com.tiagods.view.NegociosView.cbCategoriaCad;
+import static br.com.tiagods.view.NegociosView.cbEmpresa;
+import static br.com.tiagods.view.NegociosView.cbEtapa;
+import static br.com.tiagods.view.NegociosView.cbNivel;
+import static br.com.tiagods.view.NegociosView.cbNivelCad;
+import static br.com.tiagods.view.NegociosView.cbObject;
+import static br.com.tiagods.view.NegociosView.cbOrdenacao;
+import static br.com.tiagods.view.NegociosView.cbOrigem;
+import static br.com.tiagods.view.NegociosView.cbOrigemCad;
+import static br.com.tiagods.view.NegociosView.cbPessoa;
+import static br.com.tiagods.view.NegociosView.cbProspeccao;
+import static br.com.tiagods.view.NegociosView.cbServicos;
+import static br.com.tiagods.view.NegociosView.cbServicosAgregados;
+import static br.com.tiagods.view.NegociosView.cbServicosCad;
+import static br.com.tiagods.view.NegociosView.cbStatus;
+import static br.com.tiagods.view.NegociosView.cbStatusCad;
+import static br.com.tiagods.view.NegociosView.data1;
+import static br.com.tiagods.view.NegociosView.data2;
+import static br.com.tiagods.view.NegociosView.dataFim;
+import static br.com.tiagods.view.NegociosView.dataInicio;
+import static br.com.tiagods.view.NegociosView.pnAndamento;
+import static br.com.tiagods.view.NegociosView.pnAuxiliar;
+import static br.com.tiagods.view.NegociosView.pnCadastro;
+import static br.com.tiagods.view.NegociosView.pnFiltros;
+import static br.com.tiagods.view.NegociosView.pnPrincipal;
+import static br.com.tiagods.view.NegociosView.pnServicosContratados;
+import static br.com.tiagods.view.NegociosView.rbContato;
+import static br.com.tiagods.view.NegociosView.rbCrescente;
+import static br.com.tiagods.view.NegociosView.rbDecrescente;
+import static br.com.tiagods.view.NegociosView.rbEnvioProposta;
+import static br.com.tiagods.view.NegociosView.rbFechamento;
+import static br.com.tiagods.view.NegociosView.rbFollowup;
+import static br.com.tiagods.view.NegociosView.rbIndefinida;
+import static br.com.tiagods.view.NegociosView.tabbedPane;
+import static br.com.tiagods.view.NegociosView.tbAuxiliar;
+import static br.com.tiagods.view.NegociosView.tbDocumentos;
+import static br.com.tiagods.view.NegociosView.tbPrincipal;
+import static br.com.tiagods.view.NegociosView.tbServicosContratados;
+import static br.com.tiagods.view.NegociosView.txBuscar;
+import static br.com.tiagods.view.NegociosView.txCadastradoPor;
+import static br.com.tiagods.view.NegociosView.txCelular;
+import static br.com.tiagods.view.NegociosView.txCodObjeto;
+import static br.com.tiagods.view.NegociosView.txCodigo;
+import static br.com.tiagods.view.NegociosView.txContadorRegistros;
+import static br.com.tiagods.view.NegociosView.txDataCadastro;
+import static br.com.tiagods.view.NegociosView.txDescricao;
+import static br.com.tiagods.view.NegociosView.txDocumentoDescricao;
+import static br.com.tiagods.view.NegociosView.txDocumentoNome;
+import static br.com.tiagods.view.NegociosView.txDocumentoPath;
+import static br.com.tiagods.view.NegociosView.txEmail;
+import static br.com.tiagods.view.NegociosView.txFone;
+import static br.com.tiagods.view.NegociosView.txHonorario;
+import static br.com.tiagods.view.NegociosView.txIconCelular;
+import static br.com.tiagods.view.NegociosView.txIconFone;
+import static br.com.tiagods.view.NegociosView.txIdServicoContratado;
+import static br.com.tiagods.view.NegociosView.txNome;
+import static br.com.tiagods.view.NegociosView.txNomeObjeto;
+import static br.com.tiagods.view.NegociosView.txValorNegocios;
+import static br.com.tiagods.view.NegociosView.txValorServico;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -20,7 +104,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.image.RescaleOp;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -481,7 +564,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "rawtypes" })
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JComboBox[] combos = null;
@@ -802,6 +885,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 	private void adicionarServico(){
 		DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
 		Object[] o = new Object[4];
+		
 		o[0]=txIdServicoContratado.getText();
 		ServicoAgregado sa = padrao.getServicosAgregados((String) cbServicosAgregados.getSelectedItem());
 		o[1]=sa.getNome();
@@ -1474,6 +1558,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			public boolean isCellEditable(int rowIndex, int columnIndex) {
 				return canEdit [columnIndex];
 			}
+			
 		};
 		Iterator<ServicoContratado> iterator = servicos.iterator();
 		while(iterator.hasNext()){
@@ -1592,9 +1677,9 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 				tbPrincipal.getColumnCount()>1 && !telaEmEdicao){
 			boolean open = recebeSessao();
 			DefaultTableModel model = (DefaultTableModel) tbServicosContratados.getModel();
-			try {
-				while(model.getRowCount()>0) model.removeRow(0);
-			}catch(Exception ex) {}
+			while(model.getRowCount()>0){
+				model.removeRow(0);
+			}
 			tbServicosContratados.setModel(model);
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(),0));
 			this.negocio = (Negocio) dao.receberObjeto(Negocio.class, id, session);

@@ -81,7 +81,7 @@ public class CriarAdmin {
 		criarServicoAgregado();
 		//criarNegocio();
 	}
-	private void criarPessoa() {
+	public void criarPessoa() {
 		PfPj pj = new PfPj();
 		pj.setAtendente(usuario);
 		pj.setCategoria(categoria);
@@ -102,7 +102,7 @@ public class CriarAdmin {
 		session.close();
 
 	}
-	private void criarEmpresa() {
+	public void criarEmpresa() {
 		endereco = new Endereco();
 		endereco.setLogradouro("Rua");
 		endereco.setNome("Rua 10");
@@ -132,7 +132,7 @@ public class CriarAdmin {
 		session.getTransaction().commit();
 		session.close();
 	}
-	private void criarServico() {
+	public void criarServico() {
 		servico = new Servico();
 		servico.setNome("Consultoria");
 		Session session = HibernateFactory.getSession();
@@ -240,7 +240,7 @@ public class CriarAdmin {
 		session.getTransaction().commit();
 		session.close();
 	}
-	private void criarNivel() {
+	public void criarNivel() {
 		String[] niveis = {"PLATINA","Advocacia/Outros","Proponente","PRATA 2","OURO 3","OURO 2","Consultoria","PRATA 3","CONJUR","OURO 1","BRONZE","PRATA 1","Exceção","Inativa","Desligada","Jurídico","Em andamento","DIAMANTE","Regularização","SUSPENSA","Extinta"};
 		
 		Set<String> lista = new TreeSet<>();
@@ -261,7 +261,7 @@ public class CriarAdmin {
 		session.getTransaction().commit();
 		session.close();
 	}
-	private void criarOrigem() {
+	public void criarOrigem() {
 		List<Origem> origens = new ArrayList<Origem>();
 		origem = new Origem();
 		origem.setNome("Site");

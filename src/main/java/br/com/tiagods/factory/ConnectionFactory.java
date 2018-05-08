@@ -7,15 +7,18 @@ import java.sql.SQLException;
 import br.com.tiagods.config.SecundaryDatabaseConfig;
 
 public class ConnectionFactory {
+	
+	public static String TABLENAME="VERSAO_APP";
+	
 	public Connection getConnection(){
 		try{
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection("jdbc:mysql://54.207.2.225/negocios", "negocios", "negocios");
+			SecundaryDatabaseConfig s = SecundaryDatabaseConfig.getInstance();
+			Class.forName(s.getValue("classForName"));
+			return DriverManager.getConnection(s.getValue("url"), s.getValue("user"), s.getValue("password"));
 		}catch(ClassNotFoundException e){
 			return null;
 		}catch(SQLException e){
 			return null;
 		}
 	}
-	
 }

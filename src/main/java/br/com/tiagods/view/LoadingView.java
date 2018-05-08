@@ -108,7 +108,7 @@ public class LoadingView extends JFrame{
 		});
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		inicializar(true);
 	}
 	public void openMenu(){

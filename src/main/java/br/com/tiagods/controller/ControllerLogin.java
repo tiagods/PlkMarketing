@@ -1,6 +1,22 @@
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.dialog.LoginDialog.*;
+import static br.com.tiagods.view.dialog.LoginDialog.btnBack;
+import static br.com.tiagods.view.dialog.LoginDialog.btnCancelarSenha;
+import static br.com.tiagods.view.dialog.LoginDialog.btnMinhaConta;
+import static br.com.tiagods.view.dialog.LoginDialog.btnOk;
+import static br.com.tiagods.view.dialog.LoginDialog.btnSubmeterSenha;
+import static br.com.tiagods.view.dialog.LoginDialog.cbUsuario;
+import static br.com.tiagods.view.dialog.LoginDialog.lbEsqueciAConta;
+import static br.com.tiagods.view.dialog.LoginDialog.lbEsqueciASenha;
+import static br.com.tiagods.view.dialog.LoginDialog.lbIcon;
+import static br.com.tiagods.view.dialog.LoginDialog.lbRecuperar;
+import static br.com.tiagods.view.dialog.LoginDialog.pnGerarSenha;
+import static br.com.tiagods.view.dialog.LoginDialog.pnLogin;
+import static br.com.tiagods.view.dialog.LoginDialog.pnRecuperarConta;
+import static br.com.tiagods.view.dialog.LoginDialog.txConfirmarSenha;
+import static br.com.tiagods.view.dialog.LoginDialog.txEmail;
+import static br.com.tiagods.view.dialog.LoginDialog.txNovaSenha;
+import static br.com.tiagods.view.dialog.LoginDialog.txSenha;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +34,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,13 +45,13 @@ import javax.swing.JOptionPane;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import br.com.tiagods.config.IconsConfig;
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioAcesso;
+import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.SendEmail;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -64,11 +81,18 @@ public class ControllerLogin implements ActionListener, MouseListener {
 		LoadingView loading = LoadingView.getInstance();
 		loading.fechar();
 	}
+	@SuppressWarnings("unchecked")
 	private void verificacao() {
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		pnGerarSenha.setVisible(false);
 		pnLogin.setVisible(true);
+		
+		List<Criterion> cri = Arrays.asList(new Criterion[] {Restrictions.eq("ativo", 1)});
+		List<Usuario> listas = (List<Usuario>)dao.items(Usuario.class, session, cri, Order.asc("login"));
+		listas.forEach(c->cbUsuario.addItem(c.getLogin()));
+		cbUsuario.setSelectedIndex(0);
+		
 		String[] nome = System.getProperty("user.name").split(" ");
 		if(!"user".equalsIgnoreCase(nome[0])){
 			Criterion[] criterion = new Criterion[]{Restrictions.eq("login", nome[0]),Restrictions.eqOrIsNull("senha", "")};
@@ -76,12 +100,17 @@ public class ControllerLogin implements ActionListener, MouseListener {
 			if(usuario!=null){
 				pnGerarSenha.setVisible(true);
 				pnLogin.setVisible(false);
-				txUsuario.setText(usuario.getLogin());	
+				cbUsuario.setSelectedItem(usuario.getLogin());
 				String mensagem = "Inserimos uma senha de acesso ao sistema\n"
 						+ "que impossibilita o acesso de outras pessoas usando sua conta.\n"
 						+ "Portanto seu acesso é criptografado e confidencial.\n"
 						+ "Você deve criar uma nova senha para ter o acesso liberado!";
 				JOptionPane.showMessageDialog(null, "Olá "+System.getProperty("user.name")+"!\n"+mensagem);
+			}
+			else{
+				criterion = new Criterion[]{Restrictions.eq("login", nome[0])};
+				usuario = (Usuario) dao.receberObjeto(Usuario.class, criterion, session);
+				if(usuario!=null) cbUsuario.setSelectedItem(usuario.getLogin());
 			}
 		}
 		pnRecuperarConta.setVisible(false);
@@ -92,7 +121,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	public void actionPerformed(ActionEvent e) {
 		switch(e.getActionCommand()){
 		case "Entrar":
-			if("".equals(txUsuario.getText().trim()) || "".equals(new String(txSenha.getPassword()))){
+			if("".equals(String.valueOf(cbUsuario.getSelectedItem())) || "".equals(new String(txSenha.getPassword()))){
 				JOptionPane.showMessageDialog(null, "Usuario e/ou senha incorreta", "Erro de Credenciais", JOptionPane.ERROR_MESSAGE);
 			}
 			else
@@ -169,7 +198,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 			pnLogin.setVisible(true);
 			pnRecuperarConta.setVisible(false);
 			txEmail.setText("");
-			txUsuario.setText(usuario.getLogin());
+			cbUsuario.setSelectedItem(usuario.getLogin());
 		}
 		else
 			JOptionPane.showMessageDialog(null, "E-mail incorreto ou não existe");
@@ -191,7 +220,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 				pnLogin.setVisible(true);
 				pnRecuperarConta.setVisible(false);
 				txEmail.setText("");
-				txUsuario.setText(usuario.getLogin());
+				cbUsuario.setSelectedItem(usuario.getLogin());
 				String novaSenha = gerarSenha();
 				String senhaCripto = criptografar(novaSenha);
 				usuario.setSenha(senhaCripto);
@@ -223,14 +252,10 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	private void logar(){
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
-		Criterion[] criterions = new Criterion[]{Restrictions.eq("login", txUsuario.getText().trim()),
+		Criterion[] criterions = new Criterion[]{Restrictions.eq("login", String.valueOf(cbUsuario.getSelectedItem())),
 				Restrictions.eq("senha", criptografar(new String(txSenha.getPassword())))};
 		usuario = (Usuario)dao.receberObjeto(Usuario.class, criterions, session);
 		if(usuario!=null){
-//			if(usuario.getAtivo()==0) {
-//				JOptionPane.showMessageDialog(null, "Você não tem permissão de acesso ao sistema.\nSeu acesso foi desativado!","Permissão Negada", JOptionPane.ERROR_MESSAGE);
-//				return;
-//			}
 			usuario.setUltimoAcesso(new Date());
 			dao.salvar(usuario, session);
 			session.beginTransaction();
@@ -356,7 +381,7 @@ public class ControllerLogin implements ActionListener, MouseListener {
 	}
 	public void atualizarAgora(){
     	try{
-    		Runtime.getRuntime().exec("java -jar update.jar plk*link815");
+    		Runtime.getRuntime().exec("java -jar update.jar ***");
     		System.exit(0);
     	}catch(IOException e){
     	}

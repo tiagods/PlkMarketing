@@ -26,6 +26,8 @@ public class Usuario implements Serializable{
 	private Departamento departamento;
 	private Funcao funcao;
 	private BigDecimal totalVendas;
+	private int ativo=1;
+	
 	/**
 	 * @return the id
 	 */
@@ -231,9 +233,17 @@ public class Usuario implements Serializable{
 		this.totalVendas = totalVendas;
 	}
 	
-	@Override
-	public String toString() {
-		return this.login;
+	/**
+	 * @return the ativo
+	 */
+	public int getAtivo() {
+		return ativo;
+	}
+	/**
+	 * @param ativo the ativo to set
+	 */
+	public void setAtivo(int ativo) {
+		this.ativo = ativo;
 	}
 	@Override
 	public int hashCode() {
@@ -255,5 +265,8 @@ public class Usuario implements Serializable{
 			return false;
 		return true;
 	}
-		
+	@Override
+	public String toString() {
+		return login;
+	}	
 }

@@ -1,15 +1,11 @@
 package br.com.tiagods.config;
 
-import javax.swing.ImageIcon;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class IconsConfig {
 	Logger log = LoggerFactory.getLogger(IconsConfig.class);
-	private static IconsConfig instance;
-	
+//	private static IconsConfig instance;
 //	public static IconsConfig getInstance() {
 //		if(instance == null)
 //			instance = new IconsConfig();

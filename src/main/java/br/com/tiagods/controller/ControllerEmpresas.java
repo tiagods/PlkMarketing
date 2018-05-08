@@ -3,7 +3,64 @@
  */
 package br.com.tiagods.controller;
 
-import static br.com.tiagods.view.EmpresasView.*;
+import static br.com.tiagods.view.EmpresasView.btEsconder;
+import static br.com.tiagods.view.EmpresasView.btnCancelar;
+import static br.com.tiagods.view.EmpresasView.btnCategoriaAdd;
+import static br.com.tiagods.view.EmpresasView.btnEditar;
+import static br.com.tiagods.view.EmpresasView.btnEmail;
+import static br.com.tiagods.view.EmpresasView.btnExcluir;
+import static br.com.tiagods.view.EmpresasView.btnExportar;
+import static br.com.tiagods.view.EmpresasView.btnHistorico;
+import static br.com.tiagods.view.EmpresasView.btnImportar;
+import static br.com.tiagods.view.EmpresasView.btnLink;
+import static br.com.tiagods.view.EmpresasView.btnLote;
+import static br.com.tiagods.view.EmpresasView.btnNegocios;
+import static br.com.tiagods.view.EmpresasView.btnNivelAdd;
+import static br.com.tiagods.view.EmpresasView.btnNovaTarefa;
+import static br.com.tiagods.view.EmpresasView.btnNovo;
+import static br.com.tiagods.view.EmpresasView.btnOrigemAdd;
+import static br.com.tiagods.view.EmpresasView.btnPessoas;
+import static br.com.tiagods.view.EmpresasView.btnSalvar;
+import static br.com.tiagods.view.EmpresasView.btnServicoAdd;
+import static br.com.tiagods.view.EmpresasView.cbAtendente;
+import static br.com.tiagods.view.EmpresasView.cbAtendenteCad;
+import static br.com.tiagods.view.EmpresasView.cbCategoria;
+import static br.com.tiagods.view.EmpresasView.cbCategoriaCad;
+import static br.com.tiagods.view.EmpresasView.cbCidade;
+import static br.com.tiagods.view.EmpresasView.cbEmpresa;
+import static br.com.tiagods.view.EmpresasView.cbEstado;
+import static br.com.tiagods.view.EmpresasView.cbLogradouro;
+import static br.com.tiagods.view.EmpresasView.cbNivel;
+import static br.com.tiagods.view.EmpresasView.cbNivelCad;
+import static br.com.tiagods.view.EmpresasView.cbOrigem;
+import static br.com.tiagods.view.EmpresasView.cbOrigemCad;
+import static br.com.tiagods.view.EmpresasView.cbProdServicos;
+import static br.com.tiagods.view.EmpresasView.cbProdServicosCad;
+import static br.com.tiagods.view.EmpresasView.data1;
+import static br.com.tiagods.view.EmpresasView.data2;
+import static br.com.tiagods.view.EmpresasView.pnAuxiliar;
+import static br.com.tiagods.view.EmpresasView.pnCabecalho;
+import static br.com.tiagods.view.EmpresasView.pnPrincipal;
+import static br.com.tiagods.view.EmpresasView.tbAuxiliar;
+import static br.com.tiagods.view.EmpresasView.tbPrincipal;
+import static br.com.tiagods.view.EmpresasView.txApelido;
+import static br.com.tiagods.view.EmpresasView.txBairro;
+import static br.com.tiagods.view.EmpresasView.txBuscar;
+import static br.com.tiagods.view.EmpresasView.txCadastradoPor;
+import static br.com.tiagods.view.EmpresasView.txCelular;
+import static br.com.tiagods.view.EmpresasView.txCep;
+import static br.com.tiagods.view.EmpresasView.txCnpj;
+import static br.com.tiagods.view.EmpresasView.txCodigo;
+import static br.com.tiagods.view.EmpresasView.txComplemento;
+import static br.com.tiagods.view.EmpresasView.txContador;
+import static br.com.tiagods.view.EmpresasView.txDataCadastro;
+import static br.com.tiagods.view.EmpresasView.txEmail;
+import static br.com.tiagods.view.EmpresasView.txLogradouro;
+import static br.com.tiagods.view.EmpresasView.txNome;
+import static br.com.tiagods.view.EmpresasView.txNum;
+import static br.com.tiagods.view.EmpresasView.txRazaoSocial;
+import static br.com.tiagods.view.EmpresasView.txSite;
+import static br.com.tiagods.view.EmpresasView.txTelefone;
 import static br.com.tiagods.view.MenuView.jDBody;
 
 import java.awt.Color;
@@ -63,7 +120,6 @@ import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.ServicoContratado;
@@ -369,6 +425,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		else return null;
 		return lotes;
 	}
+	@SuppressWarnings("unchecked")
 	private void preencherTarefas(Empresa empresa) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criterion criterion = Restrictions.eq("empresa", empresa);
@@ -836,6 +893,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				public boolean isCellEditable(int rowIndex, int columnIndex) {
 					return canEdit [columnIndex];
 				}
+				@SuppressWarnings({ "unchecked", "rawtypes" })
 				@Override
 				public Class getColumnClass(int columnIndex) {
 					try {
@@ -892,6 +950,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			btAbrir.setActionCommand("Abrir");
 			btAbrir.addActionListener(new ActionListener() {
 				
+				@SuppressWarnings("static-access")
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					String value =tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0).toString();

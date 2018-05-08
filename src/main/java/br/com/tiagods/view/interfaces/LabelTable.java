@@ -10,6 +10,7 @@ public class LabelTable extends DefaultTableCellRenderer{
 	 */
 	private static final long serialVersionUID = -6409253765888639848L;
 
+	@SuppressWarnings("unused")
 	protected void setValue(Object value){  
         if (value instanceof ImageIcon){  
             if (value != null){  

@@ -22,6 +22,7 @@ import jxl.read.biff.BiffException;
 
 public class ProcessarPlanilha {
 
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public static void main(String[] args) throws BiffException{
 		
 		Session session = HibernateFactory.getSession();

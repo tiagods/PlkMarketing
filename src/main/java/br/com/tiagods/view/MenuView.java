@@ -126,6 +126,8 @@ public class MenuView extends JFrame implements DefaultUtilities{
         mnRelatorios.setName("Relatorios");
         mnRelatorios.addMouseListener(controller);
         
+        mnRelatorios.setVisible(false);
+        
         mnNegocios = new JMenu("Neg\u00F3cios");
         mnNegocios.setName("Negocios");
         mnNegocios.addMouseListener(controller);
@@ -137,6 +139,8 @@ public class MenuView extends JFrame implements DefaultUtilities{
         mnExtra.setName("Extra");
         mnExtra.addMouseListener(controller);
         menuBar.add(mnExtra);
+        
+        mnExtra.setVisible(false);
         
         mnAtualizacao = new JMenu("Sobre");
         mnAtualizacao.setName("Atualizar");
