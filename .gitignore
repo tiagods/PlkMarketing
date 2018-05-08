@@ -4,6 +4,7 @@
 
 # Package Files #
 .dist/
+/credentials/*
 .test/*
 .lib/
 .build/
@@ -70,4 +71,5 @@ $RECYCLE.BIN/
 ftp.properties
 mail.properties
 database_other.properties
+hibernate.cfg.xml
 
