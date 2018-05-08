@@ -22,10 +22,12 @@
 	<property name="totalEmpresas" column="USU_TOTALEMPRESAS" type="int"/>
 	<property name="totalNegocios" column="USU_TOTALNEGOCIOS" type="int"/>
 	
+	<property name="ativo" column="USU_ATIVO" type="int"/>
+	
 	<many-to-one name="departamento" column="USU_DEPARTAMENTO_COD" foreign-key="FK_USU_DEPARTAMENTO_COD"/>
 	<many-to-one name="funcao" column="USU_FUNCAO_COD" foreign-key="FK_USU_FUNCAO_COD"/>
-	
 	<property name="totalVendas" column="USU_TOTALVENDAS" type="big_decimal"/>
+	
 	</class>
 </hibernate-mapping>
 
