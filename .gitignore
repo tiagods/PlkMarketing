@@ -4,7 +4,8 @@
 
 # Package Files #
 .dist/
-/credentials/*
+/credentials/
+/target/
 .test/*
 .lib/
 .build/
