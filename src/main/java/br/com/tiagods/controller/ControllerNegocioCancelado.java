@@ -11,16 +11,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 
-import br.com.tiagods.model.Negocio;
+import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.dialog.NegocioPerdaDialog;
 
 public class ControllerNegocioCancelado implements ActionListener{
 
 	private NegocioPerdaDialog view;
-	private Negocio negocio;
+	private NegocioProposta negocio;
 		
-	public void iniciar(Negocio negocio,NegocioPerdaDialog dialog){
+	public void iniciar(NegocioProposta negocio,NegocioPerdaDialog dialog){
 		this.view=dialog;
 		this.negocio = negocio;
 		txData.setDate(new Date());

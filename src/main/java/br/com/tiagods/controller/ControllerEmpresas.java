@@ -115,15 +115,15 @@ import org.hibernate.criterion.Restrictions;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Empresa;
 import br.com.tiagods.model.Endereco;
-import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.modelcollections.NegocioEmpresa;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPadrao;
+import br.com.tiagods.modelcollections.ServicoContratado;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
@@ -144,17 +144,17 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
 	
-	List<Empresa> listaEmpresas;
+	List<NegocioEmpresa> listaEmpresas;
 	
 	Session session=null;
-	Empresa empresa= null;
-	Empresa empresaBackup;
+	NegocioEmpresa empresa= null;
+	NegocioEmpresa empresaBackup;
 	boolean telaEmEdicao = false;
 	
 	GenericDao dao = new GenericDao();
 	
 	@SuppressWarnings("unchecked")
-	public void iniciar(Empresa empresa){
+	public void iniciar(NegocioEmpresa empresa){
 		cbEmpresa.setEnabled(false);
 		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programacao");
 		this.empresa=empresa;
@@ -168,7 +168,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
     	List<Criterion> criterion = new ArrayList<>();
     	Order order = Order.desc("id");
     	
-    	listaEmpresas = (List<Empresa>)(dao.items(Empresa.class, session, criterion, order));
+    	listaEmpresas = (List<NegocioEmpresa>)(dao.items(NegocioEmpresa.class, session, criterion, order));
     	preencherTabela(listaEmpresas, tbPrincipal,txContador);
     	if(!listaEmpresas.isEmpty() && empresa==null){
     		this.empresa = listaEmpresas.get(0);
@@ -237,8 +237,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			Criterion criterion = Restrictions.eq("empresa", empresa);
 			criterios.add(criterion);
 			Order order = Order.desc("id");		
-			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
-			new AuxiliarTabela(new Negocio(),tbAuxiliar, negocios,criterios, order,null);
+			List<NegocioProposta> negocios = (List<NegocioProposta>) dao.items(NegocioProposta.class, session, criterios, order);
+			new AuxiliarTabela(new NegocioProposta(),tbAuxiliar, negocios,criterios, order,null);
 			fechaSessao(open);
 			break;
 		case "Esconder":
@@ -317,7 +317,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 					@Override
 					public void windowClosed(WindowEvent e) {
 						boolean open = recebeSessao();
-						empresa = (Empresa) dao.receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
+						empresa = (NegocioEmpresa) dao.receberObjeto(NegocioEmpresa.class, Integer.parseInt(txCodigo.getText()), session);
 						preencherTarefas(empresa);
 						fechaSessao(open);
 					}
@@ -364,7 +364,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		case "Lote":
 			Set<Integer> lotes = receberLotes();
 			if(lotes!=null && !lotes.isEmpty())
-				new TarefasSaveView(null, new Empresa(),null, MenuView.getInstance(),true,lotes,true)
+				new TarefasSaveView(null, new NegocioEmpresa(),null, MenuView.getInstance(),true,lotes,true)
 				.setVisible(true);
 			break;	
 		default:
@@ -390,7 +390,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 					for(String s : value) {
 						try {
 							int i = Integer.parseInt(s);
-							Empresa e = (Empresa)dao.receberObjeto(Empresa.class, i, session);
+							NegocioEmpresa e = (NegocioEmpresa)dao.receberObjeto(NegocioEmpresa.class, i, session);
 							if(e!=null)
 								lotes.add(i);
 							else
@@ -426,7 +426,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		return lotes;
 	}
 	@SuppressWarnings("unchecked")
-	private void preencherTarefas(Empresa empresa) {
+	private void preencherTarefas(NegocioEmpresa empresa) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criterion criterion = Restrictions.eq("empresa", empresa);
 		criterios.add(criterion);
@@ -461,8 +461,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				for(int i = 0;i<listaEmpresas.size();i++){
 					listaImpressao.add(new ArrayList());
 					
-					Empresa e = listaEmpresas.get(i);
-					PfPj pf = e.getPessoaJuridica();
+					NegocioEmpresa e = listaEmpresas.get(i);
+					NegocioPadrao pf = e.getPessoaJuridica();
 					
 					listaImpressao.get(i+1).add(e.getId());
 					listaImpressao.get(i+1).add(e.getNome());
@@ -502,10 +502,10 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 					
 					List<Criterion> criterios = new ArrayList<>();
 					criterios.add(Restrictions.eq("empresa", e));
-					List<Negocio> listaNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+					List<NegocioProposta> listaNegocios = dao.items(NegocioProposta.class, session, criterios, Order.asc("id"));
 
 					if(!listaNegocios.isEmpty()){
-						for(Negocio negocio : listaNegocios){
+						for(NegocioProposta negocio : listaNegocios){
 							qtdNegocios++;
 	
 							valorHonorario.append(negocio.getId());
@@ -575,7 +575,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 			}
 		}
 	}
-	private void preencherFormulario(Empresa empresa){
+	private void preencherFormulario(NegocioEmpresa empresa){
 		txCodigo.setText(""+empresa.getId());
 		SimpleDateFormat conversor = new SimpleDateFormat("dd/MM/yyyy");
 		txCadastradoPor.setText(empresa.getPessoaJuridica().getCriadoPor()==null?"":empresa.getPessoaJuridica().getCriadoPor().getNome());
@@ -641,7 +641,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		new UnsupportedOperationException();
 	}
 	private void pesquisar(){
-		List<Empresa> lista = new ArrayList<>();
+		List<NegocioEmpresa> lista = new ArrayList<>();
 		for(int i =0;i<listaEmpresas.size();i++){
 			String texto = txBuscar.getText().trim().toUpperCase();
 			if(listaEmpresas.get(i).getNome().trim().length()>texto.length() && listaEmpresas.get(i).getNome().substring(0,texto.length()).equalsIgnoreCase(texto)){
@@ -695,7 +695,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				e.getMessage();
 			}
 			listaEmpresas.clear();
-			listaEmpresas = dao.items(Empresa.class, session, criterios, Order.desc("id"));
+			listaEmpresas = dao.items(NegocioEmpresa.class, session, criterios, Order.desc("id"));
 			preencherTabela(listaEmpresas, tbPrincipal, txContador);
 		}
 		else
@@ -757,7 +757,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 		if(valor>0 && !telaEmEdicao){
 			boolean open = recebeSessao();
-			empresa = (Empresa)dao.receberObjeto(Empresa.class, valor, session);
+			empresa = (NegocioEmpresa)dao.receberObjeto(NegocioEmpresa.class, valor, session);
 			preencherFormulario(empresa);
 			fechaSessao(open);
 			pnAuxiliar.setVisible(false);
@@ -784,11 +784,11 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 	}
     @SuppressWarnings("unchecked")
 	private void invocarSalvamento(){
-    	PfPj pessoaJuridica;
+    	NegocioPadrao pessoaJuridica;
 		Endereco endereco = new Endereco();
 		if("".equals(txCodigo.getText())) {
-			empresa = new Empresa();
-			pessoaJuridica = new PfPj();
+			empresa = new NegocioEmpresa();
+			pessoaJuridica = new NegocioPadrao();
 			pessoaJuridica.setCriadoEm(new Date());
 			pessoaJuridica.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		}
@@ -837,7 +837,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		fechaSessao(openHere);
 		if(salvo) {
 			openHere = recebeSessao();
-			listaEmpresas = (List<Empresa>)dao.listar(Empresa.class, session);
+			listaEmpresas = (List<NegocioEmpresa>)dao.listar(NegocioEmpresa.class, session);
 			preencherFormulario(empresa);
 	    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 	    	fechaSessao(openHere);
@@ -859,7 +859,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				openHere = recebeSessao();
 				List<Criterion> criterion = new ArrayList<>();
 		    	Order order = Order.desc("id");
-		    	listaEmpresas = (List<Empresa>)(dao.items(Empresa.class, session, criterion, order));
+		    	listaEmpresas = (List<NegocioEmpresa>)(dao.items(NegocioEmpresa.class, session, criterion, order));
 		    	preencherTabela(listaEmpresas, tbPrincipal, txContador);
 		    	fechaSessao(openHere);
 			}
@@ -879,7 +879,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 		}
 	}
 	@SuppressWarnings({ "serial"})
-	public void preencherTabela(List<Empresa> lista, JTable table, JLabel txContadorRegistros){
+	public void preencherTabela(List<NegocioEmpresa> lista, JTable table, JLabel txContadorRegistros){
 		if(lista.isEmpty()){
 			new SemRegistrosJTable(table,"Relação de Empresas");
 		}
@@ -904,7 +904,7 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 				}
 			};
 			for(int i=0;i<lista.size();i++){
-				Empresa em= lista.get(i);
+				NegocioEmpresa em= lista.get(i);
 				Object[] linha = new Object[9];
 				linha[0] = ""+em.getId(); 
 				linha[1] = em.getNome();
@@ -957,8 +957,8 @@ public class ControllerEmpresas implements ActionListener,KeyListener,ItemListen
 					int id = Integer.parseInt(value);
 					session = HibernateFactory.getSession();
 					session.beginTransaction();
-					Empresa e = (Empresa)new GenericDao().receberObjeto(Empresa.class, id, session);
-					Negocio negocio = e.getUltimoNegocio();
+					NegocioEmpresa e = (NegocioEmpresa)new GenericDao().receberObjeto(NegocioEmpresa.class, id, session);
+					NegocioProposta negocio = e.getUltimoNegocio();
 					NegociosView viewNegocios = new NegociosView(negocio,e);
 					ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 					session.close();

@@ -116,14 +116,14 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Categoria;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
-import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.model.PfPj;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPessoa;
+import br.com.tiagods.modelcollections.NegocioPadrao;
+import br.com.tiagods.modelcollections.ServicoContratado;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
@@ -145,15 +145,15 @@ public class ControllerPessoas
 		implements ActionListener, KeyListener, ItemListener, MouseListener, PropertyChangeListener {
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
 
-	List<Pessoa> listaPessoas;
+	List<NegocioPessoa> listaPessoas;
 	Session session = null;
-	Pessoa pessoa = null;
-	Pessoa pessoaBackup;
+	NegocioPessoa pessoa = null;
+	NegocioPessoa pessoaBackup;
 	boolean telaEmEdicao = false;
 	GenericDao dao = new GenericDao();
 
 	@SuppressWarnings("unchecked")
-	public void iniciar(Pessoa pessoa) {
+	public void iniciar(NegocioPessoa pessoa) {
 		cbEmpresa.setEnabled(false);
 		cbEmpresa.setToolTipText("Filtro não criado: Aguardando programação");
 		this.pessoa = pessoa;
@@ -165,7 +165,7 @@ public class ControllerPessoas
 		}
 		List<Criterion> criterion = new ArrayList<>();
 		Order order = Order.desc("id");
-		listaPessoas = (List<Pessoa>) (new GenericDao().items(Pessoa.class, session, criterion, order));
+		listaPessoas = (List<NegocioPessoa>) (new GenericDao().items(NegocioPessoa.class, session, criterion, order));
 		preencherTabela(listaPessoas, tbPrincipal, txContador);
 		if (!listaPessoas.isEmpty() && this.pessoa == null) {
 			this.pessoa = listaPessoas.get(0);
@@ -239,8 +239,8 @@ public class ControllerPessoas
 			Criterion criterion = Restrictions.eq("pessoa", pessoa);
 			criterios.add(criterion);
 			Order order = Order.desc("id");
-			List<Negocio> negocios = (List<Negocio>) dao.items(Negocio.class, session, criterios, order);
-			new AuxiliarTabela(new Negocio(), tbAuxiliar, negocios, criterios, order, null);
+			List<NegocioProposta> negocios = (List<NegocioProposta>) dao.items(NegocioProposta.class, session, criterios, order);
+			new AuxiliarTabela(new NegocioProposta(), tbAuxiliar, negocios, criterios, order, null);
 			fechaSessao(open);
 			break;
 		case "Esconder":
@@ -319,7 +319,7 @@ public class ControllerPessoas
 					@Override
 					public void windowClosed(WindowEvent e) {
 						boolean open = recebeSessao();
-						pessoa = (Pessoa) dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()),
+						pessoa = (NegocioPessoa) dao.receberObjeto(NegocioPessoa.class, Integer.parseInt(txCodigo.getText()),
 								session);
 						preencherTarefas(pessoa);
 						fechaSessao(open);
@@ -366,7 +366,7 @@ public class ControllerPessoas
 		case "Lote":
 			Set<Integer> lotes = receberLotes();
 			if (lotes != null && !lotes.isEmpty())
-				new TarefasSaveView(null, new Pessoa(), null, MenuView.getInstance(), true, lotes, true)
+				new TarefasSaveView(null, new NegocioPessoa(), null, MenuView.getInstance(), true, lotes, true)
 						.setVisible(true);
 			break;
 		default:
@@ -396,7 +396,7 @@ public class ControllerPessoas
 					for (String s : value) {
 						try {
 							int i = Integer.parseInt(s);
-							Pessoa p = (Pessoa) dao.receberObjeto(Pessoa.class, i, session);
+							NegocioPessoa p = (NegocioPessoa) dao.receberObjeto(NegocioPessoa.class, i, session);
 							if (p != null)
 								lotes.add(i);
 						} catch (Exception ex) {
@@ -434,7 +434,7 @@ public class ControllerPessoas
 	}
 
 	@SuppressWarnings("unchecked")
-	private void preencherTarefas(Pessoa pessoa) {
+	private void preencherTarefas(NegocioPessoa pessoa) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criterion criterion = Restrictions.eq("pessoa", pessoa);
 		criterios.add(criterion);
@@ -470,8 +470,8 @@ public class ControllerPessoas
 				for (int i = 0; i < listaPessoas.size(); i++) {
 					listaImpressao.add(new ArrayList());
 
-					Pessoa p = listaPessoas.get(i);
-					PfPj pf = p.getPessoaFisica();
+					NegocioPessoa p = listaPessoas.get(i);
+					NegocioPadrao pf = p.getPessoaFisica();
 
 					listaImpressao.get(i + 1).add(p.getId());
 					listaImpressao.get(i + 1).add(p.getNome());
@@ -511,10 +511,10 @@ public class ControllerPessoas
 
 					List<Criterion> criterios = new ArrayList<>();
 					criterios.add(Restrictions.eq("pessoa", p));
-					List<Negocio> listaNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+					List<NegocioProposta> listaNegocios = dao.items(NegocioProposta.class, session, criterios, Order.asc("id"));
 
 					if (!listaNegocios.isEmpty()) {
-						for (Negocio negocio : listaNegocios) {
+						for (NegocioProposta negocio : listaNegocios) {
 							qtdNegocios++;
 
 							valorHonorario.append(negocio.getId());
@@ -587,7 +587,7 @@ public class ControllerPessoas
 		}
 	}
 
-	private void preencherFormulario(Pessoa pessoa) {
+	private void preencherFormulario(NegocioPessoa pessoa) {
 		txCodigo.setText("" + pessoa.getId());
 		SimpleDateFormat conversor = new SimpleDateFormat("dd/MM/yyyy");
 		txCadastradoPor.setText(pessoa.getPessoaFisica().getCriadoPor() == null ? ""
@@ -664,7 +664,7 @@ public class ControllerPessoas
 	}
 
 	private void pesquisar() {
-		List<Pessoa> lista = new ArrayList<>();
+		List<NegocioPessoa> lista = new ArrayList<>();
 		for (int i = 0; i < listaPessoas.size(); i++) {
 			String texto = txBuscar.getText().trim().toUpperCase();
 			if (listaPessoas.get(i).getNome().trim().length() > texto.length()
@@ -722,7 +722,7 @@ public class ControllerPessoas
 			} catch (NullPointerException e) {
 			}
 			listaPessoas.clear();
-			listaPessoas = dao.items(Pessoa.class, session, criterios, Order.desc("id"));
+			listaPessoas = dao.items(NegocioPessoa.class, session, criterios, Order.desc("id"));
 			preencherTabela(listaPessoas, tbPrincipal, txContador);
 		} else
 			JOptionPane.showMessageDialog(jDBody,
@@ -783,7 +783,7 @@ public class ControllerPessoas
 		int valor = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
 		if (valor > 0 && !telaEmEdicao) {
 			boolean open = recebeSessao();
-			pessoa = (Pessoa) dao.receberObjeto(Pessoa.class, valor, session);
+			pessoa = (NegocioPessoa) dao.receberObjeto(NegocioPessoa.class, valor, session);
 			preencherFormulario(pessoa);
 			fechaSessao(open);
 			pnAuxiliar.setVisible(false);
@@ -815,11 +815,11 @@ public class ControllerPessoas
 
 	@SuppressWarnings("unchecked")
 	private void invocarSalvamento() {
-		PfPj pessoaFisica;
+		NegocioPadrao pessoaFisica;
 		Endereco endereco = new Endereco();
 		if ("".equals(txCodigo.getText())) {
-			pessoa = new Pessoa();
-			pessoaFisica = new PfPj();
+			pessoa = new NegocioPessoa();
+			pessoaFisica = new NegocioPadrao();
 			pessoaFisica.setCriadoEm(new Date());
 			pessoaFisica.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		} else {
@@ -868,7 +868,7 @@ public class ControllerPessoas
 			openHere = recebeSessao();
 			List<Criterion> criterion = new ArrayList<>();
 			Order order = Order.desc("id");
-			listaPessoas = (List<Pessoa>) (new GenericDao().items(Pessoa.class, session, criterion, order));
+			listaPessoas = (List<NegocioPessoa>) (new GenericDao().items(NegocioPessoa.class, session, criterion, order));
 			preencherFormulario(pessoa);
 			preencherTabela(listaPessoas, tbPrincipal, txContador);
 			fechaSessao(openHere);
@@ -891,7 +891,7 @@ public class ControllerPessoas
 				openHere = recebeSessao();
 				List<Criterion> criterion = new ArrayList<>();
 				Order order = Order.desc("id");
-				listaPessoas = (List<Pessoa>) (new GenericDao().items(Pessoa.class, session, criterion, order));
+				listaPessoas = (List<NegocioPessoa>) (new GenericDao().items(NegocioPessoa.class, session, criterion, order));
 				preencherTabela(listaPessoas, tbPrincipal, txContador);
 				fechaSessao(openHere);
 			}
@@ -914,7 +914,7 @@ public class ControllerPessoas
 	}
 
 	@SuppressWarnings("serial")
-	public void preencherTabela(List<Pessoa> lista, JTable table, JLabel txContadorRegistros) {
+	public void preencherTabela(List<NegocioPessoa> lista, JTable table, JLabel txContadorRegistros) {
 		if (lista.isEmpty()) {
 			new SemRegistrosJTable(table, "Relação de Pessoas");
 		} else {
@@ -938,7 +938,7 @@ public class ControllerPessoas
 				}
 			};
 			for (int i = 0; i < lista.size(); i++) {
-				Pessoa p = lista.get(i);
+				NegocioPessoa p = lista.get(i);
 				Object[] linha = new Object[8];
 				linha[0] = "" + p.getId();
 				linha[1] = p.getNome();
@@ -993,8 +993,8 @@ public class ControllerPessoas
 					int id = Integer.parseInt(value);
 					session = HibernateFactory.getSession();
 					session.beginTransaction();
-					Pessoa p = (Pessoa) new GenericDao().receberObjeto(Pessoa.class, id, session);
-					Negocio negocio = p.getUltimoNegocio();
+					NegocioPessoa p = (NegocioPessoa) new GenericDao().receberObjeto(NegocioPessoa.class, id, session);
+					NegocioProposta negocio = p.getUltimoNegocio();
 					NegociosView viewNegocios = new NegociosView(negocio,p);
 					ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 					session.close();

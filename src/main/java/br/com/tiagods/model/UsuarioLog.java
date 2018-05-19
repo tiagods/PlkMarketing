@@ -1,30 +1,51 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Calendar;
 
-public class UsuarioLog implements Serializable{
-	/**
-	 * 
-	 */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name="USUARIO_LOG")
+public class UsuarioLog implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
-	private int id;
-	private Date data;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="USU_LOG_COD")
+	private Long id;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="USU_LOG_DATA")
+	private Calendar data;
+	@ManyToOne
+	@JoinColumn(name="USU_LOG_USUARIO_ID")
 	private Usuario usuario;
+	@Column(name="USU_LOG_MENU")
 	private String menu;
+	@Column(name="USU_LOG_ACAO")
 	private String acao;
+	@Column(name="USU_LOG_DESCRICAO")
 	private String descricao;
+	@Column(name="USU_LOG_MAQUINA")
 	private String maquina;
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
-	public Date getData() {
+	public Calendar getData() {
 		return data;
 	}
-	public void setData(Date data) {
+	public void setData(Calendar data) {
 		this.data = data;
 	}
 	public Usuario getUsuario() {
@@ -56,5 +77,5 @@ public class UsuarioLog implements Serializable{
 	}
 	public void setMaquina(String maquina) {
 		this.maquina = maquina;
-	}	
+	}
 }

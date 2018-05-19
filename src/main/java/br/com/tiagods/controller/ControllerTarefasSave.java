@@ -48,14 +48,14 @@ import javax.swing.JRadioButton;
 import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.Etapa;
-import br.com.tiagods.model.Negocio;
-import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.model.Prospeccao;
+import br.com.tiagods.model.NegocioEtapa;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.NegocioEmpresa;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPessoa;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -82,7 +82,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 
 	HashMap<String, TipoTarefa> tipoTarefas = new HashMap<>();  
 	HashMap<String, Usuario> usuarios = new HashMap<>();  
-	Map<String,Etapa> etapas = new HashMap<>();
+	Map<String,NegocioEtapa> etapas = new HashMap<>();
 	
 	Session session = null;
 	
@@ -124,7 +124,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			lbDetalhesLote.setText("");
 			verificarObjeto();
 		}
-		List<Etapa> lista = dao.listar(Etapa.class, session);
+		List<NegocioEtapa> lista = dao.listar(NegocioEtapa.class, session);
 		lista.forEach(c->{
 			etapas.put(c.getNome(),c);
 		});
@@ -178,14 +178,14 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			if(dialog!=null){
 				dialog.dispose();
 			}
-			if(cbObject.getSelectedItem().equals(Modelos.Empresa))
-				dialog =new SelecaoDialog(new Empresa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
-			else if(cbObject.getSelectedItem().equals(Modelos.Pessoa))
-				dialog =new SelecaoDialog(new Pessoa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
-			else if(cbObject.getSelectedItem().equals(Modelos.Negocio))
-				dialog =new SelecaoDialog(new Negocio(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
-			else if(cbObject.getSelectedItem().equals(Modelos.Prospeccao))
-				dialog =new SelecaoDialog(new Prospeccao(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
+			if(cbObject.getSelectedItem().equals(Modelos.NegocioEmpresa))
+				dialog =new SelecaoDialog(new NegocioEmpresa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
+			else if(cbObject.getSelectedItem().equals(Modelos.NegocioPessoa))
+				dialog =new SelecaoDialog(new NegocioPessoa(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
+			else if(cbObject.getSelectedItem().equals(Modelos.NegocioProposta))
+				dialog =new SelecaoDialog(new NegocioProposta(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
+			else if(cbObject.getSelectedItem().equals(Modelos.NegocioProspeccao))
+				dialog =new SelecaoDialog(new NegocioProspeccao(),txCodigoObjeto,txNomeObjeto,null,null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -246,10 +246,10 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			try {
 				session = HibernateFactory.getSession();
 				session.beginTransaction();
-				if(object instanceof Negocio)
-					object = (Negocio) dao.receberObjeto(Negocio.class,Integer.parseInt(txCodigoObjeto.getText()),session);
+				if(object instanceof NegocioProposta)
+					object = (NegocioProposta) dao.receberObjeto(NegocioProposta.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				if(salvar(object,calendar,tarefa,Integer.parseInt(txCodigoObjeto.getText()))) {
-					if(object instanceof Negocio) atualizaNegocios(session,(Negocio)object,item);
+					if(object instanceof NegocioProposta) atualizaNegocios(session,(NegocioProposta)object,item);
 					session.getTransaction().commit();
 					salvarCancelar();
 					JOptionPane.showMessageDialog(MenuView.jDBody, "Salvo com sucesso!");
@@ -282,9 +282,9 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 //		session.beginTransaction();
 		setarSelecao();
 		tarefa.setTipoTarefa(tipoTarefas.get(item));
-			if(obj instanceof Empresa){
+			if(obj instanceof NegocioEmpresa){
 				//object = dao.receberObjeto(Empresa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
-				Empresa empresa = new Empresa();
+				NegocioEmpresa empresa = new NegocioEmpresa();
 				empresa.setId(cod);
 				//tarefa.setEmpresa((Empresa)object);
 				tarefa.setEmpresa(empresa);
@@ -292,29 +292,29 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 				tarefa.setPessoa(null);
 				tarefa.setProspeccao(null);
 			}
-			else if(obj instanceof Negocio){
+			else if(obj instanceof NegocioProposta){
 				//tarefa.setNegocio((Negocio)object);
 //				Negocio negocio = new Negocio();
 //				negocio.setId(cod);
-				tarefa.setNegocio((Negocio)obj);
+				tarefa.setNegocio((NegocioProposta)obj);
 				tarefa.setEmpresa(null);
 				tarefa.setPessoa(null);
 				tarefa.setProspeccao(null);
 			}
-			else if(obj instanceof Pessoa){
+			else if(obj instanceof NegocioPessoa){
 				//Pessoa pessoa = (Pessoa) dao.receberObjeto(Pessoa.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				//tarefa.setPessoa(pessoa);
-				Pessoa pessoa = new Pessoa();
+				NegocioPessoa pessoa = new NegocioPessoa();
 				pessoa.setId(cod);
 				tarefa.setPessoa(pessoa);
 				tarefa.setEmpresa(null);
 				tarefa.setNegocio(null);
 				tarefa.setProspeccao(null);
 			}
-			else if(obj instanceof Prospeccao){
+			else if(obj instanceof NegocioProspeccao){
 				//Prospeccao prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class,Integer.parseInt(txCodigoObjeto.getText()),session);
 				//tarefa.setProspeccao(prospeccao);
-				Prospeccao prospeccao = new Prospeccao();
+				NegocioProspeccao prospeccao = new NegocioProspeccao();
 				prospeccao.setId(cod);
 				tarefa.setProspeccao(prospeccao);
 				tarefa.setEmpresa(null);
@@ -329,7 +329,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			return false;
 		}
 	}
-	private void atualizaNegocios(Session session,Negocio negocio,String escolha){
+	private void atualizaNegocios(Session session,NegocioProposta negocio,String escolha){
 		if(!"Fechamento".equals(negocio.getEtapa().getNome()) && !"Indefinida".equals(negocio.getEtapa().getNome())){
 			switch(escolha){
 			case "Email":
@@ -443,25 +443,25 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	}
 	private void verificarObjeto(){
 		if(object!=null){
-			if(object instanceof Empresa){
+			if(object instanceof NegocioEmpresa){
 				cbObject.setSelectedItem(Modelos.valueOf("Empresa"));
-				txCodigoObjeto.setText(((Empresa)object).getId()+"");
-				txNomeObjeto.setText(((Empresa)object).getNome());
+				txCodigoObjeto.setText(((NegocioEmpresa)object).getId()+"");
+				txNomeObjeto.setText(((NegocioEmpresa)object).getNome());
 			}
-			else if(object instanceof Negocio){
+			else if(object instanceof NegocioProposta){
 				cbObject.setSelectedItem(Modelos.valueOf("Negocio"));
-				txCodigoObjeto.setText(((Negocio)object).getId()+"");
-				txNomeObjeto.setText(((Negocio)object).getNome());
+				txCodigoObjeto.setText(((NegocioProposta)object).getId()+"");
+				txNomeObjeto.setText(((NegocioProposta)object).getNome());
 			}
-			else if(object instanceof Pessoa){
+			else if(object instanceof NegocioPessoa){
 				cbObject.setSelectedItem(Modelos.valueOf("Pessoa"));
-				txCodigoObjeto.setText(((Pessoa)object).getId()+"");
-				txNomeObjeto.setText(((Pessoa)object).getNome());
+				txCodigoObjeto.setText(((NegocioPessoa)object).getId()+"");
+				txNomeObjeto.setText(((NegocioPessoa)object).getNome());
 			}
-			else if(object instanceof Prospeccao){
+			else if(object instanceof NegocioProspeccao){
 				cbObject.setSelectedItem(Modelos.valueOf("Prospeccao"));
-				txCodigoObjeto.setText(((Prospeccao)object).getId()+"");
-				txNomeObjeto.setText(((Prospeccao)object).getNome());
+				txCodigoObjeto.setText(((NegocioProspeccao)object).getId()+"");
+				txNomeObjeto.setText(((NegocioProspeccao)object).getNome());
 			}
 			cbObject.setEnabled(false);
 			btnAssociacao.setEnabled(false);

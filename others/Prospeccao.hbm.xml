@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Tiago Dias
+-->
+<hibernate-mapping package="br.com.tiagods.model">
+	<class name="Prospeccao" table="PROSPECCAO">
+	<id name="id" column="PRO_COD" type="int">
+	<generator class="identity" />
+	</id>
+	<property name="nome" column="PRO_NOME" />
+	<property name="responsavel" column="PRO_RESPONSAVEL" />
+	<property name="departamento" column="PRO_DEPARTAMENTO" />
+	<property name="endereco" column="PRO_ENDERECO" />
+	<component name="pfpj">
+		<property name="telefone" column="PRO_TELEFONE" />
+		<property name="celular" column="PRO_CELULAR" />
+		<property name="email" column="PRO_EMAIL" length="200"/>
+		<property name="site" column="PRO_SITE" length="200"/>
+		
+		<property name="criadoEm" column="PRO_CRIADOEM" type="timestamp"/>
+	    <many-to-one name="criadoPor" column="PRO_CRIADOPOR_COD" foreign-key="FK_PRO_CRIADOPOR_COD"/>
+		<many-to-one name="origem" column="PRO_ORIGEM_COD" foreign-key="FK_PRO_ORIGEM_COD"/>
+		<property name="detalhesOrigem" column="PRO_ORIGEM_DETALHES" type="text"/>
+		<property name="resumo" column="PRO_RESUMO" type="text"/>
+		<property name="apresentacao" column="PRO_APRESENTACAO" type="text"/>
+		<many-to-one name="atendente" column="PRO_ATENDENTE_COD" foreign-key="FK_PRO_ATENDENTE_COD"/>
+		<set name="negocios" inverse="true" cascade="save-update, delete">
+			<key column="NEG_PROSPECCAO_COD"/>
+			<one-to-many class="Negocio" />
+		</set>
+		<set name="tarefas" inverse="true" cascade="save-update, delete">
+			<key column="TAR_PROSPECCAO_COD"/>
+			<one-to-many class="Tarefa" />
+		</set>
+		 <many-to-one name="servico" column="PRO_SERVICO_COD" foreign-key="FK_PRO_SERVICO_COD"/>
+	</component>
+	<property name="conviteParaEventos" column="PRO_CONVITE_EVENTOS" type="integer" length="1" />
+	<property name="material" column="PRO_MATERIAL" type="integer" length="1" />
+	<property name="newsletter" column="PRO_NEWSLETTER" type="integer" length="1" />
+	<many-to-one name="tipoContato" column="PRO_TIPO_CONTATO" foreign-key="FK_PRO_TIPO_CONTATO_COD" />
+	<set name="listas" table="PROSPECCAO_REL_LISTA" inverse="false" lazy="true" fetch="select" cascade="all">
+		<key column="PRO_REL_COD" />
+		<many-to-many column="LIS_REL_COD" class="Lista" />
+	</set>
+	<many-to-one name="ultimoNegocio" column="PRO_ULT_NEGOCIO_COD" foreign-key="FK_PRO_ULT_NEGOCIO_COD" />
+	</class>
+</hibernate-mapping>

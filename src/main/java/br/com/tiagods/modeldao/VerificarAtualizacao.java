@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.factory.ConnectionFactory;
-import br.com.tiagods.model.VersaoSistema;
 
 public class VerificarAtualizacao {
 	private String versaoDisponivel = "";
@@ -18,8 +18,8 @@ public class VerificarAtualizacao {
 	public String receberStatus(VersaoSistema versao){
 		Connection con = new ConnectionFactory().getConnection();
 		if(con==null){
-			System.out.println("Sem link de comunicação");
-			return "Sem Link de comunicação";
+			System.out.println("Sem link de comunicacao");
+			return "Sem Link de comunicaÃ§Ã£o";
 		}
 		else{
 			try{

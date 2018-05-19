@@ -126,15 +126,15 @@ import org.hibernate.criterion.Restrictions;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Lista;
-import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.PfPj;
-import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.ProspeccaoTipoContato;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.modelcollections.Lista;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPadrao;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
+import br.com.tiagods.modelcollections.ServicoContratado;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.LoadingView;
@@ -151,9 +151,9 @@ public class ControllerProspeccao
 		implements ActionListener, ItemListener, MouseListener, PropertyChangeListener, KeyListener {
 	private Session session = null;
 	boolean telaEmEdicao = false;
-	Prospeccao prospeccao;
-	List<Prospeccao> listarProspeccao = new ArrayList<>();
-	Prospeccao prospeccaoBackup;
+	NegocioProspeccao prospeccao;
+	List<NegocioProspeccao> listarProspeccao = new ArrayList<>();
+	NegocioProspeccao prospeccaoBackup;
 	AuxiliarComboBox padrao = AuxiliarComboBox.getInstance();
 
 	GenericDao dao = new GenericDao();
@@ -161,7 +161,7 @@ public class ControllerProspeccao
 	SimpleDateFormat sdh = new SimpleDateFormat("HH:mm");
 
 	@SuppressWarnings("unchecked")
-	public void iniciar(Prospeccao prospeccao) {
+	public void iniciar(NegocioProspeccao prospeccao) {
 		this.prospeccao = prospeccao;
 		boolean aberta = abrirSessao();
 		rbDecrescente.setSelected(true);
@@ -170,7 +170,7 @@ public class ControllerProspeccao
 			preencherComboBox(panel);
 		}
 		List<Criterion> criterion = new ArrayList<>();
-		listarProspeccao = dao.items(Prospeccao.class, session, criterion, Order.desc("id"));
+		listarProspeccao = dao.items(NegocioProspeccao.class, session, criterion, Order.desc("id"));
 		preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		if (this.prospeccao == null && !listarProspeccao.isEmpty()) {
 			this.prospeccao = listarProspeccao.get(0);
@@ -254,7 +254,7 @@ public class ControllerProspeccao
 				if (i == JOptionPane.OK_OPTION) {
 					if (!"".equals(value.toString())) {
 						boolean abrir = abrirSessao();
-						Prospeccao sec = (Prospeccao) dao.receberObjeto(Prospeccao.class,
+						NegocioProspeccao sec = (NegocioProspeccao) dao.receberObjeto(NegocioProspeccao.class,
 								Integer.parseInt(value.toString()), session);
 						if (dao.excluir(sec, session)) {
 							removerDaLista(row);
@@ -283,7 +283,7 @@ public class ControllerProspeccao
 			limparFormulario(pnCadastro);
 			novoEditar();
 			telaEmEdicao = true;
-			prospeccao = new Prospeccao();
+			prospeccao = new NegocioProspeccao();
 			pnAuxiliar.setVisible(false);
 			break;
 		case "Editar":
@@ -296,7 +296,7 @@ public class ControllerProspeccao
 			if (prospeccaoBackup != null) {
 				prospeccao = prospeccaoBackup;
 				open = abrirSessao();
-				prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class, prospeccao.getId(), session);
+				prospeccao = (NegocioProspeccao) dao.receberObjeto(NegocioProspeccao.class, prospeccao.getId(), session);
 				preencherFormulario(prospeccao);
 				fecharSessao(open);
 			}
@@ -395,7 +395,7 @@ public class ControllerProspeccao
 					@Override
 					public void windowClosed(WindowEvent e) {
 						boolean open = abrirSessao();
-						prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class,
+						prospeccao = (NegocioProspeccao) dao.receberObjeto(NegocioProspeccao.class,
 								Integer.parseInt(txCodigo.getText()), session);
 						preencherTarefas(prospeccao);
 						fecharSessao(open);
@@ -455,7 +455,7 @@ public class ControllerProspeccao
 		case "Lote":
 			Set<Integer> lotes = receberLotes();
 			if (lotes != null && !lotes.isEmpty())
-				new TarefasSaveView(null, new Prospeccao(), null, MenuView.getInstance(), true, lotes, true)
+				new TarefasSaveView(null, new NegocioProspeccao(), null, MenuView.getInstance(), true, lotes, true)
 						.setVisible(true);
 			break;
 		default:
@@ -490,7 +490,7 @@ public class ControllerProspeccao
 					for (String s : value) {
 						try {
 							int i = Integer.parseInt(s);
-							Prospeccao p = (Prospeccao) dao.receberObjeto(Prospeccao.class, i, session);
+							NegocioProspeccao p = (NegocioProspeccao) dao.receberObjeto(NegocioProspeccao.class, i, session);
 							if (p != null)
 								lotes.add(i);
 							else
@@ -632,7 +632,7 @@ public class ControllerProspeccao
 				}
 				for (int i = 0; i < listarProspeccao.size(); i++) {
 					listaImpressao.add(new ArrayList());
-					Prospeccao p = listarProspeccao.get(i);
+					NegocioProspeccao p = listarProspeccao.get(i);
 					listaImpressao.get(i + 1).add(p.getId());
 					listaImpressao.get(i + 1).add(p.getNome());
 					listaImpressao.get(i + 1).add(p.getResponsavel());
@@ -642,7 +642,7 @@ public class ControllerProspeccao
 					listaImpressao.get(i + 1).add(p.getMaterial() == 1 ? "Sim" : "Não");
 					listaImpressao.get(i + 1).add(p.getNewsletter() == 1 ? "Sim" : "Não");
 
-					PfPj pfpj = p.getPfpj();
+					NegocioPadrao pfpj = p.getPfpj();
 					listaImpressao.get(i + 1).add(pfpj.getEmail());
 					listaImpressao.get(i + 1).add(pfpj.getSite());
 					listaImpressao.get(i + 1).add(pfpj.getTelefone());
@@ -673,9 +673,9 @@ public class ControllerProspeccao
 
 					List<Criterion> criterios = new ArrayList<>();
 					criterios.add(Restrictions.eq("prospeccao", p));
-					List<Negocio> listaNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+					List<NegocioProposta> listaNegocios = dao.items(NegocioProposta.class, session, criterios, Order.asc("id"));
 					if (!listaNegocios.isEmpty()) {
-						for (Negocio negocio : listaNegocios) {
+						for (NegocioProposta negocio : listaNegocios) {
 							qtdNegocios++;
 
 							valorHonorario.append(negocio.getId());
@@ -803,7 +803,7 @@ public class ControllerProspeccao
 			boolean excluiu = dao.excluir(prospeccao, session);
 			if (excluiu) {
 				limparFormulario(pnPesquisa);
-				listarProspeccao = (List<Prospeccao>) dao.listar(Prospeccao.class, session);
+				listarProspeccao = (List<NegocioProspeccao>) dao.listar(NegocioProspeccao.class, session);
 				preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 			}
 			fecharSessao(openHere);
@@ -812,9 +812,9 @@ public class ControllerProspeccao
 
 	private void invocarSalvamento() {
 		abrirSessao();
-		PfPj pfpj = new PfPj();
+		NegocioPadrao pfpj = new NegocioPadrao();
 		if ("".equals(txCodigo.getText())) {
-			prospeccao = new Prospeccao();
+			prospeccao = new NegocioProspeccao();
 			pfpj.setAtendente(UsuarioLogado.getInstance().getUsuario());
 			pfpj.setCriadoEm(new Date());
 			pfpj.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
@@ -919,7 +919,7 @@ public class ControllerProspeccao
 			}
 			tbLista.setModel(model);
 			int id = Integer.parseInt((String) tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0));
-			this.prospeccao = (Prospeccao) dao.receberObjeto(Prospeccao.class, id, session);
+			this.prospeccao = (NegocioProspeccao) dao.receberObjeto(NegocioProspeccao.class, id, session);
 			if (!pnAuxiliar.isVisible())
 				pnAuxiliar.setVisible(true);
 			limparFormulario(pnCadastro);
@@ -987,7 +987,7 @@ public class ControllerProspeccao
 		}
 	}
 
-	private void preencherFormulario(Prospeccao p) {
+	private void preencherFormulario(NegocioProspeccao p) {
 		txCodigo.setText("" + p.getId());
 
 		txCadastradoPor.setText(p.getPfpj().getCriadoPor().getNome());
@@ -997,7 +997,7 @@ public class ControllerProspeccao
 		txNomeContato.setText(p.getResponsavel());
 		txDepartamento.setText(p.getDepartamento());
 		txEndereco.setText(p.getEndereco());
-		PfPj pp = p.getPfpj();
+		NegocioPadrao pp = p.getPfpj();
 		cbAtendenteCad.setSelectedItem(pp.getAtendente().getNome());
 		txTelefone.setText(pp.getTelefone());
 		txCelular.setText(pp.getCelular());
@@ -1060,7 +1060,7 @@ public class ControllerProspeccao
 		tabela.setAutoCreateRowSorter(true);
 	}
 
-	private void preencherTarefas(Prospeccao p) {
+	private void preencherTarefas(NegocioProspeccao p) {
 		if (pnAuxiliar.isVisible()) {
 			List<Criterion> criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("prospeccao", p);
@@ -1070,7 +1070,7 @@ public class ControllerProspeccao
 		}
 	}
 
-	private void preencherTabela(List<Prospeccao> lista, JTable table, JTextField txContadorRegistros) {
+	private void preencherTabela(List<NegocioProspeccao> lista, JTable table, JTextField txContadorRegistros) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		if (lista.isEmpty()) {
 			new SemRegistrosJTable(table, "Relação de Negócios");
@@ -1101,7 +1101,7 @@ public class ControllerProspeccao
 				}
 			};
 			for (int i = 0; i < lista.size(); i++) {
-				Prospeccao n = lista.get(i);
+				NegocioProspeccao n = lista.get(i);
 				ImageIcon yes = recalculate(new ImageIcon(ControllerProspeccao.class
 						.getResource("/br/com/tiagods/utilitarios/thumbs_up.png")), 15);
 				ImageIcon no = recalculate(new ImageIcon(ControllerProspeccao.class
@@ -1162,8 +1162,8 @@ public class ControllerProspeccao
 					int id = Integer.parseInt(value);
 					session = HibernateFactory.getSession();
 					session.beginTransaction();
-					Prospeccao p = (Prospeccao) new GenericDao().receberObjeto(Prospeccao.class, id, session);
-					Negocio negocio = p.getUltimoNegocio();
+					NegocioProspeccao p = (NegocioProspeccao) new GenericDao().receberObjeto(NegocioProspeccao.class, id, session);
+					NegocioProposta negocio = p.getUltimoNegocio();
 					NegociosView viewNegocios = new NegociosView(negocio,p);
 					ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 					session.close();
@@ -1218,10 +1218,10 @@ public class ControllerProspeccao
 			if (!"Lista".equals(cbLista.getSelectedItem())) {
 				Conjunction e = Restrictions.conjunction();
 				e.add(Restrictions.in("l.nome", cbLista.getSelectedItem().toString()));
-				listarProspeccao = dao.items(Prospeccao.class, session, criterios, new String[] { "listas", "l" }, e,
+				listarProspeccao = dao.items(NegocioProspeccao.class, session, criterios, new String[] { "listas", "l" }, e,
 						order);
 			} else
-				listarProspeccao = dao.items(Prospeccao.class, session, criterios, order);
+				listarProspeccao = dao.items(NegocioProspeccao.class, session, criterios, order);
 			preencherTabela(listarProspeccao, tbPrincipal, txContadorRegistros);
 		} else
 			JOptionPane.showMessageDialog(MenuView.jDBody,

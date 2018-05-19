@@ -21,7 +21,7 @@ import javax.swing.text.MaskFormatter;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerPessoas;
-import br.com.tiagods.model.Pessoa;
+import br.com.tiagods.modelcollections.NegocioPessoa;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 
 import java.awt.Font;
@@ -85,7 +85,7 @@ public class PessoasView extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
-	public PessoasView(Pessoa pessoa) {
+	public PessoasView(NegocioPessoa pessoa) {
 		initComponents();
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);

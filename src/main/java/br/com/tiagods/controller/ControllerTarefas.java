@@ -54,13 +54,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.Negocio;
-import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.NegocioEmpresa;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPessoa;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.TarefaDao;
 import br.com.tiagods.modeldao.UsuarioDao;
@@ -281,22 +281,22 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 						listaImpressao.get(i+1).add(t.getDescricao());
 						listaImpressao.get(i+1).add(t.getClasse());
 						String[] dados = new String[3];
-						if(t.getClasse().equals(Empresa.class.getSimpleName())){
+						if(t.getClasse().equals(NegocioEmpresa.class.getSimpleName())){
 							dados[0]=""+t.getEmpresa().getId();
 							dados[1]=t.getEmpresa().getNome();
 							dados[2]="";
 						}
-						else if(t.getClasse().equals(Negocio.class.getSimpleName())){
+						else if(t.getClasse().equals(NegocioProposta.class.getSimpleName())){
 							dados[0]=""+t.getNegocio().getId();
 							dados[1]=t.getNegocio().getNome();
 							dados[2]=t.getNegocio().getStatus().getNome();
 						}
-						else if(t.getClasse().equals(Pessoa.class.getSimpleName())){
+						else if(t.getClasse().equals(NegocioPessoa.class.getSimpleName())){
 							dados[0]=""+t.getPessoa().getId();
 							dados[1]=t.getPessoa().getNome();
 							dados[2]="";
 						}
-						else if(t.getClasse().equals(Prospeccao.class.getSimpleName())){
+						else if(t.getClasse().equals(NegocioProspeccao.class.getSimpleName())){
 							dados[0]=""+t.getProspeccao().getId();
 							dados[1]=t.getProspeccao().getNome();
 							dados[2]="";
@@ -508,13 +508,13 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 				o[1] = sdf.format(t.getDataEvento());
 				o[2] = t.getTipoTarefa().getNome();
 				o[3] = t.getClasse();
-				if(Empresa.class.getSimpleName().equals(t.getClasse()))
+				if(NegocioEmpresa.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getEmpresa()==null?"Erro: Empresa desassociada":t.getEmpresa().getNome();
-				else if(Negocio.class.getSimpleName().equals(t.getClasse()))
+				else if(NegocioProposta.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getNegocio()==null?"Erro: Negocio desassociado":t.getNegocio().getNome();
-				else if(Pessoa.class.getSimpleName().equals(t.getClasse()))
+				else if(NegocioPessoa.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getPessoa()==null?"Erro: Pessoa desassociada":t.getPessoa().getNome();
-				else if(Prospeccao.class.getSimpleName().equals(t.getClasse()))
+				else if(NegocioProspeccao.class.getSimpleName().equals(t.getClasse()))
 					o[4] = t.getProspeccao()==null?"Erro: Prospeccao desassociada":t.getProspeccao().getResponsavel();
 				else
 					o[4] = "Erro";
@@ -678,22 +678,22 @@ public class ControllerTarefas implements ActionListener, MouseListener,Property
 		int id = (int)tbPrincipal.getValueAt(tbPrincipal.getSelectedRow(), 0);
 		Tarefa transfer = (Tarefa) new TarefaDao().receberObjeto(Tarefa.class, id, session);
 		if("Empresa".equals(value)){
-			Empresa empresa = transfer.getEmpresa();
+			NegocioEmpresa empresa = transfer.getEmpresa();
 			EmpresasView viewEmpresas = new EmpresasView(empresa);
 			ControllerMenu.getInstance().abrirCorpo(viewEmpresas);
 		}
 		else if("Negocio".equals(value)){
-			Negocio negocio = transfer.getNegocio();
+			NegocioProposta negocio = transfer.getNegocio();
 			NegociosView viewNegocios = new NegociosView(negocio,null);
 			ControllerMenu.getInstance().abrirCorpo(viewNegocios);
 		}
 		else if("Pessoa".equals(value)){
-			Pessoa pessoa = transfer.getPessoa();
+			NegocioPessoa pessoa = transfer.getPessoa();
 			PessoasView viewPessoa = new PessoasView(pessoa);
 			ControllerMenu.getInstance().abrirCorpo(viewPessoa);
 		}
 		else if("Prospeccao".equals(value)){
-			Prospeccao prospeccao = transfer.getProspeccao();
+			NegocioProspeccao prospeccao = transfer.getProspeccao();
 			ProspeccaoView viewProspeccao = new ProspeccaoView(prospeccao);
 			ControllerMenu.getInstance().abrirCorpo(viewProspeccao);
 		}

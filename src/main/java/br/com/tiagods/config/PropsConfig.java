@@ -9,6 +9,9 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import br.com.tiagods.config.enums.PropsEnum;
+import br.com.tiagods.config.enums.PropsInterface;
+
 public abstract class PropsConfig implements PropsInterface{
 	Logger log = LoggerFactory.getLogger(SecundaryDatabaseConfig.class);
 	private static Properties props = null;
@@ -23,7 +26,7 @@ public abstract class PropsConfig implements PropsInterface{
 			InputStream stream = getClass().getResource(propsEnum.getDescricao()).openStream();
 			props.load(stream);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null,"Falha ao carregar o arquivo de configurações do Banco de Dados - Atualizador");
+			JOptionPane.showMessageDialog(null,"Falha ao carregar o arquivo de configuraÃ§Ãµes do Banco de Dados - Atualizador");
 		}
 	}
 	@Override

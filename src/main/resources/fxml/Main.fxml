@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="146.0" prefWidth="800.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+      <ToolBar prefHeight="36.0" prefWidth="640.0">
+         <items>
+            <JFXButton onAction="#cliente" prefHeight="35.0" prefWidth="74.0" styleClass="btBlue" text="Cliente" />
+            <JFXButton layoutX="88.0" layoutY="10.0" onAction="#pedidoDelivery" prefHeight="35.0" prefWidth="87.0" styleClass="btBlue" text="Delivery" />
+            <JFXButton onAction="#empresa" prefHeight="35.0" prefWidth="87.0" styleClass="btBlue" text="Empresa" />
+            <JFXButton layoutX="256.0" layoutY="10.0" onAction="#produto" prefHeight="35.0" prefWidth="90.0" styleClass="btBlue" text="Produto" />
+            <JFXButton layoutX="78.0" layoutY="10.0" onAction="#sobre" prefHeight="35.0" prefWidth="70.0" styleClass="btBlue" text="Sobre" />
+            <JFXButton onAction="#usuario" prefHeight="35.0" prefWidth="73.0" styleClass="btBlue" text="Usuario" />
+            <JFXButton layoutX="165.0" layoutY="10.0" onAction="#sair" prefHeight="35.0" prefWidth="70.0" styleClass="btBlue" text="Sair" />
+            <JFXButton fx:id="btnCaixa" layoutX="10.0" layoutY="10.0" onAction="#caixa" prefHeight="35.0" prefWidth="74.0" text="Caixa" visible="false" />
+            <JFXButton layoutX="166.0" layoutY="10.0" onAction="#pedidoCaixa" prefHeight="35.0" prefWidth="87.0" text="Pedido Caixa" visible="false" />
+         </items>
+      </ToolBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <children>
+        <Label alignment="CENTER" layoutX="203.0" layoutY="78.0" style="&#10;" text="Drag components from Library here…" textAlignment="CENTER" textFill="#9f9f9f" visible="false" wrapText="false">
+          <font>
+            <Font size="18.0" />
+          </font>
+        </Label>
+      </children>
+    </AnchorPane>
+  </children>
+</VBox>

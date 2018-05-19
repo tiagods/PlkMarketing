@@ -7,7 +7,6 @@
     		<!-- Logging -->
 		<log4j.version>2.6</log4j.version>
 		<jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
-		
 		<!-- JPA / Hibernate -->
 		<hibernate.version>5.1.0.Final</hibernate.version>
     </properties>
@@ -24,16 +23,20 @@
         </plugins>
   </build>
   <dependencies>
-	<dependency>
-	<groupId>com.toedter</groupId>
-    <artifactId>jcalendar</artifactId>
-    <version>1.4</version>
-    </dependency>
-    <dependency>
-	<groupId>org.hibernate</groupId>
-	<artifactId>hibernate-core</artifactId>
-	<version>5.2.2.Final</version>
-	</dependency>
+    <!-- JPA / Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Hibernate - Java 8 support -->
+        <dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-java8</artifactId>
+    		<version>${hibernate.version}</version>
+    		<scope>compile</scope>
+		</dependency>
 	<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 	<dependency>
 	    <groupId>postgresql</groupId>
@@ -44,11 +47,6 @@
 		<groupId>net.sourceforge.jexcelapi</groupId>
 		<artifactId>jxl</artifactId>
 		<version>2.6.12</version>
-	</dependency>
-	<dependency>
-	<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-		<version>5.1.38</version>
 	</dependency>
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
@@ -81,5 +79,26 @@
 		<artifactId>jcl-over-slf4j</artifactId>
 		<version>${jcl-over-slf4j.version}</version>
 	</dependency>
+	<dependency>
+            <groupId>com.jfoenix</groupId>
+            <artifactId>jfoenix</artifactId>
+            <version>8.0.1</version>
+        </dependency>
+        <dependency>
+		    <groupId>org.fxutil.maskedtextfield</groupId>
+		    <artifactId>maskedtextfield</artifactId>
+		    <version>1.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20151123</version>
+        </dependency>
+		<dependency>
+		    <groupId>javassist</groupId>
+		    <artifactId>javassist</artifactId>
+		    <version>3.8.0.GA</version>
+		</dependency>
   </dependencies>
 </project>

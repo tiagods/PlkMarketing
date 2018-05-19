@@ -22,7 +22,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 
-import br.com.tiagods.model.VersaoSistema;
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.modeldao.VerificarAtualizacao;
 import br.com.tiagods.view.EmpresasView;

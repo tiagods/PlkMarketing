@@ -17,8 +17,8 @@ import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.controller.ControllerLogin;
-import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.view.MenuView;
 
 public class LoginDialog extends JDialog {
@@ -68,7 +68,7 @@ public class LoginDialog extends JDialog {
 		lbTitulo.setBounds(10, 11, 464, 25);
 		contentPanel.add(lbTitulo);
 		
-		JLabel lbVersao = new JLabel("Versão do Sistema: "+versao.getVersao()+" em "+versao.getDate());
+		JLabel lbVersao = new JLabel("Versï¿½o do Sistema: "+versao.getVersao()+" em "+versao.getDate());
 		
 		lbVersao.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		lbVersao.setForeground(Color.BLACK);

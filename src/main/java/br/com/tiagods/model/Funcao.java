@@ -2,25 +2,31 @@ package br.com.tiagods.model;
 
 import java.io.Serializable;
 
-public class Funcao implements Serializable{
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-	/**
-	 * 
-	 */
+@Entity
+public class Funcao implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
-	private int id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="FUN_COD")
+	private Long id;
+	@Column(name="FUN_NOME")
 	private String nome;
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	/**

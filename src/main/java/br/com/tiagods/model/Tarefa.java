@@ -1,37 +1,75 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Calendar;
 
-public class Tarefa implements Serializable{
-	 /**
-	 * 
-	 */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import br.com.tiagods.modelcollections.NegocioEmpresa;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPessoa;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
+
+@Entity
+public class Tarefa implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
-	private int id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="TAR_COD")
+	private Long id;
+	@Column(name="TAR_NOME")
 	private String descricao="";
-	private Date dataEvento;
+	@Column(name="TAR_DATAEVENTO")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Calendar dataEvento;
+	@Column(name="TAR_CLASSE")
 	private String classe="";
-	private Date criadoEm;
+	@Column(name="TAR_CRIADOEM")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Calendar criadoEm;
+	@ManyToOne
+	@JoinColumn(name="TAR_CRIADOPOR_COD")
 	private Usuario criadoPor;
+	@ManyToOne
+	@JoinColumn(name="TAR_TIP_TAR_COD")
 	private TipoTarefa tipoTarefa;
+	@ManyToOne
+	@JoinColumn(name="TAR_ATENDENTE_COD")
 	private Usuario atendente;
-	private Pessoa pessoa;
-	private Empresa empresa;
-	private Negocio negocio;
-	private Prospeccao prospeccao;
-	private int finalizado;
-	private int alertaEnviado;
+	@ManyToOne
+	@JoinColumn(name="TAR_PESSOA_COD")
+	private NegocioPessoa pessoa;
+	@ManyToOne
+	@JoinColumn(name="TAR_EMPRESA_COD")
+	private NegocioEmpresa empresa;
+	@ManyToOne
+	@JoinColumn(name="TAR_NEGOCIO_COD")
+	private NegocioProposta negocio;
+	@ManyToOne
+	@JoinColumn(name="TAR_PROSPECCAO_COD")
+	private NegocioProspeccao prospeccao;
+	@Column(name="TAR_FINALIZADO")
+	private int finalizado=0;
+	@Column(name="TAR_ALERTAENVIADO")
+	private int alertaEnviado=0;
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	/**
@@ -49,13 +87,13 @@ public class Tarefa implements Serializable{
 	/**
 	 * @return the dataEvento
 	 */
-	public Date getDataEvento() {
+	public Calendar getDataEvento() {
 		return dataEvento;
 	}
 	/**
 	 * @param dataEvento the dataEvento to set
 	 */
-	public void setDataEvento(Date dataEvento) {
+	public void setDataEvento(Calendar dataEvento) {
 		this.dataEvento = dataEvento;
 	}
 	/**
@@ -73,13 +111,13 @@ public class Tarefa implements Serializable{
 	/**
 	 * @return the criadoEm
 	 */
-	public Date getCriadoEm() {
+	public Calendar getCriadoEm() {
 		return criadoEm;
 	}
 	/**
 	 * @param criadoEm the criadoEm to set
 	 */
-	public void setCriadoEm(Date criadoEm) {
+	public void setCriadoEm(Calendar criadoEm) {
 		this.criadoEm = criadoEm;
 	}
 	/**
@@ -121,49 +159,49 @@ public class Tarefa implements Serializable{
 	/**
 	 * @return the pessoa
 	 */
-	public Pessoa getPessoa() {
+	public NegocioPessoa getPessoa() {
 		return pessoa;
 	}
 	/**
 	 * @param pessoa the pessoa to set
 	 */
-	public void setPessoa(Pessoa pessoa) {
+	public void setPessoa(NegocioPessoa pessoa) {
 		this.pessoa = pessoa;
 	}
 	/**
 	 * @return the empresa
 	 */
-	public Empresa getEmpresa() {
+	public NegocioEmpresa getEmpresa() {
 		return empresa;
 	}
 	/**
 	 * @param empresa the empresa to set
 	 */
-	public void setEmpresa(Empresa empresa) {
+	public void setEmpresa(NegocioEmpresa empresa) {
 		this.empresa = empresa;
 	}
 	/**
 	 * @return the negocio
 	 */
-	public Negocio getNegocio() {
+	public NegocioProposta getNegocio() {
 		return negocio;
 	}
 	/**
 	 * @param negocio the negocio to set
 	 */
-	public void setNegocio(Negocio negocio) {
+	public void setNegocio(NegocioProposta negocio) {
 		this.negocio = negocio;
 	}
 	/**
 	 * @return the prospeccao
 	 */
-	public Prospeccao getProspeccao() {
+	public NegocioProspeccao getProspeccao() {
 		return prospeccao;
 	}
 	/**
 	 * @param prospeccao the prospeccao to set
 	 */
-	public void setProspeccao(Prospeccao prospeccao) {
+	public void setProspeccao(NegocioProspeccao prospeccao) {
 		this.prospeccao = prospeccao;
 	}
 	/**

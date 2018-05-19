@@ -28,7 +28,7 @@ import javax.swing.SwingConstants;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerNegocios;
-import br.com.tiagods.model.Negocio;
+import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 import br.com.tiagods.view.interfaces.DefaultEnumModel.Modelos;
 import javax.swing.JTabbedPane;
@@ -136,7 +136,7 @@ public class NegociosView extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
-	public NegociosView(Negocio negocio, Object objeto) {
+	public NegociosView(NegocioProposta negocio, Object objeto) {
 		initComponents();
 		controller.iniciar(negocio,objeto);
 		lbTitulo.setHorizontalAlignment(SwingConstants.CENTER);

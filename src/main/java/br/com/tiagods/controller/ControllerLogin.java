@@ -48,14 +48,14 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioAcesso;
-import br.com.tiagods.model.VersaoSistema;
 import br.com.tiagods.modeldao.GenericDao;
-import br.com.tiagods.modeldao.SendEmail;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.modeldao.VerificarAtualizacao;
+import br.com.tiagods.util.SendEmail;
 import br.com.tiagods.view.LoadingView;
 import br.com.tiagods.view.MenuView;
 import br.com.tiagods.view.dialog.LoginDialog;
@@ -210,8 +210,6 @@ public class ControllerLogin implements ActionListener, MouseListener {
 				"Solicitar senha!",
 				JOptionPane.OK_CANCEL_OPTION);
 		if(escolha == JOptionPane.OK_OPTION){
-			Session session = HibernateFactory.getSession();
-			session.beginTransaction();
 			String conta = txEmail.getText().toLowerCase().replace("@prolinkcontabil.com.br","")+"@prolinkcontabil.com.br";
 			usuario = (Usuario)dao.receberObjeto(Usuario.class, new Criterion[]{Restrictions.eq("email", 
 					conta)}, session);

@@ -21,7 +21,8 @@ import javax.swing.text.MaskFormatter;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.controller.ControllerEmpresas;
-import br.com.tiagods.model.Empresa;
+import br.com.tiagods.modelcollections.NegocioEmpresa;
+
 import java.awt.Font;
 
 import br.com.tiagods.view.interfaces.DefaultComboBox;
@@ -86,7 +87,7 @@ public class EmpresasView extends JInternalFrame {
 	/**
 	 * Create the frame.
 	 */
-	public EmpresasView(Empresa empresa) {
+	public EmpresasView(NegocioEmpresa empresa) {
 		initComponents();
 		pnAuxiliar.setVisible(false);
 		pnPrivacidade.setVisible(false);

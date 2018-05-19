@@ -35,12 +35,12 @@ import org.hibernate.criterion.Restrictions;
 
 import com.toedter.calendar.JDateChooser;
 
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Tarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioAcesso;
-import br.com.tiagods.model.VersaoSistema;
+import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
@@ -237,7 +237,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		};
 		List<Criterion> criterios = new ArrayList<>();
 		criterios.add(Restrictions.between("dataInicio", dataResumo1.getDate(), dataResumo2.getDate()));
-		List<Negocio> listarNegocios = dao.items(Negocio.class, session, criterios, Order.asc("id"));
+		List<NegocioProposta> listarNegocios = dao.items(NegocioProposta.class, session, criterios, Order.asc("id"));
 		
 		int meuAndamento=0;
 		int meuGanho=0;
@@ -247,7 +247,7 @@ public class ControllerInicio implements ActionListener,MouseListener{
 		int todosPerdidos=0;
 		
 		for(int h = 0; h<listarNegocios.size(); h++){
-			Negocio n = listarNegocios.get(h);
+			NegocioProposta n = listarNegocios.get(h);
 			if("Em Andamento".equals(n.getStatus().getNome())){
 				todosAndamentos++;
 				if(n.getAtendente().equals(usuario))

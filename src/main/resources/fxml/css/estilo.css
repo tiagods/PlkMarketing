@@ -1,0 +1,60 @@
+.btDefault{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(247, 126, 39);
+    -fx-text-fill: WHITE;
+}
+.btYellow{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(244, 206, 66);
+    -fx-text-fill: WHITE;
+}
+.btBlue{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(19, 134, 242);
+    -fx-text-fill: WHITE;
+}
+.btGreen{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(64, 206, 85);
+    -fx-text-fill: WHITE;
+}
+.btRed{
+    -fx-font-size: 12px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(242, 52, 38);
+    -fx-text-fill: WHITE;
+}
+.btDefault:hover{
+    -fx-font-size: 11px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(255,102,70);
+    -fx-text-fill: WHITE;
+}
+.btBlue:hover{
+    -fx-font-size: 11px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(255,102,70);
+    -fx-text-fill: WHITE;
+}
+.btGreen:hover{
+    -fx-font-size: 11px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(255,102,70);
+    -fx-text-fill: WHITE;
+}
+.btRed:hover{
+    -fx-font-size: 11px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(255,102,70);
+    -fx-text-fill: WHITE;
+}
+.btYellow:hover{
+    -fx-font-size: 11px;
+    -jfx-button-type: RAISED;
+    -fx-background-color: rgb(255,102,70);
+    -fx-text-fill: WHITE;
+}

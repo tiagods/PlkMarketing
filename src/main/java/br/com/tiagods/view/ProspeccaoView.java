@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import br.com.tiagods.controller.ControllerProspeccao;
-import br.com.tiagods.model.Prospeccao;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
 import br.com.tiagods.view.interfaces.DefaultComboBox;
 
 import javax.swing.JComboBox;
@@ -88,7 +88,7 @@ public class ProspeccaoView extends JInternalFrame {
 	 * Create the frame.
 	 */
 	@SuppressWarnings("unchecked")
-	public ProspeccaoView(Prospeccao prospeccao) {
+	public ProspeccaoView(NegocioProspeccao prospeccao) {
 		setBorder(null);
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, BorderLayout.CENTER);

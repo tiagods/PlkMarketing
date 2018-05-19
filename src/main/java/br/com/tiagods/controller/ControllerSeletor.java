@@ -30,17 +30,17 @@ import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Categoria;
-import br.com.tiagods.model.Empresa;
-import br.com.tiagods.model.Lista;
-import br.com.tiagods.model.Negocio;
 import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.Pessoa;
-import br.com.tiagods.model.PfPj;
-import br.com.tiagods.model.Prospeccao;
 import br.com.tiagods.model.ProspeccaoTipoContato;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.ServicoAgregado;
+import br.com.tiagods.modelcollections.NegocioEmpresa;
+import br.com.tiagods.modelcollections.Lista;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioPessoa;
+import br.com.tiagods.modelcollections.NegocioPadrao;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
+import br.com.tiagods.modelcollections.ServicoAgregado;
 import br.com.tiagods.modeldao.GenericDao;
 import br.com.tiagods.modeldao.UsuarioLogado;
 import br.com.tiagods.view.MenuView;
@@ -98,8 +98,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					criterion.add(Restrictions.ilike(atributo, buscarValor+"%"));
 			}
 			GenericDao dao = new GenericDao();
-			if(object instanceof Empresa){
-				List<Empresa> lista = dao.items(Empresa.class, session, criterion, Order.desc("id"));
+			if(object instanceof NegocioEmpresa){
+				List<NegocioEmpresa> lista = dao.items(NegocioEmpresa.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -118,8 +118,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relação de Listas");
 			}
-			else if(object instanceof Negocio){
-				List<Negocio> lista = dao.items(Negocio.class, session, criterion, Order.desc("id"));
+			else if(object instanceof NegocioProposta){
+				List<NegocioProposta> lista = dao.items(NegocioProposta.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -127,8 +127,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relação de Negócios");
 			}
-			else if (object instanceof Pessoa){
-				List<Pessoa> lista = dao.items(Pessoa.class, session, criterion, Order.desc("id"));
+			else if (object instanceof NegocioPessoa){
+				List<NegocioPessoa> lista = dao.items(NegocioPessoa.class, session, criterion, Order.desc("id"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -136,8 +136,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relação de Pessoas");
 			}
-			else if (object instanceof Prospeccao){
-				List<Prospeccao> lista = dao.items(Prospeccao.class, session, criterion, Order.desc("id"));
+			else if (object instanceof NegocioProspeccao){
+				List<NegocioProspeccao> lista = dao.items(NegocioProspeccao.class, session, criterion, Order.desc("id"));
 				colunas = new String[]{"ID","NOME","RESPONSAVEL"};
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
@@ -221,7 +221,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			sair();
 			break;
 		case "Novo":
-			if(object instanceof Negocio){
+			if(object instanceof NegocioProposta){
 				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar ou editar um registro de um  NEGOCIO diretamente. \nClique sobre o menu Negocios","Acesso proibido",JOptionPane.WARNING_MESSAGE);
 			}
 			else{
@@ -232,7 +232,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			}
 			break;
 		case "Editar":
-			if(object instanceof Negocio){
+			if(object instanceof NegocioProposta){
 				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar ou editar um registro de um  NEGOCIO diretamente. \nClique sobre o menu Negocios","Acesso proibido",JOptionPane.WARNING_MESSAGE);
 			}
 			else if(!"".equals(txCodigo.getText())){
@@ -257,7 +257,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			salvarCancelar();
 			break;
 		case "Excluir":
-			if(object instanceof Negocio){
+			if(object instanceof NegocioProposta){
 				JOptionPane.showMessageDialog(MenuView.jDBody, "Não é possivel criar ou editar um registro de um  NEGOCIO diretamente. \nClique sobre o menu Negocios","Acesso proibido",JOptionPane.WARNING_MESSAGE);
 			}
 			else invocarExclusao();
@@ -276,7 +276,7 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 					labelId.setText(txCodigo.getText());
 					labelNome.setText(txNome.getText());
 					if(comboNegocios!=null){
-						if(object instanceof Pessoa || object instanceof Empresa || object instanceof Prospeccao){
+						if(object instanceof NegocioPessoa || object instanceof NegocioEmpresa || object instanceof NegocioProspeccao){
 							int option = JOptionPane.showConfirmDialog(MenuView.jDBody,
 									"Deseja vincular os dados da "+object.getClass().getSimpleName()+": "+txCodigo.getText()+" e nome "+txNome.getText()+" ?"+
 											"\nSe clicar em Sim, CATEGORIA, ORIGEM, NIVEL E SERVICO de "+txNome.getText()+
@@ -285,22 +285,22 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 							if(option==JOptionPane.YES_OPTION){
 								Session session = HibernateFactory.getSession();
 								session.beginTransaction();
-								if(object instanceof Empresa){
-									Empresa empresa = (Empresa)dao.receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
+								if(object instanceof NegocioEmpresa){
+									NegocioEmpresa empresa = (NegocioEmpresa)dao.receberObjeto(NegocioEmpresa.class, Integer.parseInt(txCodigo.getText()), session);
 									comboNegocios[0].setSelectedItem(empresa.getPessoaJuridica().getCategoria()==null?"":empresa.getPessoaJuridica().getCategoria().getNome());
 									comboNegocios[1].setSelectedItem(empresa.getPessoaJuridica().getOrigem()==null?"":empresa.getPessoaJuridica().getOrigem().getNome());
 									comboNegocios[2].setSelectedItem(empresa.getPessoaJuridica().getNivel()==null?"":empresa.getPessoaJuridica().getNivel().getNome());
 									comboNegocios[3].setSelectedItem(empresa.getPessoaJuridica().getServico()==null?"":empresa.getPessoaJuridica().getServico().getNome());
 								}
-								else if(object instanceof Pessoa){
-									Pessoa pessoa = (Pessoa)dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
+								else if(object instanceof NegocioPessoa){
+									NegocioPessoa pessoa = (NegocioPessoa)dao.receberObjeto(NegocioPessoa.class, Integer.parseInt(txCodigo.getText()), session);
 									comboNegocios[0].setSelectedItem(pessoa.getPessoaFisica().getCategoria()==null?"":pessoa.getPessoaFisica().getCategoria().getNome());
 									comboNegocios[1].setSelectedItem(pessoa.getPessoaFisica().getOrigem()==null?"":pessoa.getPessoaFisica().getOrigem().getNome());
 									comboNegocios[2].setSelectedItem(pessoa.getPessoaFisica().getNivel()==null?"":pessoa.getPessoaFisica().getNivel().getNome());
 									comboNegocios[3].setSelectedItem(pessoa.getPessoaFisica().getServico()==null?"":pessoa.getPessoaFisica().getServico().getNome());
 								}
-								else if(object instanceof Prospeccao){
-									Prospeccao prospeccao = (Prospeccao)dao.receberObjeto(Prospeccao.class, Integer.parseInt(txCodigo.getText()), session);
+								else if(object instanceof NegocioProspeccao){
+									NegocioProspeccao prospeccao = (NegocioProspeccao)dao.receberObjeto(NegocioProspeccao.class, Integer.parseInt(txCodigo.getText()), session);
 									comboNegocios[0].setSelectedItem("");
 									comboNegocios[1].setSelectedItem(prospeccao.getPfpj().getOrigem()==null?"":prospeccao.getPfpj().getOrigem().getNome());
 									comboNegocios[2].setSelectedItem("");
@@ -339,18 +339,18 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 		Session session = HibernateFactory.getSession();
 		session.beginTransaction();
 		Object novoObjeto = null;
-		if(object instanceof Empresa){
+		if(object instanceof NegocioEmpresa){
 			if("".equals(txCodigo.getText())){
-				novoObjeto = new Empresa();
-				PfPj pessoaJuridica = new PfPj();
+				novoObjeto = new NegocioEmpresa();
+				NegocioPadrao pessoaJuridica = new NegocioPadrao();
 				pessoaJuridica.setCriadoEm(new Date());
 				pessoaJuridica.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 				pessoaJuridica.setAtendente(UsuarioLogado.getInstance().getUsuario());
-				((Empresa)novoObjeto).setPessoaJuridica(pessoaJuridica);
+				((NegocioEmpresa)novoObjeto).setPessoaJuridica(pessoaJuridica);
 			}
 			else 
-				novoObjeto = (Empresa)dao.receberObjeto(Empresa.class, Integer.parseInt(txCodigo.getText()), session);
-			((Empresa)novoObjeto).setNome(txNome.getText().trim());
+				novoObjeto = (NegocioEmpresa)dao.receberObjeto(NegocioEmpresa.class, Integer.parseInt(txCodigo.getText()), session);
+			((NegocioEmpresa)novoObjeto).setNome(txNome.getText().trim());
 		}		
 		else if(object instanceof Lista){
 			if("".equals(txCodigo.getText())){
@@ -363,42 +363,42 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			((Lista)novoObjeto).setNome(txNome.getText().trim());
 			((Lista)novoObjeto).setDetalhes(txDetalhes.getText().trim());
 		}
-		else if(object instanceof Negocio){
+		else if(object instanceof NegocioProposta){
 			if("".equals(txCodigo.getText())){
-				novoObjeto = new Negocio();
-				((Negocio)novoObjeto).setCriadoEm(new Date());
-				((Negocio)novoObjeto).setCriadoPor(UsuarioLogado.getInstance().getUsuario());
-				((Negocio)novoObjeto).setAtendente(UsuarioLogado.getInstance().getUsuario());
+				novoObjeto = new NegocioProposta();
+				((NegocioProposta)novoObjeto).setCriadoEm(new Date());
+				((NegocioProposta)novoObjeto).setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+				((NegocioProposta)novoObjeto).setAtendente(UsuarioLogado.getInstance().getUsuario());
 			}
 			else 
-				novoObjeto = (Negocio)dao.receberObjeto(Negocio.class, Integer.parseInt(txCodigo.getText()), session);
-			((Negocio)novoObjeto).setNome(txNome.getText().trim());
+				novoObjeto = (NegocioProposta)dao.receberObjeto(NegocioProposta.class, Integer.parseInt(txCodigo.getText()), session);
+			((NegocioProposta)novoObjeto).setNome(txNome.getText().trim());
 		}
-		else if(object instanceof Pessoa){
+		else if(object instanceof NegocioPessoa){
 			if("".equals(txCodigo.getText())){
-				novoObjeto = new Pessoa();
-				PfPj pessoaFisica = new PfPj();
+				novoObjeto = new NegocioPessoa();
+				NegocioPadrao pessoaFisica = new NegocioPadrao();
 				pessoaFisica.setCriadoEm(new Date());
 				pessoaFisica.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 				pessoaFisica.setAtendente(UsuarioLogado.getInstance().getUsuario());
-				((Pessoa)novoObjeto).setPessoaFisica(pessoaFisica);
+				((NegocioPessoa)novoObjeto).setPessoaFisica(pessoaFisica);
 			}
 			else 
-				novoObjeto = (Pessoa)dao.receberObjeto(Pessoa.class, Integer.parseInt(txCodigo.getText()), session);
-			((Pessoa)novoObjeto).setNome(txNome.getText().trim());
+				novoObjeto = (NegocioPessoa)dao.receberObjeto(NegocioPessoa.class, Integer.parseInt(txCodigo.getText()), session);
+			((NegocioPessoa)novoObjeto).setNome(txNome.getText().trim());
 		}
-		else if(object instanceof Prospeccao){
+		else if(object instanceof NegocioProspeccao){
 			if("".equals(txCodigo.getText())){
-				novoObjeto = new Prospeccao();
-				PfPj pfpj = new PfPj();
+				novoObjeto = new NegocioProspeccao();
+				NegocioPadrao pfpj = new NegocioPadrao();
 				pfpj.setCriadoEm(new Date());
 				pfpj.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 				pfpj.setAtendente(UsuarioLogado.getInstance().getUsuario());
-				((Prospeccao)novoObjeto).setPfpj(pfpj);
+				((NegocioProspeccao)novoObjeto).setPfpj(pfpj);
 			}
 			else 
-				novoObjeto = (Prospeccao)dao.receberObjeto(Prospeccao.class, Integer.parseInt(txCodigo.getText()), session);
-			((Prospeccao)novoObjeto).setNome(txNome.getText().trim());
+				novoObjeto = (NegocioProspeccao)dao.receberObjeto(NegocioProspeccao.class, Integer.parseInt(txCodigo.getText()), session);
+			((NegocioProspeccao)novoObjeto).setNome(txNome.getText().trim());
 		}
 		else if(object instanceof ProspeccaoTipoContato){
 			if("".equals(txCodigo.getText())){
@@ -474,17 +474,17 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			GenericDao dao = new GenericDao();
 			Object novoObjeto = null;
 			int id = Integer.parseInt(txCodigo.getText());
-			if(object instanceof Empresa){
-				novoObjeto = dao.receberObjeto(Empresa.class, id, session);
+			if(object instanceof NegocioEmpresa){
+				novoObjeto = dao.receberObjeto(NegocioEmpresa.class, id, session);
 			}
 			else if(object instanceof Lista){
 				novoObjeto = dao.receberObjeto(Lista.class, id, session);
 			}
-			else if(object instanceof Negocio){
-				novoObjeto = dao.receberObjeto(Negocio.class, id, session);
+			else if(object instanceof NegocioProposta){
+				novoObjeto = dao.receberObjeto(NegocioProposta.class, id, session);
 			}
-			else if(object instanceof Pessoa){
-				novoObjeto = dao.receberObjeto(Pessoa.class, id, session);
+			else if(object instanceof NegocioPessoa){
+				novoObjeto = dao.receberObjeto(NegocioPessoa.class, id, session);
 			}
 			else if(object instanceof Categoria){
 				novoObjeto = dao.receberObjeto(Categoria.class, id, session);
@@ -495,8 +495,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			else if(object instanceof Origem){
 				novoObjeto = dao.receberObjeto(Origem.class, id, session);
 			}
-			else if(object instanceof Prospeccao){
-				novoObjeto = dao.receberObjeto(Prospeccao.class, id, session);
+			else if(object instanceof NegocioProspeccao){
+				novoObjeto = dao.receberObjeto(NegocioProspeccao.class, id, session);
 			}
 			else if(object instanceof Servico){
 				novoObjeto = dao.receberObjeto(Servico.class, id, session);
@@ -519,21 +519,21 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 	private void enviarFiltros(Object novoObjeto){
 		int id=0;
 		String value="";
-		if(object instanceof Empresa){
-			id=((Empresa) object).getId();
-			value=((Empresa) object).getNome();
+		if(object instanceof NegocioEmpresa){
+			id=((NegocioEmpresa) object).getId();
+			value=((NegocioEmpresa) object).getNome();
 		}
-		else if(object instanceof Negocio){
-			id=((Negocio) object).getId();
-			value=((Negocio) object).getNome();
+		else if(object instanceof NegocioProposta){
+			id=((NegocioProposta) object).getId();
+			value=((NegocioProposta) object).getNome();
 		}
-		else if(object instanceof Pessoa){
-			id=((Pessoa) object).getId();
-			value=((Pessoa) object).getNome();
+		else if(object instanceof NegocioPessoa){
+			id=((NegocioPessoa) object).getId();
+			value=((NegocioPessoa) object).getNome();
 		}
-		else if(object instanceof Prospeccao){
-			id=((Prospeccao) object).getId();
-			value=((Prospeccao) object).getResponsavel();
+		else if(object instanceof NegocioProspeccao){
+			id=((NegocioProspeccao) object).getId();
+			value=((NegocioProspeccao) object).getResponsavel();
 		}
 		else if(object instanceof Categoria){
 			id=((Categoria) object).getId();
