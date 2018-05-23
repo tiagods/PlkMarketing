@@ -9,8 +9,8 @@ import java.util.ResourceBundle;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 
+import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.Pessoa;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -60,7 +60,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 		try { 	
 			Stage stage = new Stage();
 		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioCadastro.fxml"));
-	        loader.setController(new UsuarioCadastroController(usuario,stage,false));
+	        loader.setController(new UsuarioCadastroController(usuario,stage));
 	        final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(Modality.APPLICATION_MODAL);
@@ -109,7 +109,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 			super.loadFactory();
 			usuarios = new UsuariosImpl(super.getManager());
 			tbPrincipal.getItems().clear();
-			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,"pessoa.nome");
+			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,ConstantesTemporarias.pessoa_nome);
 			tbPrincipal.getItems().addAll(usuarioList);
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
@@ -128,11 +128,11 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
 
-		TableColumn<Usuario, Pessoa> columnNome = new  TableColumn<>("Nome");
-		columnNome.setCellValueFactory(new PropertyValueFactory<>("pessoa"));
-		columnNome.setCellFactory(param -> new TableCell<Usuario,Pessoa>(){
+		TableColumn<Usuario, String> columnNome = new  TableColumn<>("Nome");
+		columnNome.setCellValueFactory(new PropertyValueFactory<>(ConstantesTemporarias.pessoa_nome));
+		columnNome.setCellFactory(param -> new TableCell<Usuario,String>(){
 			@Override
-			protected void updateItem(Pessoa item, boolean empty) {
+			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
 				if(item==null){
 					setStyle("");
@@ -140,7 +140,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
-					setText(item.getNome());
+					setText(item);
 				}
 			}
 		});

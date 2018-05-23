@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,6 +24,7 @@ public class Cidade implements AbstractEntity,Serializable{
 	@Column(name="CID_NOME")
 	private String nome;
 	@Column(name="CID_ESTADO")
+	@Enumerated(EnumType.STRING)
 	private Estado estado;
 	@Column(name="CID_COD_EXTRA")
 	private String idExtra;

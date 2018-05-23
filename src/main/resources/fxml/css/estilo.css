@@ -1,8 +1,34 @@
+.linear-background {
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+}
+.login--linear-background {
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+}
+.menu-top--linear-background{
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+}
+.menu-lerf--linear-background{
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+}
+.tarefas--linear-background{
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+}
 .btDefault{
     -fx-font-size: 12px;
     -jfx-button-type: RAISED;
-    -fx-background-color: rgb(247, 126, 39);
-    -fx-text-fill: WHITE;
+    -fx-text-fill:  #E7DFDD;
+}
+.label{
+    -fx-font-size: 12px;
+    -fx-text-fill:  #E7DFDD;
+}
+.table{
+    -fx-font-size: 12px;
+    -fx-text-fill:  #E7DFDD;
+}
+.label-title{
+    -fx-font-size: 36px;
+    -fx-text-fill:  #E7DFDD;
 }
 .btYellow{
     -fx-font-size: 12px;
@@ -32,7 +58,7 @@
     -fx-font-size: 11px;
     -jfx-button-type: RAISED;
     -fx-background-color: rgb(255,102,70);
-    -fx-text-fill: WHITE;
+    -fx-text-fill:  #E7DFDD;
 }
 .btBlue:hover{
     -fx-font-size: 11px;

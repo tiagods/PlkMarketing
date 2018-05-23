@@ -11,6 +11,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.exception.FXMLNaoEncontradoException;
+import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.CriptografiaUtil;
@@ -46,7 +47,7 @@ public class LoginController extends UtilsController implements Initializable{
         try {
             loadFactory();
             usuarios = new UsuariosImpl(super.getManager());
-            List<Usuario> contas = usuarios.filtrar("", 1, "pessoa.nome");
+            List<Usuario> contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
             cbNome.getItems().addAll(contas);
             cbNome.getSelectionModel().selectFirst();
             txSenha.setFocusTraversable(true);
@@ -70,7 +71,6 @@ public class LoginController extends UtilsController implements Initializable{
         logon();
     }
     private void logon() {
-        String mensagem;
         if (cbNome.getValue() == null || txSenha.getText().equals("")) {
             super.alert(Alert.AlertType.ERROR,"Erro",null,"Usuario ou senha em branco!",null,false);
             return;

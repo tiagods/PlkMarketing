@@ -14,8 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.tiagods.modelcollections.NegocioEmpresa;
-import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioPessoa;
+import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProspeccao;
 
 @Entity
@@ -30,8 +30,8 @@ public class Tarefa implements AbstractEntity,Serializable{
 	@Column(name="TAR_DATAEVENTO")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar dataEvento;
-	@Column(name="TAR_CLASSE")
-	private String classe="";
+	
+	
 	@Column(name="TAR_CRIADOEM")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar criadoEm;
@@ -39,11 +39,16 @@ public class Tarefa implements AbstractEntity,Serializable{
 	@JoinColumn(name="TAR_CRIADOPOR_COD")
 	private Usuario criadoPor;
 	@ManyToOne
-	@JoinColumn(name="TAR_TIP_TAR_COD")
-	private TipoTarefa tipoTarefa;
-	@ManyToOne
 	@JoinColumn(name="TAR_ATENDENTE_COD")
 	private Usuario atendente;
+	
+	@ManyToOne
+	@JoinColumn(name="TAR_TIP_TAR_COD")
+	private TipoTarefa tipoTarefa;
+	
+	//excluir
+	@Column(name="TAR_CLASSE")
+	private String classe="";
 	@ManyToOne
 	@JoinColumn(name="TAR_PESSOA_COD")
 	private NegocioPessoa pessoa;
@@ -56,6 +61,11 @@ public class Tarefa implements AbstractEntity,Serializable{
 	@ManyToOne
 	@JoinColumn(name="TAR_PROSPECCAO_COD")
 	private NegocioProspeccao prospeccao;
+	
+	@ManyToOne
+	@JoinColumn(name="contato_id")
+	private Contato contato;
+	
 	@Column(name="TAR_FINALIZADO")
 	private int finalizado=0;
 	@Column(name="TAR_ALERTAENVIADO")
@@ -228,5 +238,7 @@ public class Tarefa implements AbstractEntity,Serializable{
 	public void setAlertaEnviado(int alertaEnviado) {
 		this.alertaEnviado = alertaEnviado;
 	}
+	
+	
 	 
 }

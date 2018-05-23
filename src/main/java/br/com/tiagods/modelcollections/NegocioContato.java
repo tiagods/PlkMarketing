@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import br.com.tiagods.model.Pessoa;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Tarefa;

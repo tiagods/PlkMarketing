@@ -5,7 +5,7 @@ public abstract class ConstantesTemporarias {
 	
 	public static final String pessoa_nome=PESSOA+"nome";
 	public static final String pessoa_telefone=PESSOA+"telefone";
-	public static final String pessoa_celular="PESSOA+celular";
+	public static final String pessoa_celular=PESSOA+"celular";
 	public static final String pessoa_email=PESSOA+"email";
 	public static final String pessoa_site=PESSOA+"site";
 	public static final String pessoa_cep=PESSOA+"cep";
@@ -28,6 +28,5 @@ public abstract class ConstantesTemporarias {
 	public static final String padrao_categoria=NEGOCIO_PADRAO+"categoria";
 	public static final String padrao_nivel=NEGOCIO_PADRAO+"nivel";
 	public static final String padrao_departamento=NEGOCIO_PADRAO+"departamento";
-	
 	
 }

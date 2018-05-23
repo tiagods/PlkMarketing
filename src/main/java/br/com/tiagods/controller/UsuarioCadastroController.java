@@ -1,7 +1,6 @@
 package br.com.tiagods.controller;
 
 import java.net.URL;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import org.fxutils.maskedtextfield.MaskedTextField;
@@ -11,18 +10,13 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.Pessoa;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.CriptografiaUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -90,7 +84,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private JFXPasswordField txConfirmarSenha;
 
     @FXML
-    private JFXComboBox<Usuario.UsuarioNivel> cbNivel;
+    private JFXComboBox<?> cbNivel;
     @FXML
     private JFXButton btnSalvar;
     @FXML
@@ -99,22 +93,17 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	private Usuario usuario = null;
 	private Stage stage;
 	private UsuariosImpl usuarios;
-	private boolean primeiroUsuario = false;
 
-	public UsuarioCadastroController(Usuario usuario, Stage stage,boolean primeiroUsuario) {
+	public UsuarioCadastroController(Usuario usuario, Stage stage) {
 		this.stage = stage;
 		this.usuario=usuario;
-		this.primeiroUsuario=primeiroUsuario;
 	}
     @FXML
     void bucarCep(ActionEvent event){
         bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
     }
 	private void combos(){
-        comboRegiao(cbCidade,cbEstado,getManager());
-        cbNivel.getItems().addAll(Usuario.UsuarioNivel.values());
-        cbNivel.setValue(Usuario.UsuarioNivel.ADMIN);
-
+		comboRegiao(cbCidade,cbEstado,getManager());
     }
 
 	@Override
@@ -135,25 +124,24 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     }
 	void preencherFormulario(Usuario usuario) {
         txCodigo.setText(String.valueOf(usuario.getId()));
-        cbNivel.setValue(usuario.getNivel());
         txLogin.setText(usuario.getLogin());
         txLogin.setEditable(false);
         //PessoaFisica fisica = usuario.getPessoaFisica();
         //txRG.setText(fisica.getRg()==null?"":fisica.getRg());
         //txCPF.setPlainText(fisica.getCpf()==null?"":fisica.getCpf());
         //txDataNascimento.setPlainText(fisica.getAniversario()==null?"":fisica.getAniversario());
-        Pessoa pessoa = usuario.getPessoa();
-        txNome.setText(pessoa.getNome());
-        txEmail.setText(pessoa.getEmail());
-        txTelefone.setPlainText(pessoa.getTelefone());
-        txCelular.setPlainText(pessoa.getCelular());
-        txCEP.setPlainText(pessoa.getCep());
-        txLogradouro.setText(pessoa.getEndereco());
-        txNumero.setText(pessoa.getNumero());
-	    txBairro.setText(pessoa.getBairro());
-	    txComplemento.setText(pessoa.getComplemento());
-	    cbEstado.setValue(pessoa.getEstado());
-	    cbCidade.setValue(pessoa.getCidade());
+        //Pessoa pessoa = usuario.getPessoa();
+        txNome.setText(usuario.getNome());
+        txEmail.setText(usuario.getEmail());
+        txTelefone.setPlainText(usuario.getTelefone());
+        txCelular.setPlainText(usuario.getCelular());
+        txCEP.setPlainText(usuario.getCep());
+        txLogradouro.setText(usuario.getEndereco());
+        txNumero.setText(usuario.getNumero());
+	    txBairro.setText(usuario.getBairro());
+	    txComplemento.setText(usuario.getComplemento());
+	    cbEstado.setValue(usuario.getEstado());
+	    cbCidade.setValue(usuario.getCidade());
 	    this.usuario= usuario;
 	}
 	@FXML
@@ -167,11 +155,11 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         try {
             super.loadFactory();
             usuarios = new UsuariosImpl(getManager());
-            Pessoa pessoa = new Pessoa();
+            //Pessoa pessoa = new Pessoa();
             if(txCodigo.getText().equals("")) {
                 usuario = new Usuario();
-                pessoa.setCriadoEm(Calendar.getInstance());
-                pessoa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+                //pessoa.setCriadoEm(Calendar.getInstance());
+                //pessoa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
                 validarLogin = validarLogin(txLogin.getText());
                 if (!validarLogin)
                     return;
@@ -179,7 +167,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     validarLogin = validarSenha();
             } else {
                 usuario.setId(Long.parseLong(txCodigo.getText()));
-                pessoa = usuario.getPessoa();
+                //pessoa = usuario.getPessoa();
                 if (txSenha.getText().trim().equals(""))
                     validarLogin = true;
                 else
@@ -192,21 +180,18 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 //            pessoaFisica.setAniversario(txDataNascimento.getPlainText());
 //            usuario.setPessoaFisica(pessoaFisica);
 
-            usuario.setNivel(cbNivel.getValue());
-            pessoa.setNome(txNome.getText().trim());
-            pessoa.setEmail(txEmail.getText().trim());
-            pessoa.setTelefone(txTelefone.getPlainText());
-            pessoa.setCelular(txCelular.getPlainText());
-            pessoa.setCep(txCEP.getPlainText());
-            pessoa.setEndereco(txLogradouro.getText().trim());
-            pessoa.setNumero(txNumero.getText().trim());
-            pessoa.setBairro(txBairro.getText().trim());
-            pessoa.setComplemento(txComplemento.getText());
-            pessoa.setEstado(cbEstado.getValue());
-            pessoa.setCidade(cbCidade.getValue());
+            usuario.setNome(txNome.getText().trim());
+            usuario.setEmail(txEmail.getText().trim());
+            usuario.setTelefone(txTelefone.getPlainText());
+            usuario.setCelular(txCelular.getPlainText());
+            usuario.setCep(txCEP.getPlainText());
+            usuario.setEndereco(txLogradouro.getText().trim());
+            usuario.setNumero(txNumero.getText().trim());
+            usuario.setBairro(txBairro.getText().trim());
+            usuario.setComplemento(txComplemento.getText());
+            usuario.setEstado(cbEstado.getValue());
+            usuario.setCidade(cbCidade.getValue());
             usuario.setLogin(txLogin.getText());
-            usuario.setPessoa(pessoa);
-            //super.desbloquear(false, pnCadastro.getChildren());
             if (validarLogin) {
                 if (!txSenha.getText().trim().equals("")) {
                     CriptografiaUtil cripto = new CriptografiaUtil();
@@ -219,24 +204,6 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     preencherFormulario(usuario);
                     txSenha.setText("");
                     txConfirmarSenha.setText("");
-                    if(primeiroUsuario) {
-                        UsuarioLogado.getInstance().setUsuario(usuario);
-                        try {
-                            //Icons estilo = Icons.getInstance();
-                            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
-                            loader.setController(new MenuController());
-                            Parent root = loader.load();
-                            Scene scene = new Scene(root);
-                            Stage stage1 = new Stage();
-                            stage1.setScene(scene);
-                            stage1.setTitle("Menu Inicial");
-                            //stage.getIcons().add(new Image(estilo.getIcon().toString()));
-                            stage1.show();
-                            stage.setOnHiding(null);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
                     alert(Alert.AlertType.INFORMATION,"Sucesso",null,
                             "Salvo com sucesso",null,false);
                     stage.close();
@@ -257,7 +224,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         Usuario u = usuarios.findByLogin(login);
         if(u!=null) {
             super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
-                    u.getPessoa().getNome()+" já esta usando esse login",null,false);
+                    u.getNome()+" já esta usando esse login",null,false);
             return false;
         }
         else

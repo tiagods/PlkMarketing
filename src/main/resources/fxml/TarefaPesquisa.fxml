@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Gerenciamento de Agenda" />
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox alignment="CENTER" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <children>
+                  <JFXCheckBox styleClass="btDefault" text="E-Mail">
+                     <graphic>
+                        <ImageView fx:id="chEmail" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/tarefas_email.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+                  <JFXCheckBox fx:id="ckProposta" styleClass="btDefault" text="Proposta">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/tarefas_proposta.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+                  <JFXCheckBox fx:id="ckReuniao" styleClass="btDefault" text="Reuniao">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/tarefas_reuniao.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+                  <JFXCheckBox fx:id="ckTelefone" styleClass="btDefault" text="Telefone">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/tarefas_fone.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+                  <JFXCheckBox fx:id="ckWhatsApp" styleClass="btDefault" text="WhatsApp">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/tarefas_whatsapp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </JFXCheckBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="50.0" prefWidth="488.0">
+                     <children>
+                        <JFXRadioButton fx:id="rbTudo" styleClass="btDefault" text="Tudo">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/tarefas_tudo.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXRadioButton>
+                        <JFXRadioButton fx:id="rbHoje" minWidth="71.0" prefHeight="15.0" styleClass="btDefault" text="Hoje">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/tarefas_hoje.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXRadioButton>
+                        <JFXRadioButton fx:id="rbSemana" prefHeight="15.0" styleClass="btDefault" text="Essa Semana">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/tarefas_semana.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXRadioButton>
+                        <JFXRadioButton fx:id="rbDefinir" styleClass="btDefault" text="Definir">
+                           <graphic>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/tarefas_person.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXRadioButton>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="pnDatas" alignment="CENTER">
+                     <children>
+                        <JFXDatePicker fx:id="dataInicial" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault" />
+                        <Label alignment="CENTER" maxWidth="20.0" minWidth="20.0" prefHeight="20.0" text="ate">
+                           <HBox.margin>
+                              <Insets left="10.0" right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <JFXDatePicker fx:id="dataFinal" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault" />
+                     </children>
+                  </HBox>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXToggleButton fx:id="tggFinalizado" selected="true" size="7.0" styleClass="btDefault" text="Mostrar Apenas Finalizados">
+                     <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/ok.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXToggleButton>
+                  <Label text="de">
+                     <HBox.margin>
+                        <Insets left="20.0" right="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <JFXComboBox fx:id="cbAtenente" prefHeight="26.0" prefWidth="117.0" style="-fx-background-color: #E7DFDD;" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="144.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXButton onAction="#novo" styleClass="btDefault" text="Nova Tarefa">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <TableView fx:id="tbPrincipal" prefHeight="281.0" prefWidth="900.0" styleClass="table" tableMenuButtonVisible="true">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <ButtonBar prefHeight="50.0" prefWidth="256.0">
+               <buttons>
+                  <JFXButton onAction="#exportar" styleClass="btDefault" text="Exportar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_export.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btDefault" text="Sair">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </buttons>
+            </ButtonBar>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

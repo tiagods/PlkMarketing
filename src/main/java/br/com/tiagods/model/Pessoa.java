@@ -1,5 +1,6 @@
-package br.com.tiagods.modelcollections;
+package br.com.tiagods.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
@@ -9,14 +10,20 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Usuario;
-//@MappingSuperclass
+
+@MappedSuperclass
 @Embeddable
-public class Pessoa {
+public class Pessoa implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private String nome="";
 	private String telefone="";
 	private String celular="";
@@ -38,7 +45,7 @@ public class Pessoa {
 	private Calendar criadoEm;
 
 	@ManyToOne(fetch=FetchType.LAZY)
-	//@JoinColumn(name = "criado_por_id")
+	@JoinColumn(name = "criado_por_id")
 	private Usuario criadoPor;
 
 	/**

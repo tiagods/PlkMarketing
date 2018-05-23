@@ -55,8 +55,8 @@ public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements U
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
 		if (!nome.trim().equals("")) {
 			Criterion criterion = Restrictions.ilike(ConstantesTemporarias.pessoa_nome, nome, MatchMode.ANYWHERE);
-			Criterion criterion2 = Restrictions.ilike("pessoa.telefone", nome, MatchMode.ANYWHERE);
-			Criterion criterion3 = Restrictions.ilike("pessoa.celular", nome, MatchMode.ANYWHERE);
+			Criterion criterion2 = Restrictions.ilike(ConstantesTemporarias.pessoa_telefone, nome, MatchMode.ANYWHERE);
+			Criterion criterion3 = Restrictions.ilike(ConstantesTemporarias.pessoa_celular, nome, MatchMode.ANYWHERE);
 			Criterion c = Restrictions.or(criterion,criterion2,criterion3);
 			criteria.add(c);
 			//criteria.add(Restrictions.ilike("nome", nome, MatchMode.START));

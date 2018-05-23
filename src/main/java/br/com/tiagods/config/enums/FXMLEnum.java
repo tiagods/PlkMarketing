@@ -6,7 +6,9 @@ public enum FXMLEnum {
 	LOGIN("Login"),
 	MAIN("Main"),
 	USUARIOPESQUISA("UsuarioPesquisa"),
-	USUARIOCADASTRO("UsuarioCadastro");
+	USUARIOCADASTRO("UsuarioCadastro"),
+	TAREFAPESQUISA("TarefaPesquisa"),
+	TAREFACADASTRO("TarefaCadastro");
 	
 	private String localizacao;
 	
