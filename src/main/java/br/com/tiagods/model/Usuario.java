@@ -11,9 +11,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import br.com.tiagods.config.UsuarioLogado;
 
 @Entity
 public class Usuario extends Pessoa implements AbstractEntity,Serializable{
@@ -46,6 +49,15 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	@Column(name="total_vendas")
 	private BigDecimal totalVendas;
 	private int ativo=1;
+	
+	private PessoaFisica fisica;
+	
+	@PrePersist
+	void persist() {
+		setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+		setCriadoEm(Calendar.getInstance());
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -198,6 +210,12 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	 */
 	public void setAtivo(int ativo) {
 		this.ativo = ativo;
+	}
+	public PessoaFisica getFisica() {
+		return fisica;
+	}
+	public void setFisica(PessoaFisica fisica) {
+		this.fisica = fisica;
 	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

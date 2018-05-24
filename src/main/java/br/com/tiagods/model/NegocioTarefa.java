@@ -4,12 +4,17 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -19,7 +24,10 @@ import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProspeccao;
 
 @Entity
-public class Tarefa implements AbstractEntity,Serializable{
+@Table(name="tarefa")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tarefa_type")
+public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -49,22 +57,20 @@ public class Tarefa implements AbstractEntity,Serializable{
 	//excluir
 	@Column(name="TAR_CLASSE")
 	private String classe="";
-	@ManyToOne
+	
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TAR_PESSOA_COD")
 	private NegocioPessoa pessoa;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TAR_EMPRESA_COD")
 	private NegocioEmpresa empresa;
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TAR_NEGOCIO_COD")
 	private NegocioProposta negocio;
+	
 	@ManyToOne
 	@JoinColumn(name="TAR_PROSPECCAO_COD")
 	private NegocioProspeccao prospeccao;
-	
-	@ManyToOne
-	@JoinColumn(name="contato_id")
-	private Contato contato;
 	
 	@Column(name="TAR_FINALIZADO")
 	private int finalizado=0;
@@ -239,6 +245,8 @@ public class Tarefa implements AbstractEntity,Serializable{
 		this.alertaEnviado = alertaEnviado;
 	}
 	
-	
-	 
+	@Override
+	public String toString() {
+		return "";
+	}
 }

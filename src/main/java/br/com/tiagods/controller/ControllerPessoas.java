@@ -113,13 +113,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
-import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioPessoa;
 import br.com.tiagods.modelcollections.NegocioPadrao;
@@ -248,7 +248,7 @@ public class ControllerPessoas
 			break;
 		case "CriarCategoria":
 			combos = new JComboBox[] { cbCategoria, cbCategoriaCad };
-			SelecaoDialog dialog = new SelecaoDialog(new Categoria(), null, null, combos, null, MenuView.getInstance(),
+			SelecaoDialog dialog = new SelecaoDialog(new NegocioCategoria(), null, null, combos, null, MenuView.getInstance(),
 					true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
@@ -267,7 +267,7 @@ public class ControllerPessoas
 			break;
 		case "CriarNivel":
 			combos = new JComboBox[] { cbNivel, cbNivelCad };
-			dialog = new SelecaoDialog(new Nivel(), null, null, combos, null, MenuView.getInstance(), true);
+			dialog = new SelecaoDialog(new NegocioNivel(), null, null, combos, null, MenuView.getInstance(), true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
@@ -439,8 +439,8 @@ public class ControllerPessoas
 		Criterion criterion = Restrictions.eq("pessoa", pessoa);
 		criterios.add(criterion);
 		Order order = Order.desc("dataEvento");
-		List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-		new AuxiliarTabela(new Tarefa(), tbAuxiliar, tarefas, criterios, order, null);
+		List<NegocioTarefa> tarefas = (List<NegocioTarefa>) dao.items(NegocioTarefa.class, session, criterios, order);
+		new AuxiliarTabela(new NegocioTarefa(), tbAuxiliar, tarefas, criterios, order, null);
 
 	}
 

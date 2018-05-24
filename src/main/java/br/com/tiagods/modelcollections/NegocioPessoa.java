@@ -21,9 +21,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.Servico;
@@ -43,10 +43,8 @@ public class NegocioPessoa implements AbstractEntity, Serializable {
 	private NegocioProposta ultimoNegocio;
 	
 	@AttributeOverrides({ 
-		@AttributeOverride(name = "rg", column = @Column(name = "PES_RG")),
-			@AttributeOverride(name = "cpf", column = @Column(name = "PES_CPF")),
-			@AttributeOverride(name = "aniversario", column = @Column(name = "PES_NASC"))
-					})
+		@AttributeOverride(name = "aniversario", column = @Column(name = "PES_NASC"))
+	})
 	@Embedded
 	private PessoaFisica pessoaFisica;
 	
@@ -71,11 +69,11 @@ public class NegocioPessoa implements AbstractEntity, Serializable {
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
 	@JoinColumn(name = "PES_CATEGORIA_COD")
-	private Categoria categoria;
+	private NegocioCategoria categoria;
 	@ManyToOne
 	//@JoinColumn(name = "nivel_id")
 	@JoinColumn(name = "PES_NIVEL_COD")
-	private Nivel nivel;
+	private NegocioNivel nivel;
 	private String departamento;
 	
 	//@Embedded
@@ -202,28 +200,28 @@ public class NegocioPessoa implements AbstractEntity, Serializable {
 	/**
 	 * @return the categoria
 	 */
-	public Categoria getCategoria() {
+	public NegocioCategoria getCategoria() {
 		return categoria;
 	}
 
 	/**
 	 * @param categoria the categoria to set
 	 */
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(NegocioCategoria categoria) {
 		this.categoria = categoria;
 	}
 
 	/**
 	 * @return the nivel
 	 */
-	public Nivel getNivel() {
+	public NegocioNivel getNivel() {
 		return nivel;
 	}
 
 	/**
 	 * @param nivel the nivel to set
 	 */
-	public void setNivel(Nivel nivel) {
+	public void setNivel(NegocioNivel nivel) {
 		this.nivel = nivel;
 	}
 

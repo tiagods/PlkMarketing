@@ -19,14 +19,15 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.NegocioCategoria;
+import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioDocumento;
 import br.com.tiagods.model.NegocioEtapa;
 import br.com.tiagods.model.NegocioStatus;
-import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;
 
 @Entity
@@ -122,7 +123,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	private Calendar dataPerda;
 	
 	@Transient
-	private Set<Tarefa> tarefas = new LinkedHashSet<>();
+	private Set<NegocioTarefa> tarefas = new LinkedHashSet<>();
 	@Transient
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	@Transient
@@ -136,9 +137,6 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@JoinColumn(name="NEG_CRIADOPOR_COD")
 	private Usuario criadoPor;
 	
-	//@Embedded
-	//private NegocioPadrao padrao;
-
 	@ManyToOne
 	@JoinColumn(name = "NEG_ORIGEM_COD")
 	private Origem origem;
@@ -152,11 +150,18 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
 	@JoinColumn(name = "NEG_CATEGORIA_COD")
-	private Categoria categoria;
+	private NegocioCategoria categoria;
 	@ManyToOne
 	//@JoinColumn(name = "nivel_id")
 	@JoinColumn(name = "NEG_NIVEL_COD")
-	private Nivel nivel;
+	private NegocioNivel nivel;
+	
+	@ManyToOne
+	//@JoinColumn(name = "nivel_id")
+	@JoinColumn(name = "contato_id")
+	private Contato negocioContato;
+	
+	
 	/**
 	 * @return the id
 	 */
@@ -454,14 +459,14 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	/**
 	 * @return the tarefas
 	 */
-	public Set<Tarefa> getTarefas() {
+	public Set<NegocioTarefa> getTarefas() {
 		return tarefas;
 	}
 
 	/**
 	 * @param tarefas the tarefas to set
 	 */
-	public void setTarefas(Set<Tarefa> tarefas) {
+	public void setTarefas(Set<NegocioTarefa> tarefas) {
 		this.tarefas = tarefas;
 	}
 
@@ -581,28 +586,28 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	/**
 	 * @return the categoria
 	 */
-	public Categoria getCategoria() {
+	public NegocioCategoria getCategoria() {
 		return categoria;
 	}
 
 	/**
 	 * @param categoria the categoria to set
 	 */
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(NegocioCategoria categoria) {
 		this.categoria = categoria;
 	}
 
 	/**
 	 * @return the nivel
 	 */
-	public Nivel getNivel() {
+	public NegocioNivel getNivel() {
 		return nivel;
 	}
 
 	/**
 	 * @param nivel the nivel to set
 	 */
-	public void setNivel(Nivel nivel) {
+	public void setNivel(NegocioNivel nivel) {
 		this.nivel = nivel;
 	}
 

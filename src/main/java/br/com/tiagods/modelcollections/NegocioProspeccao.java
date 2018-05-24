@@ -10,8 +10,6 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,9 +22,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Categoria;
-import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Nivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.ProspeccaoTipoContato;
@@ -62,11 +57,9 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	private NegocioProposta ultimoNegocio;
 
 
-	@AttributeOverrides({ @AttributeOverride(name = "razao", column = @Column(name = "PRO_RAZAO_COD")),
-			@AttributeOverride(name = "cnpj", column = @Column(name = "PRO_CNPJ")),
-			@AttributeOverride(name = "ie", column = @Column(name = "PRO_IE")),
-			@AttributeOverride(name = "responsavel", column = @Column(name = "PRO_RESPONSAVEL")),
-			@AttributeOverride(name = "im", column = @Column(name = "PRO_IM")) })
+	@AttributeOverrides({
+		@AttributeOverride(name = "responsavel", column = @Column(name = "PRO_RESPONSAVEL"))
+		})
 	@Embedded
 	private PessoaJuridica pessoaJuridica;
 	
@@ -92,40 +85,23 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	@ManyToOne
 	@JoinColumn(name = "PRO_SERVICO_COD")
 	private Servico servico;
+	
+	/*
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
 	@JoinColumn(name = "PRO_CATEGORIA_COD")
-	private Categoria categoria;
+	private NegocioCategoria categoria;
 	@ManyToOne
 	//@JoinColumn(name = "nivel_id")
 	@JoinColumn(name = "PRO_NIVEL_COD")
-	private Nivel nivel;
-	@Column(name="PRO_DEPARTAMENTO")
-	private String departamento;
-	
+	private NegocioNivel nivel;
+	*/
 	//@Embedded
 	//private Pessoa pessoa;
 	
 	@Column(name = "PRO_NOME")
 	private String nome;
-	@Column(name = "PRO_TELEFONE")
-	private String telefone;
-	@Column(name = "PRO_CELULAR")
-	private String celular;
-	@Column(name = "PRO_EMAIL")
-	private String email;
-	@Column(name = "PRO_SITE")
-	private String site;
-	private String cep;
-	private String endereco;
-	private String numero;
-	private String bairro;
-	private String complemento;
-	@ManyToOne
-	//@JoinColumn(name="cidade_id")
-	private Cidade cidade;
-	@Enumerated(value =EnumType.STRING)
-	private Cidade.Estado estado;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	//@Column(name = "data_criacao")
 	@Column(name = "PRO_CRIADOEM")
@@ -137,8 +113,6 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	
 	@Transient
 	private Set<Lista> listas = new HashSet<>();
-
-	
 	/**
 	 * @return the id
 	 */
@@ -193,20 +167,6 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	 */
 	public void setNewsletter(int newsletter) {
 		this.newsletter = newsletter;
-	}
-
-	/**
-	 * @return the endereco
-	 */
-	public String getEndereco() {
-		return endereco;
-	}
-
-	/**
-	 * @param endereco the endereco to set
-	 */
-	public void setEndereco(String endereco) {
-		this.endereco = endereco;
 	}
 
 	/**
@@ -321,48 +281,6 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	}
 
 	/**
-	 * @return the categoria
-	 */
-	public Categoria getCategoria() {
-		return categoria;
-	}
-
-	/**
-	 * @param categoria the categoria to set
-	 */
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
-	}
-
-	/**
-	 * @return the nivel
-	 */
-	public Nivel getNivel() {
-		return nivel;
-	}
-
-	/**
-	 * @param nivel the nivel to set
-	 */
-	public void setNivel(Nivel nivel) {
-		this.nivel = nivel;
-	}
-
-	/**
-	 * @return the departamento
-	 */
-	public String getDepartamento() {
-		return departamento;
-	}
-
-	/**
-	 * @param departamento the departamento to set
-	 */
-	public void setDepartamento(String departamento) {
-		this.departamento = departamento;
-	}
-
-	/**
 	 * @return the nome
 	 */
 	public String getNome() {
@@ -374,146 +292,6 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	 */
 	public void setNome(String nome) {
 		this.nome = nome;
-	}
-
-	/**
-	 * @return the telefone
-	 */
-	public String getTelefone() {
-		return telefone;
-	}
-
-	/**
-	 * @param telefone the telefone to set
-	 */
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	/**
-	 * @return the celular
-	 */
-	public String getCelular() {
-		return celular;
-	}
-
-	/**
-	 * @param celular the celular to set
-	 */
-	public void setCelular(String celular) {
-		this.celular = celular;
-	}
-
-	/**
-	 * @return the email
-	 */
-	public String getEmail() {
-		return email;
-	}
-
-	/**
-	 * @param email the email to set
-	 */
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	/**
-	 * @return the site
-	 */
-	public String getSite() {
-		return site;
-	}
-
-	/**
-	 * @param site the site to set
-	 */
-	public void setSite(String site) {
-		this.site = site;
-	}
-
-	/**
-	 * @return the cep
-	 */
-	public String getCep() {
-		return cep;
-	}
-
-	/**
-	 * @param cep the cep to set
-	 */
-	public void setCep(String cep) {
-		this.cep = cep;
-	}
-
-	/**
-	 * @return the numero
-	 */
-	public String getNumero() {
-		return numero;
-	}
-
-	/**
-	 * @param numero the numero to set
-	 */
-	public void setNumero(String numero) {
-		this.numero = numero;
-	}
-
-	/**
-	 * @return the bairro
-	 */
-	public String getBairro() {
-		return bairro;
-	}
-
-	/**
-	 * @param bairro the bairro to set
-	 */
-	public void setBairro(String bairro) {
-		this.bairro = bairro;
-	}
-
-	/**
-	 * @return the complemento
-	 */
-	public String getComplemento() {
-		return complemento;
-	}
-
-	/**
-	 * @param complemento the complemento to set
-	 */
-	public void setComplemento(String complemento) {
-		this.complemento = complemento;
-	}
-
-	/**
-	 * @return the cidade
-	 */
-	public Cidade getCidade() {
-		return cidade;
-	}
-
-	/**
-	 * @param cidade the cidade to set
-	 */
-	public void setCidade(Cidade cidade) {
-		this.cidade = cidade;
-	}
-
-	/**
-	 * @return the estado
-	 */
-	public Cidade.Estado getEstado() {
-		return estado;
-	}
-
-	/**
-	 * @param estado the estado to set
-	 */
-	public void setEstado(Cidade.Estado estado) {
-		this.estado = estado;
 	}
 
 	/**

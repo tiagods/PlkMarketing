@@ -129,7 +129,7 @@ import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.ProspeccaoTipoContato;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.modelcollections.Lista;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioPadrao;
@@ -323,8 +323,8 @@ public class ControllerProspeccao
 				Criterion criterion = Restrictions.eq("prospeccao", prospeccao);
 				criterios.add(criterion);
 				Order order = Order.desc("dataEvento");
-				List<Tarefa> tarefas = (List<Tarefa>) dao.items(Tarefa.class, session, criterios, order);
-				new AuxiliarTabela(new Tarefa(), tbAuxiliar, tarefas, criterios, order, null);
+				List<NegocioTarefa> tarefas = (List<NegocioTarefa>) dao.items(NegocioTarefa.class, session, criterios, order);
+				new AuxiliarTabela(new NegocioTarefa(), tbAuxiliar, tarefas, criterios, order, null);
 				fecharSessao(open);
 			}
 			break;
@@ -1065,7 +1065,7 @@ public class ControllerProspeccao
 			List<Criterion> criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("prospeccao", p);
 			criterios.add(criterion);
-			new AuxiliarTabela(new Tarefa(), tbAuxiliar, new ArrayList<>(p.getPfpj().getTarefas()), criterios,
+			new AuxiliarTabela(new NegocioTarefa(), tbAuxiliar, new ArrayList<>(p.getPfpj().getTarefas()), criterios,
 					Order.desc("dataEvento"), null);
 		}
 	}

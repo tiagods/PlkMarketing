@@ -11,6 +11,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.model.Cidade;
+import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.CriptografiaUtil;
@@ -108,8 +109,9 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		cbNivel.setDisable(true);
 		try {
-		    super.loadFactory();
+			super.loadFactory();
             combos();
             if(usuario!=null) {
                 preencherFormulario(usuario);
@@ -126,11 +128,12 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         txCodigo.setText(String.valueOf(usuario.getId()));
         txLogin.setText(usuario.getLogin());
         txLogin.setEditable(false);
-        //PessoaFisica fisica = usuario.getPessoaFisica();
-        //txRG.setText(fisica.getRg()==null?"":fisica.getRg());
-        //txCPF.setPlainText(fisica.getCpf()==null?"":fisica.getCpf());
-        //txDataNascimento.setPlainText(fisica.getAniversario()==null?"":fisica.getAniversario());
-        //Pessoa pessoa = usuario.getPessoa();
+        PessoaFisica fisica = usuario.getFisica();
+        if(fisica!=null) {
+	        txRG.setText(fisica.getRg()==null?"":fisica.getRg());
+	        txCPF.setPlainText(fisica.getCpf()==null?"":fisica.getCpf());
+	        txDataNascimento.setPlainText(fisica.getAniversario()==null?"":fisica.getAniversario());
+        }
         txNome.setText(usuario.getNome());
         txEmail.setText(usuario.getEmail());
         txTelefone.setPlainText(usuario.getTelefone());
@@ -174,11 +177,11 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                     validarLogin = validarSenha();
             }
 
-//            PessoaFisica pessoaFisica = new PessoaFisica();
-//            pessoaFisica.setRg(txRG.getText().trim());
-//            pessoaFisica.setCpf(txCPF.getPlainText());
-//            pessoaFisica.setAniversario(txDataNascimento.getPlainText());
-//            usuario.setPessoaFisica(pessoaFisica);
+            PessoaFisica pessoaFisica = new PessoaFisica();
+            pessoaFisica.setRg(txRG.getText().trim());
+            pessoaFisica.setCpf(txCPF.getPlainText());
+            pessoaFisica.setAniversario(txDataNascimento.getPlainText());
+            usuario.setFisica(pessoaFisica);
 
             usuario.setNome(txNome.getText().trim());
             usuario.setEmail(txEmail.getText().trim());

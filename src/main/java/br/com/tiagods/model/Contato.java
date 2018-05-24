@@ -70,15 +70,15 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	private Servico servico;
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
-	private Categoria categoria;
+	private NegocioCategoria categoria;
 	@ManyToOne
 	@JoinColumn(name = "nivel_id")
-	private Nivel nivel;
+	private NegocioNivel nivel;
 	
 	@Transient
 	private Set<NegocioProposta> negocios = new LinkedHashSet<>();
 	@Transient
-	private Set<Tarefa> tarefas = new LinkedHashSet<>();
+	private Set<NegocioTarefa> tarefas = new LinkedHashSet<>();
 	/**
 	 * @return the id
 	 */
@@ -214,25 +214,25 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	/**
 	 * @return the categoria
 	 */
-	public Categoria getCategoria() {
+	public NegocioCategoria getCategoria() {
 		return categoria;
 	}
 	/**
 	 * @param categoria the categoria to set
 	 */
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(NegocioCategoria categoria) {
 		this.categoria = categoria;
 	}
 	/**
 	 * @return the nivel
 	 */
-	public Nivel getNivel() {
+	public NegocioNivel getNivel() {
 		return nivel;
 	}
 	/**
 	 * @param nivel the nivel to set
 	 */
-	public void setNivel(Nivel nivel) {
+	public void setNivel(NegocioNivel nivel) {
 		this.nivel = nivel;
 	}
 	
@@ -251,13 +251,13 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	/**
 	 * @return the tarefas
 	 */
-	public Set<Tarefa> getTarefas() {
+	public Set<NegocioTarefa> getTarefas() {
 		return tarefas;
 	}
 	/**
 	 * @param tarefas the tarefas to set
 	 */
-	public void setTarefas(Set<Tarefa> tarefas) {
+	public void setTarefas(Set<NegocioTarefa> tarefas) {
 		this.tarefas = tarefas;
 	}
 	@Override

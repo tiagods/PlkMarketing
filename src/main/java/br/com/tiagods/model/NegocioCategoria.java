@@ -7,9 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Categoria implements AbstractEntity,Serializable{
+@Table(name="categoria")
+public class NegocioCategoria implements AbstractEntity,Serializable{
 
 	/**
 	 * 
@@ -73,7 +75,7 @@ public class Categoria implements AbstractEntity,Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		NegocioCategoria other = (NegocioCategoria) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

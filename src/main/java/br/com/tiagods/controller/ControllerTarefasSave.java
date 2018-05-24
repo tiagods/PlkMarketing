@@ -49,7 +49,7 @@ import org.hibernate.Session;
 
 import br.com.tiagods.factory.HibernateFactory;
 import br.com.tiagods.model.NegocioEtapa;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.NegocioEmpresa;
@@ -69,8 +69,8 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	public Object getObject(String valor) {
 		return DefaultEnumModel.super.getObject(valor);
 	}
-	Tarefa tarefa = null;
-	Tarefa tarefaBackup;
+	NegocioTarefa tarefa = null;
+	NegocioTarefa tarefaBackup;
 	String item = "";
 	Object object;
 	Set<Integer> listaLote;
@@ -89,7 +89,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 	GenericDao dao = new GenericDao();
 	//se for null o formulario nao sera preenchido
 	@SuppressWarnings("unchecked")
-	public void iniciar(TarefasSaveView view, Tarefa tarefa, Object object, Map<String,JRadioButton> parametroNegocios,Set<Integer> listaLote, boolean salvarLote){
+	public void iniciar(TarefasSaveView view, NegocioTarefa tarefa, Object object, Map<String,JRadioButton> parametroNegocios,Set<Integer> listaLote, boolean salvarLote){
 		this.tarefa = tarefa;
 		this.object = object;
 		this.view = view;
@@ -262,10 +262,10 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 			}
 		}
 	}
-	private boolean salvar(Object obj, Calendar calendar, Tarefa tarefa, int cod){//obt  classe, calendar= data evento, cod = id da classe pai
+	private boolean salvar(Object obj, Calendar calendar, NegocioTarefa tarefa, int cod){//obt  classe, calendar= data evento, cod = id da classe pai
 		StringBuilder builder = new StringBuilder();
 		if(tarefa==null){
-			tarefa = new Tarefa();
+			tarefa = new NegocioTarefa();
 			tarefa.setCriadoEm(new Date());
 			tarefa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 			tarefa.setAlertaEnviado(0);
@@ -373,7 +373,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		});		
 		cbAtendente.setSelectedItem(UsuarioLogado.getInstance().getUsuario().getLogin());	
 	}
-	private void preencherFormulario(Tarefa tarefa){
+	private void preencherFormulario(NegocioTarefa tarefa){
 		if(tarefa!=null){
 			JRadioButton radio = recuperaRadio(tarefa.getTipoTarefa().getNome());
 			String[] nome = null;
@@ -413,7 +413,7 @@ public class ControllerTarefasSave implements DefaultEnumModel, ActionListener, 
 		else
 			return rdbtnWhatsApp;
 	}
-	private void enviarDados(JRadioButton rb, Tarefa tarefa, String nome,String id){
+	private void enviarDados(JRadioButton rb, NegocioTarefa tarefa, String nome,String id){
 		rb.setSelected(true);
 		txDetalhes.setText(tarefa.getDescricao());
 		cbObject.setSelectedItem(getEnumModelos(tarefa.getClasse()));

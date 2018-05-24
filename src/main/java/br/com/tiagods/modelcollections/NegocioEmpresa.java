@@ -24,13 +24,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Servico;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;
 
 @Entity
@@ -57,13 +57,11 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	@Transient
 	private Set<NegocioProposta> negocios = new LinkedHashSet<>();
 	@Transient
-	private Set<Tarefa> tarefas = new LinkedHashSet<>();
+	private Set<NegocioTarefa> tarefas = new LinkedHashSet<>();
 
 	@AttributeOverrides({ @AttributeOverride(name = "razao", column = @Column(name = "EMP_RAZAO_COD")),
-			@AttributeOverride(name = "cnpj", column = @Column(name = "EMP_CNPJ")),
-			@AttributeOverride(name = "ie", column = @Column(name = "EMP_IE")),
-			@AttributeOverride(name = "responsavel", column = @Column(name = "EMP_RESPONSAVEL")),
-			@AttributeOverride(name = "im", column = @Column(name = "EMP_IM")) })
+			@AttributeOverride(name = "cnpj", column = @Column(name = "EMP_CNPJ"))
+	})
 	@Embedded
 	private PessoaJuridica pessoaJuridica;
 	//@Embedded
@@ -84,11 +82,11 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
 	@JoinColumn(name = "EMP_CATEGORIA_COD")
-	private Categoria categoria;
+	private NegocioCategoria categoria;
 	@ManyToOne
 	//@JoinColumn(name = "nivel_id")
 	@JoinColumn(name = "EMP_NIVEL_COD")
-	private Nivel nivel;
+	private NegocioNivel nivel;
 	private String departamento;
 	//@Embedded
 	//private Pessoa pessoa;
@@ -220,7 +218,7 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	/**
 	 * @return the tarefas
 	 */
-	public Set<Tarefa> getTarefas() {
+	public Set<NegocioTarefa> getTarefas() {
 		return tarefas;
 	}
 
@@ -228,7 +226,7 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	 * @param tarefas
 	 *            the tarefas to set
 	 */
-	public void setTarefas(Set<Tarefa> tarefas) {
+	public void setTarefas(Set<NegocioTarefa> tarefas) {
 		this.tarefas = tarefas;
 	}
 
@@ -277,28 +275,28 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	/**
 	 * @return the categoria
 	 */
-	public Categoria getCategoria() {
+	public NegocioCategoria getCategoria() {
 		return categoria;
 	}
 
 	/**
 	 * @param categoria the categoria to set
 	 */
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(NegocioCategoria categoria) {
 		this.categoria = categoria;
 	}
 
 	/**
 	 * @return the nivel
 	 */
-	public Nivel getNivel() {
+	public NegocioNivel getNivel() {
 		return nivel;
 	}
 
 	/**
 	 * @param nivel the nivel to set
 	 */
-	public void setNivel(Nivel nivel) {
+	public void setNivel(NegocioNivel nivel) {
 		this.nivel = nivel;
 	}
 

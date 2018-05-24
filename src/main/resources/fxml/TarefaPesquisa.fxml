@@ -21,7 +21,7 @@
       <Label styleClass="label-title" text="Gerenciamento de Agenda" />
       <VBox prefHeight="200.0" prefWidth="100.0">
          <children>
-            <HBox alignment="CENTER" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+            <HBox fx:id="pnCheckBox" alignment="CENTER" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
                <children>
                   <JFXCheckBox styleClass="btDefault" text="E-Mail">
                      <graphic>

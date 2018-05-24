@@ -29,8 +29,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Categoria;
-import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.NegocioCategoria;
+import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.ProspeccaoTipoContato;
 import br.com.tiagods.model.Servico;
@@ -157,8 +157,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				view.setTitle("Relação de Tipo de Contato");
 			}
 
-			else if(object instanceof Categoria){
-				List<Categoria> lista = dao.items(Categoria.class, session, criterion, Order.asc("nome"));
+			else if(object instanceof NegocioCategoria){
+				List<NegocioCategoria> lista = dao.items(NegocioCategoria.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -166,8 +166,8 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				}
 				view.setTitle("Relacao de Categorias");
 			}
-			else if(object instanceof Nivel){
-				List<Nivel> lista = dao.items(Nivel.class, session, criterion, Order.asc("nome"));
+			else if(object instanceof NegocioNivel){
+				List<NegocioNivel> lista = dao.items(NegocioNivel.class, session, criterion, Order.asc("nome"));
 				linhas = new String[lista.size()][colunas.length];
 				for(int i=0;i<lista.size();i++){
 					linhas[i][0] = String.valueOf(lista.get(i).getId());
@@ -408,21 +408,21 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 				novoObjeto = (ProspeccaoTipoContato)dao.receberObjeto(ProspeccaoTipoContato.class, Integer.parseInt(txCodigo.getText()), session);
 			((ProspeccaoTipoContato)novoObjeto).setNome(txNome.getText().trim());
 		}
-		else if(object instanceof Categoria){
+		else if(object instanceof NegocioCategoria){
 			if("".equals(txCodigo.getText())){
-				novoObjeto = new Categoria();
+				novoObjeto = new NegocioCategoria();
 			}
 			else 
-				novoObjeto = (Categoria)dao.receberObjeto(Categoria.class, Integer.parseInt(txCodigo.getText()), session);
-			((Categoria)novoObjeto).setNome(txNome.getText().trim());
+				novoObjeto = (NegocioCategoria)dao.receberObjeto(NegocioCategoria.class, Integer.parseInt(txCodigo.getText()), session);
+			((NegocioCategoria)novoObjeto).setNome(txNome.getText().trim());
 		}
-		else if(object instanceof Nivel){
+		else if(object instanceof NegocioNivel){
 			if("".equals(txCodigo.getText())){
-				novoObjeto = new Nivel();
+				novoObjeto = new NegocioNivel();
 			}
 			else 
-				novoObjeto = (Nivel)dao.receberObjeto(Nivel.class, Integer.parseInt(txCodigo.getText()), session);
-			((Nivel)novoObjeto).setNome(txNome.getText().trim());
+				novoObjeto = (NegocioNivel)dao.receberObjeto(NegocioNivel.class, Integer.parseInt(txCodigo.getText()), session);
+			((NegocioNivel)novoObjeto).setNome(txNome.getText().trim());
 		}
 		else if(object instanceof Origem){
 			if("".equals(txCodigo.getText())){
@@ -486,11 +486,11 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			else if(object instanceof NegocioPessoa){
 				novoObjeto = dao.receberObjeto(NegocioPessoa.class, id, session);
 			}
-			else if(object instanceof Categoria){
-				novoObjeto = dao.receberObjeto(Categoria.class, id, session);
+			else if(object instanceof NegocioCategoria){
+				novoObjeto = dao.receberObjeto(NegocioCategoria.class, id, session);
 			}
-			else if(object instanceof Nivel){
-				novoObjeto = dao.receberObjeto(Nivel.class, id, session);
+			else if(object instanceof NegocioNivel){
+				novoObjeto = dao.receberObjeto(NegocioNivel.class, id, session);
 			}
 			else if(object instanceof Origem){
 				novoObjeto = dao.receberObjeto(Origem.class, id, session);
@@ -535,13 +535,13 @@ public class ControllerSeletor implements ActionListener,MouseListener,KeyListen
 			id=((NegocioProspeccao) object).getId();
 			value=((NegocioProspeccao) object).getResponsavel();
 		}
-		else if(object instanceof Categoria){
-			id=((Categoria) object).getId();
-			value=((Categoria) object).getNome();
+		else if(object instanceof NegocioCategoria){
+			id=((NegocioCategoria) object).getId();
+			value=((NegocioCategoria) object).getNome();
 		}
-		else if(object instanceof Nivel){
-			id=((Nivel) object).getId();
-			value=((Nivel) object).getNome();
+		else if(object instanceof NegocioNivel){
+			id=((NegocioNivel) object).getId();
+			value=((NegocioNivel) object).getNome();
 		}
 		else if(object instanceof Origem){
 			id=((Origem) object).getId();

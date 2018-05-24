@@ -154,14 +154,14 @@ import org.hibernate.criterion.Restrictions;
 import com.toedter.calendar.JDateChooser;
 
 import br.com.tiagods.factory.HibernateFactory;
-import br.com.tiagods.model.Categoria;
+import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.NegocioDocumento;
 import br.com.tiagods.model.NegocioEtapa;
-import br.com.tiagods.model.Nivel;
+import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.Origem;
 import br.com.tiagods.model.Servico;
 import br.com.tiagods.model.NegocioStatus;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.modelcollections.NegocioEmpresa;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioPessoa;
@@ -454,7 +454,7 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			List<Criterion>criterios = new ArrayList<>();
 			Criterion criterion = Restrictions.eq("negocio", n);
 			criterios.add(criterion);
-			new AuxiliarTabela(new Tarefa(),tbAuxiliar, new ArrayList<>(n.getTarefas()),
+			new AuxiliarTabela(new NegocioTarefa(),tbAuxiliar, new ArrayList<>(n.getTarefas()),
 					criterios,
 					Order.desc("dataEvento"),radiosAndamento);
 		}
@@ -654,12 +654,12 @@ public class ControllerNegocios implements ActionListener,ItemListener,MouseList
 			}
 			break;
 		case "CriarCategoria":
-			dialog = new SelecaoDialog(new Categoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},null,MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new NegocioCategoria(), null, null, new JComboBox[]{cbCategoria,cbCategoriaCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;
 		case "CriarNivel":
-			dialog = new SelecaoDialog(new Nivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},null,MenuView.getInstance(),true);
+			dialog = new SelecaoDialog(new NegocioNivel(), null, null, new JComboBox[]{cbNivel,cbNivelCad},null,MenuView.getInstance(),true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 			break;

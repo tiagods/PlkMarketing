@@ -1,6 +1,8 @@
 package br.com.tiagods.controller;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
@@ -11,10 +13,12 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXToggleButton;
 
 import br.com.tiagods.model.ConstantesTemporarias;
-import br.com.tiagods.model.Tarefa;
+import br.com.tiagods.model.NegocioTarefa;
+import br.com.tiagods.model.TipoTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.TarefasImpl;
+import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.repository.interfaces.NegocioTarefaPropostaDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -74,16 +78,19 @@ public class TarefaPesquisaController extends UtilsController implements Initial
     private JFXComboBox<Usuario> cbAtenente;
 
     @FXML
-    private TableView<Tarefa> tbPrincipal;
+    private TableView<NegocioTarefa> tbPrincipal;
 	private Stage stage;
 	private UsuariosImpl usuarios;
-	private TarefasImpl tarefas;
+	private NegociosTarefasImpl tarefas;
 	
 	
 	public TarefaPesquisaController (Stage stage) {
 		this.stage=stage;
 	}
-	void abrirCadastro(Tarefa t) {
+	void abrirCadastro(NegocioTarefa t) {
+		
+	}
+	void abrirCadastroContatoOrProposta(NegocioTarefa t) {
 		
 	}
 	
@@ -93,9 +100,13 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		pnDatas.setVisible(false);
 		usuarios = new UsuariosImpl(getManager());
 		cbAtenente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-	}
-	void excluir() {
 		
+		tarefas = new NegociosTarefasImpl(getManager());
+		tbPrincipal.getItems().addAll(tarefas.getAll());
+		tbPrincipal.getItems().forEach(c->System.out.println(c.getAtendente().getNome()));
+	}
+	boolean excluir(NegocioTarefa n) {
+		return false;
 	}
     @FXML
     void exportar(ActionEvent event) {
@@ -124,13 +135,63 @@ public class TarefaPesquisaController extends UtilsController implements Initial
     }	
     
     void tabela() {
-    	TableColumn<Tarefa, Number> columnId = new  TableColumn<>("*");
+    	TableColumn<NegocioTarefa, Number> columnId = new  TableColumn<>("*");
 		columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
 		columnId.setPrefWidth(40);
-
-		TableColumn<Tarefa, String> columnNome = new  TableColumn<>("Nome");
-		columnNome.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-		columnNome.setCellFactory(param -> new TableCell<Tarefa,String>(){
+		
+		TableColumn<NegocioTarefa, Calendar> colunaValidade = new  TableColumn<>("Prazo");
+		colunaValidade.setCellValueFactory(new PropertyValueFactory<>("dataEvento"));
+		colunaValidade.setCellFactory(param -> new TableCell<NegocioTarefa,Calendar>(){
+			@Override
+			protected void updateItem(Calendar item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(item.getTime()));
+				}
+			}
+		});
+		
+		TableColumn<NegocioTarefa, TipoTarefa> colunaAndamento = new  TableColumn<>("Andamento");
+		colunaAndamento.setCellValueFactory(new PropertyValueFactory<>("tipoTarefa"));
+		colunaAndamento.setCellFactory(param -> new TableCell<NegocioTarefa,TipoTarefa>(){
+			@Override
+			protected void updateItem(TipoTarefa item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(item.getNome());
+				}
+			}
+		});
+		
+		TableColumn<NegocioTarefa, NegocioTarefa> colunaNome = new  TableColumn<>("Nome");
+		colunaNome.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaNome.setCellFactory(param -> new TableCell<NegocioTarefa,NegocioTarefa>(){
+			@Override
+			protected void updateItem(NegocioTarefa item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(item.toString());
+				}
+			}
+		});
+		TableColumn<NegocioTarefa, String> colunaTipo = new  TableColumn<>("Tipo");
+		colunaTipo.setCellValueFactory(new PropertyValueFactory<>("tipoTarefa"));
+		colunaTipo.setCellFactory(param -> new TableCell<NegocioTarefa,String>(){
 			@Override
 			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
@@ -144,12 +205,82 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
-		columnNome.setPrefWidth(250);
-		columnNome.setMaxWidth(320);
-
-		TableColumn<Tarefa, Number> colunaEditar = new  TableColumn<>("");
+		
+		TableColumn<NegocioTarefa, String> colunaDescricao = new  TableColumn<>("Descricao");
+		colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
+		colunaDescricao.setCellFactory(param -> new TableCell<NegocioTarefa,String>(){
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(item);
+				}
+			}
+		});
+		
+		TableColumn<NegocioTarefa, Number> columnStatus = new  TableColumn<>("Status");
+		columnStatus.setCellValueFactory(new PropertyValueFactory<>("finalizado"));
+		columnStatus.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(item.intValue()==1?"Finalizado":"Aberto");
+				}
+			}
+		});
+		
+		TableColumn<NegocioTarefa, Usuario> columnAtendente = new  TableColumn<>("Atendente");
+		columnAtendente.setCellValueFactory(new PropertyValueFactory<>("atendente"));
+		columnAtendente.setCellFactory(param -> new TableCell<NegocioTarefa,Usuario>(){
+			@Override
+			protected void updateItem(Usuario item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(item.getLogin());
+				}
+			}
+		});
+		
+		TableColumn<NegocioTarefa, NegocioTarefa> colunaAbrir = new  TableColumn<>("");
+		colunaAbrir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaAbrir.setCellFactory(param -> new TableCell<NegocioTarefa,NegocioTarefa>(){
+			JFXButton button = new JFXButton("");
+			@Override
+			protected void updateItem(NegocioTarefa item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.getStyleClass().add("btGreen");
+					button.setOnAction(event -> {
+						abrirCadastroContatoOrProposta(tbPrincipal.getItems().get(getIndex()));
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		TableColumn<NegocioTarefa, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaEditar.setCellFactory(param -> new TableCell<Tarefa,Number>(){
+		colunaEditar.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
 			JFXButton button = new JFXButton("Editar");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -168,9 +299,9 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
-		TableColumn<Tarefa, Number> colunaExcluir = new  TableColumn<>("");
+		TableColumn<NegocioTarefa, Number> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaExcluir.setCellFactory(param -> new TableCell<Tarefa,Number>(){
+		colunaExcluir.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
 			JFXButton button = new JFXButton("Excluir");
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -190,7 +321,8 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
-		tbPrincipal.getColumns().addAll(columnNome,colunaEditar,colunaExcluir);
+		tbPrincipal.getColumns().addAll(colunaValidade,colunaAndamento,colunaTipo,colunaNome,colunaDescricao,
+				columnAtendente,columnStatus,colunaAbrir,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
     }
 }

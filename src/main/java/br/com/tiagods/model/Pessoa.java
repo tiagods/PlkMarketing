@@ -47,7 +47,7 @@ public class Pessoa implements Serializable{
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "criado_por_id")
 	private Usuario criadoPor;
-
+	
 	/**
 	 * @return the nome
 	 */
