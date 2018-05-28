@@ -20,6 +20,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
@@ -36,6 +37,8 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
@@ -184,7 +187,20 @@ public abstract class UtilsController extends PersistenciaController{
 			throw new FXMLNaoEncontradoException("Arquivo fxml não encontrado "+e.getMessage());
 		}
     }
+	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
+		ImageView imageview = createImage(30,30,icon);
+		btn.setGraphic(imageview);
+	}
 	
+	private ImageView createImage(int x, int y, IconsEnum icon) {
+		Image image = new Image(icon.getLocalizacao().toString());
+		ImageView imageview = new ImageView(image);
+		imageview.setFitHeight(x);
+		imageview.setFitWidth(y);
+		imageview.setPreserveRatio(true);
+		return imageview;
+	}
+    
 	public class BuscaCep implements ChangeListener<Cidade.Estado>{
 		private JFXComboBox<Cidade> cbCidade;
 		public BuscaCep(JFXComboBox<Cidade> cbCidade){

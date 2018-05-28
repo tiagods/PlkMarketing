@@ -28,7 +28,15 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	public enum PessoaTipo {
-		EMPRESA, PESSOA
+		EMPRESA("Empresa"), PESSOA("Pessoa");
+
+		private String descricao;
+		PessoaTipo(String descricao) {
+			this.descricao=descricao;
+		}
+		public String getDescricao() {
+			return descricao;
+		}
 	}
 	public enum ContatoTipo{
 		GENERICO("Generico"),PROSPECCAO("Prospecção"),SONDAGEM("Sondagem");
@@ -53,7 +61,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 		
 	@ManyToOne
 	@JoinColumn(name = "origem_id")
-	private Origem origem;
+	private NegocioOrigem origem;
 	@ManyToOne
 	@JoinColumn(name = "atendente_id")
 	private Usuario atendente;
@@ -67,7 +75,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "servico_id")
-	private Servico servico;
+	private NegocioServico servico;
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
 	private NegocioCategoria categoria;
@@ -78,7 +86,13 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@Transient
 	private Set<NegocioProposta> negocios = new LinkedHashSet<>();
 	@Transient
-	private Set<NegocioTarefa> tarefas = new LinkedHashSet<>();
+	private Set<NegocioTarefaContato> tarefas = new LinkedHashSet<>();
+	public Contato() {
+		// TODO Auto-generated constructor stub
+	}
+	public Contato(long id) {
+		this.id=id;
+	}
 	/**
 	 * @return the id
 	 */
@@ -142,13 +156,13 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	/**
 	 * @return the origem
 	 */
-	public Origem getOrigem() {
+	public NegocioOrigem getOrigem() {
 		return origem;
 	}
 	/**
 	 * @param origem the origem to set
 	 */
-	public void setOrigem(Origem origem) {
+	public void setOrigem(NegocioOrigem origem) {
 		this.origem = origem;
 	}
 	/**
@@ -202,13 +216,13 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	/**
 	 * @return the servico
 	 */
-	public Servico getServico() {
+	public NegocioServico getServico() {
 		return servico;
 	}
 	/**
 	 * @param servico the servico to set
 	 */
-	public void setServico(Servico servico) {
+	public void setServico(NegocioServico servico) {
 		this.servico = servico;
 	}
 	/**
@@ -251,13 +265,13 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	/**
 	 * @return the tarefas
 	 */
-	public Set<NegocioTarefa> getTarefas() {
+	public Set<NegocioTarefaContato> getTarefas() {
 		return tarefas;
 	}
 	/**
 	 * @param tarefas the tarefas to set
 	 */
-	public void setTarefas(Set<NegocioTarefa> tarefas) {
+	public void setTarefas(Set<NegocioTarefaContato> tarefas) {
 		this.tarefas = tarefas;
 	}
 	@Override
@@ -285,5 +299,13 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+	@Override
+	public String toString() {
+		String newName = getNome();
+		if(tipo.equals(PessoaTipo.EMPRESA))
+			newName +=" || "+ juridico.getResponsavel()+" || "+juridico.getRazao();
+		// TODO Auto-generated method stub
+		return newName;
 	}
 }

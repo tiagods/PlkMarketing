@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
 
@@ -28,11 +27,9 @@ public class ServicoContratado implements AbstractEntity,Serializable{
 	@ManyToOne
 	@JoinColumn(name="SER_CON_SERVICOAGREGADO_COD")
 	private ServicoAgregado servicosAgregados;
-	/*
+	
 	@ManyToOne
 	@JoinColumn(name="SER_CON_NEGOCIO_COD")
-	*/
-	@Transient
 	private NegocioProposta negocios;
 	
 	/**

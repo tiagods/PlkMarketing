@@ -6,6 +6,8 @@ import java.util.Calendar;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +31,24 @@ import br.com.tiagods.modelcollections.NegocioProspeccao;
 @DiscriminatorColumn(name = "tarefa_type")
 public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
+	
+	public enum TipoTarefa{
+		VISITA(1,"Visita"),REUNIAO(2,"Reunião"), PROPOSTA(3,"Proposta"), 
+		TELEFONE(4,"Telefone"),EMAIL(5,"E-Mail"),WHATSAPP (6,"WhatsApp");
+		private int ordem;
+		private String descricao;
+		TipoTarefa(int ordem,String descricao){
+			this.ordem=ordem;
+			this.descricao=descricao;
+		}
+		public String getDescricao() {
+			return descricao;
+		}
+		public int getOrdem() {
+			return ordem;
+		}	
+	}
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="TAR_COD")
@@ -38,8 +58,6 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	@Column(name="TAR_DATAEVENTO")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar dataEvento;
-	
-	
 	@Column(name="TAR_CRIADOEM")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar criadoEm;
@@ -50,10 +68,9 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	@JoinColumn(name="TAR_ATENDENTE_COD")
 	private Usuario atendente;
 	
-	@ManyToOne
-	@JoinColumn(name="TAR_TIP_TAR_COD")
+	@Enumerated(EnumType.STRING)
+	@Column(name="tipo")
 	private TipoTarefa tipoTarefa;
-	
 	//excluir
 	@Column(name="TAR_CLASSE")
 	private String classe="";
@@ -61,9 +78,13 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TAR_PESSOA_COD")
 	private NegocioPessoa pessoa;
+	
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TAR_EMPRESA_COD")
 	private NegocioEmpresa empresa;
+	
+	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="TAR_NEGOCIO_COD")
 	private NegocioProposta negocio;

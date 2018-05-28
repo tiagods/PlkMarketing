@@ -8,11 +8,13 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,8 +27,8 @@ import br.com.tiagods.model.NegocioDocumento;
 import br.com.tiagods.model.NegocioEtapa;
 import br.com.tiagods.model.NegocioStatus;
 import br.com.tiagods.model.NegocioNivel;
-import br.com.tiagods.model.Origem;
-import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.NegocioOrigem;
+import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;
 
@@ -122,7 +124,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Column(name="NEG_DATAPERDA")
 	private Calendar dataPerda;
 	
-	@Transient
+	@OneToMany(fetch=FetchType.LAZY)
 	private Set<NegocioTarefa> tarefas = new LinkedHashSet<>();
 	@Transient
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
@@ -139,14 +141,14 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	
 	@ManyToOne
 	@JoinColumn(name = "NEG_ORIGEM_COD")
-	private Origem origem;
+	private NegocioOrigem origem;
 	@ManyToOne
 	@JoinColumn(name = "NEG_ATENDENTE_COD")
 	private Usuario atendente;
 	
 	@ManyToOne
 	@JoinColumn(name = "NEG_SERVICO_COD")
-	private Servico servico;
+	private NegocioServico servico;
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
 	@JoinColumn(name = "NEG_CATEGORIA_COD")
@@ -161,7 +163,13 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@JoinColumn(name = "contato_id")
 	private Contato negocioContato;
 	
+	public NegocioProposta() {
+	}
 	
+	public NegocioProposta(long id) {
+		this.id=id;
+	}
+
 	/**
 	 * @return the id
 	 */
@@ -544,14 +552,14 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	/**
 	 * @return the origem
 	 */
-	public Origem getOrigem() {
+	public NegocioOrigem getOrigem() {
 		return origem;
 	}
 
 	/**
 	 * @param origem the origem to set
 	 */
-	public void setOrigem(Origem origem) {
+	public void setOrigem(NegocioOrigem origem) {
 		this.origem = origem;
 	}
 
@@ -572,14 +580,14 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	/**
 	 * @return the servico
 	 */
-	public Servico getServico() {
+	public NegocioServico getServico() {
 		return servico;
 	}
 
 	/**
 	 * @param servico the servico to set
 	 */
-	public void setServico(Servico servico) {
+	public void setServico(NegocioServico servico) {
 		this.servico = servico;
 	}
 

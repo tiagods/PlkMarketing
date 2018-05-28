@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label />
+      <VBox prefHeight="330.0" prefWidth="600.0">
+         <children>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <children>
+                  <JFXComboBox fx:id="cbCategoria" prefHeight="26.0" prefWidth="120.0" promptText="Categoria">
+                     <padding>
+                        <Insets right="20.0" />
+                     </padding>
+                  </JFXComboBox>
+                  <JFXComboBox fx:id="cbOrigem" layoutX="332.0" layoutY="10.0" prefWidth="120.0" promptText="Origem">
+                     <padding>
+                        <Insets right="20.0" />
+                     </padding>
+                  </JFXComboBox>
+                  <JFXComboBox fx:id="cbNivel" layoutX="360.0" layoutY="10.0" prefWidth="120.0" promptText="Nivel">
+                     <padding>
+                        <Insets right="20.0" />
+                     </padding>
+                  </JFXComboBox>
+                  <JFXComboBox fx:id="cbServico" layoutX="388.0" layoutY="10.0" prefWidth="120.0" promptText="Servico">
+                     <padding>
+                        <Insets right="20.0" />
+                     </padding>
+                  </JFXComboBox>
+               </children>
+            </HBox>
+            <HBox fx:id="pnRadio" alignment="CENTER_LEFT" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+               <children>
+                  <JFXTextField fx:id="txPesquisa" prefHeight="26.0" prefWidth="261.0" promptText="Entre com um valor e pressione ENTER" styleClass="textField">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </JFXTextField>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="144.0" prefWidth="700.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+               <children>
+                  <TableView fx:id="tbPrincipal" prefHeight="182.0" prefWidth="563.0" styleClass="table" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <ButtonBar prefHeight="50.0" prefWidth="256.0">
+               <buttons>
+                  <JFXButton onAction="#salvar" styleClass="btDefault" text="Selecionar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_ok.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btDefault" text="Sair">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </buttons>
+            </ButtonBar>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

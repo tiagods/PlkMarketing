@@ -27,9 +27,9 @@ import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.NegocioNivel;
-import br.com.tiagods.model.Origem;
+import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.PessoaJuridica;
-import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;
 
@@ -69,7 +69,7 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "EMP_ORIGEM_COD")
-	private Origem origem;
+	private NegocioOrigem origem;
 	@ManyToOne
 	@JoinColumn(name = "EMP_ATENDENTE_COD")
 	private Usuario atendente;
@@ -78,7 +78,7 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	//private String apresentacao;
 	@ManyToOne
 	@JoinColumn(name = "EMP_SERVICO_COD")
-	private Servico servico;
+	private NegocioServico servico;
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
 	@JoinColumn(name = "EMP_CATEGORIA_COD")
@@ -233,14 +233,14 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	/**
 	 * @return the origem
 	 */
-	public Origem getOrigem() {
+	public NegocioOrigem getOrigem() {
 		return origem;
 	}
 
 	/**
 	 * @param origem the origem to set
 	 */
-	public void setOrigem(Origem origem) {
+	public void setOrigem(NegocioOrigem origem) {
 		this.origem = origem;
 	}
 
@@ -261,14 +261,14 @@ public class NegocioEmpresa implements AbstractEntity, Serializable {
 	/**
 	 * @return the servico
 	 */
-	public Servico getServico() {
+	public NegocioServico getServico() {
 		return servico;
 	}
 
 	/**
 	 * @param servico the servico to set
 	 */
-	public void setServico(Servico servico) {
+	public void setServico(NegocioServico servico) {
 		this.servico = servico;
 	}
 

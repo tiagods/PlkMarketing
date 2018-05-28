@@ -29,6 +29,14 @@ alter table tarefa add column contato_id integer;
 alter table tarefa add column proposta_id integer;
 alter table tarefa add column tarefa_type varchar(50);
 
+alter table tarefa add column tipo varchar;
+update tarefa set tipo = 'VISITA' where tar_tip_tar_cod=1;
+update tarefa set tipo = 'REUNIAO' where tar_tip_tar_cod=2;
+update tarefa set tipo = 'PROPOSTA' where tar_tip_tar_cod=3;
+update tarefa set tipo = 'TELEFONE' where tar_tip_tar_cod=4;
+update tarefa set tipo = 'EMAIL' where tar_tip_tar_cod=5;
+update tarefa set tipo = 'WHATSAPP' where tar_tip_tar_cod=6;
+
 update tarefa set tarefa_type='contato' where tar_classe != 'Negocio';
 update tarefa set tarefa_type='proposta' where tar_classe = 'Negocio';
 

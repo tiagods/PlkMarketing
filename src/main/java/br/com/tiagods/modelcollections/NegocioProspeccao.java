@@ -22,10 +22,10 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Origem;
+import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.ProspeccaoTipoContato;
-import br.com.tiagods.model.Servico;
+import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.Usuario;
 
 @Entity
@@ -53,7 +53,8 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	@JoinColumn(name="PRO_TIPO_CONTATO")
 	private ProspeccaoTipoContato tipoContato;	
 	
-	@Column(name = "PRO_ULT_NEGOCIO_COD")
+	@ManyToOne
+	@JoinColumn(name = "PRO_ULT_NEGOCIO_COD")
 	private NegocioProposta ultimoNegocio;
 
 
@@ -63,11 +64,6 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	@Embedded
 	private PessoaJuridica pessoaJuridica;
 	
-	//@Embedded
-	//private Pessoa pessoa;
-
-	//@Embedded
-	//private NegocioPadrao padrao;
 	@Column(name = "PRO_ORIGEM_DETALHES")
 	private String detalhesOrigem;
 	@Column(name = "PRO_RESUMO")
@@ -77,15 +73,14 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "PRO_ORIGEM_COD")
-	private Origem origem;
+	private NegocioOrigem origem;
 	@ManyToOne
 	@JoinColumn(name = "PRO_ATENDENTE_COD")
 	private Usuario atendente;
 	
 	@ManyToOne
 	@JoinColumn(name = "PRO_SERVICO_COD")
-	private Servico servico;
-	
+	private NegocioServico servico;
 	/*
 	@ManyToOne
 	//@JoinColumn(name = "categoria_id")
@@ -241,14 +236,14 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	/**
 	 * @return the origem
 	 */
-	public Origem getOrigem() {
+	public NegocioOrigem getOrigem() {
 		return origem;
 	}
 
 	/**
 	 * @param origem the origem to set
 	 */
-	public void setOrigem(Origem origem) {
+	public void setOrigem(NegocioOrigem origem) {
 		this.origem = origem;
 	}
 
@@ -269,14 +264,14 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	/**
 	 * @return the servico
 	 */
-	public Servico getServico() {
+	public NegocioServico getServico() {
 		return servico;
 	}
 
 	/**
 	 * @param servico the servico to set
 	 */
-	public void setServico(Servico servico) {
+	public void setServico(NegocioServico servico) {
 		this.servico = servico;
 	}
 

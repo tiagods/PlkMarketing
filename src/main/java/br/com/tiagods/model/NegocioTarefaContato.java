@@ -16,6 +16,10 @@ public class NegocioTarefaContato extends NegocioTarefa{
 	@JoinColumn(name="contato_id")
 	private Contato contato;
 	
+	public NegocioTarefaContato() {}
+	public NegocioTarefaContato(Long id) {
+		setId(id);
+	}
 	/**
 	 * @return the contato
 	 */

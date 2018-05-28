@@ -22,9 +22,17 @@
     -fx-font-size: 12px;
     -fx-text-fill:  #E7DFDD;
 }
-.table{
+.textField{
     -fx-font-size: 12px;
-    -fx-text-fill:  #E7DFDD;
+    -fx-background-color:  #E7DFDD;
+
+}
+.table{
+   -fx-background-color: transparent;
+}
+
+.table:focused{
+    -fx-background-color: transparent;
 }
 .label-title{
     -fx-font-size: 36px;

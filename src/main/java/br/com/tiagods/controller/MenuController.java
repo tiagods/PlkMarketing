@@ -5,8 +5,6 @@ import java.util.ResourceBundle;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.exception.FXMLNaoEncontradoException;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,18 +38,7 @@ public class MenuController extends UtilsController implements Initializable{
     
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			loadFactory();
-			//NegociosTarefasImpl tarefas = new NegociosTarefasImpl(getManager());
-			//tarefas.getAll().forEach(c->{System.out.println(c.getClasse());});
-			NegociosTarefasContatosImpl tarefas = new NegociosTarefasContatosImpl(getManager());
-			System.out.println(tarefas.getAll().size());
-			
-		}catch (Exception e) {
-			
-		}finally {
-			close();
-		}
+		
 	}   
     
     @FXML
