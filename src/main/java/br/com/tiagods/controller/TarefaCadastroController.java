@@ -36,7 +36,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class ControllerTarefaCadastro extends UtilsController implements Initializable{
+public class TarefaCadastroController extends UtilsController implements Initializable{
 	@FXML
     private HBox pnRadio;
 
@@ -91,7 +91,7 @@ public class ControllerTarefaCadastro extends UtilsController implements Initial
     
     private NegocioTarefa tarefa;
     
-	public ControllerTarefaCadastro(Stage stage, NegocioTarefa tarefa) {
+	public TarefaCadastroController(Stage stage, NegocioTarefa tarefa) {
 		this.stage = stage;
 		if(tarefa!=null) preencherFormulario(tarefa);
 	}

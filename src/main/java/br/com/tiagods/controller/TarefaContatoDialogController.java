@@ -33,7 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class ControllerDialogTarefa extends UtilsController implements Initializable{
+public class TarefaContatoDialogController extends UtilsController implements Initializable{
 	@FXML
     private JFXComboBox<NegocioCategoria> cbCategoria;
 
@@ -63,7 +63,7 @@ public class ControllerDialogTarefa extends UtilsController implements Initializ
 	private NegocioOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	
-	public ControllerDialogTarefa(Stage stage) {
+	public TarefaContatoDialogController(Stage stage) {
 		this.stage = stage;
 	}
 	
