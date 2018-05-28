@@ -19,6 +19,13 @@ public class NegocioServico implements AbstractEntity,Serializable{
 	private Long id;
 	@Column(name="SER_NOME")
 	private String nome;
+	
+	public NegocioServico() {}
+	
+	public NegocioServico(long id,String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */

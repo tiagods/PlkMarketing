@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="nivel")
-public class NegocioNivel implements Serializable{
+public class NegocioNivel implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,6 +19,13 @@ public class NegocioNivel implements Serializable{
 	private Long id;
 	@Column(name="NIV_NOME")
 	private String nome;
+	
+	public NegocioNivel() {}
+	
+	public NegocioNivel(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */

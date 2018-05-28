@@ -5,10 +5,12 @@ import java.net.URL;
 public enum FXMLEnum {
 	LOGIN("Login"),
 	MAIN("Main"),
-	USUARIOPESQUISA("UsuarioPesquisa"),
-	USUARIOCADASTRO("UsuarioCadastro"),
-	TAREFAPESQUISA("TarefaPesquisa"),
-	TAREFACADASTRO("TarefaCadastro");
+	USUARIO_PESQUISA("UsuarioPesquisa"),
+	USUARIO_CADASTRO("UsuarioCadastro"),
+	TAREFA_PESQUISA("TarefaPesquisa"),
+	TAREFA_CADASTRO("TarefaCadastro"),
+	TAREFA_DIALOG_CONTATO("TarefaDialogContato");
+//	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta");
 	
 	private String localizacao;
 	

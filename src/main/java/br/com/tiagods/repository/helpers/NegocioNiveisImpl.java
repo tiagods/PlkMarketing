@@ -1,5 +1,13 @@
 package br.com.tiagods.repository.helpers;
 
-public class NegocioNiveisImpl {
+import javax.persistence.EntityManager;
 
+import br.com.tiagods.model.NegocioNivel;
+import br.com.tiagods.repository.AbstractRepository;
+import br.com.tiagods.repository.interfaces.NegocioNivelDAO;
+
+public class NegocioNiveisImpl extends AbstractRepository<NegocioNivel,Long> implements NegocioNivelDAO{
+	public NegocioNiveisImpl(EntityManager manager) {
+		super(manager);
+	}
 }

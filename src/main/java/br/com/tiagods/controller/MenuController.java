@@ -60,12 +60,12 @@ public class MenuController extends UtilsController implements Initializable{
     void tarefa(ActionEvent event) {
     	try {
             Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFAPESQUISA);
+            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_PESQUISA);
             loader.setController(new TarefaPesquisaController(stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.TRANSPARENT);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
         }catch(FXMLNaoEncontradoException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFAPESQUISA,e,true);
+                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFA_PESQUISA,e,true);
         }
     }
 
@@ -73,12 +73,12 @@ public class MenuController extends UtilsController implements Initializable{
     void usuario(ActionEvent event) {
         try {
             Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.USUARIOPESQUISA);
+            FXMLLoader loader = loaderFxml(FXMLEnum.USUARIO_PESQUISA);
             loader.setController(new UsuarioPesquisaController(stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
         }catch(FXMLNaoEncontradoException e) {
         	 alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                     "Falha ao localizar o arquivo"+FXMLEnum.USUARIOPESQUISA,e,true);
+                     "Falha ao localizar o arquivo"+FXMLEnum.USUARIO_PESQUISA,e,true);
         }
     }
 

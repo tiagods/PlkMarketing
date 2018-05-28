@@ -2,6 +2,7 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.persistence.PersistenceException;
@@ -15,9 +16,10 @@ import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
-import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.NegocioServico;
+import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
 import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
@@ -25,11 +27,12 @@ import br.com.tiagods.repository.helpers.NegocioServicosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
@@ -58,6 +61,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	private Stage stage;
 	private Contato contato;
 	
+	private ContatosImpl contatos;
 	private NegocioNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
 	private NegocioOrigensImpl origens;
@@ -66,10 +70,49 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	public TarefaContatoDialogController(Stage stage) {
 		this.stage = stage;
 	}
-	
 	private void combos() {
+		String todas="Todas";
+		NegocioCategoria categoria = new NegocioCategoria(-1L,todas);
+		NegocioNivel nivel = new NegocioNivel(-1L,todas);
+		NegocioOrigem origem = new NegocioOrigem(-1L,todas);
+		NegocioServico servico = new NegocioServico(-1L, todas);
+		cbCategoria.getItems().add(categoria);
+		cbNivel.getItems().add(nivel);
+		cbOrigem.getItems().add(origem);
+		cbServico.getItems().add(servico);
 		
+		categorias = new NegocioCategoriasImpl(getManager());
+		niveis = new NegocioNiveisImpl(getManager());
+		origens = new NegocioOrigensImpl(getManager());
+		servicos = new NegocioServicosImpl(getManager());
+		contatos = new ContatosImpl(getManager());
+		
+		cbCategoria.getItems().addAll(categorias.getAll());
+		cbNivel.getItems().addAll(niveis.getAll());
+		cbOrigem.getItems().addAll(origens.getAll());
+		cbServico.getItems().addAll(servicos.getAll());
+		
+		cbCategoria.getSelectionModel().selectFirst();
+		cbNivel.getSelectionModel().selectFirst();
+		cbOrigem.getSelectionModel().selectFirst();
+		cbServico.getSelectionModel().selectFirst();
+		
+		tbPrincipal.getItems().addAll(contatos.getAll());
 	}
+	void filtrar() {
+		try {
+			loadFactory();
+			contatos = new ContatosImpl(getManager());
+			List<Contato> lista = contatos.filtrar(txPesquisa.getText().trim(),cbCategoria.getValue(),cbNivel.getValue(),cbOrigem.getValue(),cbServico.getValue());
+			tbPrincipal.getItems().clear();
+			tbPrincipal.getItems().addAll(lista);
+		}catch(PersistenceException e) {
+			alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
+		}finally {
+			close();
+		}
+	}
+			
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
@@ -82,6 +125,11 @@ public class TarefaContatoDialogController extends UtilsController implements In
 			close();
 		}
 	}
+	@FXML
+	void pesquisar(KeyEvent event) {
+		filtrar();
+	}
+	
 	@FXML
 	void sair(ActionEvent event) {
 		stage.close();
@@ -255,7 +303,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button, IconsEnum.SELECIONAR);
+						buttonTable(button, IconsEnum.BUTTON_OK);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {

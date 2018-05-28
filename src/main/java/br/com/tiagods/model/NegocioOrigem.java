@@ -19,6 +19,13 @@ public class NegocioOrigem implements AbstractEntity,Serializable{
 	private Long id;
 	@Column(name="ORI_NOME")
 	private String nome;
+	
+	public NegocioOrigem() {}
+	
+	public NegocioOrigem(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */

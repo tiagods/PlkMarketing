@@ -117,7 +117,7 @@
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@imagens/button_deadline.png" />
+                              <Image url="@imagens/button_search.png" />
                            </image>
                         </ImageView>
                      </graphic>

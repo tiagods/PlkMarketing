@@ -25,6 +25,12 @@ public class NegocioCategoria implements AbstractEntity,Serializable{
 	@Column(name="CAT_NOME",length=100)
 	private String nome;
 
+	public NegocioCategoria() {}
+	
+	public NegocioCategoria(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */

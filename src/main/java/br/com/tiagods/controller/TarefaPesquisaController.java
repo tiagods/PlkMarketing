@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -31,8 +33,11 @@ import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.NegocioTarefaContato;
+import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
+import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -40,15 +45,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Alert;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -108,20 +117,25 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	private Stage stage;
 	private UsuariosImpl usuarios;
 	private NegociosTarefasImpl tarefas;
+	private NegociosTarefasContatosImpl contatos;
+	private NegociosTarefasPropostasImpl propostas;
+	
 	
 	public TarefaPesquisaController (Stage stage) {
 		this.stage=stage;
 	}
 	private void abrirCadastro(NegocioTarefa t) {
 		try {
+			
 			loadFactory();
-			tarefas = new NegociosTarefasImpl(getManager());
-			t = tarefas.findById(t.getId());//refresh
-            
-			Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFACADASTRO);
+			if(t!=null) {
+				tarefas = new NegociosTarefasImpl(getManager());
+				t = tarefas.findById(t.getId());//refresh
+			}
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
             loader.setController(new TarefaCadastroController(stage,t));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.TRANSPARENT);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
             	try {
         			loadFactory();
@@ -134,7 +148,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
             });
         }catch(FXMLNaoEncontradoException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFACADASTRO,e,true);
+                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFA_CADASTRO,e,true);
         }finally {
         	close();
         }
@@ -194,6 +208,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		dataFinal.valueProperty().addListener(changeListener);
 		
 		cbAtendente.valueProperty().addListener(changeListener);
+		
+		tggFinalizado.setSelected(true);
+		tggFinalizado.selectedProperty().addListener(changeListener);
+		
 		filtrar();
 	}
 	boolean excluir(NegocioTarefa n) {
@@ -329,7 +347,31 @@ public class TarefaPesquisaController extends UtilsController implements Initial
     void sair(ActionEvent event) {
     	stage.close();
     }	
-    
+    private boolean salvarStatus(NegocioTarefa tarefa,int status){
+		try{
+			loadFactory();
+			if(tarefa instanceof NegocioTarefaContato) {
+				contatos = new NegociosTarefasContatosImpl(getManager());
+				NegocioTarefaContato t = contatos.findById(tarefa.getId());
+				t.setFinalizado(status);
+				contatos.save(t);
+				return true;
+			}
+			else if(tarefa instanceof NegocioTarefaProposta) {
+				propostas = new NegociosTarefasPropostasImpl(getManager());
+				NegocioTarefaProposta t = propostas.findById(tarefa.getId());
+				t.setFinalizado(status);
+				propostas.save(t);
+				return true;
+			}
+			return false;
+		}catch (Exception e){
+			alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
+			return false;
+		}finally {
+			close();
+		}
+	}
     @SuppressWarnings("unchecked")
 	void tabela() {
     	TableColumn<NegocioTarefa, Number> columnId = new  TableColumn<>("*");
@@ -427,9 +469,9 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		});
 		colunaDescricao.setPrefWidth(200);
 		
-		TableColumn<NegocioTarefa, Number> columnStatus = new  TableColumn<>("Status");
-		columnStatus.setCellValueFactory(new PropertyValueFactory<>("finalizado"));
-		columnStatus.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
+		TableColumn<NegocioTarefa, Number> colunaStatus = new  TableColumn<>("Status");
+		colunaStatus.setCellValueFactory(new PropertyValueFactory<>("finalizado"));
+		colunaStatus.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
 			@Override
 			protected void updateItem(Number item, boolean empty) {
 				super.updateItem(item, empty);
@@ -439,11 +481,57 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					setGraphic(null);
 				}
 				else{
-					setText(item.intValue()==1?"Finalizado":"Aberto");
+					JFXButton rb = new JFXButton();
+					rb.setText(item.intValue()==0?"Pendente":"Concluido");
+					rb.getStyleClass().add(item.intValue()==0?"btRed":"btGreen");
+
+					rb.onActionProperty().set(event -> {
+
+						Dialog dialog = new Dialog();
+						dialog.setTitle("Alteração de Status");
+						dialog.setHeaderText("Selecione um status");
+
+						VBox stackPane = new VBox();
+						stackPane.setSpacing(15);
+
+						Map<JFXRadioButton,Integer> map = new HashMap<>();
+						ToggleGroup group = new ToggleGroup();
+						
+						for(int i=0;i<2;i++) {
+							JFXRadioButton jfxRadioButton = new JFXRadioButton(i==0?"Pendente":"Concluido");
+							jfxRadioButton.setSelectedColor(Color.GREEN);
+							jfxRadioButton.setUnSelectedColor(Color.RED);
+							if(item.intValue()==i) jfxRadioButton.setSelected(true);
+							group.getToggles().add(jfxRadioButton);
+							stackPane.getChildren().add(jfxRadioButton);
+							map.put(jfxRadioButton,i);
+						}
+						ButtonType ok = new ButtonType("Alterar");
+						ButtonType cancelar = new ButtonType("Cancelar");
+						dialog.getDialogPane().getButtonTypes().addAll(ok,cancelar);
+						dialog.getDialogPane().setContent(stackPane);
+						dialog.initModality(Modality.APPLICATION_MODAL);
+						dialog.initStyle(StageStyle.UNDECORATED);
+						Optional<ButtonType> result = dialog.showAndWait();
+						if(result.get() == ok){
+							NegocioTarefa tarefa = tbPrincipal.getItems().get(getIndex());
+							for(Node f : stackPane.getChildren()){
+								if(f instanceof JFXRadioButton && ((JFXRadioButton) f).isSelected()) {
+									Integer p = map.get(f);
+									if (p!=item.intValue() && salvarStatus(tarefa, p)) {
+										((JFXRadioButton) f).setSelected(true);
+										setGraphic(f);
+									}
+									break;
+								}
+							};
+						}
+                    });
+					setGraphic(rb);
+
 				}
 			}
 		});
-		
 		TableColumn<NegocioTarefa, Usuario> columnAtendente = new  TableColumn<>("Atendente");
 		columnAtendente.setCellValueFactory(new PropertyValueFactory<>("atendente"));
 		columnAtendente.setCellFactory(param -> new TableCell<NegocioTarefa,Usuario>(){
@@ -476,9 +564,9 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						IconsEnum ic = IconsEnum.PROPOSTA;
+						IconsEnum ic = IconsEnum.BUTTON_PROPOSTA;
 						if(tbPrincipal.getItems().get(getIndex()) instanceof NegocioTarefaContato) 
-							ic = IconsEnum.CONTATO;
+							ic = IconsEnum.BUTTON_CONTATO;
 						buttonTable(button, ic);
 					}catch (IOException e) {
 					}
@@ -504,7 +592,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button, IconsEnum.EDIT);
+						buttonTable(button, IconsEnum.BUTTON_EDIT);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
@@ -529,7 +617,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button,IconsEnum.REMOVE);
+						buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
@@ -541,7 +629,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 			}
 		});
 		tbPrincipal.getColumns().addAll(colunaLocalizacao,colunaValidade,colunaTipo,colunaNome,colunaDescricao,
-				columnAtendente,columnStatus,colunaAbrir,colunaEditar,colunaExcluir);
+				columnAtendente,colunaStatus,colunaAbrir,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
 		tbPrincipal.setFixedCellSize(50);
     }

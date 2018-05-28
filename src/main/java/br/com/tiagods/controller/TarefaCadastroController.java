@@ -18,6 +18,8 @@ import com.jfoenix.controls.JFXTimePicker;
 import com.jfoenix.controls.JFXToggleButton;
 
 import br.com.tiagods.config.UsuarioLogado;
+import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
@@ -25,19 +27,25 @@ import br.com.tiagods.model.NegocioTarefaContato;
 import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class TarefaCadastroController extends UtilsController implements Initializable{
-	@FXML
+
+    @FXML
     private HBox pnRadio;
 
     @FXML
@@ -56,9 +64,6 @@ public class TarefaCadastroController extends UtilsController implements Initial
     private JFXRadioButton rbWhatsApp;
 
     @FXML
-    private JFXRadioButton rbContato;
-
-    @FXML
     private JFXTextArea txDescricao;
 
     @FXML
@@ -66,6 +71,12 @@ public class TarefaCadastroController extends UtilsController implements Initial
 
     @FXML
     private JFXRadioButton rbNegocioProposta;
+
+    @FXML
+    private JFXTextField txIdPesquisa;
+
+    @FXML
+    private JFXTextField txNomePesquisa;
 
     @FXML
     private JFXComboBox<Usuario> cbResponsavel;
@@ -78,12 +89,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 
     @FXML
     private JFXToggleButton tggFinalizado;
-    
-    @FXML
-    private JFXTextField txIdPesquisa;
 
-    @FXML
-    private JFXTextField txNomePesquisa;
 	
     private Stage stage;
     
@@ -97,17 +103,38 @@ public class TarefaCadastroController extends UtilsController implements Initial
 	}
 	@FXML
     void buscar(ActionEvent event) {
+		Object controller = null;
+		FXMLEnum fxmlEnum = null;
+	    Stage stage = new Stage();
+		
 		if(rbNegocioContato.isSelected()){
-			
+			fxmlEnum = FXMLEnum.TAREFA_DIALOG_CONTATO;
+			controller = new TarefaContatoDialogController(stage);
 		}
 		else if(rbNegocioProposta.isSelected()) {
 			
 		}
+		
+		try {
+            FXMLLoader loader = loaderFxml(fxmlEnum);
+            loader.setController(controller);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            stage.setOnHiding(e -> {
+            	try {
+            		
+            	}catch(Exception ex) {
+        			ex.printStackTrace();
+        		}
+            });
+        }catch(FXMLNaoEncontradoException ex) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo"+fxmlEnum,ex,true);
+        }
     }	
 	void combos() {
 		ToggleGroup group1 = new ToggleGroup();
-		group1.getToggles().addAll(rbContato,rbEmail,rbProposta,rbReuniao,rbTelefone,rbWhatsApp);
-		rbContato.setSelected(true);
+		group1.getToggles().addAll(rbEmail,rbProposta,rbReuniao,rbTelefone,rbWhatsApp);
+		rbEmail.setSelected(true);
 		
 		ToggleGroup group2 = new ToggleGroup();
 		group2.getToggles().addAll(rbNegocioContato,rbNegocioProposta);
