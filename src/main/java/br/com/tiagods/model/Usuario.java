@@ -52,6 +52,13 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	
 	private PessoaFisica fisica;
 	
+	public Usuario(){}
+	
+	public Usuario(long id, String login) {
+		this.id=id;
+		this.login=login;
+	}
+
 	@PrePersist
 	void persist() {
 		setCriadoPor(UsuarioLogado.getInstance().getUsuario());

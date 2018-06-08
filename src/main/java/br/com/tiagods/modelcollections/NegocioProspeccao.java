@@ -107,7 +107,7 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	private Usuario criadoPor;
 	
 	@Transient
-	private Set<Lista> listas = new HashSet<>();
+	private Set<NegocioLista> listas = new HashSet<>();
 	/**
 	 * @return the id
 	 */
@@ -208,14 +208,14 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	/**
 	 * @return the listas
 	 */
-	public Set<Lista> getListas() {
+	public Set<NegocioLista> getListas() {
 		return listas;
 	}
 
 	/**
 	 * @param listas the listas to set
 	 */
-	public void setListas(Set<Lista> listas) {
+	public void setListas(Set<NegocioLista> listas) {
 		this.listas = listas;
 	}
 	

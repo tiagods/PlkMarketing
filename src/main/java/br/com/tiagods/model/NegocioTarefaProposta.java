@@ -7,7 +7,6 @@ import javax.persistence.ManyToOne;
 
 import br.com.tiagods.modelcollections.NegocioProposta;
 
-@SuppressWarnings("serial")
 @Entity
 @DiscriminatorValue(value = "proposta")
 public class NegocioTarefaProposta extends NegocioTarefa{

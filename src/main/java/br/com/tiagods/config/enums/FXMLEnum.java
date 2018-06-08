@@ -3,6 +3,8 @@ package br.com.tiagods.config.enums;
 import java.net.URL;
 
 public enum FXMLEnum {
+	CONTATO_PESQUISA("ContatoPesquisa"),
+	CONTATO_CADASTRO("ContatoCadastro"),
 	LOGIN("Login"),
 	MAIN("Main"),
 	USUARIO_PESQUISA("UsuarioPesquisa"),
@@ -11,9 +13,7 @@ public enum FXMLEnum {
 	TAREFA_CADASTRO("TarefaCadastro"),
 	TAREFA_DIALOG_CONTATO("TarefaDialogContato");
 //	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta");
-	
 	private String localizacao;
-	
 	private FXMLEnum(String localizacao) {
 		this.localizacao=localizacao;
 	}

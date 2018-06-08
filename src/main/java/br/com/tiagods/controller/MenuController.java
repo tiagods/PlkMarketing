@@ -27,30 +27,29 @@ public class MenuController extends UtilsController implements Initializable{
     private Label txAnunciosAbertos;
 
     @FXML
-    void empresa(ActionEvent event) {
-
+    void contato(ActionEvent event) {
+    	try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_PESQUISA);
+            loader.setController(new ContatoPesquisaController(stage));
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+        }catch(FXMLNaoEncontradoException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_PESQUISA,e,true);
+        }
     }
-
     @FXML
-    void pessoa(ActionEvent event) {
+    void negocio(ActionEvent event) {
 
     }
-    
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
 	}   
-    
-    @FXML
-    void prospeccao(ActionEvent event) {
-
-    }
-
     @FXML
     void sair(ActionEvent event) {
 	    System.exit(0);
     }
-
     @FXML
     void sobre(ActionEvent event) {
 

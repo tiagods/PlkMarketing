@@ -7,20 +7,20 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
 @Entity
-public class Lista implements AbstractEntity,Serializable{
+@Table(name="lista")
+public class NegocioLista implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -32,6 +32,7 @@ public class Lista implements AbstractEntity,Serializable{
 	private String detalhes;
 	@Column(name="LIS_CRIADOEM")
 	private Calendar criadoEm;
+	@ManyToOne
 	@JoinColumn(name="LIS_CRIADOPOR_COD")
 	private Usuario criadoPor;
 	/*
@@ -42,6 +43,13 @@ public class Lista implements AbstractEntity,Serializable{
     */
 	@Transient
 	private Set<NegocioProspeccao> prospects = new HashSet<>();
+	
+	
+	public NegocioLista() {}
+	public NegocioLista(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */
@@ -114,5 +122,37 @@ public class Lista implements AbstractEntity,Serializable{
 	public void setProspects(Set<NegocioProspeccao> prospects) {
 		this.prospects = prospects;
 	}
-
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NegocioLista other = (NegocioLista) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+	@Override
+	public String toString() {
+		return nome;
+	}
 }

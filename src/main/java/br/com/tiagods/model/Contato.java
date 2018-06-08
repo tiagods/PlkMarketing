@@ -28,8 +28,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	public enum PessoaTipo {
-		EMPRESA("Empresa"), PESSOA("Pessoa");
-
+		TODAS("Todas"),EMPRESA("Empresa"), PESSOA("Pessoa");
 		private String descricao;
 		PessoaTipo(String descricao) {
 			this.descricao=descricao;
@@ -37,15 +36,23 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 		public String getDescricao() {
 			return descricao;
 		}
+		@Override
+		public String toString() {
+			return getDescricao();
+		}
 	}
 	public enum ContatoTipo{
-		GENERICO("Generico"),PROSPECCAO("Prospecção"),SONDAGEM("Sondagem");
+		TODAS("Todas"),GENERICO("Generico"),PROSPECCAO("Prospecção"),SONDAGEM("Sondagem");
 		private String descricao;
 		private ContatoTipo(String descricao) {
 			this.descricao=descricao;
 		}
 		public String getDescricao() {
 			return descricao;
+		}
+		@Override
+		public String toString() {
+			return getDescricao();
 		}
 	}
 	@Embedded

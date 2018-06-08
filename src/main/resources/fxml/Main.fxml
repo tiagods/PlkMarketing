@@ -174,18 +174,7 @@
    <left>
       <VBox prefHeight="459.0" prefWidth="135.0" styleClass="menu-lerf--linear-background" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton mnemonicParsing="false" onAction="#empresa" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="EMPRESA" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@imagens/menu_empresas.png" />
-                     </image>
-                  </ImageView>
-               </graphic></JFXButton>
-            <JFXButton mnemonicParsing="false" onAction="#pessoa" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="PESSOA" textFill="WHITE">
+            <JFXButton mnemonicParsing="false" onAction="#contato" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="CONTATO" textFill="WHITE">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
@@ -196,14 +185,14 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-         	<JFXButton mnemonicParsing="false" onAction="#prospeccao" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="PROSPECCAO" textFill="#f5f3f3">
+            <JFXButton mnemonicParsing="false" onAction="#negocio" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="NEGOCIO" textFill="WHITE">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@imagens/menu_prospeccao.png" />
+                        <Image url="@imagens/menu_negocios.png" />
                      </image>
                   </ImageView>
                </graphic></JFXButton>

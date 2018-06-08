@@ -70,6 +70,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	public TarefaContatoDialogController(Stage stage) {
 		this.stage = stage;
 	}
+	
 	private void combos() {
 		String todas="Todas";
 		NegocioCategoria categoria = new NegocioCategoria(-1L,todas);
@@ -80,6 +81,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbNivel.getItems().add(nivel);
 		cbOrigem.getItems().add(origem);
 		cbServico.getItems().add(servico);
+		
 		
 		categorias = new NegocioCategoriasImpl(getManager());
 		niveis = new NegocioNiveisImpl(getManager());
@@ -96,7 +98,6 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbNivel.getSelectionModel().selectFirst();
 		cbOrigem.getSelectionModel().selectFirst();
 		cbServico.getSelectionModel().selectFirst();
-		
 		tbPrincipal.getItems().addAll(contatos.getAll());
 	}
 	void filtrar() {
@@ -112,7 +113,6 @@ public class TarefaContatoDialogController extends UtilsController implements In
 			close();
 		}
 	}
-			
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();

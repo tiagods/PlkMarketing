@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Gestão de Contatos" />
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox fx:id="pnCheckBox" alignment="CENTER" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+               <children>
+                  <JFXComboBox fx:id="cbTipo" promptText="Tipo" />
+                  <JFXComboBox fx:id="cbContatoTipo" promptText="Tipo Contato" />
+                  <JFXComboBox fx:id="cbLista" promptText="Lista" />
+                  <JFXComboBox fx:id="cbCategoria" layoutX="432.0" layoutY="10.0" promptText="Categoria" />
+                  <JFXComboBox fx:id="cbNivel" layoutX="404.0" layoutY="10.0" promptText="Nivel" />
+                  <JFXComboBox fx:id="cbOrigem" layoutX="460.0" layoutY="10.0" promptText="Origem" />
+                  <JFXComboBox fx:id="cbServico" layoutX="460.0" layoutY="10.0" promptText="Servico" />
+                  <JFXComboBox fx:id="cbAtendente" layoutX="320.0" layoutY="10.0" promptText="Atendente" />
+               </children>
+            </HBox>
+            <HBox fx:id="pnCheckBox1" alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <children>
+                  <JFXCheckBox fx:id="ckConvite" text="Convite para Eventos" />
+                  <JFXCheckBox fx:id="ckMaterial" layoutX="389.0" layoutY="14.0" text="Material" />
+                  <JFXCheckBox fx:id="ckNewsletter" layoutX="435.0" layoutY="14.0" text="Newsletter" />
+                  <JFXDatePicker fx:id="dataInicial" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault" />
+                  <Label alignment="CENTER" maxWidth="20.0" minWidth="20.0" prefHeight="20.0" text="ate" />
+                  <JFXDatePicker fx:id="dataFinal" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXTextField fx:id="txPesquisa" text="Pesquisar" />
+                  <Label text="Calassificar por">
+                     <HBox.margin>
+                        <Insets left="20.0" right="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <JFXComboBox fx:id="cbClassificar" prefHeight="26.0" prefWidth="117.0" promptText="Data Criaçao" style="-fx-background-color: #E7DFDD;" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="144.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXButton onAction="#novo" styleClass="btDefault" text="Novo Contato">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <TableView fx:id="tbPrincipal" prefHeight="281.0" prefWidth="900.0" styleClass="table" tableMenuButtonVisible="true" />
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <ButtonBar prefHeight="50.0" prefWidth="256.0">
+               <buttons>
+                  <JFXButton onAction="#exportar" styleClass="btDefault" text="Exportar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_export.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btDefault" text="Sair">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </buttons>
+            </ButtonBar>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

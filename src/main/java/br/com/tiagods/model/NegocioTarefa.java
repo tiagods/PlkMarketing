@@ -24,7 +24,6 @@ import br.com.tiagods.modelcollections.NegocioEmpresa;
 import br.com.tiagods.modelcollections.NegocioPessoa;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProspeccao;
-
 @Entity
 @Table(name="tarefa")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
