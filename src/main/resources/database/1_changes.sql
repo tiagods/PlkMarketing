@@ -50,7 +50,9 @@ create table contato(
 	im varchar,
 	ie varchar,
 	responsavel varchar,
+	apelido varchar,
 	tipo varchar,
+	contato_tipo varchar,
 	ultimo_negocio_id integer,
 	origem_id integer,
 	atendente_id integer,
@@ -60,6 +62,10 @@ create table contato(
 	servico_id integer,
 	categoria_id integer,
 	nivel_id integer,
+	material boolean,
+	convite boolean,
+	newsletter boolean,
+	mala_direta_id integer;
 	nome varchar,
 	telefone varchar,
 	celular varchar,
@@ -77,6 +83,24 @@ create table contato(
 	primary key(id)
 )
 
+alter table lista rename column LIS_COD to id;
+alter table lista rename column LIS_NOME to nome;
+alter table lista rename column LIS_DETALHES to detalhes;
+alter table lista rename column LIS_CRIADOEM to criado_em;
+alter table lista rename column LIS_CRIADOPOR_COD to criado_por_id;
+
+create table contato_lista(
+  contato_id integer NOT NULL,
+  lista_id integer NOT NULL,
+  CONSTRAINT contato_lista_pkey PRIMARY KEY (contato_id, lista_id),
+  CONSTRAINT contato_lista_fk FOREIGN KEY (contato_id)
+      REFERENCES contato (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT lista_contato_fk FOREIGN KEY (lista_id)
+      REFERENCES lista (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
 alter table negocio add column contato_id integer;
 
 alter table empresa add column departamento varchar;
@@ -84,6 +108,7 @@ alter table empresa add column estado varchar(2);
 alter table empresa add column ie varchar;
 alter table empresa add column im varchar;
 alter table empresa add column responsavel varchar;
+alter table empresa add column apelido  varchar;
 
 alter table pessoa add column departamento varchar;
 alter table pessoa add column estado varchar(2);
@@ -94,6 +119,6 @@ alter table prospeccao add column razao varchar;
 alter table prospeccao add column cnpj varchar;
 alter table prospeccao add column ie varchar;
 alter table prospeccao add column im  varchar;
-
+alter table prospeccao add column apelido  varchar;
 
 

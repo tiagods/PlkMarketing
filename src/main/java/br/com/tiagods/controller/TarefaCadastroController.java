@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import javax.persistence.PersistenceException;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
@@ -22,12 +23,13 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioTarefa;
-import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.NegocioTarefaContato;
 import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
+import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -90,6 +92,8 @@ public class TarefaCadastroController extends UtilsController implements Initial
     @FXML
     private JFXToggleButton tggFinalizado;
 
+    @FXML
+    private JFXButton btBuscar;
 	
     private Stage stage;
     
@@ -97,9 +101,15 @@ public class TarefaCadastroController extends UtilsController implements Initial
     
     private NegocioTarefa tarefa;
     
-	public TarefaCadastroController(Stage stage, NegocioTarefa tarefa) {
+    private Object entidade;
+
+	private NegociosTarefasContatosImpl contatos;
+	private NegociosTarefasPropostasImpl propostas;
+    
+	public TarefaCadastroController(Stage stage, NegocioTarefa tarefa,Object entidade) {
 		this.stage = stage;
-		if(tarefa!=null) preencherFormulario(tarefa);
+		this.entidade = entidade;
+		this.tarefa = tarefa;
 	}
 	@FXML
     void buscar(ActionEvent event) {
@@ -162,6 +172,26 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		};
 		rbNegocioContato.selectedProperty().addListener(listener);
 		rbNegocioProposta.selectedProperty().addListener(listener);
+		
+		if(entidade!=null) {
+			String id = "";
+			String nome = "";
+			if(entidade instanceof Contato) {
+				rbNegocioContato.setSelected(true);
+				id = ""+((Contato)entidade).getId();
+				nome = ""+((Contato)entidade).getNome();
+			}
+			else if(entidade instanceof NegocioProposta) {
+				rbNegocioProposta.setSelected(true);
+				id = ""+((NegocioProposta)entidade).getId();
+				nome = ""+((NegocioProposta)entidade).getNome();
+			}			
+			txIdPesquisa.setText(id);
+			txNomePesquisa.setText(nome);
+			rbNegocioContato.setDisable(true);
+			rbNegocioProposta.setDisable(true);
+			btBuscar.setDisable(true);
+		}
 	}
 	
 	@Override
@@ -169,6 +199,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		try {
 			loadFactory();
 			combos();
+			if(tarefa!=null) preencherFormulario(tarefa);
 		}catch (PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
 		}finally {
@@ -176,12 +207,12 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		}
 	}
 	void preencherFormulario(NegocioTarefa tarefa) {
-		TipoTarefa tipo =  tarefa.getTipoTarefa();
-		if(tipo.equals(TipoTarefa.EMAIL)) rbEmail.setSelected(true);
-		else if(tipo.equals(TipoTarefa.PROPOSTA)) rbProposta.setSelected(true);
-		else if(tipo.equals(TipoTarefa.REUNIAO)) rbReuniao.setSelected(true);
-		else if(tipo.equals(TipoTarefa.TELEFONE)) rbTelefone.setSelected(true);
-		else if(tipo.equals(TipoTarefa.WHATSAPP)) rbWhatsApp.setSelected(true);
+		NegocioTarefa.TipoTarefa tipo =  tarefa.getTipoTarefa();
+		if(tipo.equals(NegocioTarefa.TipoTarefa.EMAIL)) rbEmail.setSelected(true);
+		else if(tipo.equals(NegocioTarefa.TipoTarefa.PROPOSTA)) rbProposta.setSelected(true);
+		else if(tipo.equals(NegocioTarefa.TipoTarefa.REUNIAO)) rbReuniao.setSelected(true);
+		else if(tipo.equals(NegocioTarefa.TipoTarefa.TELEFONE)) rbTelefone.setSelected(true);
+		else if(tipo.equals(NegocioTarefa.TipoTarefa.WHATSAPP)) rbWhatsApp.setSelected(true);
 		if(tarefa instanceof NegocioTarefaContato){
 			rbNegocioContato.setSelected(true);
 			Contato contato = ((NegocioTarefaContato)tarefa).getContato();
@@ -234,11 +265,11 @@ public class TarefaCadastroController extends UtilsController implements Initial
     		((NegocioTarefaProposta)tarefa).setProposta(new NegocioProposta(Long.parseLong(txIdPesquisa.getText())));
     		
     	}
-    	TipoTarefa tipo = TipoTarefa.EMAIL;
-    	if(rbProposta.isSelected()) tipo = TipoTarefa.PROPOSTA;
-    	else if(rbReuniao.isSelected()) tipo = TipoTarefa.REUNIAO;
-    	else if(rbTelefone.isSelected()) tipo = TipoTarefa.TELEFONE;
-    	else if(rbWhatsApp.isSelected()) tipo = TipoTarefa.WHATSAPP;
+    	NegocioTarefa.TipoTarefa tipo = NegocioTarefa.TipoTarefa.EMAIL;
+    	if(rbProposta.isSelected()) tipo = NegocioTarefa.TipoTarefa.PROPOSTA;
+    	else if(rbReuniao.isSelected()) tipo = NegocioTarefa.TipoTarefa.REUNIAO;
+    	else if(rbTelefone.isSelected()) tipo = NegocioTarefa.TipoTarefa.TELEFONE;
+    	else if(rbWhatsApp.isSelected()) tipo = NegocioTarefa.TipoTarefa.WHATSAPP;
     	tarefa.setTipoTarefa(tipo);
     	
     	tarefa.setDescricao(txDescricao.getText());
@@ -248,6 +279,23 @@ public class TarefaCadastroController extends UtilsController implements Initial
     			(dpData.getValue().atTime(tpTime.getValue()).atZone(ZoneId.systemDefault())));
     	
     	tarefa.setFinalizado(tggFinalizado.isSelected()?1:0);
+    	try {
+    		loadFactory();
+    		if(tarefa instanceof NegocioTarefaContato) {
+    			contatos = new NegociosTarefasContatosImpl(getManager());
+    			this.tarefa = contatos.save((NegocioTarefaContato)tarefa);
+    		}
+    		else if(tarefa instanceof NegocioTarefaProposta) {
+    			propostas = new NegociosTarefasPropostasImpl(getManager());
+    			this.tarefa = propostas.save((NegocioTarefaProposta)tarefa);
+    		}
+    		alert(Alert.AlertType.INFORMATION,"Sucesso",null,
+	                "Salvo com sucesso",null,false);
+    	}catch (PersistenceException e) {
+    		alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
+		}finally {
+			close();
+		}
     }
 	
 	

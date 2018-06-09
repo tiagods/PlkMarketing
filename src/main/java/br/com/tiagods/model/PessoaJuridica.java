@@ -15,6 +15,8 @@ public class PessoaJuridica implements Serializable{
 	private String im;
 	private String ie;
 	private String responsavel;
+	private String apelido;
+	
 	/**
 	 * @return the razao
 	 */
@@ -69,5 +71,18 @@ public class PessoaJuridica implements Serializable{
 	public void setResponsavel(String responsavel) {
 		this.responsavel = responsavel;
 	}
+	/**
+	 * @return the apelido
+	 */
+	public String getApelido() {
+		return apelido;
+	}
+	/**
+	 * @param apelido the apelido to set
+	 */
+	public void setApelido(String apelido) {
+		this.apelido = apelido;
+	}
 
+	
 }

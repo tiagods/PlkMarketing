@@ -46,6 +46,10 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 		public int getOrdem() {
 			return ordem;
 		}	
+		@Override
+		public String toString() {
+			return getDescricao();
+		}
 	}
 	
 	@Id
@@ -67,8 +71,8 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	@JoinColumn(name="TAR_ATENDENTE_COD")
 	private Usuario atendente;
 	
-	@Enumerated(EnumType.STRING)
 	@Column(name="tipo")
+	@Enumerated(value=EnumType.STRING)
 	private TipoTarefa tipoTarefa;
 	//excluir
 	@Column(name="TAR_CLASSE")

@@ -113,7 +113,7 @@
                         <Insets right="10.0" />
                      </HBox.margin>
                   </JFXRadioButton>
-                  <JFXButton onAction="#buscar" styleClass="btDefault" text="Buscar">
+                  <JFXButton fx:id="btBuscar" onAction="#buscar" styleClass="btDefault" text="Buscar">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>

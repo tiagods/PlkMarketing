@@ -11,6 +11,10 @@ import br.com.tiagods.modelcollections.NegocioProposta;
 @DiscriminatorValue(value = "proposta")
 public class NegocioTarefaProposta extends NegocioTarefa{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@ManyToOne
 	@JoinColumn(name="proposta_id")
 	NegocioProposta proposta;	

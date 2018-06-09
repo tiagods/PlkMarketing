@@ -24,16 +24,13 @@ public class NegocioLista implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="LIS_COD")
 	private Long id;
-	@Column(name="LIS_NOME")
 	private String nome;
-	@Column(name="LIS_DETALHES")
 	private String detalhes;
-	@Column(name="LIS_CRIADOEM")
+	@Column(name="criado_em")
 	private Calendar criadoEm;
 	@ManyToOne
-	@JoinColumn(name="LIS_CRIADOPOR_COD")
+	@JoinColumn(name="criado_por_id")
 	private Usuario criadoPor;
 	/*
 	@ManyToMany(fetch = FetchType.LAZY)

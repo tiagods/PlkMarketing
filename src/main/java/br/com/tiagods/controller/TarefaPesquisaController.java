@@ -134,7 +134,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 			}
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
-            loader.setController(new TarefaCadastroController(stage,t));
+            loader.setController(new TarefaCadastroController(stage,t,null));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
             	try {

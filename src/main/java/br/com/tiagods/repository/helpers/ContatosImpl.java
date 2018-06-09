@@ -3,6 +3,7 @@ package br.com.tiagods.repository.helpers;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -17,9 +18,22 @@ import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.ContatoDAO;
 
 public class ContatosImpl extends AbstractRepository<Contato, Long> implements ContatoDAO{
+	
+	
 	public ContatosImpl(EntityManager manager) {
 		super(manager);
 	}
+	
+	@Override
+	public Contato findById(Long id) {
+		Query query = getEntityManager().createQuery("from Contato as a "
+	                + "LEFT JOIN FETCH a.tarefas LEFT JOIN FETCH a.negocios LEFT JOIN FETCH a.listas "
+	                + "where a.id=:id");
+	        query.setParameter("id", id);
+	        Contato a = (Contato)query.getSingleResult();
+		return a;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Contato> filtrar(String nome, NegocioCategoria categoria, NegocioNivel nivel, NegocioOrigem origem,NegocioServico servico) {

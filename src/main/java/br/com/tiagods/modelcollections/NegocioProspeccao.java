@@ -24,7 +24,7 @@ import javax.persistence.Transient;
 import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.PessoaJuridica;
-import br.com.tiagods.model.ProspeccaoTipoContato;
+import br.com.tiagods.model.NegocioMalaDireta;
 import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.Usuario;
 
@@ -51,7 +51,7 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name="PRO_TIPO_CONTATO")
-	private ProspeccaoTipoContato tipoContato;	
+	private NegocioMalaDireta tipoContato;	
 	
 	@ManyToOne
 	@JoinColumn(name = "PRO_ULT_NEGOCIO_COD")
@@ -167,14 +167,14 @@ public class NegocioProspeccao implements AbstractEntity,Serializable {
 	/**
 	 * @return the tipoContato
 	 */
-	public ProspeccaoTipoContato getTipoContato() {
+	public NegocioMalaDireta getTipoContato() {
 		return tipoContato;
 	}
 
 	/**
 	 * @param tipoContato the tipoContato to set
 	 */
-	public void setTipoContato(ProspeccaoTipoContato tipoContato) {
+	public void setTipoContato(NegocioMalaDireta tipoContato) {
 		this.tipoContato = tipoContato;
 	}
 

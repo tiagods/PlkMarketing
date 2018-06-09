@@ -102,12 +102,6 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@JoinColumn(name="NEG_PROSPECCAO_COD")
 	private NegocioProspeccao prospeccao;
 	
-	/*
-	 * NegocioContato contato
-	 * 
-	 * 
-	 */
-	
 	@Column(name="NEG_HONORARIO")
 	private BigDecimal honorario=new BigDecimal(0.00);
 	

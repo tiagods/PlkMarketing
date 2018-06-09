@@ -1,21 +1,31 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Transient;
 
+import br.com.tiagods.config.UsuarioLogado;
+import br.com.tiagods.modelcollections.NegocioLista;
 import br.com.tiagods.modelcollections.NegocioProposta;
 
 @Entity
@@ -59,8 +69,12 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	private PessoaFisica fisico;
 	@Embedded
 	private PessoaJuridica juridico;
-	@Enumerated(value= EnumType.STRING)
+	@Enumerated(value = EnumType.STRING)
 	private PessoaTipo tipo;
+	
+	@Enumerated(value= EnumType.STRING)
+	@Column(name="contato_tipo")
+	private ContatoTipo contatoTipo;
 	
 	@ManyToOne
 	@JoinColumn(name = "ultimo_negocio_id")
@@ -90,15 +104,34 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@JoinColumn(name = "nivel_id")
 	private NegocioNivel nivel;
 	
-	@Transient
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="contato_lista",
+            joinColumns = { @JoinColumn(name = "contato_id", referencedColumnName = "id") },
+            inverseJoinColumns = { @JoinColumn(name = "lista_id", referencedColumnName = "id") })
+	private Set<NegocioLista> listas = new HashSet<>();
+	
+	private boolean material = false;
+	private boolean convite = false;
+	private boolean newsletter = false;
+	@ManyToOne
+	@JoinColumn(name="mala_direta_id")
+	private NegocioMalaDireta malaDireta;
+	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="negocioContato",cascade=CascadeType.ALL)
 	private Set<NegocioProposta> negocios = new LinkedHashSet<>();
-	@Transient
+	
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="contato",cascade=CascadeType.ALL)
 	private Set<NegocioTarefaContato> tarefas = new LinkedHashSet<>();
 	public Contato() {
-		// TODO Auto-generated constructor stub
 	}
 	public Contato(long id) {
 		this.id=id;
+	}
+	
+	@PrePersist
+	void prePersist() {
+		setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+		setCriadoEm(Calendar.getInstance());
 	}
 	/**
 	 * @return the id
@@ -147,6 +180,19 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	 */
 	public void setTipo(PessoaTipo tipo) {
 		this.tipo = tipo;
+	}
+	
+	/**
+	 * @return the contatoTipo
+	 */
+	public ContatoTipo getContatoTipo() {
+		return contatoTipo;
+	}
+	/**
+	 * @param contatoTipo the contatoTipo to set
+	 */
+	public void setContatoTipo(ContatoTipo contatoTipo) {
+		this.contatoTipo = contatoTipo;
 	}
 	/**
 	 * @return the ultimoNegocio
@@ -244,6 +290,11 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	public void setCategoria(NegocioCategoria categoria) {
 		this.categoria = categoria;
 	}
+	
+	/**
+	 * @return the lista
+	 */
+	
 	/**
 	 * @return the nivel
 	 */
@@ -274,6 +325,67 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	 */
 	public Set<NegocioTarefaContato> getTarefas() {
 		return tarefas;
+	}
+	
+	/**
+	 * @return the listas
+	 */
+	public Set<NegocioLista> getListas() {
+		return listas;
+	}
+	/**
+	 * @param listas the listas to set
+	 */
+	public void setListas(Set<NegocioLista> listas) {
+		this.listas = listas;
+	}
+	/**
+	 * @return the material
+	 */
+	public boolean isMaterial() {
+		return material;
+	}
+	/**
+	 * @param material the material to set
+	 */
+	public void setMaterial(boolean material) {
+		this.material = material;
+	}
+	/**
+	 * @return the convite
+	 */
+	public boolean isConvite() {
+		return convite;
+	}
+	/**
+	 * @param convite the convite to set
+	 */
+	public void setConvite(boolean convite) {
+		this.convite = convite;
+	}
+	/**
+	 * @return the newsletter
+	 */
+	public boolean isNewsletter() {
+		return newsletter;
+	}
+	/**
+	 * @param newsletter the newsletter to set
+	 */
+	public void setNewsletter(boolean newsletter) {
+		this.newsletter = newsletter;
+	}
+	/**
+	 * @return the malaDireta
+	 */
+	public NegocioMalaDireta getMalaDireta() {
+		return malaDireta;
+	}
+	/**
+	 * @param malaDireta the malaDireta to set
+	 */
+	public void setMalaDireta(NegocioMalaDireta malaDireta) {
+		this.malaDireta = malaDireta;
 	}
 	/**
 	 * @param tarefas the tarefas to set

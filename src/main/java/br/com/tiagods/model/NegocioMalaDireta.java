@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="PRO_TIPO_CONTATO")
-public class ProspeccaoTipoContato implements AbstractEntity,Serializable{
+public class NegocioMalaDireta implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -42,6 +42,11 @@ public class ProspeccaoTipoContato implements AbstractEntity,Serializable{
 	 */
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	
+	@Override
+	public String toString() {
+		return this.nome;
 	}
 	
 	
