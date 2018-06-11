@@ -172,8 +172,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		ToggleGroup group = new ToggleGroup();
 		group.getToggles().addAll(rbDefinir,rbHoje,rbSemana,rbTudo);
 		usuarios = new UsuariosImpl(getManager());
-		Usuario usuario = new Usuario();
-		usuario.setLogin("Todos");
+		Usuario usuario = new Usuario(-1,"Atendente");
 		cbAtendente.getItems().add(usuario);
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
 		

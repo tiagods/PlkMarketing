@@ -37,7 +37,7 @@ import br.com.tiagods.model.Usuario;
 @Table(name="negocio")
 public class NegocioProposta implements AbstractEntity,Serializable{
 	public enum TipoEtapa{
-		CONTATO(1,"Contato"),PROPOSTA(2,"Envio de Proposta"),
+		ETAPA(-1,"Etapa"),CONTATO(1,"Contato"),PROPOSTA(2,"Envio de Proposta"),
 		FOLLOWUP(3,"Follow-up"),FECHAMENTO(4,"Fechamento"),INDEFINIDA(5,"Indefinida");
 		
 		private int index;
@@ -51,14 +51,16 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 		public String getDescricao() {
 			return descricao;
 		}
-
+		public int getIndex() {
+			return index;
+		}
 		@Override
 		public String toString() {
 			return getDescricao();
 		}
 	}
 	public enum TipoStatus{
-		ANDAMENTO(1,"Em Andamento"),GANHO(2,"Ganho"),PERDIDO(3,"Perdido"),SEMMOVIMENTO(4,"Sem Movimento");
+		STATUS(-1,"Status"),ANDAMENTO(1,"Em Andamento"),GANHO(2,"Ganho"),PERDIDO(3,"Perdido"),SEMMOVIMENTO(4,"Sem Movimento");
 		
 		private int index;
 		private String descricao;
@@ -71,13 +73,32 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 		public String getDescricao() {
 			return descricao;
 		}
-
+		public int getIndex() {
+			return index;
+		}
 		@Override
 		public String toString() {
 			return getDescricao();
 		}
 	}
-	
+	public enum MotivoPerda{
+		DESISTENCIA("Desistencia"),INDEFINIDO("Indefinido"),
+		PRAZO("Prazo"),PRECO("Preço"),SERVICO("Serviço");
+		
+		private String descricao;
+		
+		private MotivoPerda(String descricao) {
+			this.descricao=descricao;
+		}
+		
+		public String getDescricao() {
+			return descricao;
+		}
+		@Override
+		public String toString() {
+			return getDescricao();
+		}
+	}
 	/**
 	 * 
 	 */
@@ -152,7 +173,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	private String descricao;
 	
 	@Column(name="NEG_MOTIVOPERDA")
-	private String motivoPerda="";
+	private MotivoPerda motivoPerda;
 	
 	@Column(name="NEG_DETALHESPERDA",columnDefinition="text")
 	private String detalhesPerda="";
@@ -200,8 +221,11 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	private Contato negocioContato;
 	
 	@Enumerated(value=EnumType.STRING)
+	@Column(name="tipo_etapa")
 	private TipoEtapa tipoEtapa;
+	
 	@Enumerated(value=EnumType.STRING)
+	@Column(name="tipo_status")
 	private TipoStatus tipoStatus;
 	
 	public NegocioProposta() {
@@ -466,14 +490,14 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	/**
 	 * @return the motivoPerda
 	 */
-	public String getMotivoPerda() {
+	public MotivoPerda getMotivoPerda() {
 		return motivoPerda;
 	}
 
 	/**
 	 * @param motivoPerda the motivoPerda to set
 	 */
-	public void setMotivoPerda(String motivoPerda) {
+	public void setMotivoPerda(MotivoPerda motivoPerda) {
 		this.motivoPerda = motivoPerda;
 	}
 

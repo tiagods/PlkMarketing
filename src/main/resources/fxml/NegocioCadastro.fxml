@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import org.controlsfx.control.Rating?>
+<?import org.fxutils.maskedtextfield.MaskedTextField?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1020.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER">
+         <children>
+            <JFXRadioButton fx:id="rbProspeccao" text="Contato">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </JFXRadioButton>
+            <JFXRadioButton fx:id="rbSondagem" text="Envio da Proposta">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </JFXRadioButton>
+            <JFXRadioButton fx:id="rbSondagem1" layoutX="132.0" layoutY="10.0" text="Follow-Up">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </JFXRadioButton>
+            <JFXRadioButton fx:id="rbSondagem11" layoutX="290.0" layoutY="10.0" text="Fechamento">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </JFXRadioButton>
+            <JFXRadioButton fx:id="rbSondagem111" layoutX="394.0" layoutY="10.0" text="Indefinida">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </JFXRadioButton>
+         </children>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="436.0">
+         <children>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="330.0" prefWidth="449.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <Rating fx:id="rating" />
+                        <Label fx:id="lbrating" text="Label" />
+                     </children>
+                  </HBox>
+                  <GridPane prefHeight="348.0" prefWidth="449.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="415.0" minWidth="10.0" prefWidth="221.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="21.0" minHeight="10.0" prefHeight="19.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="114.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="114.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="104.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="126.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="115.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="123.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="113.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="82.0" minHeight="0.0" prefHeight="76.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Nome/Nome Fantasia:" />
+                        <JFXTextField fx:id="txNome" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin></JFXTextField>
+                        <HBox alignment="CENTER_LEFT" prefHeight="81.0" prefWidth="415.0" GridPane.rowIndex="2">
+                           <children>
+                              <Label prefHeight="15.0" text="Status:" />
+                              <JFXRadioButton fx:id="rbProspeccao1" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@imagens/button_deadline.png" />
+                                       </image></ImageView>
+                                 </graphic>
+                              </JFXRadioButton>
+                              <JFXRadioButton fx:id="rbProspeccao11" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@imagens/button_winner.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXRadioButton>
+                              <JFXRadioButton fx:id="rbProspeccao111" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="123.0" layoutY="36.0" text="R">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@imagens/button_sad2.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXRadioButton>
+                              <JFXRadioButton fx:id="rbProspeccao1111" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="193.0" layoutY="36.0" text="R">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@imagens/negocio_question2.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXRadioButton>
+                           </children>
+                        </HBox>
+                        <HBox prefHeight="34.0" prefWidth="415.0" GridPane.rowIndex="3">
+                           <children>
+                              <Label prefHeight="15.0" prefWidth="189.0" text="Data Inicio:" />
+                              <Label prefHeight="15.0" prefWidth="88.0" text="Data Limite:" />
+                           </children>
+                        </HBox>
+                        <HBox GridPane.rowIndex="4">
+                           <children>
+                              <JFXDatePicker />
+                              <JFXDatePicker />
+                           </children>
+                        </HBox>
+                        <Label text="Honorario:" GridPane.rowIndex="5" />
+                        <HBox prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="6">
+                           <children>
+                              <Label prefHeight="26.0" prefWidth="36.0" text="R$:" />
+                              <JFXTextField fx:id="txSite11" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
+                              <JFXButton onAction="#incluirLista" styleClass="btDefault" text="Serviços Adicionais">
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@imagens/button_money.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </JFXButton>
+                           </children>
+                        </HBox>
+                        <Label text="Descriçao:" GridPane.rowIndex="7" />
+                        <JFXTextArea fx:id="txResumo2" prefHeight="81.0" prefWidth="334.0" promptText="Um breve descriçao desse negocio, ja que em algum momento ele pode ser fechado. Voce pode descrever com base no historico de conversas(telefone, e-mail, whatsapp), reunioes. Uma ideia final de como fazer para fechar o negocio." GridPane.rowIndex="8" />
+                     </children>
+                  </GridPane>
+               </children>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </VBox>
+            <ScrollPane prefHeight="320.0" prefWidth="542.0" styleClass="menu-top--linear-background">
+               <content>
+                  <Accordion prefHeight="385.0" prefWidth="541.0" styleClass="menu-top--linear-background">
+                    <panes>
+                        <TitledPane animated="false" layoutX="10.0" layoutY="10.0" styleClass="menu-top--linear-background" text="Definiçoes">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
+                                 <children>
+                                    <VBox layoutX="7.0" layoutY="8.0" prefHeight="183.0" prefWidth="160.0">
+                                       <children>
+                                          <Label text="Atendente:" />
+                                          <JFXComboBox fx:id="cbAtendente" prefHeight="26.0" prefWidth="120.0" />
+                                          <Label text="Categoria:" />
+                                          <JFXComboBox fx:id="cbCategoria" prefWidth="120.0" />
+                                          <Label text="Nivel:" />
+                                          <JFXComboBox fx:id="cbNivel" prefWidth="120.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox layoutX="180.0" layoutY="8.0" prefHeight="187.0" prefWidth="180.0">
+                                       <children>
+                                          <Label text="Origem" />
+                                          <JFXComboBox fx:id="cbOrigem" prefWidth="120.0" />
+                                          <Label text="Serviço:" />
+                                          <JFXComboBox fx:id="cbServico" prefWidth="120.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                      <TitledPane animated="false" text="Detalhes do Contato">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
+                                 <children>
+                                    <VBox layoutX="7.0" prefHeight="280.0" prefWidth="458.0">
+                                       <children>
+                                          <GridPane prefHeight="113.0" prefWidth="458.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="415.0" minWidth="10.0" prefWidth="221.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="242.0" minWidth="5.0" prefWidth="105.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints maxHeight="21.0" minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="36.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="20.0" minHeight="10.0" prefHeight="18.0" vgrow="SOMETIMES" />
+                                                <RowConstraints maxHeight="34.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Label text="E-Mail:" />
+                                                <HBox GridPane.rowIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <JFXTextField fx:id="txEmail1" prefHeight="26.0" prefWidth="238.0" />
+                                                      <JFXButton onAction="#mailSend" styleClass="btDefault">
+                                                         <graphic>
+                                                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/button_mail.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </JFXButton>
+                                                   </children>
+                                                </HBox>
+                                                <Label text="Site:" GridPane.rowIndex="2" />
+                                                <Label text="Telefone:" GridPane.columnIndex="1" />
+                                                <MaskedTextField fx:id="txTelefone1" mask="(##) ####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Label text="Celular:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <MaskedTextField fx:id="txCelular1" mask="(##) #####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <HBox GridPane.rowIndex="3">
+                                                   <GridPane.margin>
+                                                      <Insets right="10.0" />
+                                                   </GridPane.margin>
+                                                   <children>
+                                                      <JFXTextField fx:id="txSite2" prefHeight="26.0" prefWidth="238.0" />
+                                                      <JFXButton onAction="#openBrowser" styleClass="btDefault">
+                                                         <graphic>
+                                                            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/button_chrome.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                         </graphic>
+                                                      </JFXButton>
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </GridPane>
+                                          <Label text="Resumo:" />
+                                          <JFXTextArea fx:id="txResumo" prefHeight="30.0" prefWidth="364.0">
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </JFXTextArea>
+                                          <Label text="Apresentaço Sob Medida:" />
+                                          <JFXTextArea fx:id="txApresentacao" prefHeight="30.0" prefWidth="364.0">
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </JFXTextArea>
+                                          <Label text="Detalhes da Origem:" />
+                                          <JFXTextArea fx:id="txDetalhesOrigem" prefHeight="30.0" prefWidth="364.0">
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </JFXTextArea>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                      <TitledPane animated="false" text="Serviços">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
+                                 <children>
+                                    <VBox layoutX="8.0" layoutY="6.0" prefHeight="178.0" prefWidth="518.0">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="52.0" prefWidth="518.0">
+                                             <children>
+                                                <JFXComboBox fx:id="cbLista" prefWidth="120.0" />
+                                                <JFXTextField fx:id="txSite1" prefHeight="26.0" prefWidth="115.0" />
+                                                <JFXButton onAction="#novaTarefa" prefHeight="38.0" prefWidth="64.0" styleClass="btDefault">
+                                                   <graphic>
+                                                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@imagens/button_add.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </JFXButton>
+                                                <JFXButton onAction="#incluirLista" styleClass="btDefault" text="Incluir Serviço">
+                                                   <graphic>
+                                                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@imagens/button_save.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </JFXButton>
+                                             </children>
+                                          </HBox>
+                                          <TableView fx:id="tbListas" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </TitledPane>
+                        <TitledPane animated="false" layoutX="10.0" layoutY="114.0" text="Documentos">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
+                                 <children>
+                                    <Label layoutX="21.0" layoutY="16.0" text="Lista:" />
+                                    <JFXComboBox fx:id="cbLista1" layoutX="21.0" layoutY="38.0" prefWidth="120.0" />
+                                    <JFXButton layoutX="154.0" layoutY="28.0" onAction="#incluirLista" styleClass="btDefault" text="Incluir Lista">
+                                       <graphic>
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@imagens/button_save.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </JFXButton>
+                                    <TableView fx:id="tbListas1" layoutX="14.0" layoutY="74.0" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                    </panes>
+                  </Accordion>
+               </content>
+            </ScrollPane>
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox prefHeight="238.0" prefWidth="890.0">
+         <children>
+            <VBox alignment="TOP_RIGHT" prefHeight="237.0" prefWidth="1010.0">
+               <children>
+                  <TableView fx:id="tbTarefas" prefHeight="170.0" prefWidth="532.0" styleClass="table" tableMenuButtonVisible="true" />
+                  <JFXButton onAction="#novaTarefa" styleClass="btDefault" text="Nova Tarefa">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <ButtonBar prefHeight="50.0" prefWidth="256.0">
+               <buttons>
+                  <JFXButton onAction="#salvar" styleClass="btDefault" text="Salvar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btDefault" text="Sair">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </buttons>
+            </ButtonBar>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

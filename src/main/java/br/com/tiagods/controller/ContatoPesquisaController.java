@@ -156,13 +156,12 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	}
 	
 	void combos() {
-		String todas="Todas";
-		NegocioCategoria categoria = new NegocioCategoria(-1L,todas);
-		NegocioNivel nivel = new NegocioNivel(-1L,todas);
-		NegocioOrigem origem = new NegocioOrigem(-1L,todas);
-		NegocioServico servico = new NegocioServico(-1L, todas);
-		Usuario usuario = new Usuario(-1L,todas);
-		NegocioLista lista = new NegocioLista(-1L, todas);
+		NegocioCategoria categoria = new NegocioCategoria(-1L,"Categoria");
+		NegocioNivel nivel = new NegocioNivel(-1L,"Nivel");
+		NegocioOrigem origem = new NegocioOrigem(-1L,"Origem");
+		NegocioServico servico = new NegocioServico(-1L, "Servico");
+		Usuario usuario = new Usuario(-1L,"Atendente");
+		NegocioLista lista = new NegocioLista(-1L, "Lista");
 		
 		cbCategoria.getItems().add(categoria);
 		cbNivel.getItems().add(nivel);
@@ -196,8 +195,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbAtendente.getSelectionModel().selectFirst();
 		//cbLista.getSelectionModel().selectFirst();
 		
-		cbTipo.getSelectionModel().select(PessoaTipo.TODAS);
-		cbContatoTipo.getSelectionModel().select(ContatoTipo.TODAS);
+		cbTipo.getSelectionModel().select(PessoaTipo.CONTATO);
+		cbContatoTipo.getSelectionModel().select(ContatoTipo.CONTATO);
 		
 		tbPrincipal.getItems().addAll(contatos.getAll());
 	}
@@ -275,10 +274,10 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		TableColumn<Contato, NegocioServico> colunaServico= new  TableColumn<>("Servico");
 		colunaServico.setCellValueFactory(new PropertyValueFactory<>("servico"));
 
-		TableColumn<Contato, NegocioServico> colunaCategoria= new  TableColumn<>("Categoria");
+		TableColumn<Contato, NegocioCategoria> colunaCategoria= new  TableColumn<>("Categoria");
 		colunaCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
 
-		TableColumn<Contato, NegocioServico> colunaNivel= new  TableColumn<>("Nivel");
+		TableColumn<Contato, NegocioNivel> colunaNivel= new  TableColumn<>("Nivel");
 		colunaNivel.setCellValueFactory(new PropertyValueFactory<>("nivel"));
 		
 		TableColumn<Contato, Usuario> colunaAtendente= new  TableColumn<>("Atendente");

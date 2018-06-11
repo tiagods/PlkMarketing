@@ -102,6 +102,8 @@ create table contato_lista(
 )
 
 alter table negocio add column contato_id integer;
+alter table negocio add column tipo_etapa varchar;
+alter table negocio add column tipo_status varchar;
 
 alter table empresa add column departamento varchar;
 alter table empresa add column estado varchar(2);
@@ -121,4 +123,16 @@ alter table prospeccao add column ie varchar;
 alter table prospeccao add column im  varchar;
 alter table prospeccao add column apelido  varchar;
 
+update negocio set tipo_etapa = 'CONTATO' where neg_eta_cod=1;
+update negocio set tipo_etapa = 'PROPOSTA' where neg_eta_cod=2;
+update negocio set tipo_etapa = 'FOLLOWUP' where neg_eta_cod=3;
+update negocio set tipo_etapa = 'FECHAMENTO' where neg_eta_cod=4;
+update negocio set tipo_etapa = 'INDEFINIDA' where neg_eta_cod=5;
+
+update negocio set tipo_status = 'ANDAMENTO' where neg_sta_cod=1;
+update negocio set tipo_status = 'GANHO' where neg_sta_cod=2;
+update negocio set tipo_status = 'PERDIDO' where neg_sta_cod=3;
+update negocio set tipo_status = 'SEMMOVIMENTO' where neg_sta_cod=4;
+
+update negocio set neg_motivoperda='INDEFINIDO' where tipo_status='PERDIDO'
 
