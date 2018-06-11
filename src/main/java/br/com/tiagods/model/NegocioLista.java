@@ -1,4 +1,4 @@
-package br.com.tiagods.modelcollections;
+package br.com.tiagods.model;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -15,8 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.NegocioProspeccao;
 
 @Entity
 @Table(name="lista")

@@ -22,10 +22,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
-import javax.persistence.Transient;
 
 import br.com.tiagods.config.UsuarioLogado;
-import br.com.tiagods.modelcollections.NegocioLista;
 import br.com.tiagods.modelcollections.NegocioProposta;
 
 @Entity

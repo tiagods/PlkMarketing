@@ -8,6 +8,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,17 +26,58 @@ import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioDocumento;
-import br.com.tiagods.model.NegocioEtapa;
-import br.com.tiagods.model.NegocioStatus;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.NegocioTarefa;
+import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Usuario;
 
 @Entity
 @Table(name="negocio")
 public class NegocioProposta implements AbstractEntity,Serializable{
+	public enum TipoEtapa{
+		CONTATO(1,"Contato"),PROPOSTA(2,"Envio de Proposta"),
+		FOLLOWUP(3,"Follow-up"),FECHAMENTO(4,"Fechamento"),INDEFINIDA(5,"Indefinida");
+		
+		private int index;
+		private String descricao;
+		
+		private TipoEtapa(int index, String descricao) {
+			this.index=index;
+			this.descricao=descricao;
+		}
+		
+		public String getDescricao() {
+			return descricao;
+		}
+
+		@Override
+		public String toString() {
+			return getDescricao();
+		}
+	}
+	public enum TipoStatus{
+		ANDAMENTO(1,"Em Andamento"),GANHO(2,"Ganho"),PERDIDO(3,"Perdido"),SEMMOVIMENTO(4,"Sem Movimento");
+		
+		private int index;
+		private String descricao;
+		
+		private TipoStatus(int index, String descricao) {
+			this.index=index;
+			this.descricao=descricao;
+		}
+		
+		public String getDescricao() {
+			return descricao;
+		}
+
+		@Override
+		public String toString() {
+			return getDescricao();
+		}
+	}
+	
 	/**
 	 * 
 	 */
@@ -153,9 +196,13 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	private NegocioNivel nivel;
 	
 	@ManyToOne
-	//@JoinColumn(name = "nivel_id")
 	@JoinColumn(name = "contato_id")
 	private Contato negocioContato;
+	
+	@Enumerated(value=EnumType.STRING)
+	private TipoEtapa tipoEtapa;
+	@Enumerated(value=EnumType.STRING)
+	private TipoStatus tipoStatus;
 	
 	public NegocioProposta() {
 	}
@@ -611,6 +658,49 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	 */
 	public void setNivel(NegocioNivel nivel) {
 		this.nivel = nivel;
+	}
+
+	
+	/**
+	 * @return the negocioContato
+	 */
+	public Contato getNegocioContato() {
+		return negocioContato;
+	}
+
+	/**
+	 * @param negocioContato the negocioContato to set
+	 */
+	public void setNegocioContato(Contato negocioContato) {
+		this.negocioContato = negocioContato;
+	}
+
+	/**
+	 * @return the tipoEtapa
+	 */
+	public TipoEtapa getTipoEtapa() {
+		return tipoEtapa;
+	}
+
+	/**
+	 * @param tipoEtapa the tipoEtapa to set
+	 */
+	public void setTipoEtapa(TipoEtapa tipoEtapa) {
+		this.tipoEtapa = tipoEtapa;
+	}
+
+	/**
+	 * @return the tipoStatus
+	 */
+	public TipoStatus getTipoStatus() {
+		return tipoStatus;
+	}
+
+	/**
+	 * @param tipoStatus the tipoStatus to set
+	 */
+	public void setTipoStatus(TipoStatus tipoStatus) {
+		this.tipoStatus = tipoStatus;
 	}
 
 	/* (non-Javadoc)

@@ -1,4 +1,4 @@
-package br.com.tiagods.modelcollections;
+package br.com.tiagods.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.modelcollections.NegocioProposta;
 
 @Entity
 @Table(name="SERVICO_CONTRATADO")

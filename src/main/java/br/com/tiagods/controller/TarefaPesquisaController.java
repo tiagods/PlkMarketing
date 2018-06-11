@@ -29,9 +29,9 @@ import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.exception.FXMLNaoEncontradoException;
-import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.NegocioTarefaContato;
 import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
@@ -302,7 +302,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 			loadFactory();
 			combos();
 		}catch(Exception e) {
-			e.printStackTrace();
+			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
 		}finally {
 			close();
 		}
@@ -519,8 +519,8 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 								if(f instanceof JFXRadioButton && ((JFXRadioButton) f).isSelected()) {
 									Integer p = map.get(f);
 									if (p!=item.intValue() && salvarStatus(tarefa, p)) {
-										((JFXRadioButton) f).setSelected(true);
-										setGraphic(f);
+										tbPrincipal.getItems().get(getIndex()).setFinalizado(p);
+										tbPrincipal.refresh();
 									}
 									break;
 								}
@@ -532,6 +532,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
+		colunaStatus.setPrefWidth(100);
 		TableColumn<NegocioTarefa, Usuario> columnAtendente = new  TableColumn<>("Atendente");
 		columnAtendente.setCellValueFactory(new PropertyValueFactory<>("atendente"));
 		columnAtendente.setCellFactory(param -> new TableCell<NegocioTarefa,Usuario>(){

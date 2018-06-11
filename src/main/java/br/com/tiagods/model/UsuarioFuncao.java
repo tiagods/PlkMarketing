@@ -10,14 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="NEGOCIO_ETAPA")
-public class NegocioEtapa implements AbstractEntity,Serializable{
+@Table(name="funcao")
+public class UsuarioFuncao implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="NEG_ETA_COD")
+	@Column(name="FUN_COD")
 	private Long id;
-	@Column(name="NEG_ETA_NOME")
+	@Column(name="FUN_NOME")
 	private String nome;
 	/**
 	 * @return the id

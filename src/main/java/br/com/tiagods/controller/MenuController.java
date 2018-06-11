@@ -40,7 +40,15 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @FXML
     void negocio(ActionEvent event) {
-
+    	try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_PESQUISA);
+            loader.setController(new NegocioPesquisaController(stage));
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+        }catch(FXMLNaoEncontradoException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
+        }
     }
     @Override
 	public void initialize(URL location, ResourceBundle resources) {

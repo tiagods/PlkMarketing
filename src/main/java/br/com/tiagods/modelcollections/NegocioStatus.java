@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.modelcollections;
 
 import java.io.Serializable;
 
@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import br.com.tiagods.model.AbstractEntity;
 
 @Entity
 @Table(name="NEGOCIO_STATUS")
@@ -19,6 +21,13 @@ public class NegocioStatus implements AbstractEntity,Serializable{
 	private Long id;
 	@Column(name="NEG_STA_NOME")
 	private String nome;
+	
+	public NegocioStatus() {}
+	
+	public NegocioStatus(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */

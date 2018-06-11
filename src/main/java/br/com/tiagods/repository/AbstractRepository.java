@@ -6,7 +6,13 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
+
 import br.com.tiagods.model.AbstractEntity;
+import javafx.application.Platform;
+import javafx.util.Pair;
 
 public abstract class AbstractRepository<Entity extends AbstractEntity, PK extends Number> {
 	private EntityManager em;
@@ -44,6 +50,20 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 		Query query = getEntityManager().createQuery("FROM " + entityClass.getName() + " o order by o.id");
 		return (List<Entity>) query.getResultList();
 	}
+	@SuppressWarnings("unchecked")
+	public Pair<List<Entity>,Paginacao> getAll(Paginacao page){
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
+		criteria.setFirstResult(page.getPrimeiroRegistro());
+		criteria.setMaxResults(page.getLimitePorPagina());
+		List<Entity> firstPage = criteria.list();
+
+		criteria = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
+		criteria.setProjection(Projections.rowCount());
+		Long count = (Long) criteria.uniqueResult();
+		page.setTotalRegistros(count);
+		return new Pair<>(firstPage, page);
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public Entity findByNome(String nome) {

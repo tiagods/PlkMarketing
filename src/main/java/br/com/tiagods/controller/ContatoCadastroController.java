@@ -27,13 +27,14 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.Contato.ContatoTipo;
 import br.com.tiagods.model.Contato.PessoaTipo;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.NegocioMalaDireta;
 import br.com.tiagods.model.NegocioCategoria;
+import br.com.tiagods.model.NegocioLista;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
@@ -43,7 +44,6 @@ import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.NegocioLista;
 import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
@@ -753,8 +753,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
 								if(f instanceof JFXRadioButton && ((JFXRadioButton) f).isSelected()) {
 									Integer p = map.get(f);
 									if (p!=item.intValue() && salvarStatus(tarefa, p)) {
-										((JFXRadioButton) f).setSelected(true);
-										setGraphic(f);
+										tbTarefas.getItems().get(getIndex()).setFinalizado(p);
+										tbTarefas.refresh();
 									}
 									break;
 								}
@@ -766,6 +766,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 				}
 			}
 		});
+		colunaStatus.setPrefWidth(100);
 		TableColumn<NegocioTarefaContato, Usuario> columnAtendente = new  TableColumn<>("Atendente");
 		columnAtendente.setCellValueFactory(new PropertyValueFactory<>("atendente"));
 		columnAtendente.setCellFactory(param -> new TableCell<NegocioTarefaContato,Usuario>(){

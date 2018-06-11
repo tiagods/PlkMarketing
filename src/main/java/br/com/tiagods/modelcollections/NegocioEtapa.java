@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.modelcollections;
 
 import java.io.Serializable;
 
@@ -7,16 +7,27 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+
+import br.com.tiagods.model.AbstractEntity;
 
 @Entity
-public class Funcao implements Serializable{
+@Table(name="NEGOCIO_ETAPA")
+public class NegocioEtapa implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="FUN_COD")
+	@Column(name="NEG_ETA_COD")
 	private Long id;
-	@Column(name="FUN_NOME")
+	@Column(name="NEG_ETA_NOME")
 	private String nome;
+	
+	public NegocioEtapa() {}
+	
+	public NegocioEtapa(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */

@@ -45,7 +45,7 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	private UsuarioDepartamento departamento;
 	@ManyToOne 
 	@JoinColumn(name="funcao_id")
-	private Funcao funcao;
+	private UsuarioFuncao funcao;
 	@Column(name="total_vendas")
 	private BigDecimal totalVendas;
 	private int ativo=1;
@@ -185,13 +185,13 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	/**
 	 * @return the funcao
 	 */
-	public Funcao getFuncao() {
+	public UsuarioFuncao getFuncao() {
 		return funcao;
 	}
 	/**
 	 * @param funcao the funcao to set
 	 */
-	public void setFuncao(Funcao funcao) {
+	public void setFuncao(UsuarioFuncao funcao) {
 		this.funcao = funcao;
 	}
 	/**

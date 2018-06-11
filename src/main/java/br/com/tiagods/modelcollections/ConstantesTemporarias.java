@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.modelcollections;
 
 public abstract class ConstantesTemporarias {
 	private final static String PESSOA = "";

@@ -9,8 +9,8 @@ import java.util.ResourceBundle;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

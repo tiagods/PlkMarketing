@@ -11,8 +11,8 @@ import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import br.com.tiagods.model.ConstantesTemporarias;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.UsuarioDAO;
 

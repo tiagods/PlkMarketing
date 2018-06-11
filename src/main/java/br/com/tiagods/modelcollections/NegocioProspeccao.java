@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.model.NegocioLista;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.NegocioMalaDireta;

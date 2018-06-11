@@ -1,4 +1,4 @@
-package br.com.tiagods.modelcollections;
+package br.com.tiagods.model;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
@@ -14,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import br.com.tiagods.model.AbstractEntity;
 
 @Entity
 @Table(name="SERVICO_AGREGADO")

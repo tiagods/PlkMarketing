@@ -7,6 +7,8 @@ public enum FXMLEnum {
 	CONTATO_CADASTRO("ContatoCadastro"),
 	LOGIN("Login"),
 	MAIN("Main"),
+	NEGOCIO_PESQUISA("NegocioPesquisa"),
+	NEGOCIO_CADASTRO("NegocioCadastro"),
 	USUARIO_PESQUISA("UsuarioPesquisa"),
 	USUARIO_CADASTRO("UsuarioCadastro"),
 	TAREFA_PESQUISA("TarefaPesquisa"),

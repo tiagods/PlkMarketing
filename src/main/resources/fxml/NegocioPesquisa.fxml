@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -16,7 +16,7 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label styleClass="label-title" text="Gestão de Contatos" />
+      <Label styleClass="label-title" text="Gestao de Negocios" />
       <VBox prefHeight="200.0" prefWidth="100.0">
          <children>
             <HBox fx:id="pnCheckBox" alignment="CENTER" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
@@ -24,15 +24,11 @@
                   <Insets bottom="20.0" top="20.0" />
                </VBox.margin>
                <children>
-                  <JFXComboBox fx:id="cbTipo" maxWidth="100.0" prefWidth="100.0" promptText="Tipo">
+                  <JFXComboBox fx:id="cbStatus" maxWidth="100.0" prefWidth="100.0" promptText="Status">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXComboBox>
-                  <JFXComboBox fx:id="cbContatoTipo" maxWidth="100.0" prefWidth="100.0" promptText="Tipo Contato">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXComboBox>
-                  <JFXComboBox fx:id="cbLista" maxWidth="100.0" prefWidth="100.0" promptText="Lista">
+                  <JFXComboBox fx:id="cbEtapa" maxWidth="100.0" prefWidth="100.0" promptText="Etapa">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXComboBox>
@@ -55,25 +51,21 @@
                   <JFXComboBox fx:id="cbAtendente" layoutX="320.0" layoutY="10.0" maxWidth="100.0" prefWidth="100.0" promptText="Atendente" />
                </children>
             </HBox>
-            <HBox fx:id="pnCheckBox1" alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
                <children>
-                  <JFXCheckBox fx:id="ckConvite" text="Convite para Eventos">
+                  <JFXComboBox fx:id="cbPesquisaData" prefHeight="26.0" prefWidth="117.0" promptText="Data Criaçao" style="-fx-background-color: #E7DFDD;">
                      <HBox.margin>
                         <Insets right="10.0" />
-                     </HBox.margin></JFXCheckBox>
-                  <JFXCheckBox fx:id="ckMaterial" layoutX="389.0" layoutY="14.0" text="Material">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXCheckBox>
-                  <JFXCheckBox fx:id="ckNewsletter" layoutX="435.0" layoutY="14.0" text="Newsletter">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXCheckBox>
+                     </HBox.margin>
+                  </JFXComboBox>
                   <JFXDatePicker fx:id="dataInicial" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXDatePicker>
-                  <Label alignment="CENTER" maxWidth="20.0" minWidth="20.0" prefHeight="20.0" text="ate" />
+                  <Label alignment="CENTER" maxWidth="20.0" minWidth="20.0" prefHeight="20.0" text="ate">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></Label>
                   <JFXDatePicker fx:id="dataFinal" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault">
                      <HBox.margin>
                         <Insets right="10.0" />
@@ -96,7 +88,7 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="144.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <JFXButton onAction="#novo" styleClass="btDefault" text="Novo Contato">
+                  <JFXButton onAction="#novo" styleClass="btDefault" text="Nova Proposta">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -113,6 +105,7 @@
          </children>
       </VBox>
       <TableView fx:id="tbPrincipal" prefHeight="281.0" prefWidth="900.0" styleClass="table" tableMenuButtonVisible="true" />
+      <Pagination fx:id="pagination" opacity="0.96" pageCount="100" prefHeight="67.0" prefWidth="1000.0" />
       <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0">
          <children>
             <ButtonBar prefHeight="50.0" prefWidth="256.0">
