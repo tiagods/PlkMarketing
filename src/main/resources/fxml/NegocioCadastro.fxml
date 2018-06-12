@@ -28,27 +28,27 @@
    <children>
       <HBox alignment="CENTER">
          <children>
-            <JFXRadioButton fx:id="rbProspeccao" text="Contato">
+            <JFXRadioButton fx:id="rbContato" text="Contato">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
             </JFXRadioButton>
-            <JFXRadioButton fx:id="rbSondagem" text="Envio da Proposta">
+            <JFXRadioButton fx:id="rbEnvioProposta" text="Envio da Proposta">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
             </JFXRadioButton>
-            <JFXRadioButton fx:id="rbSondagem1" layoutX="132.0" layoutY="10.0" text="Follow-Up">
+            <JFXRadioButton fx:id="rbFollowup" layoutX="132.0" layoutY="10.0" text="Follow-Up">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
             </JFXRadioButton>
-            <JFXRadioButton fx:id="rbSondagem11" layoutX="290.0" layoutY="10.0" text="Fechamento">
+            <JFXRadioButton fx:id="rbFechamento" layoutX="290.0" layoutY="10.0" text="Fechamento">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
             </JFXRadioButton>
-            <JFXRadioButton fx:id="rbSondagem111" layoutX="394.0" layoutY="10.0" text="Indefinida">
+            <JFXRadioButton fx:id="rbIndefinida" layoutX="394.0" layoutY="10.0" text="Indefinida">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" />
                </graphic>
@@ -92,7 +92,7 @@
                         <HBox alignment="CENTER_LEFT" prefHeight="81.0" prefWidth="415.0" GridPane.rowIndex="2">
                            <children>
                               <Label prefHeight="15.0" text="Status:" />
-                              <JFXRadioButton fx:id="rbProspeccao1" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
+                              <JFXRadioButton fx:id="rbAndamento" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -100,7 +100,7 @@
                                        </image></ImageView>
                                  </graphic>
                               </JFXRadioButton>
-                              <JFXRadioButton fx:id="rbProspeccao11" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
+                              <JFXRadioButton fx:id="rbGanho" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -109,7 +109,7 @@
                                     </ImageView>
                                  </graphic>
                               </JFXRadioButton>
-                              <JFXRadioButton fx:id="rbProspeccao111" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="123.0" layoutY="36.0" text="R">
+                              <JFXRadioButton fx:id="rbPerdido" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="123.0" layoutY="36.0" text="R">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -118,7 +118,7 @@
                                     </ImageView>
                                  </graphic>
                               </JFXRadioButton>
-                              <JFXRadioButton fx:id="rbProspeccao1111" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="193.0" layoutY="36.0" text="R">
+                              <JFXRadioButton fx:id="rbIndefinido" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="193.0" layoutY="36.0" text="R">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -137,16 +137,16 @@
                         </HBox>
                         <HBox GridPane.rowIndex="4">
                            <children>
-                              <JFXDatePicker />
-                              <JFXDatePicker />
+                              <JFXDatePicker fx:id="dtInicio" />
+                              <JFXDatePicker fx:id="dtFinal" />
                            </children>
                         </HBox>
                         <Label text="Honorario:" GridPane.rowIndex="5" />
                         <HBox prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="6">
                            <children>
                               <Label prefHeight="26.0" prefWidth="36.0" text="R$:" />
-                              <JFXTextField fx:id="txSite11" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
-                              <JFXButton onAction="#incluirLista" styleClass="btDefault" text="Serviços Adicionais">
+                              <JFXTextField fx:id="txHonorario" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
+                              <JFXButton onAction="#serviçosAdicionais" styleClass="btDefault" text="Serviços Adicionais">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -158,7 +158,7 @@
                            </children>
                         </HBox>
                         <Label text="Descriçao:" GridPane.rowIndex="7" />
-                        <JFXTextArea fx:id="txResumo2" prefHeight="81.0" prefWidth="334.0" promptText="Um breve descriçao desse negocio, ja que em algum momento ele pode ser fechado. Voce pode descrever com base no historico de conversas(telefone, e-mail, whatsapp), reunioes. Uma ideia final de como fazer para fechar o negocio." GridPane.rowIndex="8" />
+                        <JFXTextArea fx:id="txDescricao" prefHeight="81.0" prefWidth="334.0" promptText="Um breve descriçao desse negocio, ja que em algum momento ele pode ser fechado. Voce pode descrever com base no historico de conversas(telefone, e-mail, whatsapp), reunioes. Uma ideia final de como fazer para fechar o negocio." GridPane.rowIndex="8" />
                      </children>
                   </GridPane>
                </children>
@@ -220,7 +220,7 @@
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <JFXTextField fx:id="txEmail1" prefHeight="26.0" prefWidth="238.0" />
+                                                      <JFXTextField fx:id="txEmail" prefHeight="26.0" prefWidth="238.0" />
                                                       <JFXButton onAction="#mailSend" styleClass="btDefault">
                                                          <graphic>
                                                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -234,15 +234,15 @@
                                                 </HBox>
                                                 <Label text="Site:" GridPane.rowIndex="2" />
                                                 <Label text="Telefone:" GridPane.columnIndex="1" />
-                                                <MaskedTextField fx:id="txTelefone1" mask="(##) ####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <MaskedTextField fx:id="txTelefone" mask="(##) ####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <Label text="Celular:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <MaskedTextField fx:id="txCelular1" mask="(##) #####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <MaskedTextField fx:id="txCelular" mask="(##) #####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <HBox GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                    <children>
-                                                      <JFXTextField fx:id="txSite2" prefHeight="26.0" prefWidth="238.0" />
+                                                      <JFXTextField fx:id="txSite" prefHeight="26.0" prefWidth="238.0" />
                                                       <JFXButton onAction="#openBrowser" styleClass="btDefault">
                                                          <graphic>
                                                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -288,9 +288,9 @@
                                        <children>
                                           <HBox alignment="CENTER" prefHeight="52.0" prefWidth="518.0">
                                              <children>
-                                                <JFXComboBox fx:id="cbLista" prefWidth="120.0" />
-                                                <JFXTextField fx:id="txSite1" prefHeight="26.0" prefWidth="115.0" />
-                                                <JFXButton onAction="#novaTarefa" prefHeight="38.0" prefWidth="64.0" styleClass="btDefault">
+                                                <JFXComboBox fx:id="cbServico" prefWidth="120.0" />
+                                                <JFXTextField fx:id="txValorServico" prefHeight="26.0" prefWidth="115.0" />
+                                                <JFXButton onAction="#cadastrarServico" prefHeight="38.0" prefWidth="64.0" styleClass="btDefault">
                                                    <graphic>
                                                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
@@ -299,7 +299,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </JFXButton>
-                                                <JFXButton onAction="#incluirLista" styleClass="btDefault" text="Incluir Serviço">
+                                                <JFXButton onAction="#salvarServico" styleClass="btDefault" text="Incluir Serviço">
                                                    <graphic>
                                                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
@@ -310,7 +310,7 @@
                                                 </JFXButton>
                                              </children>
                                           </HBox>
-                                          <TableView fx:id="tbListas" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
+                                          <TableView fx:id="tbServico" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
                                        </children>
                                     </VBox>
                                  </children>
@@ -321,9 +321,18 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
                                  <children>
-                                    <Label layoutX="21.0" layoutY="16.0" text="Lista:" />
-                                    <JFXComboBox fx:id="cbLista1" layoutX="21.0" layoutY="38.0" prefWidth="120.0" />
-                                    <JFXButton layoutX="154.0" layoutY="28.0" onAction="#incluirLista" styleClass="btDefault" text="Incluir Lista">
+                                    <Label layoutX="21.0" layoutY="16.0" text="Nome:" />
+                                    <JFXButton layoutX="359.0" layoutY="30.0" onAction="#anexarDocumento" styleClass="btDefault" text="Anexar Documento">
+                                       <graphic>
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@imagens/button_upload.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </JFXButton>
+                                    <TableView fx:id="tbListas1" layoutX="8.0" layoutY="118.0" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
+                                    <JFXButton layoutX="358.0" layoutY="72.0" onAction="#salvarDocumento" styleClass="btDefault" text="Incluir Documentos">
                                        <graphic>
                                           <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
@@ -332,7 +341,10 @@
                                           </ImageView>
                                        </graphic>
                                     </JFXButton>
-                                    <TableView fx:id="tbListas1" layoutX="14.0" layoutY="74.0" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
+                                    <JFXTextField fx:id="txNomeDocumento" layoutX="20.0" layoutY="41.0" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
+                                    <Label layoutX="162.0" layoutY="16.0" text="Descriçao:" />
+                                    <JFXTextField fx:id="txDescricao" layoutX="161.0" layoutY="41.0" maxWidth="189.0" prefHeight="26.0" prefWidth="189.0" />
+                                    <JFXTextField fx:id="txLocalizacao" editable="false" layoutX="21.0" layoutY="78.0" maxWidth="327.0" prefHeight="26.0" prefWidth="327.0" />
                                  </children>
                               </AnchorPane>
                            </content>
