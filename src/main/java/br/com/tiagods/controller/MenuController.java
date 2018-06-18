@@ -39,6 +39,18 @@ public class MenuController extends UtilsController implements Initializable{
         }
     }
     @FXML
+    void franquia(ActionEvent event) {
+    	try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.FRANQUIA_PESQUISA);
+            loader.setController(new FranquiaPesquisaController(stage));
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+        }catch(FXMLNaoEncontradoException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.FRANQUIA_PESQUISA,e,true);
+        }
+    }
+    @FXML
     void negocio(ActionEvent event) {
     	try {
             Stage stage = new Stage();
@@ -88,8 +100,4 @@ public class MenuController extends UtilsController implements Initializable{
                      "Falha ao localizar o arquivo"+FXMLEnum.USUARIO_PESQUISA,e,true);
         }
     }
-
-    
-	
-    
 }

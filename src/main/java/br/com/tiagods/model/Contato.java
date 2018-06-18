@@ -69,7 +69,8 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@Embedded
 	private PessoaJuridica juridico;
 	@Enumerated(value = EnumType.STRING)
-	private PessoaTipo tipo;
+	@Column(name="pessoa_tipo")
+	private PessoaTipo pessoaTipo;
 	
 	@Enumerated(value= EnumType.STRING)
 	@Column(name="contato_tipo")
@@ -168,19 +169,19 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	public void setJuridico(PessoaJuridica juridico) {
 		this.juridico = juridico;
 	}
-	/**
-	 * @return the tipo
-	 */
-	public PessoaTipo getTipo() {
-		return tipo;
-	}
-	/**
-	 * @param tipo the tipo to set
-	 */
-	public void setTipo(PessoaTipo tipo) {
-		this.tipo = tipo;
-	}
 	
+	/**
+	 * @return the pessoaTipo
+	 */
+	public PessoaTipo getPessoaTipo() {
+		return pessoaTipo;
+	}
+	/**
+	 * @param pessoaTipo the pessoaTipo to set
+	 */
+	public void setPessoaTipo(PessoaTipo pessoaTipo) {
+		this.pessoaTipo = pessoaTipo;
+	}
 	/**
 	 * @return the contatoTipo
 	 */
@@ -421,7 +422,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@Override
 	public String toString() {
 		String newName = getNome();
-		if(tipo.equals(PessoaTipo.EMPRESA))
+		if(pessoaTipo.equals(PessoaTipo.EMPRESA))
 			newName +=" || "+ juridico.getResponsavel()+" || "+juridico.getRazao();
 		// TODO Auto-generated method stub
 		return newName;

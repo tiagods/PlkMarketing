@@ -5,6 +5,8 @@ import java.net.URL;
 public enum FXMLEnum {
 	CONTATO_PESQUISA("ContatoPesquisa"),
 	CONTATO_CADASTRO("ContatoCadastro"),
+	FRANQUIA_PESQUISA("FranquiaPesquisa"),
+	FRANQUIA_CADASTRO("FranquiaCadastro"),
 	LOGIN("Login"),
 	MAIN("Main"),
 	NEGOCIO_PESQUISA("NegocioPesquisa"),

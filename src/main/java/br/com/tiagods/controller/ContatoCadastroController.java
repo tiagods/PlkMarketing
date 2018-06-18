@@ -411,16 +411,18 @@ public class ContatoCadastroController extends UtilsController implements Initia
 			rbSondagem.setSelected(true);
 		}
 		
-		if(contato.getTipo().equals(PessoaTipo.PESSOA)) {
+		if(contato.getPessoaTipo().equals(PessoaTipo.PESSOA)) {
 			rbPessoa.setSelected(true);	
 			pnPessoaFisica.setVisible(true);
 			pnPessoaJuridica.setVisible(false);
 			
-			txRG.setText(contato.getFisico().getRg());
-			txCPF.setPlainText(contato.getFisico().getCpf());
-			txDataNascimento.setPlainText(contato.getFisico().getAniversario());;
+			if(contato.getFisico()!=null) {
+				txRG.setText(contato.getFisico().getRg());
+				txCPF.setPlainText(contato.getFisico().getCpf());
+				txDataNascimento.setPlainText(contato.getFisico().getAniversario());
+			}
 		}
-		if(contato.getTipo().equals(PessoaTipo.EMPRESA)) {
+		if(contato.getPessoaTipo().equals(PessoaTipo.EMPRESA)) {
 			rbEmpresa.setSelected(true);
 			pnPessoaFisica.setVisible(false);
 			pnPessoaJuridica.setVisible(true);
@@ -494,12 +496,12 @@ public class ContatoCadastroController extends UtilsController implements Initia
     		PessoaJuridica juridica = new PessoaJuridica();
     		juridica.setRazao(txRazao.getText());
     		juridica.setApelido(txApelido.getText());
-    		juridica.setCnpj(txCNPJ.getText());
+    		juridica.setCnpj(txCNPJ.getPlainText());
     		juridica.setResponsavel(txResponsavel.getText());
     		juridica.setIm(txIM.getText());
     		juridica.setIe(txIE.getText());
     		contato.setJuridico(juridica);
-    		contato.setTipo(PessoaTipo.EMPRESA);
+    		contato.setPessoaTipo(PessoaTipo.EMPRESA);
     	}
     	else if(rbPessoa.isSelected()) {
     		contato.setJuridico(null);
@@ -508,7 +510,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
     		fisica.setCpf(txCPF.getPlainText());
     		fisica.setRg(txRG.getText());
     		contato.setFisico(fisica);
-    		contato.setTipo(PessoaTipo.PESSOA);
+    		contato.setPessoaTipo(PessoaTipo.PESSOA);
     	}
     	if(rbProspeccao.isSelected()) {
     		contato.setContatoTipo(ContatoTipo.PROSPECCAO);
@@ -557,7 +559,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 	                "Salvo com sucesso",null,false);
 	        return true;
 	    } catch (PersistenceException e) {
-	        alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
+	        alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
 	        return false;
 	    }finally {
 			close();
@@ -579,7 +581,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
 			close();
 		}
 	}
-    void tabelaListas() {
+	@SuppressWarnings("unchecked")
+	void tabelaListas() {
     	TableColumn<NegocioLista, Number> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		
@@ -611,6 +614,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		});
 		tbListas.getColumns().addAll(colunaNome,colunaExcluir);
     }
+
+	@SuppressWarnings("rawtypes")
 	void tabelaTarefa() {
 		TableColumn<NegocioTarefaContato, Calendar> colunaValidade = new  TableColumn<>("Prazo");
 		colunaValidade.setCellValueFactory(new PropertyValueFactory<>("dataEvento"));
@@ -746,6 +751,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 						dialog.getDialogPane().setContent(stackPane);
 						dialog.initModality(Modality.APPLICATION_MODAL);
 						dialog.initStyle(StageStyle.UNDECORATED);
+						@SuppressWarnings("unchecked")
 						Optional<ButtonType> result = dialog.showAndWait();
 						if(result.get() == ok){
 							NegocioTarefaContato tarefa = tbTarefas.getItems().get(getIndex());

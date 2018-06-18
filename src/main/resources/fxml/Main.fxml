@@ -185,6 +185,15 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
+            <JFXButton layoutX="10.0" layoutY="20.0" mnemonicParsing="false" onAction="#franquia" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="FRANQUIA" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/menu_people.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
             <JFXButton mnemonicParsing="false" onAction="#negocio" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="NEGOCIO" textFill="WHITE">
                <VBox.margin>
                   <Insets top="10.0" />

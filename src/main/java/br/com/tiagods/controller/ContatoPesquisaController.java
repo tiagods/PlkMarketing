@@ -39,6 +39,8 @@ import br.com.tiagods.repository.helpers.NegocioServicosImpl;
 import br.com.tiagods.repository.helpers.NegociosListasImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -50,6 +52,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -84,16 +87,10 @@ public class ContatoPesquisaController extends UtilsController implements Initia
     private JFXComboBox<Usuario> cbAtendente;
 
     @FXML
+    private JFXComboBox<String> cbMalaDireta;
+    
+    @FXML
     private HBox pnCheckBox1;
-
-    @FXML
-    private JFXCheckBox ckConvite;
-
-    @FXML
-    private JFXCheckBox ckMaterial;
-
-    @FXML
-    private JFXCheckBox ckNewsletter;
 
     @FXML
     private JFXDatePicker dataInicial;
@@ -149,7 +146,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
             });
         }catch(FXMLNaoEncontradoException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFA_CADASTRO,e,true);
+                    "Falha ao localizar o arquivo"+FXMLEnum.CONTATO_CADASTRO,e,true);
         }finally {
         	close();
         }
@@ -157,6 +154,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	
 	void combos() {
 		NegocioCategoria categoria = new NegocioCategoria(-1L,"Categoria");
+		String[] malaDireta = new String[] {"Mala Direta","Convite para Eventos","Material","Newsletter"};
 		NegocioNivel nivel = new NegocioNivel(-1L,"Nivel");
 		NegocioOrigem origem = new NegocioOrigem(-1L,"Origem");
 		NegocioServico servico = new NegocioServico(-1L, "Servico");
@@ -183,7 +181,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbOrigem.getItems().addAll(origens.getAll());
 		cbServico.getItems().addAll(servicos.getAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-		//cbLista.getItems().addAll(listas.getAll());
+		cbLista.getItems().addAll(listas.getAll());
+		cbMalaDireta.getItems().addAll(malaDireta);
 		
 		cbTipo.getItems().addAll(PessoaTipo.values());
 		cbContatoTipo.getItems().addAll(ContatoTipo.values());
@@ -193,12 +192,38 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbOrigem.getSelectionModel().selectFirst();
 		cbServico.getSelectionModel().selectFirst(); 
 		cbAtendente.getSelectionModel().selectFirst();
-		//cbLista.getSelectionModel().selectFirst();
+		cbLista.getSelectionModel().selectFirst();
+		cbMalaDireta.getSelectionModel().selectFirst();
 		
 		cbTipo.getSelectionModel().select(PessoaTipo.CONTATO);
 		cbContatoTipo.getSelectionModel().select(ContatoTipo.CONTATO);
+			
+		ChangeListener change = new ChangeListener<Object>() {
+			@Override
+			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
+				// TODO Auto-generated method stub
+				try {
+					loadFactory();
+					filtrar();
+				}catch (Exception e) {
+					alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
+				}finally {
+					close();
+				}
+			}
+		};
+		cbTipo.valueProperty().addListener(change);
+		cbContatoTipo.valueProperty().addListener(change);
+		cbLista.valueProperty().addListener(change);
+		cbCategoria.valueProperty().addListener(change);
+		cbMalaDireta.valueProperty().addListener(change);
+		cbNivel.valueProperty().addListener(change);
+		cbOrigem.valueProperty().addListener(change);
+		cbServico.valueProperty().addListener(change);
+		cbAtendente.valueProperty().addListener(change);
+		dataFinal.valueProperty().addListener(change);
+		dataInicial.valueProperty().addListener(change);
 		
-		tbPrincipal.getItems().addAll(contatos.getAll());
 	}
 	@FXML
 	void exportar(ActionEvent event) {
@@ -230,7 +255,10 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	}
 	
 	void filtrar() {
-
+		contatos = new ContatosImpl(getManager());
+		contatos.filtrar(cbTipo.getValue(),cbContatoTipo.getValue(),cbLista.getValue(),cbCategoria.getValue(),cbNivel.getValue(),
+				cbOrigem.getValue(),cbServico.getValue(),cbAtendente.getValue(),cbMalaDireta.getValue(),
+				dataInicial.getValue(),dataFinal.getValue(),txPesquisa.getText());		
 	}
 	
 	@Override
@@ -253,7 +281,17 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	void novo(ActionEvent event) {
 		 abrirCadastro(null);
 	}
-
+	@FXML
+	void pesquisar(KeyEvent event) {
+		try {
+			loadFactory();
+			filtrar();
+		}catch (Exception e) {
+			alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
+		}finally {
+			close();
+		}
+	}
 	@FXML
 	void sair(ActionEvent event) {
 		stage.close();

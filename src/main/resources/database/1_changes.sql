@@ -51,7 +51,7 @@ create table contato(
 	ie varchar,
 	responsavel varchar,
 	apelido varchar,
-	tipo varchar,
+	pessoa_tipo varchar,
 	contato_tipo varchar,
 	ultimo_negocio_id integer,
 	origem_id integer,
@@ -134,5 +134,35 @@ update negocio set tipo_status = 'GANHO' where neg_sta_cod=2;
 update negocio set tipo_status = 'PERDIDO' where neg_sta_cod=3;
 update negocio set tipo_status = 'SEMMOVIMENTO' where neg_sta_cod=4;
 
-update negocio set neg_motivoperda='INDEFINIDO' where tipo_status='PERDIDO'
+update negocio set neg_motivoperda='INDEFINIDO' where tipo_status='PERDIDO';
 
+create table register_app(
+	id serial,
+	nome varchar,
+	primary key(id)
+);
+
+create table franquia(
+	id serial,
+	ativo boolean,
+	criado_em timestamp,
+	last_update timestamp,
+	nome varchar,
+	tipo varchar,
+	primary key(id)
+);
+create table franquia_pacote(
+	id serial,
+	nome varchar,
+	base_icms decimal(19,2),
+	criado_em timestamp,
+	custo decimal(19,2),
+	faturamento decimal(19,2),
+	icms decimal(19,2),
+	investimento decimal(19,2),
+	last_update timestamp,
+	previsao varchar,
+	pro_labore decimal(19,2),
+	franquia_id integer,
+	primary key(id)
+)

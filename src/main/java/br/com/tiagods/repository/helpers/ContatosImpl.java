@@ -1,5 +1,6 @@
 package br.com.tiagods.repository.helpers;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -7,13 +8,19 @@ import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tiagods.model.Contato;
+import br.com.tiagods.model.Contato.ContatoTipo;
+import br.com.tiagods.model.Contato.PessoaTipo;
 import br.com.tiagods.model.NegocioCategoria;
+import br.com.tiagods.model.NegocioLista;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.ContatoDAO;
 
@@ -38,13 +45,38 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 	@Override
 	public List<Contato> filtrar(String nome, NegocioCategoria categoria, NegocioNivel nivel, NegocioOrigem origem,NegocioServico servico) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Contato.class);
-		if(nome.equals("")) {
-			
-		}
+		if(nome.length()>0) criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
 		if(categoria!=null && categoria.getId()!=-1L) criteria.add(Restrictions.eq("categoria", categoria));
 		if(nivel!=null && nivel.getId()!=-1L) criteria.add(Restrictions.eq("nivel", nivel));
 		if(origem!=null && origem.getId()!=-1L) criteria.add(Restrictions.eq("origem", origem));
 		if(servico!=null && servico.getId()!=-1L) criteria.add(Restrictions.eq("servico", servico));
+		criteria.addOrder(Order.desc("criadoEm"));
+		return criteria.list();
+	}
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Contato> filtrar(PessoaTipo pessoaTipo, ContatoTipo contatoTipo, NegocioLista lista, NegocioCategoria categoria,
+			NegocioNivel nivel, NegocioOrigem origem, NegocioServico servico, Usuario usuario, String malaDireta, LocalDate inicio, LocalDate fim, String nome) {
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Contato.class);
+		if(!pessoaTipo.equals(PessoaTipo.CONTATO)) criteria.add(Restrictions.eq("pessoaTipo", pessoaTipo));
+		if(!contatoTipo.equals(ContatoTipo.CONTATO)) criteria.add(Restrictions.eq("contatoTipo", contatoTipo));
+		if(lista!=null && lista.getId()!=-1L) criteria.add(Restrictions.eq("lista", lista));
+		if(categoria!=null && categoria.getId()!=-1L) criteria.add(Restrictions.eq("categoria", categoria));
+		if(nivel!=null && nivel.getId()!=-1L) criteria.add(Restrictions.eq("nivel", nivel));
+		if(origem!=null && origem.getId()!=-1L) criteria.add(Restrictions.eq("origem", origem));
+		if(servico!=null && servico.getId()!=-1L) criteria.add(Restrictions.eq("servico", servico));
+		if(usuario!=null && usuario.getId()!=-1L) criteria.add(Restrictions.eq("atendente", usuario));
+		if(!malaDireta.equals("Mala Direta")) {
+			String vl = "convite";
+			if(malaDireta.equals("Material"))
+				vl="material";
+			else if(malaDireta.equals("Newsletter"))
+				vl="newsletter";
+			criteria.add(Restrictions.eq(vl, true));
+		}
+		if(inicio!=null && fim!=null) criteria.add(Restrictions.between("criadoEm", inicio, fim));
+		if(nome.length()>0) criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
+		criteria.addOrder(Order.desc("criadoEm"));
 		return criteria.list();
 	}
 	
