@@ -82,7 +82,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 	public FranquiaCadastroController(Stage stage, Franquia franquia) {
 		this.franquia=franquia;
 		this.stage=stage;
-		if(franquia!=null) preencherFormulario(franquia);
+
 	}
 	void combos() {
 		ToggleGroup group1 = new ToggleGroup();
@@ -95,6 +95,10 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 	}
 	@FXML
     void incluirPacote(ActionEvent event) {
+		if(franquia==null) {
+			alert(AlertType.ERROR,"Erro","","Salve antes de continuar",null,false);
+    		return;
+		}
 		if(txNomePacote.getText().trim().length()==0) {
     		alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
     		return;
@@ -129,7 +133,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				pacote.setFaturamento(fat);
 				pacote.setPrevisao(txRetorno.getText());
 				pacote.setLastUpdate(Calendar.getInstance());
-				
+				pacote.setFranquia(franquia);
 				if(location!=-1) {
 					tbPacote.getItems().set(location, pacote);
 				}
@@ -146,6 +150,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
     public void initialize(URL location, ResourceBundle resources) {
     	combos();
     	tabela();
+		if(franquia!=null) preencherFormulario(franquia);
     }
     private void preencherFormulario(Franquia franquia) {
     	txNome.setText(franquia.getNome());
@@ -191,6 +196,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 		franquia.setNome(txNome.getText().trim());
 		Set<FranquiaPacote> pacotes = new HashSet<>();
 		pacotes.addAll(tbPacote.getItems());
+		pacotes.forEach(c->c.setFranquia(franquia));
 		franquia.setPacotes(pacotes);
 		try {
 	        loadFactory();
@@ -213,11 +219,11 @@ public class FranquiaCadastroController extends UtilsController implements Initi
     	TableColumn<FranquiaPacote, String> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		
-		TableColumn<FranquiaPacote, Double> colunaInvestimento = new  TableColumn<>("Investimento");
+		TableColumn<FranquiaPacote, BigDecimal> colunaInvestimento = new  TableColumn<>("Investimento");
 		colunaInvestimento.setCellValueFactory(new PropertyValueFactory<>("investimento"));
-		colunaInvestimento.setCellFactory(param -> new TableCell<FranquiaPacote,Double>(){
+		colunaInvestimento.setCellFactory(param -> new TableCell<FranquiaPacote,BigDecimal>(){
 			@Override
-			protected void updateItem(Double item, boolean empty) {
+			protected void updateItem(BigDecimal item, boolean empty) {
 				super.updateItem(item, empty);
 				if(item==null){
 					setStyle("");
@@ -225,19 +231,19 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item));
+					setText(nf.format(item.doubleValue()));
 				}
 			}
 		});
 		
 		TableColumn<FranquiaPacote, String> colunaRetorno = new  TableColumn<>("Retorno");
-		colunaRetorno.setCellValueFactory(new PropertyValueFactory<>("retorno"));
+		colunaRetorno.setCellValueFactory(new PropertyValueFactory<>("previsao"));
 		
-		TableColumn<FranquiaPacote, Double> colunaFaturamento = new  TableColumn<>("Faturamento");
+		TableColumn<FranquiaPacote, BigDecimal> colunaFaturamento = new  TableColumn<>("Faturamento");
 		colunaFaturamento.setCellValueFactory(new PropertyValueFactory<>("faturamento"));
-		colunaFaturamento.setCellFactory(param -> new TableCell<FranquiaPacote,Double>(){
+		colunaFaturamento.setCellFactory(param -> new TableCell<FranquiaPacote,BigDecimal>(){
 			@Override
-			protected void updateItem(Double item, boolean empty) {
+			protected void updateItem(BigDecimal item, boolean empty) {
 				super.updateItem(item, empty);
 				if(item==null){
 					setStyle("");
@@ -245,7 +251,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item));
+					setText(nf.format(item.doubleValue()));
 				}
 			}
 		});
@@ -273,7 +279,6 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 						txRetorno.setText(pacote.getPrevisao());
 						txInvestimento.setText(pacote.getInvestimento().toString().replace(".", ","));
 						txFaturamento.setText(pacote.getFaturamento().toString().replace(".", ","));
-						
 						if(pacote.getId()!=null) {
 							franquiaCodigo.setText(pacote.getId()+"");
 						}
@@ -308,6 +313,6 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				}
 			}
 		});
-		tbPacote.getColumns().addAll(colunaid,colunaNome,colunaInvestimento,colunaRetorno,colunaFaturamento);
+		tbPacote.getColumns().addAll(colunaid,colunaNome,colunaInvestimento,colunaRetorno,colunaFaturamento,colunaEditar,colunaExcluir);
     }
 }

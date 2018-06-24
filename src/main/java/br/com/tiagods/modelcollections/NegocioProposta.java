@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,13 +24,13 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.Contato;
+import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.NegocioDocumento;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
-import br.com.tiagods.model.NegocioTarefa;
+import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.ServicoContratado;
 import br.com.tiagods.model.Usuario;
 
@@ -82,7 +83,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 		}
 	}
 	public enum MotivoPerda{
-		DESISTENCIA("Desistencia"),INDEFINIDO("Indefinido"),
+		EMABERTO("Em Andamento"),DESISTENCIA("Desistencia"),INDEFINIDO("Indefinido"),
 		PRAZO("Prazo"),PRECO("Preço"),SERVICO("Serviço");
 		
 		private String descricao;
@@ -108,11 +109,12 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Column(name="NEG_COD")
 	private Long id;
 	
-	@Column(name="NEG_CLASSE")
+	//@Column(name="NEG_CLASSE")
+	@Transient
 	private String classe="";
 	
 	@Column(name="NEG_NOME")
-	private String nome="";
+	private String nome;
 	
 	@Column(name="NEG_DATAINICIO")
 	@Temporal(TemporalType.DATE)
@@ -122,12 +124,10 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Temporal(TemporalType.DATE)
 	private Calendar dataFim;
 	
-	@ManyToOne
-	@JoinColumn(name="NEG_STA_COD")
+	@Transient
 	private NegocioStatus status;
 	
-	@ManyToOne
-	@JoinColumn(name="NEG_ETA_COD")
+	@Transient
 	private NegocioEtapa etapa;
 	
 	@Column(name="NEG_ANDCONTATO")
@@ -154,16 +154,19 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Temporal(TemporalType.DATE)
 	private Calendar dataFinalizacao;
 	
-	@ManyToOne
-	@JoinColumn(name="NEG_EMPRESA_COD")
+	//@ManyToOne
+	//@JoinColumn(name="NEG_EMPRESA_COD")
+	@Transient
 	private NegocioEmpresa empresa;
 	
-	@ManyToOne
-	@JoinColumn(name="NEG_PESSOA_COD")
+	//@ManyToOne
+	//@JoinColumn(name="NEG_PESSOA_COD")
+	@Transient
 	private NegocioPessoa pessoa;
 	
-	@ManyToOne
-	@JoinColumn(name="NEG_PROSPECCAO_COD")
+	//@ManyToOne
+	//@JoinColumn(name="NEG_PROSPECCAO_COD")
+	@Transient
 	private NegocioProspeccao prospeccao;
 	
 	@Column(name="NEG_HONORARIO")
@@ -172,7 +175,9 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Column(name="NEG_DESCRICAO",columnDefinition="text")
 	private String descricao;
 	
-	@Column(name="NEG_MOTIVOPERDA")
+	//@Column(name="NEG_MOTIVOPERDA")
+	//@Enumerated(value=EnumType.STRING)
+	@Transient
 	private MotivoPerda motivoPerda;
 	
 	@Column(name="NEG_DETALHESPERDA",columnDefinition="text")
@@ -182,11 +187,13 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Column(name="NEG_DATAPERDA")
 	private Calendar dataPerda;
 	
-	@OneToMany(fetch=FetchType.LAZY)
-	private Set<NegocioTarefa> tarefas = new LinkedHashSet<>();
-	@Transient
+	@OneToMany(mappedBy="proposta",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
+	private Set<NegocioTarefaProposta> tarefas = new LinkedHashSet<>();
+	
+	@OneToMany(mappedBy="negocios",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
-	@Transient
+	
+	@OneToMany(mappedBy="negocio",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
 	private Set<NegocioDocumento> documentos = new LinkedHashSet<>();
 	
 	@Column(name="NEG_CRIADOEM")
@@ -532,14 +539,14 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	/**
 	 * @return the tarefas
 	 */
-	public Set<NegocioTarefa> getTarefas() {
+	public Set<NegocioTarefaProposta> getTarefas() {
 		return tarefas;
 	}
 
 	/**
 	 * @param tarefas the tarefas to set
 	 */
-	public void setTarefas(Set<NegocioTarefa> tarefas) {
+	public void setTarefas(Set<NegocioTarefaProposta> tarefas) {
 		this.tarefas = tarefas;
 	}
 

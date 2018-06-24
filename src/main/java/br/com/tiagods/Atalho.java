@@ -1,11 +1,11 @@
 package br.com.tiagods;
 
+import java.io.IOException;
+
 import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.controller.MenuController;
-import br.com.tiagods.controller.TarefaPesquisaController;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
+import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +17,6 @@ public class Atalho extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		try {
-			
 			Usuario u  = new Usuario();
 			u.setId(1L);			
             UsuarioLogado.getInstance().setUsuario(u);      
@@ -30,7 +29,7 @@ public class Atalho extends Application {
             stage.setTitle("Acesso");
             //stage.getIcons().add(new Image(estilo.getIcon().toString()));
             stage.show();
-    	}catch (FXMLNaoEncontradoException ex) {
+    	}catch (IOException ex) {
     		
 		}
 	}

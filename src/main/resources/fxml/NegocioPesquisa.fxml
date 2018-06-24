@@ -74,7 +74,7 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <JFXTextField fx:id="txPesquisa" text="Pesquisar" />
+                  <JFXTextField fx:id="txPesquisa" onKeyTyped="#pesquisar" promptText="Pesquisar" />
                   <Label text="Calassificar por">
                      <HBox.margin>
                         <Insets left="20.0" right="10.0" />

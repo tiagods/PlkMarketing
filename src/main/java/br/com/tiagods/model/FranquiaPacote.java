@@ -20,7 +20,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="franquia_pacote")
-public class FranquiaPacote implements Serializable{
+public class FranquiaPacote implements AbstractEntity,Serializable{
 	/**
 	 * 
 	 */
@@ -32,19 +32,22 @@ public class FranquiaPacote implements Serializable{
 	private BigDecimal custo = new BigDecimal(0.00);
 	private BigDecimal investimento = new BigDecimal(0.00);
 	private BigDecimal faturamento = new BigDecimal(0.00);
+	@Column(name="pro_labore")
 	private BigDecimal proLabore = new BigDecimal(0.00);
 	private double icms = 0.00;
+	@Column(name="base_icms")
 	private BigDecimal baseIcms = new BigDecimal(0.00);
 	private String previsao;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="last_update")
 	private Calendar lastUpdate;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="criado_em")
 	private Calendar criadoEm;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="franquia_id")
 	private Franquia franquia;
 	

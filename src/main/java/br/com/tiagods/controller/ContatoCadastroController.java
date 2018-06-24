@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import org.controlsfx.control.Rating;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -25,25 +26,23 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.Contato.ContatoTipo;
 import br.com.tiagods.model.Contato.PessoaTipo;
-import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.model.NegocioMalaDireta;
 import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.NegocioLista;
+import br.com.tiagods.model.NegocioMalaDireta;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.NegocioTarefa;
+import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.NegocioTarefaContato;
-import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
@@ -52,8 +51,6 @@ import br.com.tiagods.repository.helpers.NegocioServicosImpl;
 import br.com.tiagods.repository.helpers.NegociosListasImpl;
 import br.com.tiagods.repository.helpers.NegociosMalaDiretaImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -63,23 +60,21 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import org.controlsfx.control.Rating;
 
 public class ContatoCadastroController extends UtilsController implements Initializable{
 	@FXML
@@ -101,10 +96,10 @@ public class ContatoCadastroController extends UtilsController implements Initia
     private JFXTextField txEmail;
 
     @FXML
-    private MaskedTextField txTelefone;
+    private MaskedTextField txTelefone1;
 
     @FXML
-    private MaskedTextField txCelular;
+    private MaskedTextField txTelefone2;
 
     @FXML
     private JFXTextField txSite;
@@ -250,7 +245,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
         			close();
         		}
             });
-        }catch(FXMLNaoEncontradoException e) {
+        }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_CADASTRO,e,true);
         }
@@ -438,8 +433,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		txNome.setText(contato.getNome());
 		txEmail.setText(contato.getEmail());
 		txSite.setText(contato.getSite());
-		txTelefone.setPlainText(contato.getTelefone());
-		txCelular.setPlainText(contato.getCelular());
+		txTelefone1.setText(contato.getTelefone());
+		txTelefone2.setText(contato.getCelular());
 		
 		cbAtendente.setValue(contato.getAtendente());
 		cbCategoria.setValue(contato.getCategoria());
@@ -457,8 +452,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		txApresentacao.setText(contato.getApresentacao());
 		txDetalhesOrigem.setText(contato.getDetalhesOrigem());
 		
-		txTelefone.setPlainText(contato.getTelefone());
-		txCelular.setPlainText(contato.getCelular());
+		txTelefone1.setText(contato.getTelefone());
+		txTelefone2.setText(contato.getCelular());
 		txCEP.setPlainText(contato.getCep());
 		txLogradouro.setText(contato.getEndereco());
 		txNumero.setText(contato.getNumero());
@@ -541,8 +536,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
     	contato.setNewsletter(ckNewsletter.isSelected());
     	contato.setMalaDireta(cbMalaDireta.getValue());
     	
-    	contato.setTelefone(txTelefone.getPlainText());
-    	contato.setCelular(txCelular.getPlainText());
+    	contato.setTelefone(txTelefone1.getText());
+    	contato.setCelular(txTelefone2.getText());
     	contato.setCep(txCEP.getPlainText());
     	contato.setEndereco(txLogradouro.getText().trim());
     	contato.setNumero(txNumero.getText().trim());

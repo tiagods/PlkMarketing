@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -21,10 +22,8 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
-import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.CidadesImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import br.com.tiagods.util.EnderecoUtil;
@@ -56,6 +55,8 @@ public abstract class UtilsController extends PersistenciaController{
 	private boolean habilidarFiltroCidade = true;
 
 	Locale locale = new Locale("pt", "BR");
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	
 	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
 		Alert alert = new Alert(alertType);
@@ -169,22 +170,18 @@ public abstract class UtilsController extends PersistenciaController{
 		return dialog.showAndWait();
 	}
 	
-	public FXMLLoader loaderFxml(FXMLEnum e) throws FXMLNaoEncontradoException{
+	public FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
     	final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
         return loader;
     }
-    public Stage initPanel(FXMLLoader loader,Stage stage, Modality modality, StageStyle ss){
-    	try {
-	    	final Parent root = loader.load();
+    public Stage initPanel(FXMLLoader loader,Stage stage, Modality modality, StageStyle ss) throws IOException{
+    		final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(modality);
 	        stage.initStyle(ss);
 	        stage.setScene(scene);
 	        stage.show();
 	        return stage;
-    	}catch (IOException e) {
-			throw new FXMLNaoEncontradoException("Arquivo fxml não encontrado "+e.getMessage());
-		}
     }
 	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
 		ImageView imageview = createImage(30,30,icon);

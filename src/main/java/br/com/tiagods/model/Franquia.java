@@ -6,8 +6,12 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,19 +34,30 @@ public class Franquia implements AbstractEntity,Serializable{
 	
 	private boolean ativo = true;
 	
-	@OneToMany(mappedBy="franquia")
+	@OneToMany(mappedBy="franquia",cascade=CascadeType.ALL, fetch=FetchType.EAGER,orphanRemoval=true)
 	private Set<FranquiaPacote> pacotes= new HashSet<>();
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="last_update")
 	private Calendar lastUpdate;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="criado_em")
 	private Calendar criadoEm;
 	
+	@Enumerated(EnumType.STRING)
     private Tipo tipo = Tipo.SERVICO;
     public enum Tipo{
-        TODOS,COMERCIO,SERVICO;
+        TODOS("Tipo Serviço"),COMERCIO("Comercio"),SERVICO("Serviço");
+    	private String descricao;
+    	Tipo(String descricao){
+    		this.descricao=descricao;
+    	}
+    	@Override
+    	public String toString() {
+    		// TODO Auto-generated method stub
+    		return descricao;
+    	}
     }
 	/**
 	 * @return the id

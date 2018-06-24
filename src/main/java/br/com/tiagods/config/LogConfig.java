@@ -4,7 +4,6 @@ package br.com.tiagods.config;
 import java.io.File;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class LogConfig {

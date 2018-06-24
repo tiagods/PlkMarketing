@@ -1,5 +1,6 @@
 package br.com.tiagods.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -10,7 +11,6 @@ import com.jfoenix.controls.JFXPasswordField;
 
 import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
@@ -90,7 +90,7 @@ public class LoginController extends UtilsController implements Initializable{
 	                    loader.setController(new MenuController());
 	                    initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
 	                    stage.close();
-                	}catch (FXMLNaoEncontradoException ex) {
+                	}catch (IOException ex) {
                 		super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
 					}
                 }

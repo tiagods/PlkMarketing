@@ -25,17 +25,24 @@
 .textField{
     -fx-font-size: 12px;
     -fx-background-color:  #E7DFDD;
-
+    -fx-text-fill: #ffffff;
 }
 .table{
-   -fx-background-color: transparent;
+    -fx-background-color: transparent;
 }
-
+.table .column-header .label {
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
 .table:focused{
     -fx-background-color: transparent;
 }
 .label-title{
     -fx-font-size: 36px;
+    -fx-text-fill:  #E7DFDD;
+}
+.label-title2{
+    -fx-font-size: 24px;
     -fx-text-fill:  #E7DFDD;
 }
 .btYellow{

@@ -189,7 +189,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@imagens/menu_people.png" />
+                        <Image url="@imagens/menu_franquia.png" />
                      </image>
                   </ImageView>
                </graphic>

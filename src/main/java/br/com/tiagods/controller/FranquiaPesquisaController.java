@@ -17,15 +17,9 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Franquia;
-import br.com.tiagods.model.NegocioTarefa;
-import br.com.tiagods.model.NegocioTarefaContato;
-import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.helpers.FranquiasImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -71,11 +65,9 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	    
 	    public FranquiaPesquisaController(Stage stage) {
 	    	this.stage=stage;
-	    }
-	    
+	    }	    
 	    private void abrirCadastro(Franquia t) {
-			try {
-				
+	    	try {
 				loadFactory();
 	            Stage stage = new Stage();
 	            FXMLLoader loader = loaderFxml(FXMLEnum.FRANQUIA_CADASTRO);
@@ -91,12 +83,13 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	        			close();
 	        		}
 	            });
-	        }catch(FXMLNaoEncontradoException e) {
+	        }catch(IOException e) {
 	            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
 	                    "Falha ao localizar o arquivo"+FXMLEnum.FRANQUIA_CADASTRO,e,true);
 	        }finally {
 	        	close();
 	        }
+	    	
 		}
 	    void combos() {
 	    	Usuario usuario = new Usuario(-1L, "Todos");
@@ -116,17 +109,18 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	    	
 	    }
 	    void filtrar() {
-	    	
+	    	franquias = new FranquiasImpl(getManager());
+	    	tbPrincipal.getItems().clear();
+	    	tbPrincipal.getItems().addAll(franquias.getAll());
 	    }
 	    @Override
 		public void initialize(URL location, ResourceBundle resources) {
 	    	tabela();
 			try {
 				loadFactory();
+				franquias = new FranquiasImpl(getManager());
 				combos();
-				
-				
-				tbPrincipal.getItems().addAll();
+				tbPrincipal.getItems().addAll(franquias.getAll());
 			}catch(PersistenceException e) {
 				alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
 			}finally {
@@ -135,7 +129,7 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 		}
 	    @FXML
 	    void novo(ActionEvent event) {
-
+	    	abrirCadastro(null);
 	    }
 
 	    @FXML
@@ -148,6 +142,7 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 					franquias = new FranquiasImpl(getManager());
 					Franquia t = franquias.findById(franquia.getId());
 					t.setAtivo(status);
+					t.setLastUpdate(Calendar.getInstance());
 					franquias.save(t);
 					return true;
 			}catch (Exception e){
@@ -183,6 +178,20 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 		
 		TableColumn<Franquia, Calendar> colunaUpdate = new  TableColumn<>("Atualização");
 		colunaUpdate.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
+		colunaUpdate.setCellFactory(param -> new TableCell<Franquia,Calendar>(){
+			@Override
+			protected void updateItem(Calendar item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(sdfH.format(item.getTime()));
+				}
+			}
+		});
 		
 		TableColumn<Franquia, Boolean> colunaStatus = new  TableColumn<>("Status");
 		colunaStatus.setCellValueFactory(new PropertyValueFactory<>("ativo"));
@@ -197,7 +206,7 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 				}
 				else{
 					JFXButton rb = new JFXButton();
-					rb.setText(item?"Concluido":"Pendente");
+					rb.setText(item?"Ativo":"Inativo");
 					rb.getStyleClass().add(item?"btGreen":"btRed");
 
 					rb.onActionProperty().set(event -> {
@@ -214,7 +223,7 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 
 						int value = item?1:0;
 						for(int i=0;i<2;i++) {
-							JFXRadioButton jfxRadioButton = new JFXRadioButton(i==0?"Pendente":"Concluido");
+							JFXRadioButton jfxRadioButton = new JFXRadioButton(i==0?"Inativo":"Ativo");
 							jfxRadioButton.setSelectedColor(Color.GREEN);
 							jfxRadioButton.setUnSelectedColor(Color.RED);
 							if(value==i) jfxRadioButton.setSelected(true);
@@ -236,6 +245,7 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 									Integer p = map.get(f);
 									if (p!=value && salvarStatus(franquia, p==1)) {
 										tbPrincipal.getItems().get(getIndex()).setAtivo(p==1);
+										tbPrincipal.getItems().get(getIndex()).setLastUpdate(Calendar.getInstance());;
 										tbPrincipal.refresh();
 									}
 									break;

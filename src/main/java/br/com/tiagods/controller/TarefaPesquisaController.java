@@ -28,13 +28,12 @@ import com.jfoenix.controls.JFXToggleButton;
 import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.NegocioTarefaContato;
 import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
@@ -146,7 +145,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
         			close();
         		}
             });
-        }catch(FXMLNaoEncontradoException e) {
+        }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo"+FXMLEnum.TAREFA_CADASTRO,e,true);
         }finally {

@@ -79,10 +79,10 @@
                            </GridPane.margin>
                         </JFXTextField>
                         <Label text="Site:" GridPane.rowIndex="4" />
-                        <Label text="Telefone:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <MaskedTextField fx:id="txTelefone" mask="(##) ####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label text="Celular:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <MaskedTextField fx:id="txCelular" mask="(##) #####-####" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label text="Telefone 1:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <MaskedTextField fx:id="txTelefone" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label text="Telefone 2:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <MaskedTextField fx:id="txCelular" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <JFXTextField fx:id="txSite" prefHeight="26.0" prefWidth="238.0" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets right="10.0" />
@@ -292,7 +292,7 @@
                                           <HBox prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                                              <children>
                                                 <MaskedTextField fx:id="txCEP" mask="#####-###" prefHeight="26.0" prefWidth="98.0" />
-                                                <JFXButton onAction="#buscarCep" styleClass="btDefault">
+                                                <JFXButton onAction="#buscarCep" styleClass="btDefault" text="Buscar">
                                                    <graphic>
                                                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>

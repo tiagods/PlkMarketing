@@ -2,23 +2,19 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceException;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.exception.FXMLNaoEncontradoException;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.Contato.ContatoTipo;
 import br.com.tiagods.model.Contato.PessoaTipo;
@@ -27,7 +23,6 @@ import br.com.tiagods.model.NegocioLista;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
-import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.modelcollections.NegocioProposta;
@@ -37,7 +32,6 @@ import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
 import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
 import br.com.tiagods.repository.helpers.NegocioServicosImpl;
 import br.com.tiagods.repository.helpers.NegociosListasImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -45,8 +39,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -144,7 +138,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
         			close();
         		}
             });
-        }catch(FXMLNaoEncontradoException e) {
+        }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo"+FXMLEnum.CONTATO_CADASTRO,e,true);
         }finally {
@@ -256,9 +250,11 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	
 	void filtrar() {
 		contatos = new ContatosImpl(getManager());
-		contatos.filtrar(cbTipo.getValue(),cbContatoTipo.getValue(),cbLista.getValue(),cbCategoria.getValue(),cbNivel.getValue(),
+		List<Contato> list = contatos.filtrar(cbTipo.getValue(),cbContatoTipo.getValue(),cbLista.getValue(),cbCategoria.getValue(),cbNivel.getValue(),
 				cbOrigem.getValue(),cbServico.getValue(),cbAtendente.getValue(),cbMalaDireta.getValue(),
 				dataInicial.getValue(),dataFinal.getValue(),txPesquisa.getText());		
+		tbPrincipal.getItems().clear();
+		tbPrincipal.getItems().addAll(list);
 	}
 	
 	@Override
@@ -267,6 +263,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		try {
 			loadFactory();
 			combos();
+			tbPrincipal.getItems().addAll(contatos.getAll());
 		}catch(PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
 		}finally {
@@ -300,11 +297,25 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		TableColumn<Contato, String> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 
-		TableColumn<Contato, String> colunaTelefone = new  TableColumn<>("Telefone");
-		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("telefone"));
-
+		TableColumn<Contato, Number> colunaTelefone = new  TableColumn<>("Telefone");
+		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaTelefone.setCellFactory(param -> new TableCell<Contato,Number>(){
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					Contato c = tbPrincipal.getItems().get(getIndex());
+					setText(c.getTelefone()+"/"+c.getCelular());
+				}
+			}
+		});
 		TableColumn<Contato, String> colunaEmail= new  TableColumn<>("E-Mail");
-		colunaEmail.setCellValueFactory(new PropertyValueFactory<>("telefone"));
+		colunaEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
 		TableColumn<Contato, NegocioOrigem> colunaOrigem= new  TableColumn<>("Origem");
 		colunaOrigem.setCellValueFactory(new PropertyValueFactory<>("origem"));

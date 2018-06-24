@@ -25,11 +25,8 @@ public class ServicoAgregado implements AbstractEntity,Serializable{
 	private Long id;
 	@Column(name="SER_AGR_NOME")
 	private String nome;
-	/*
-	@OneToMany(cascade=CascadeType.ALL)
-	@JoinColumn(name = "SER_CON_SERVICOAGREGADO_COD")
-	*/
-	@Transient
+	
+	@OneToMany(cascade=CascadeType.ALL,mappedBy="servicosAgregados")
 	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
 	
 	/**

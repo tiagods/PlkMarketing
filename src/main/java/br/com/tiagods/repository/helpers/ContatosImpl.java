@@ -1,6 +1,8 @@
 package br.com.tiagods.repository.helpers;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -74,7 +76,9 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 				vl="newsletter";
 			criteria.add(Restrictions.eq(vl, true));
 		}
-		if(inicio!=null && fim!=null) criteria.add(Restrictions.between("criadoEm", inicio, fim));
+		if(inicio!=null && fim!=null) criteria.add(Restrictions.between("criadoEm", 
+				GregorianCalendar.from(inicio.atStartOfDay(ZoneId.systemDefault())), 
+				GregorianCalendar.from(fim.atStartOfDay(ZoneId.systemDefault()))));
 		if(nome.length()>0) criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
 		criteria.addOrder(Order.desc("criadoEm"));
 		return criteria.list();
