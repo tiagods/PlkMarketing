@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -54,9 +55,10 @@ public abstract class UtilsController extends PersistenciaController{
 	private JFXButton buttonSair;
 	private boolean habilidarFiltroCidade = true;
 
-	Locale locale = new Locale("pt", "BR");
-	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+	//Locale locale = new Locale("pt", "BR");
+	final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	
 	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
 		Alert alert = new Alert(alertType);

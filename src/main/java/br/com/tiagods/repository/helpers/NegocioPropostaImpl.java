@@ -10,11 +10,12 @@ import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
@@ -54,7 +55,19 @@ public class NegocioPropostaImpl extends AbstractRepository<NegocioProposta, Lon
 		if(atendente!=null && atendente.getId()!=-1L) criteria.add(Restrictions.eq("atendente",atendente));
 		if(dataInicial!=null && dataFinal!=null) criteria.add(Restrictions.between(dataFiltro, 
 				GregorianCalendar.from(dataInicial.atStartOfDay(ZoneId.systemDefault())), GregorianCalendar.from(dataFinal.atStartOfDay(ZoneId.systemDefault()))));
-		if(pesquisa.length()>0) criteria.add(Restrictions.ilike("nome", pesquisa, MatchMode.ANYWHERE));
+		if(pesquisa.length()>0) {
+			Criterion or1 = Restrictions.ilike("nome", pesquisa, MatchMode.ANYWHERE);
+			try {
+				Long value = Long.parseLong(pesquisa);
+				Criterion or2 = Restrictions.eq("id",value);
+				Disjunction disjunction = Restrictions.disjunction();
+				disjunction.add(or1);
+				disjunction.add(or2);
+				criteria.add(disjunction);
+			}catch(Exception e) {
+				criteria.add(or1);
+			}
+		}
 		criteria.addOrder(Order.desc(ordenacao));
 		return criteria.list();
 	}

@@ -19,7 +19,6 @@ public class FranquiasImpl extends AbstractRepository<Franquia, Long> implements
 
 	public FranquiasImpl(EntityManager manager) {
 		super(manager);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -31,9 +30,9 @@ public class FranquiasImpl extends AbstractRepository<Franquia, Long> implements
 		if(!tipo.equals(Tipo.TODOS)) {
 			criteria.add(Restrictions.eq("tipo", tipo));
 		}
-		if(atendente.getId()!=-1L) {
-			criteria.add(Restrictions.eq("atendente", atendente));
-		}
+//		if(atendente!=null && atendente.getId()!=-1L) {
+//			criteria.add(Restrictions.eq("atendente", atendente));
+//		}
 		return criteria.list();
 	}
 

@@ -62,7 +62,7 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Contato.class);
 		if(!pessoaTipo.equals(PessoaTipo.CONTATO)) criteria.add(Restrictions.eq("pessoaTipo", pessoaTipo));
 		if(!contatoTipo.equals(ContatoTipo.CONTATO)) criteria.add(Restrictions.eq("contatoTipo", contatoTipo));
-		if(lista!=null && lista.getId()!=-1L) criteria.add(Restrictions.eq("lista", lista));
+		//if(lista!=null && lista.getId()!=-1L) criteria.add(Restrictions.eq("lista", lista));
 		if(categoria!=null && categoria.getId()!=-1L) criteria.add(Restrictions.eq("categoria", categoria));
 		if(nivel!=null && nivel.getId()!=-1L) criteria.add(Restrictions.eq("nivel", nivel));
 		if(origem!=null && origem.getId()!=-1L) criteria.add(Restrictions.eq("origem", origem));

@@ -22,7 +22,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.Rating?>
-<?import org.fxutils.maskedtextfield.MaskedTextField?>
+<?import org.fxutils.maskedtextfield.MaskTextField?>
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1020.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -93,9 +93,9 @@
                         <RowConstraints maxHeight="114.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="104.0" minHeight="10.0" prefHeight="31.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="126.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="115.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="123.0" minHeight="10.0" prefHeight="33.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="113.0" minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="115.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="123.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="113.0" minHeight="0.0" prefHeight="22.0" vgrow="SOMETIMES" />
                         <RowConstraints maxHeight="82.0" minHeight="0.0" prefHeight="76.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
@@ -156,20 +156,29 @@
                               <JFXDatePicker fx:id="dtFinal" />
                            </children>
                         </HBox>
-                        <Label text="Honorario:" GridPane.rowIndex="5" />
-                        <HBox prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="6">
+                        <HBox alignment="CENTER_LEFT" prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="5">
                            <children>
-                              <Label prefHeight="26.0" prefWidth="36.0" text="R$:" />
-                              <JFXTextField fx:id="txHonorario" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
-                              <JFXButton onAction="#serviçosAdicionais" styleClass="btDefault" text="Serviços Adicionais">
+                              <JFXButton onAction="#buscar" styleClass="btDefault" text="Selecionar Contato">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@imagens/button_money.png" />
+                                          <Image url="@imagens/button_search.png" />
                                        </image>
                                     </ImageView>
                                  </graphic>
                               </JFXButton>
+                           </children>
+                           <GridPane.margin>
+                              <Insets bottom="10.0" top="10.0" />
+                           </GridPane.margin></HBox>
+                        <HBox prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="6">
+                           <children>
+                              <JFXTextField fx:id="txIdPesquisa" editable="false" prefHeight="26.0" prefWidth="50.0" style="-fx-background-color: #E7DFDD;">
+                                 <HBox.margin>
+                                    <Insets right="20.0" />
+                                 </HBox.margin>
+                              </JFXTextField>
+                              <JFXTextField fx:id="txNomePesquisa" editable="false" prefColumnCount="20" prefHeight="26.0" style="-fx-background-color: #E7DFDD;" />
                            </children>
                         </HBox>
                         <Label text="Descriçao:" GridPane.rowIndex="7" />
@@ -236,7 +245,7 @@
                                                    </GridPane.margin>
                                                    <children>
                                                       <JFXTextField fx:id="txEmail" prefHeight="26.0" prefWidth="238.0" />
-                                                      <JFXButton onAction="#mailSend" styleClass="btDefault">
+                                                      <JFXButton disable="true" onAction="#mailSend" styleClass="btDefault">
                                                          <graphic>
                                                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
@@ -249,16 +258,16 @@
                                                 </HBox>
                                                 <Label text="Site:" GridPane.rowIndex="2" />
                                                 <Label text="Telefone 1:" GridPane.columnIndex="1" />
-                                                <MaskedTextField fx:id="txTelefone1" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <JFXTextField fx:id="txTelefone1" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                 <Label text="Telefone 2:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <MaskedTextField fx:id="txTelefone2" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <JFXTextField fx:id="txTelefone2" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 <HBox GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets right="10.0" />
                                                    </GridPane.margin>
                                                    <children>
                                                       <JFXTextField fx:id="txSite" prefHeight="26.0" prefWidth="238.0" />
-                                                      <JFXButton onAction="#openBrowser" styleClass="btDefault">
+                                                      <JFXButton disable="true" onAction="#openBrowser" styleClass="btDefault">
                                                          <graphic>
                                                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
@@ -299,13 +308,29 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
                                  <children>
-                                    <VBox layoutX="8.0" layoutY="6.0" prefHeight="178.0" prefWidth="518.0">
+                                    <VBox layoutX="8.0" layoutY="6.0" prefHeight="270.0" prefWidth="518.0">
                                        <children>
+                                          <Label text="Honorario:">
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" />
+                                             </VBox.margin>
+                                          </Label>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="26.0" prefWidth="36.0" text="R$:" />
+                                                <MaskTextField fx:id="txHonorario" mask="N!,NN" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="20.0" />
+                                             </VBox.margin>
+                                          </HBox>
                                           <HBox alignment="CENTER" prefHeight="52.0" prefWidth="518.0">
                                              <children>
-                                                <JFXComboBox fx:id="cbServicoAgregado" prefWidth="120.0" />
-                                                <JFXTextField fx:id="txValorServico" prefHeight="26.0" prefWidth="115.0" />
-                                                <JFXButton onAction="#cadastrarServico" prefHeight="38.0" prefWidth="64.0" styleClass="btDefault">
+                                                <JFXComboBox fx:id="cbServicoAgregado" prefWidth="120.0">
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin></JFXComboBox>
+                                                <JFXButton disable="true" onAction="#cadastrarServico" prefHeight="38.0" prefWidth="64.0" styleClass="btDefault">
                                                    <graphic>
                                                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                          <image>
@@ -314,6 +339,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </JFXButton>
+                                                <MaskTextField fx:id="txValorServico" mask="N!,NN" prefHeight="26.0" prefWidth="115.0" />
                                                 <JFXButton onAction="#salvarServico" styleClass="btDefault" text="Incluir Serviço">
                                                    <graphic>
                                                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -323,6 +349,8 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </JFXButton>
+                                                <Label fx:id="txServicoLocation" visible="false" />
+                                                <Label fx:id="txServicoId" layoutX="492.0" layoutY="29.0" visible="false" />
                                              </children>
                                           </HBox>
                                           <TableView fx:id="tbServico" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
@@ -356,10 +384,10 @@
                                           </ImageView>
                                        </graphic>
                                     </JFXButton>
-                                    <JFXTextField fx:id="txNomeDocumento" layoutX="20.0" layoutY="41.0" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
+                                    <JFXTextField fx:id="txDocumentoNome" layoutX="21.0" layoutY="49.0" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
                                     <Label layoutX="162.0" layoutY="16.0" text="Descriçao:" />
-                                    <JFXTextArea fx:id="txDescricao" layoutX="161.0" layoutY="41.0" maxWidth="189.0" prefHeight="26.0" prefWidth="189.0" />
-                                    <JFXTextField fx:id="txLocalizacao" editable="false" layoutX="21.0" layoutY="78.0" maxWidth="327.0" prefHeight="26.0" prefWidth="327.0" />
+                                    <JFXTextArea fx:id="txDocumentoDescricao" layoutX="160.0" layoutY="38.0" maxWidth="189.0" prefHeight="26.0" prefWidth="189.0" />
+                                    <JFXTextField fx:id="txDocumentoLocalizacao" editable="false" layoutX="21.0" layoutY="78.0" maxWidth="327.0" prefHeight="26.0" prefWidth="327.0" />
                                  </children>
                               </AnchorPane>
                            </content>

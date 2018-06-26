@@ -6,6 +6,8 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -13,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="login--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="-2.0" layoutY="8.0" prefHeight="600.0" prefWidth="900.0">
          <children>
@@ -102,7 +104,14 @@
                   <JFXComboBox fx:id="cbCidade" layoutX="104.0" layoutY="396.0" prefHeight="26.0" prefWidth="290.0" />
                   <MaskedTextField fx:id="txTelefone" layoutX="16.0" layoutY="223.0" mask="(##) ####-####" prefHeight="26.0" prefWidth="110.0" />
                   <MaskedTextField fx:id="txCelular" layoutX="157.0" layoutY="223.0" mask="(##) #####-####" prefHeight="26.0" prefWidth="110.0" />
-                  <JFXButton layoutX="128.0" layoutY="263.0" mnemonicParsing="false" onAction="#bucarCep" prefHeight="30.0" prefWidth="73.0" styleClass="btBlue" text="Buscar" />
+                  <JFXButton layoutX="128.0" layoutY="263.0" mnemonicParsing="false" onAction="#bucarCep" prefHeight="38.0" prefWidth="100.0" styleClass="btDefault" text="Buscar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_search.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
                   <JFXTextField fx:id="txNumero" layoutX="291.0" layoutY="310.0" prefHeight="26.0" prefWidth="100.0" />
                   <Label layoutX="289.0" layoutY="293.0" prefHeight="17.0" prefWidth="76.0" text="Numero:">
                      <font>
@@ -137,14 +146,28 @@
             </AnchorPane>
             <HBox alignment="CENTER_RIGHT" prefHeight="78.0" prefWidth="900.0">
                <children>
-                  <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="30.0" prefWidth="70.0" styleClass="btGreen" text="Salvar">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></JFXButton>
-                  <JFXButton fx:id="btnSair" mnemonicParsing="false" onAction="#sair" prefHeight="30.0" prefWidth="70.0" styleClass="btBlue" text="Sair">
+                  <JFXButton fx:id="btnSalvar" mnemonicParsing="false" onAction="#salvar" prefHeight="38.0" prefWidth="91.0" styleClass="btDefault" text="Salvar">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton fx:id="btnSair" mnemonicParsing="false" onAction="#sair" prefHeight="38.0" prefWidth="81.0" styleClass="btDefault" text="Sair">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </JFXButton>
                </children>
             </HBox>

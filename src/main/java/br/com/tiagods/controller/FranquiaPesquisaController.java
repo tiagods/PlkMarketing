@@ -21,6 +21,8 @@ import br.com.tiagods.model.Franquia;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.helpers.FranquiasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +37,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -92,7 +95,7 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	    	
 		}
 	    void combos() {
-	    	Usuario usuario = new Usuario(-1L, "Todos");
+	    	Usuario usuario = new Usuario(-1L, "Atendente");
 	    	UsuariosImpl usuarios = new UsuariosImpl(getManager());
 	    	
 	    	cbAtendente.getItems().add(usuario);
@@ -102,6 +105,24 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	    	
 	    	cbTipo.getSelectionModel().select(Franquia.Tipo.TODOS);
 	    	cbAtendente.getSelectionModel().selectFirst();
+	    	
+	    	ChangeListener<Object> change = new ChangeListener<Object>() {
+				@Override
+				public void changed(ObservableValue<?> observable, Object oldValue, Object newValue) {
+					try {
+						loadFactory();
+						filtrar();
+					}catch(PersistenceException e) {
+						alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
+					}finally {
+						close();
+					}	
+				}
+	    		
+	    	};
+	    	cbTipo.valueProperty().addListener(change);
+	    	cbAtendente.valueProperty().addListener(change);
+	    	cbAtendente.setVisible(false);
 	    }
 	    
 	    @FXML
@@ -111,14 +132,14 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	    void filtrar() {
 	    	franquias = new FranquiasImpl(getManager());
 	    	tbPrincipal.getItems().clear();
-	    	tbPrincipal.getItems().addAll(franquias.getAll());
+	    	tbPrincipal.getItems().addAll(franquias.filtrar(txPesquisa.getText(),cbTipo.getValue(),cbAtendente.getValue()));
 	    }
 	    @Override
 		public void initialize(URL location, ResourceBundle resources) {
 	    	tabela();
 			try {
 				loadFactory();
-				franquias = new FranquiasImpl(getManager());
+				franquias = new FranquiasImpl(getManager());	
 				combos();
 				tbPrincipal.getItems().addAll(franquias.getAll());
 			}catch(PersistenceException e) {
@@ -131,7 +152,17 @@ public class FranquiaPesquisaController extends UtilsController implements Initi
 	    void novo(ActionEvent event) {
 	    	abrirCadastro(null);
 	    }
-
+	    @FXML
+	    void pesquisar(KeyEvent event) {
+	    	try {
+				loadFactory();
+				filtrar();
+			}catch(PersistenceException e) {
+				alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
+			}finally {
+				close();
+			}	
+	    }
 	    @FXML
 	    void sair(ActionEvent event) {
 	    	this.stage.close();

@@ -122,7 +122,6 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	
 	private void abrirCadastro(Contato t) {
 		try {
-			
 			loadFactory();
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
@@ -296,7 +295,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	void tabela() {
 		TableColumn<Contato, String> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-
+		colunaNome.setPrefWidth(120);
+		
 		TableColumn<Contato, Number> colunaTelefone = new  TableColumn<>("Telefone");
 		colunaTelefone.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaTelefone.setCellFactory(param -> new TableCell<Contato,Number>(){
@@ -310,27 +310,36 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					Contato c = tbPrincipal.getItems().get(getIndex());
-					setText(c.getTelefone()+"/"+c.getCelular());
+					String telefone1 = c.getTelefone().length()>0 ? c.getTelefone()+"\\"+c.getCelular():""+c.getCelular();
+					setText(telefone1);
 				}
 			}
 		});
+		colunaTelefone.setPrefWidth(60);
+		
 		TableColumn<Contato, String> colunaEmail= new  TableColumn<>("E-Mail");
 		colunaEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-
+		colunaEmail.setPrefWidth(70);
+		
 		TableColumn<Contato, NegocioOrigem> colunaOrigem= new  TableColumn<>("Origem");
 		colunaOrigem.setCellValueFactory(new PropertyValueFactory<>("origem"));
-
+		colunaOrigem.setPrefWidth(70);
+		
 		TableColumn<Contato, NegocioServico> colunaServico= new  TableColumn<>("Servico");
 		colunaServico.setCellValueFactory(new PropertyValueFactory<>("servico"));
-
+		colunaServico.setPrefWidth(70);
+		
 		TableColumn<Contato, NegocioCategoria> colunaCategoria= new  TableColumn<>("Categoria");
 		colunaCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
-
+		colunaCategoria.setPrefWidth(70);
+		
 		TableColumn<Contato, NegocioNivel> colunaNivel= new  TableColumn<>("Nivel");
 		colunaNivel.setCellValueFactory(new PropertyValueFactory<>("nivel"));
+		colunaNivel.setPrefWidth(60);
 		
 		TableColumn<Contato, Usuario> colunaAtendente= new  TableColumn<>("Atendente");
 		colunaAtendente.setCellValueFactory(new PropertyValueFactory<>("atendente"));
+		colunaAtendente.setPrefWidth(60);
 		
 		TableColumn<Contato, NegocioProposta> colunaUtimoNegocio= new  TableColumn<>("Negocio");
 		colunaUtimoNegocio.setCellValueFactory(new PropertyValueFactory<>("ultimoNegocio"));
@@ -348,6 +357,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
+		colunaUtimoNegocio.setPrefWidth(40);
+		
 		TableColumn<Contato, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<Contato,Number>(){

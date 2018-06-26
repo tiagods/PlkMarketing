@@ -32,7 +32,7 @@
             <HBox fx:id="pnCheckBox1" alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0" />
             <HBox alignment="CENTER" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <JFXTextField fx:id="txPesquisa" prefHeight="26.0" prefWidth="180.0" text="Pesquisar" />
+                  <JFXTextField fx:id="txPesquisa" onKeyTyped="#pesquisar" prefHeight="26.0" prefWidth="180.0" promptText="Pesquisar" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />

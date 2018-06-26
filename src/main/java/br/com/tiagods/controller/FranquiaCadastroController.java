@@ -140,6 +140,13 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				else
 					tbPacote.getItems().add(pacote);
 				tbPacote.refresh();
+				
+				txInvestimento.setText("");
+				txFaturamento.setText("");
+				txRetorno.setText("");
+				txNomePacote.setText("");
+				franquiaCodigo.setText("");
+				franquiaTb.setText("");				
 			}catch(Exception e) {
 				alert(AlertType.ERROR,"Erro","","Falha ao incluir registro",e,true);	
 			}
@@ -235,6 +242,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				}
 			}
 		});
+		colunaInvestimento.setPrefWidth(120);
 		
 		TableColumn<FranquiaPacote, String> colunaRetorno = new  TableColumn<>("Retorno");
 		colunaRetorno.setCellValueFactory(new PropertyValueFactory<>("previsao"));
@@ -255,6 +263,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				}
 			}
 		});
+		colunaFaturamento.setPrefWidth(120);
 		TableColumn<FranquiaPacote, String> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaEditar.setCellFactory(param -> new TableCell<FranquiaPacote,String>(){

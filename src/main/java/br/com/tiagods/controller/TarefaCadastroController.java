@@ -121,19 +121,30 @@ public class TarefaCadastroController extends UtilsController implements Initial
 			controller = new TarefaContatoDialogController(stage);
 		}
 		else if(rbNegocioProposta.isSelected()) {
-			
+			fxmlEnum = FXMLEnum.TAREFA_DIALOG_PROPOSTA;
+			controller = new TarefaPropostaDialogController(stage);
 		}
 		
 		try {
             FXMLLoader loader = loaderFxml(fxmlEnum);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            final Object controlador = controller;
             stage.setOnHiding(e -> {
-            	try {
-            		
-            	}catch(Exception ex) {
-        			ex.printStackTrace();
-        		}
+            		if(controlador instanceof TarefaContatoDialogController) {
+            			Contato contato = ((TarefaContatoDialogController)controlador).getContato();
+            			if(contato!=null) {
+            				txIdPesquisa.setText(String.valueOf(contato.getId()));
+            				txNomePesquisa.setText(contato.getNome());
+            			}
+            		}
+            		else if(controlador instanceof TarefaPropostaDialogController) {
+            			NegocioProposta proposta = ((TarefaPropostaDialogController)controlador).getProposta();
+            			if(proposta!=null) {
+            				txIdPesquisa.setText(String.valueOf(proposta.getId()));
+            				txNomePesquisa.setText(proposta.getNome());
+            			}
+            		}
             });
         }catch(IOException ex) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",

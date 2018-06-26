@@ -2,28 +2,28 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import javax.persistence.PersistenceException;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioCategoria;
 import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
-import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.ContatosImpl;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.modelcollections.NegocioProposta.TipoEtapa;
+import br.com.tiagods.modelcollections.NegocioProposta.TipoStatus;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
 import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
+import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.repository.helpers.NegocioServicosImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
@@ -40,7 +40,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class TarefaContatoDialogController extends UtilsController implements Initializable{
+public class TarefaPropostaDialogController extends UtilsController implements Initializable{
 	@FXML
     private JFXComboBox<NegocioCategoria> cbCategoria;
 
@@ -63,19 +63,18 @@ public class TarefaContatoDialogController extends UtilsController implements In
     private JFXTextField txPesquisa;
 
     @FXML
-    private TableView<Contato> tbPrincipal;
+    private TableView<NegocioProposta> tbPrincipal;
     
-	private Stage stage;
-	private Contato contato;
-	
-	private ContatosImpl contatos;
+    private Stage stage;
+	private NegocioProposta proposta;
+	private NegocioPropostaImpl propostas;
 	private NegocioNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
 	private NegocioOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	private UsuariosImpl usuarios;
 	
-	public TarefaContatoDialogController(Stage stage) {
+	public TarefaPropostaDialogController(Stage stage) {
 		this.stage = stage;
 	}
 	
@@ -89,14 +88,13 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbNivel.getItems().add(nivel);
 		cbOrigem.getItems().add(origem);
 		cbServico.getItems().add(servico);
-		cbAtendente.getItems().add(atendente);
-		
+		cbAtendente.getItems().add(atendente);		
 		
 		categorias = new NegocioCategoriasImpl(getManager());
 		niveis = new NegocioNiveisImpl(getManager());
 		origens = new NegocioOrigensImpl(getManager());
 		servicos = new NegocioServicosImpl(getManager());
-		contatos = new ContatosImpl(getManager());
+		propostas = new NegocioPropostaImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());
 				
 		cbCategoria.getItems().addAll(categorias.getAll());
@@ -132,9 +130,10 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbAtendente.valueProperty().addListener(change);
 	}
 	void filtrar() {
-		contatos = new ContatosImpl(getManager());
-		List<Contato> lista = contatos.filtrar(txPesquisa.getText().trim(),cbCategoria.getValue(),
-				cbNivel.getValue(),cbOrigem.getValue(),cbServico.getValue());
+		propostas = new NegocioPropostaImpl(getManager());
+		List<NegocioProposta> lista = propostas.filtrar(TipoStatus.STATUS, TipoEtapa.ETAPA, 
+				cbCategoria.getValue(), cbNivel.getValue(), cbOrigem.getValue(), 
+				cbServico.getValue(), cbAtendente.getValue(), null, null, null, "criadoEm", txPesquisa.getText());
 		tbPrincipal.getItems().clear();
 		tbPrincipal.getItems().addAll(lista);
 	}
@@ -145,7 +144,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 			loadFactory();
 			combos();
 			filtrar();
-		}catch (PersistenceException e) {
+		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
 		}finally {
 			close();
@@ -156,21 +155,23 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		try {
 			loadFactory();
 			filtrar();
-		}catch(PersistenceException e) {
+		}catch(Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
 		}finally {
 			close();
 		}
 	}
+	
 	@FXML
 	void sair(ActionEvent event) {
 		stage.close();
 	}
+
 	@FXML
 	void selecionar(ActionEvent event) {
-		Contato c = tbPrincipal.getSelectionModel().getSelectedItem();
+		NegocioProposta c = tbPrincipal.getSelectionModel().getSelectedItem();
 		if(c!=null) {
-			setContato(c);
+			setProposta(c);
 			stage.close();
 		}
 		else
@@ -178,9 +179,12 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	}	
 	@SuppressWarnings("unchecked")
 	private void tabela() {
-		TableColumn<Contato, String> colunaNome = new  TableColumn<>("Nome");
+		TableColumn<NegocioProposta, String> colunaCodigo = new  TableColumn<>("Nº");
+		colunaCodigo.setCellValueFactory(new PropertyValueFactory<>("id"));
+		
+		TableColumn<NegocioProposta, String> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-		colunaNome.setCellFactory(param -> new TableCell<Contato,String>(){
+		colunaNome.setCellFactory(param -> new TableCell<NegocioProposta,String>(){
 			@Override
 			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
@@ -195,11 +199,11 @@ public class TarefaContatoDialogController extends UtilsController implements In
 			}
 		});
 		
-		TableColumn<Contato, Contato.PessoaTipo> colunaTipo = new  TableColumn<>("Tipo");
-		colunaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
-		colunaTipo.setCellFactory(param -> new TableCell<Contato,Contato.PessoaTipo>(){
+		TableColumn<NegocioProposta, NegocioProposta.TipoStatus> colunaTipo = new  TableColumn<>("Status");
+		colunaTipo.setCellValueFactory(new PropertyValueFactory<>("tipoStatus"));
+		colunaTipo.setCellFactory(param -> new TableCell<NegocioProposta,NegocioProposta.TipoStatus>(){
 			@Override
-			protected void updateItem(Contato.PessoaTipo item, boolean empty) {
+			protected void updateItem(NegocioProposta.TipoStatus item, boolean empty) {
 				super.updateItem(item, empty);
 				if(item==null){
 					setStyle("");
@@ -211,11 +215,11 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<Contato, PessoaJuridica> colunaResponsavel = new  TableColumn<>("Responsavel");
-		colunaResponsavel.setCellValueFactory(new PropertyValueFactory<>("juridico"));
-		colunaResponsavel.setCellFactory(param -> new TableCell<Contato,PessoaJuridica>(){
+		TableColumn<NegocioProposta, Calendar> colunaCriadoEm = new  TableColumn<>("Criado Em");
+		colunaCriadoEm.setCellValueFactory(new PropertyValueFactory<>("criadoEm"));
+		colunaCriadoEm.setCellFactory(param -> new TableCell<NegocioProposta,Calendar>(){
 			@Override
-			protected void updateItem(PessoaJuridica item, boolean empty) {
+			protected void updateItem(Calendar item, boolean empty) {
 				super.updateItem(item, empty);
 				if(item==null){
 					setStyle("");
@@ -223,30 +227,14 @@ public class TarefaContatoDialogController extends UtilsController implements In
 					setGraphic(null);
 				}
 				else{
-					setText(item.getResponsavel());
-				}
-			}
-		});
-		TableColumn<Contato, PessoaJuridica> colunaRazao = new  TableColumn<>("Razao Social");
-		colunaRazao.setCellValueFactory(new PropertyValueFactory<>("juridico"));
-		colunaRazao.setCellFactory(param -> new TableCell<Contato,PessoaJuridica>(){
-			@Override
-			protected void updateItem(PessoaJuridica item, boolean empty) {
-				super.updateItem(item, empty);
-				if(item==null){
-					setStyle("");
-					setText("");
-					setGraphic(null);
-				}
-				else{
-					setText(item.getRazao());
+					setText(sdf.format(item.getTime()));
 				}
 			}
 		});
 		
-		TableColumn<Contato, NegocioCategoria> colunaCategoria = new  TableColumn<>("Categoria");
+		TableColumn<NegocioProposta, NegocioCategoria> colunaCategoria = new  TableColumn<>("Categoria");
 		colunaCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
-		colunaCategoria.setCellFactory(param -> new TableCell<Contato,NegocioCategoria>(){
+		colunaCategoria.setCellFactory(param -> new TableCell<NegocioProposta,NegocioCategoria>(){
 			@Override
 			protected void updateItem(NegocioCategoria item, boolean empty) {
 				super.updateItem(item, empty);
@@ -260,9 +248,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<Contato, NegocioOrigem> colunaOrigem = new  TableColumn<>("Origem");
+		TableColumn<NegocioProposta, NegocioOrigem> colunaOrigem = new  TableColumn<>("Origem");
 		colunaOrigem.setCellValueFactory(new PropertyValueFactory<>("origem"));
-		colunaOrigem.setCellFactory(param -> new TableCell<Contato,NegocioOrigem>(){
+		colunaOrigem.setCellFactory(param -> new TableCell<NegocioProposta,NegocioOrigem>(){
 			@Override
 			protected void updateItem(NegocioOrigem item, boolean empty) {
 				super.updateItem(item, empty);
@@ -276,9 +264,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<Contato, NegocioNivel> colunaNivel = new  TableColumn<>("Nivel");
+		TableColumn<NegocioProposta, NegocioNivel> colunaNivel = new  TableColumn<>("Nivel");
 		colunaNivel.setCellValueFactory(new PropertyValueFactory<>("nivel"));
-		colunaNivel.setCellFactory(param -> new TableCell<Contato,NegocioNivel>(){
+		colunaNivel.setCellFactory(param -> new TableCell<NegocioProposta,NegocioNivel>(){
 			@Override
 			protected void updateItem(NegocioNivel item, boolean empty) {
 				super.updateItem(item, empty);
@@ -292,9 +280,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<Contato, NegocioServico> colunaServico = new  TableColumn<>("Servico");
+		TableColumn<NegocioProposta, NegocioServico> colunaServico = new  TableColumn<>("Servico");
 		colunaServico.setCellValueFactory(new PropertyValueFactory<>("servico"));
-		colunaServico.setCellFactory(param -> new TableCell<Contato,NegocioServico>(){
+		colunaServico.setCellFactory(param -> new TableCell<NegocioProposta,NegocioServico>(){
 			@Override
 			protected void updateItem(NegocioServico item, boolean empty) {
 				super.updateItem(item, empty);
@@ -308,9 +296,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				}
 			}
 		});
-		TableColumn<Contato, Usuario> colunaAtendente = new  TableColumn<>("Atendente");
+		TableColumn<NegocioProposta, Usuario> colunaAtendente = new  TableColumn<>("Atendente");
 		colunaAtendente.setCellValueFactory(new PropertyValueFactory<>("atendente"));
-		colunaAtendente.setCellFactory(param -> new TableCell<Contato,Usuario>(){
+		colunaAtendente.setCellFactory(param -> new TableCell<NegocioProposta,Usuario>(){
 			@Override
 			protected void updateItem(Usuario item, boolean empty) {
 				super.updateItem(item, empty);
@@ -325,9 +313,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 			}
 		});
 		
-		TableColumn<Contato, Number> colunaSelecionar = new  TableColumn<>("");
+		TableColumn<NegocioProposta, Number> colunaSelecionar = new  TableColumn<>("");
 		colunaSelecionar.setCellValueFactory(new PropertyValueFactory<>("id"));
-		colunaSelecionar.setCellFactory(param -> new TableCell<Contato,Number>(){
+		colunaSelecionar.setCellFactory(param -> new TableCell<NegocioProposta,Number>(){
 			JFXButton button = new JFXButton();//Editar
 			@Override
 			protected void updateItem(Number item, boolean empty) {
@@ -344,21 +332,21 @@ public class TarefaContatoDialogController extends UtilsController implements In
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
-						setContato(tbPrincipal.getItems().get(getIndex()));
+						setProposta(tbPrincipal.getItems().get(getIndex()));
 						stage.close();
 					});
 					setGraphic(button);
 				}
 			}
 		});
-		tbPrincipal.getColumns().addAll(colunaNome,colunaTipo, colunaRazao, colunaResponsavel,colunaCategoria,colunaNivel,colunaOrigem,colunaServico,
+		tbPrincipal.getColumns().addAll(colunaCodigo,colunaNome,colunaCriadoEm,colunaTipo,colunaCategoria,colunaNivel,colunaOrigem,colunaServico,
 				colunaAtendente,colunaSelecionar);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
-	private void setContato(Contato contato) {
-		this.contato=contato;
+	private void setProposta(NegocioProposta proposta) {
+		this.proposta=proposta;
 	}
-	public Contato getContato() {
-		return this.contato;
+	public NegocioProposta getProposta() {
+		return this.proposta;
 	}
 }
