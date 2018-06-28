@@ -3,7 +3,7 @@ package br.com.tiagods.config.enums;
 public enum PropsEnum {
 	FTP("/credentials/ftp.properties"),
 	MAIL("/credentials/mail.properties"),
-	DB("/credentials/database_other.properties");
+	DB("/credentials/database.properties");
 	private String descricao;
 	private PropsEnum(String descricao) {
 		this.descricao=descricao;
@@ -11,5 +11,4 @@ public enum PropsEnum {
 	public String getDescricao() {
 		return descricao;
 	}
-
 }

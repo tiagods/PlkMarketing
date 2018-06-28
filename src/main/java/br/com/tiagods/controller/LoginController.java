@@ -98,7 +98,7 @@ public class LoginController extends UtilsController implements Initializable{
 	                    Stage stage1 = new Stage();
 	                    FXMLLoader loader = loaderFxml(FXMLEnum.MAIN);
 	                    loader.setController(new MenuController());
-	                    initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+	                    initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
 	                    stage.close();
                 	}catch (IOException ex) {
                 		super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);

@@ -67,8 +67,10 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-	}   
+		txEntrevistasHoje.setText("Em desenvolvimento");
+		txAnunciosAbertos.setText("Em desenvolvimento");
+		txTarefasHoje.setText("Em desenvolvimento");
+	}
     
     public void starter() {
     	try {

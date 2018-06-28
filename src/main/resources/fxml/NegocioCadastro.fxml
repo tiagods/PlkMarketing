@@ -364,7 +364,7 @@
                               </AnchorPane>
                         </content>
                       </TitledPane>
-                        <TitledPane animated="false" layoutX="10.0" layoutY="114.0" text="Documentos">
+                        <TitledPane animated="false" layoutX="10.0" layoutY="114.0" text="Documentos" visible="false">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
                                  <children>

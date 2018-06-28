@@ -15,7 +15,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Atalho extends Application {
 
@@ -33,7 +35,8 @@ public class Atalho extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Acesso");
-            
+            stage.initModality(Modality.WINDOW_MODAL);
+	        stage.initStyle(StageStyle.TRANSPARENT);
             stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
             stage.show();
             

@@ -8,7 +8,7 @@ import br.com.tiagods.config.SecundaryDatabaseConfig;
 
 public class ConnectionFactory {
 	
-	public static String TABLENAME="VERSAO_APP";
+	public static final String TABLENAME="versao_app";
 	
 	public Connection getConnection(){
 		try{
@@ -16,8 +16,10 @@ public class ConnectionFactory {
 			Class.forName(s.getValue("classForName"));
 			return DriverManager.getConnection(s.getValue("url"), s.getValue("user"), s.getValue("password"));
 		}catch(ClassNotFoundException e){
+			e.printStackTrace();
 			return null;
 		}catch(SQLException e){
+			e.printStackTrace();
 			return null;
 		}
 	}

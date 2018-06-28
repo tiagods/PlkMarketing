@@ -3,7 +3,6 @@ package br.com.tiagods;
 import java.io.IOException;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +10,7 @@ import org.slf4j.LoggerFactory;
 import br.com.tiagods.config.JPAConfig;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.controller.LoginController;
-import br.com.tiagods.controller.PersistenciaController;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.util.Atualizador;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -25,9 +23,20 @@ import javafx.stage.Stage;
 
 public class StartApp extends Application {
 	private static Logger log = LoggerFactory.getLogger(StartApp.class);
-
+	Atualizador atualizador = new Atualizador();
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		if(atualizador.atualizacaoPendente()) {
+			log.debug("Sistema desatualizado");
+			atualizador.iniciarAtualizacao();
+		}
+		else {
+			log.debug("Sistema atualizado");
+			iniciar();
+		}
+	}
+	private void iniciar() {
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -60,7 +69,7 @@ public class StartApp extends Application {
 			};
 			new Thread(run).start();
 		} catch (Exception e) {
-			alert("Falha ao localizar o arquivo " + FXMLEnum.CONTATO_PESQUISA);
+			alert("Falha ao localizar o arquivo " + FXMLEnum.PROGRESS_SAMPLE);
 		}
 	}
 
