@@ -71,6 +71,6 @@ $RECYCLE.BIN/
 #Credentials
 ftp.properties
 mail.properties
-database_other.properties
+database.properties
 hibernate.cfg.xml
 persistence.xml
