@@ -11,10 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="350.0" styleClass="login--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label style="-fx-text-fill: #E7DFDD;" text="Negocios 2.0">
+      <Label styleClass="label-title" text="Negocios 2.0">
          <VBox.margin>
             <Insets bottom="10.0" top="20.0" />
          </VBox.margin>
@@ -22,7 +21,11 @@
             <Font name="System Bold Italic" size="20.0" />
          </font>
       </Label>
-      <Label style="-fx-text-fill: #E7DFDD;" text="Versao do Sistema : 2.0.0 em 01/06/2018" />
+      <Label fx:id="lbDetalhes" text="sistema">
+         <padding>
+            <Insets bottom="10.0" />
+         </padding></Label>
+      <Label fx:id="lbBanco" text="banco" />
       <ImageView fitHeight="98.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@imagens/theme.png" />
@@ -36,25 +39,39 @@
             <Insets bottom="20.0" />
          </VBox.margin>
       </JFXComboBox>
-      <JFXPasswordField fx:id="txSenha" maxWidth="200.0" onKeyPressed="#enterAcionado" prefHeight="28.0" prefWidth="200.0" promptText="Senha" style="-fx-background-color: #E7DFDD;">
+      <JFXPasswordField fx:id="txSenha" maxWidth="200.0" onKeyPressed="#enterAcionado" prefHeight="28.0" prefWidth="200.0" promptText="Senha">
          <font>
             <Font size="14.0" />
          </font>
       </JFXPasswordField>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <JFXButton fx:id="btnEntrar" buttonType="RAISED" onAction="#entrar" prefWidth="80.0" styleClass="btBlue" text="Entrar">
+            <JFXButton fx:id="btnEntrar" buttonType="RAISED" onAction="#entrar" prefHeight="38.0" prefWidth="110.0" styleClass="btDefault" text="Entrar">
                <font>
                   <Font size="14.0" />
                </font>
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/button_ok.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </JFXButton>
-            <JFXButton fx:id="btnCancelar" buttonType="RAISED" onAction="#sair" prefWidth="80.0" styleClass="btRed" text="Cancelar">
+            <JFXButton fx:id="btnCancelar" buttonType="RAISED" onAction="#sair" prefHeight="38.0" prefWidth="110.0" styleClass="btDefault" text="Cancelar">
                <font>
                   <Font size="14.0" />
                </font>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/button_exit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </JFXButton>
          </children>
       </HBox>

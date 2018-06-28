@@ -46,8 +46,6 @@ public class WorkIndicatorProgress<P> {
     public Integer resultValue;
  
     public void updateMesage(String text){
-    	
-    	
     	Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -55,7 +53,6 @@ public class WorkIndicatorProgress<P> {
 			}
 		});
     }
-    
     public WorkIndicatorProgress(Window owner, String label) {
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.initOwner(owner);

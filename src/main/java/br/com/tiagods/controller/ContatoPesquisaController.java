@@ -2,6 +2,7 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -26,6 +27,7 @@ import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
@@ -42,6 +44,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -51,6 +54,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Pair;
 
 public class ContatoPesquisaController extends UtilsController implements Initializable{
 	@FXML
@@ -106,6 +110,12 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 
     @FXML
     private TableView<Contato> tbTarefas;
+    
+    @FXML
+    private Pagination pagination;
+    
+    @FXML
+    private JFXComboBox<Integer> cbLimite;
 
 	private Stage stage;
 	private ContatosImpl contatos;
@@ -115,6 +125,9 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	private NegocioServicosImpl servicos;
 	private NegociosListasImpl listas;
 	private UsuariosImpl usuarios;
+	
+	private Paginacao paginacao;
+	
 	
 	public ContatoPesquisaController(Stage stage) {
 		this.stage = stage;
@@ -169,6 +182,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		listas = new NegociosListasImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());
 		
+		cbLimite.getItems().addAll(limiteTabela);
 		cbCategoria.getItems().addAll(categorias.getAll());
 		cbNivel.getItems().addAll(niveis.getAll());
 		cbOrigem.getItems().addAll(origens.getAll());
@@ -180,6 +194,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbTipo.getItems().addAll(PessoaTipo.values());
 		cbContatoTipo.getItems().addAll(ContatoTipo.values());
 		
+		cbLimite.getSelectionModel().selectFirst();
 		cbCategoria.getSelectionModel().selectFirst();
 		cbNivel.getSelectionModel().selectFirst();
 		cbOrigem.getSelectionModel().selectFirst();
@@ -197,6 +212,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				// TODO Auto-generated method stub
 				try {
 					loadFactory();
+					paginacao = new Paginacao(cbLimite.getValue());
 					filtrar();
 				}catch (Exception e) {
 					alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
@@ -217,6 +233,21 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		dataFinal.valueProperty().addListener(change);
 		dataInicial.valueProperty().addListener(change);
 		
+		pagination.currentPageIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				paginacao.setPaginaAtual(newValue.intValue());
+				try {
+					loadFactory();
+					filtrar();
+				}catch(PersistenceException e) {
+					alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
+				}finally {
+					close();
+				}
+			}
+		});
+		paginacao = new Paginacao(cbLimite.getValue());
 	}
 	@FXML
 	void exportar(ActionEvent event) {
@@ -249,11 +280,15 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	
 	void filtrar() {
 		contatos = new ContatosImpl(getManager());
-		List<Contato> list = contatos.filtrar(cbTipo.getValue(),cbContatoTipo.getValue(),cbLista.getValue(),cbCategoria.getValue(),cbNivel.getValue(),
+		Pair<List<Contato>,Paginacao> list = contatos.filtrar(paginacao,cbTipo.getValue(),cbContatoTipo.getValue(),cbLista.getValue(),cbCategoria.getValue(),cbNivel.getValue(),
 				cbOrigem.getValue(),cbServico.getValue(),cbAtendente.getValue(),cbMalaDireta.getValue(),
 				dataInicial.getValue(),dataFinal.getValue(),txPesquisa.getText());		
+		paginacao = list.getValue();
 		tbPrincipal.getItems().clear();
-		tbPrincipal.getItems().addAll(list);
+		tbPrincipal.getItems().addAll(list.getKey());
+		
+		pagination.setPageCount(paginacao.getTotalPaginas());
+		pagination.setCurrentPageIndex(paginacao.getPaginaAtual());
 	}
 	
 	@Override
@@ -262,7 +297,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		try {
 			loadFactory();
 			combos();
-			tbPrincipal.getItems().addAll(contatos.getAll());
+			filtrar();
 		}catch(PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
 		}finally {
@@ -293,6 +328,23 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		stage.close();
 	}
 	void tabela() {
+		TableColumn<Contato, Calendar> colunaCriadoEm = new  TableColumn<>("Data");
+		colunaCriadoEm.setCellValueFactory(new PropertyValueFactory<>("criadoEm"));
+		colunaCriadoEm.setCellFactory(param -> new TableCell<Contato,Calendar>(){
+			@Override
+			protected void updateItem(Calendar item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					setText(sdfH.format(item.getTime()));
+				}
+			}
+		});
+		colunaCriadoEm.setPrefWidth(120);
 		TableColumn<Contato, String> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaNome.setPrefWidth(120);
@@ -410,7 +462,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		tbPrincipal.getColumns().addAll(colunaNome,colunaTelefone,colunaEmail,colunaOrigem,colunaServico,colunaCategoria,
+		tbPrincipal.getColumns().addAll(colunaCriadoEm,colunaNome,colunaTelefone,colunaEmail,colunaOrigem,colunaServico,colunaCategoria,
 				colunaNivel,colunaAtendente,colunaUtimoNegocio,colunaEditar,colunaExcluir);
 	}
 }

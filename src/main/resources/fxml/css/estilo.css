@@ -22,23 +22,36 @@
     -fx-font-size: 12px;
     -fx-text-fill:  #E7DFDD;
 }
-.textField{
-    -fx-font-size: 12px;
+.combo-box{
     -fx-background-color:  #E7DFDD;
-    -fx-text-fill: #ffffff;
+}
+.my-list-cell {
+    -fx-text-fill: blue;
+    -fx-background-color: #FFF;
+}
+.text-field{
+    -fx-font-size: 12px;
+    -jfx-focus-color: rgb(19, 134, 242);
+    -jfx-unfocus-color: #E7DFDD;
+    -jfx-label-float: true;
+    -fx-text-fill: white;
+}
+.radio-button{
+    -fx-font-size: 12px;
+    -fx-text-fill:  #E7DFDD;
 }
 .table{
+    -fx-background-color: transparent;
+}
+.table:focused{
     -fx-background-color: transparent;
 }
 .table .column-header .label {
     -fx-text-fill: black;
     -fx-font-weight: bold;
 }
-.table:focused{
-    -fx-background-color: transparent;
-}
 .label-title{
-    -fx-font-size: 36px;
+    -fx-font-size: 28px;
     -fx-text-fill:  #E7DFDD;
 }
 .label-title2{
@@ -70,7 +83,7 @@
     -fx-text-fill: WHITE;
 }
 .btDefault:hover{
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
     -jfx-button-type: RAISED;
     -fx-background-color: rgb(255,102,70);
     -fx-text-fill:  #E7DFDD;

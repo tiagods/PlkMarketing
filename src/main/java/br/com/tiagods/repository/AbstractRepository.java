@@ -1,6 +1,7 @@
 package br.com.tiagods.repository;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,10 +9,10 @@ import javax.persistence.Query;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 
 import br.com.tiagods.model.AbstractEntity;
-import javafx.application.Platform;
 import javafx.util.Pair;
 
 public abstract class AbstractRepository<Entity extends AbstractEntity, PK extends Number> {
@@ -53,18 +54,21 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 	@SuppressWarnings("unchecked")
 	public Pair<List<Entity>,Paginacao> getAll(Paginacao page){
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
+		return filterPagination(page, criteria, new ArrayList<Criterion>());
+	}
+	@SuppressWarnings("unchecked")
+	public Pair<List<Entity>,Paginacao> filterPagination(Paginacao page, Criteria criteria, List<Criterion> criterios) {
 		criteria.setFirstResult(page.getPrimeiroRegistro());
 		criteria.setMaxResults(page.getLimitePorPagina());
-		List<Entity> firstPage = criteria.list();
-
-		criteria = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
-		criteria.setProjection(Projections.rowCount());
-		Long count = (Long) criteria.uniqueResult();
+		List<Entity> firstPage = (List<Entity>)criteria.list();
+		
+		Criteria criteria2 = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
+		criterios.forEach(c-> criteria2.add(c));
+		criteria2.setProjection(Projections.rowCount());
+		Long count = (Long) criteria2.uniqueResult();
 		page.setTotalRegistros(count);
 		return new Pair<>(firstPage, page);
 	}
-	
-	
 	@SuppressWarnings("unchecked")
 	public Entity findByNome(String nome) {
 		Query query = getEntityManager().createQuery("SELECT o FROM " + entityClass.getName() + " o where o.nome=:nome");

@@ -1,12 +1,15 @@
 package br.com.tiagods.repository;
 
-public abstract class Paginacao {
+public class Paginacao {
 	int totalPaginas = 0;
 	long totalRegistros = 0;
 	int paginaAtual = 0;// inicia por zero
 	int limitePorPagina = 0;
 	int primeiroRegistro = 0;
 
+	public Paginacao(int limitePorPagina) {
+		this.limitePorPagina=limitePorPagina;
+	}
 	public int getTotalPaginas() {
 		return totalPaginas;
 	}
@@ -25,7 +28,6 @@ public abstract class Paginacao {
 		if (totalRegistros % limitePorPagina > 0)
 			this.totalPaginas++;
 	}
-
 	public int getPaginaAtual() {
 		return paginaAtual;
 	}

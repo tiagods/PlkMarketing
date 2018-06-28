@@ -12,6 +12,8 @@ import br.com.tiagods.model.NegocioNivel;
 import br.com.tiagods.model.NegocioOrigem;
 import br.com.tiagods.model.NegocioServico;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.repository.Paginacao;
+import javafx.util.Pair;
 
 public interface ContatoDAO {
 	List<Contato> getAll();
@@ -19,7 +21,7 @@ public interface ContatoDAO {
 	Contato findByNome(String nome);
 	List<Contato> filtrar(String nome, NegocioCategoria categoria, NegocioNivel nivel, NegocioOrigem origem,
 			NegocioServico servico);
-	List<Contato> filtrar(PessoaTipo pessoaTipo, ContatoTipo contatoTipo, NegocioLista lista,
+	Pair<List<Contato>,Paginacao>filtrar(Paginacao paginacao,PessoaTipo pessoaTipo, ContatoTipo contatoTipo, NegocioLista lista,
 			NegocioCategoria categoria, NegocioNivel nivel, NegocioOrigem origem, NegocioServico servico,
 			Usuario usuario, String malaDireta, LocalDate inicio, LocalDate fim, String nome);	
 }

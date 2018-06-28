@@ -65,7 +65,7 @@ create table contato(
 	material boolean,
 	convite boolean,
 	newsletter boolean,
-	mala_direta_id integer;
+	mala_direta_id integer,
 	nome varchar,
 	telefone varchar,
 	celular varchar,
@@ -82,6 +82,7 @@ create table contato(
 	criado_por_id integer,
 	tabela_anterior varchar,
 	codigo_anterior integer,
+	de varchar,
 	primary key(id)
 );
 

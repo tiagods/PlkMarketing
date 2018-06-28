@@ -21,6 +21,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.Rating?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
@@ -106,16 +107,19 @@
                            </GridPane.margin></JFXTextField>
                         <HBox alignment="CENTER_LEFT" prefHeight="81.0" prefWidth="415.0" GridPane.rowIndex="2">
                            <children>
-                              <Label prefHeight="15.0" text="Status:" />
-                              <JFXRadioButton fx:id="rbAndamento" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
+                              <Label prefHeight="15.0" prefWidth="48.0" text="Status:" />
+                              <JFXRadioButton fx:id="rbAndamento" contentDisplay="BOTTOM" ellipsisString="" graphicTextGap="1.0" prefWidth="71.0" text="Aberto">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@imagens/button_deadline.png" />
                                        </image></ImageView>
                                  </graphic>
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
                               </JFXRadioButton>
-                              <JFXRadioButton fx:id="rbGanho" contentDisplay="BOTTOM" graphicTextGap="1.0" text="R">
+                              <JFXRadioButton fx:id="rbGanho" contentDisplay="BOTTOM" graphicTextGap="1.0" text="Ganho">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -124,7 +128,7 @@
                                     </ImageView>
                                  </graphic>
                               </JFXRadioButton>
-                              <JFXRadioButton fx:id="rbPerdido" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="123.0" layoutY="36.0" text="R">
+                              <JFXRadioButton fx:id="rbPerdido" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="123.0" layoutY="36.0" text="Perdido">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -133,7 +137,7 @@
                                     </ImageView>
                                  </graphic>
                               </JFXRadioButton>
-                              <JFXRadioButton fx:id="rbSemMovimento" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="193.0" layoutY="36.0" text="R">
+                              <JFXRadioButton fx:id="rbSemMovimento" contentDisplay="BOTTOM" graphicTextGap="1.0" layoutX="193.0" layoutY="36.0" text="Sem Movimento">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -173,12 +177,12 @@
                            </GridPane.margin></HBox>
                         <HBox prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="6">
                            <children>
-                              <JFXTextField fx:id="txIdPesquisa" editable="false" prefHeight="26.0" prefWidth="50.0" style="-fx-background-color: #E7DFDD;">
+                              <JFXTextField fx:id="txIdPesquisa" editable="false" prefHeight="26.0" prefWidth="50.0">
                                  <HBox.margin>
                                     <Insets right="20.0" />
                                  </HBox.margin>
                               </JFXTextField>
-                              <JFXTextField fx:id="txNomePesquisa" editable="false" prefColumnCount="20" prefHeight="26.0" style="-fx-background-color: #E7DFDD;" />
+                              <JFXTextField fx:id="txNomePesquisa" editable="false" prefColumnCount="20" prefHeight="26.0" />
                            </children>
                         </HBox>
                         <Label text="Descriçao:" GridPane.rowIndex="7" />

@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 
 import br.com.tiagods.config.UsuarioLogado;
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
@@ -20,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -34,6 +36,10 @@ public class LoginController extends UtilsController implements Initializable{
     @FXML
     private JFXButton btnEntrar;
     @FXML
+    private Label lbDetalhes;
+    @FXML
+    private Label lbBanco;
+    @FXML
     private JFXButton btnCancelar;
     private UsuariosImpl usuarios;
     private Stage stage;
@@ -46,16 +52,20 @@ public class LoginController extends UtilsController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         try {
             loadFactory();
-            usuarios = new UsuariosImpl(super.getManager());
+            usuarios = new UsuariosImpl(getManager());
             List<Usuario> contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
             cbNome.getItems().addAll(contas);
             cbNome.getSelectionModel().selectFirst();
             txSenha.setFocusTraversable(true);
             txSenha.requestFocus();
+            
+            String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
+            lbDetalhes.setText(detalhes);
+            lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
         }catch(Exception e) {
-            super.alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Logins",e,true);
+            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
         }finally {
-            super.close();
+            close();
         }
         txSenha.requestFocus();
     }

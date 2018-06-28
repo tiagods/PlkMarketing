@@ -16,7 +16,8 @@ public enum FXMLEnum {
 	TAREFA_PESQUISA("TarefaPesquisa"),
 	TAREFA_CADASTRO("TarefaCadastro"),
 	TAREFA_DIALOG_CONTATO("TarefaDialogContato"),
-	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta");
+	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta"),
+	PROGRESS_SAMPLE("Progress");
 	private String localizacao;
 	private FXMLEnum(String localizacao) {
 		this.localizacao=localizacao;

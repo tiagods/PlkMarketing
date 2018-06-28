@@ -5,11 +5,13 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import br.com.tiagods.config.enums.FXMLEnum;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -65,16 +67,50 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-		loadFactory();
-		close();
+		
 	}   
+    
+    public void starter() {
+    	try {
+            FXMLLoader loader = loaderFxml(FXMLEnum.PROGRESS_SAMPLE);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("");
+            DialogPane dialogPane = new DialogPane();
+            dialogPane.setContent(loader.load());
+            alert.setDialogPane(dialogPane);
+            alert.show();
+            
+            Stage sta = (Stage)dialogPane.getScene().getWindow();
+            Runnable run = new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						loadFactory();
+						Thread.sleep(3000);
+						Platform.runLater(()-> sta.close());
+					}catch(Exception e) {
+			            alert(Alert.AlertType.ERROR, "Erro", "Erro de comunicação",
+			                    "Erro ao tentar comunicar com o serviçobanco de dados ",e,false);
+					}finally {
+						close();
+					}		
+				}
+			};
+            new Thread(run).start();
+            
+        }catch(Exception e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_PESQUISA,e,true);
+        }	
+    }
     @FXML
     void sair(ActionEvent event) {
 	    System.exit(0);
     }
     @FXML
     void sobre(ActionEvent event) {
-
+    	starter();
     }
 
     @FXML

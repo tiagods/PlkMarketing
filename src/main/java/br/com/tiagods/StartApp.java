@@ -5,97 +5,106 @@ import java.io.IOException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import br.com.tiagods.config.JPAConfig;
+import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.controller.LoginController;
+import br.com.tiagods.controller.PersistenciaController;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class StartApp extends Application {
+	private static Logger log = LoggerFactory.getLogger(StartApp.class);
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		EntityManager manager = null;
-        try {
-            manager = JPAConfig.getInstance().createManager();
-            UsuariosImpl usuarios = new UsuariosImpl(manager);
-            if(usuarios.getAll().size()==0){
-//                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//                alert.getDialogPane().setExpanded(true);
-//                alert.getDialogPane().setMinSize(400,150);
-//                alert.setTitle("Conta de Usuário");
-//                alert.setContentText("Por favor cadastre uma conta administrador para \nacessar o sistema!");
-//                alert.showAndWait();
-//                try {
-//                    Stage stage = new Stage();
-//                    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioCadastro.fxml"));
-//                    loader.setController(new UsuarioCadastroController(null,stage,true));
-//                    final Parent root = loader.load();
-//                    final Scene scene = new Scene(root);
-//                    stage.initModality(Modality.APPLICATION_MODAL);
-//                    //stage.initStyle(StageStyle.UNDECORATED);
-//                    stage.setScene(scene);
-//                    stage.show();
-//                    stage.setOnHiding(event -> {
-//                        UsuarioLogado ul = UsuarioLogado.getInstance();
-//                        if(ul.getUsuario()==null) {
-//                            Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-//                            alert2.getDialogPane().setExpanded(true);
-//                            alert2.getDialogPane().setMinSize(400,150);
-//                            alert2.setHeaderText("Nenhum usuario foi identificado!");
-//                            alert2.setContentText("Cadastre um usuario para \nter o primeiro acesso ao sistema liberado");
-//                            alert2.showAndWait();
-//                            System.exit(0);
-//                        }
-//                    });
-//               }catch(IOException e) {
-//                    Alert alert2 = new Alert(Alert.AlertType.ERROR);
-//                    alert2.getDialogPane().setExpanded(true);
-//                    alert2.getDialogPane().setMinSize(400,600);
-//                    alert2.setTitle("Erro");
-//                    alert2.setContentText("Falha ao abrir Formulario de cadastro de Usuario!\n"+e);
-//                    alert2.showAndWait();
-//                    e.printStackTrace();
-//                }
-            }
-            else{
-                try {
-                    //Icons estilo = Icons.getInstance();
-                    Stage stage = new Stage();
-                    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml"));
-                    loader.setController(new LoginController(stage));
-                    Parent root = loader.load();
-                    Scene scene = new Scene(root);
-                    stage.setScene(scene);
-                    stage.setTitle("Acesso");
-                    //stage.getIcons().add(new Image(estilo.getIcon().toString()));
-                    stage.show();
-                } catch (IOException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.getDialogPane().setExpanded(true);
-                    alert.getDialogPane().setMinSize(400,600);
-                    alert.setTitle("Erro");
-                    alert.setContentText("Falha ao abrir Menu Inicial!\n"+e);
-                    alert.showAndWait();
-                }
-            }
-        }catch (PersistenceException e){
-            //super.alert(Alert.AlertType.ERROR,"Pesquisa de Usuarios", null, "Falha ao listar usuarios");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.getDialogPane().setExpanded(true);
-            alert.getDialogPane().setMinSize(400,600);
-            alert.setTitle("Erro");
-            alert.setContentText("Falha ao listar usuarios!\n"+e);
-            alert.showAndWait();
-        }finally {
-            if (manager != null) manager.close();
-        }
+		try {
+			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("");
+			DialogPane dialogPane = new DialogPane();
+			dialogPane.setContent(loader.load());
+			alert.setDialogPane(dialogPane);
+			alert.show();
+			Stage sta = (Stage) dialogPane.getScene().getWindow();
+			
+			Runnable run = new Runnable() {
+				@Override
+				public void run() {
+					EntityManager manager = null;
+					try {
+						log.debug("Abrindo conexao");
+						manager = JPAConfig.getInstance().createManager();
+						log.debug("Concluindo conexao");
+						Platform.runLater(() -> sta.close());
+						log.debug("Invocando login");
+						invocarLogin();
+					} catch (Exception e) {
+						alert("Falha ao estabelecer conexao com o banco de dados, verifique sua conexao com a internet\n"
+								+ e);
+					} finally {
+						if (manager != null)
+							manager.close();
+					}
+				}
+			};
+			new Thread(run).start();
+		} catch (Exception e) {
+			alert("Falha ao localizar o arquivo " + FXMLEnum.CONTATO_PESQUISA);
+		}
 	}
+
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	private void invocarLogin() {
+		Runnable run2 = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					log.debug("Stage");
+					Stage stage = new Stage();
+					log.debug("Abrindo loader");
+					final FXMLLoader loader = new FXMLLoader(FXMLEnum.LOGIN.getLocalizacao());
+					log.debug("Controller");
+					loader.setController(new LoginController(stage));
+					log.debug("Loader");
+					Parent root = loader.load();
+					log.debug("Scene");
+					Scene scene = new Scene(root);
+					stage.setScene(scene);
+					stage.setTitle("Acesso");
+					stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
+					log.debug("show");
+					stage.show();
+				} catch (IOException e) {
+					alert("Falha ao abir login");
+				}
+			}
+		};
+		Platform.runLater(run2);
+	}
+
+	private void alert(String mensagem) {
+		log.debug(mensagem);
+		Platform.runLater(() -> {
+			Alert alert = new Alert(Alert.AlertType.ERROR);
+			alert.getDialogPane().setExpanded(true);
+			alert.getDialogPane().setMinSize(400, 600);
+			alert.setTitle("Erro");
+			alert.setContentText(mensagem);
+			alert.showAndWait();
+		});
 	}
 }

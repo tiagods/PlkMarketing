@@ -21,6 +21,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
+import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.Cidade;
@@ -55,10 +56,13 @@ public abstract class UtilsController extends PersistenciaController{
 	private JFXButton buttonSair;
 	private boolean habilidarFiltroCidade = true;
 
+	final VersaoSistema sistemaVersao = new VersaoSistema();
+	
 	final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 	//Locale locale = new Locale("pt", "BR");
 	final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	final Integer[] limiteTabela = new Integer[] {100};
 	
 	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
 		Alert alert = new Alert(alertType);
@@ -181,7 +185,8 @@ public abstract class UtilsController extends PersistenciaController{
 	        final Scene scene = new Scene(root);
 	        stage.initModality(modality);
 	        stage.initStyle(ss);
-	        stage.setScene(scene);
+	        stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
+            stage.setScene(scene);
 	        stage.show();
 	        return stage;
     }

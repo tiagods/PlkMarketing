@@ -454,7 +454,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		
 		txTelefone1.setText(contato.getTelefone());
 		txTelefone2.setText(contato.getCelular());
-		txCEP.setPlainText("");
+		txCEP.setPlainText(contato.getCep());
 		txLogradouro.setText(contato.getEndereco());
 		txNumero.setText(contato.getNumero());
 		txBairro.setText(contato.getBairro());
