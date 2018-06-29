@@ -26,12 +26,14 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
+import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.repository.helpers.CidadesImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import br.com.tiagods.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -39,6 +41,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -48,14 +51,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public abstract class UtilsController extends PersistenciaController{
-	private JFXButton buttonNovo;
-	private JFXButton buttonEditar;
-	private JFXButton buttonSalvar;
-	private JFXButton buttonExcluir;
-	private JFXButton buttonCancelar;
-	private JFXButton buttonSair;
 	private boolean habilidarFiltroCidade = true;
-
 	final VersaoSistema sistemaVersao = new VersaoSistema();
 	
 	final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -128,6 +124,7 @@ public abstract class UtilsController extends PersistenciaController{
 		cbEstado.valueProperty().addListener(new BuscaCep(cbCidade));
 		new ComboBoxAutoCompleteUtil<>(cbCidade);
 	}
+	
 	void bucarCep(MaskedTextField txCEP, JFXTextField txLogradouro, JFXTextField txNumero,JFXTextField txComplemento,
 				  JFXTextField txBairro, JFXComboBox<Cidade> cbCidade, JFXComboBox<Cidade.Estado> cbEstado
 				  ){
@@ -168,6 +165,11 @@ public abstract class UtilsController extends PersistenciaController{
 			close();
 		}
 	}
+	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
+		ImageView imageview = createImage(30,30,icon);
+		btn.setGraphic(imageview);
+	}
+		
 	public Optional<String> cadastroRapido(){
 		TextInputDialog dialog = new TextInputDialog("");
 		dialog.setTitle("Cadastro rapido");
@@ -175,12 +177,29 @@ public abstract class UtilsController extends PersistenciaController{
 		dialog.setContentText("Por favor entre com um novo nome");
 		return dialog.showAndWait();
 	}
+	private ImageView createImage(int x, int y, IconsEnum icon) {
+		Image image = new Image(icon.getLocalizacao().toString());
+		ImageView imageview = new ImageView(image);
+		imageview.setFitHeight(x);
+		imageview.setFitWidth(y);
+		imageview.setPreserveRatio(true);
+		return imageview;
+	}
 	
-	public FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
-    	final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
-        return loader;
-    }
-    public Stage initPanel(FXMLLoader loader,Stage stage, Modality modality, StageStyle ss) throws IOException{
+	public Label imageTableTipoTarefa(TipoTarefa item) throws IOException{
+		IconsEnum icon = IconsEnum.BUTTON_TAREFA_EMAIL;
+		if(item.equals(TipoTarefa.EMAIL)) icon = IconsEnum.BUTTON_TAREFA_EMAIL;
+		else if(item.equals(TipoTarefa.PROPOSTA)) icon= IconsEnum.BUTTON_TAREFA_PROPOSTA;
+		else if(item.equals(TipoTarefa.REUNIAO)) icon= IconsEnum.BUTTON_TAREFA_REUNIAO;
+		else if(item.equals(TipoTarefa.TELEFONE)) icon= IconsEnum.BUTTON_TAREFA_FONE;
+		else if(item.equals(TipoTarefa.WHATSAPP)) icon= IconsEnum.BUTTON_TAREFA_WHATSAPP;
+		ImageView image =  createImage(30,30,icon);
+		Label label = new Label();
+		label.setGraphic(image);
+		label.setTooltip(new Tooltip(item.getDescricao()));
+		return label;
+	}
+	public Stage initPanel(FXMLLoader loader,Stage stage, Modality modality, StageStyle ss) throws IOException{
     		final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(modality);
@@ -190,20 +209,10 @@ public abstract class UtilsController extends PersistenciaController{
 	        stage.show();
 	        return stage;
     }
-	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
-		ImageView imageview = createImage(30,30,icon);
-		btn.setGraphic(imageview);
-	}
-	
-	private ImageView createImage(int x, int y, IconsEnum icon) {
-		Image image = new Image(icon.getLocalizacao().toString());
-		ImageView imageview = new ImageView(image);
-		imageview.setFitHeight(x);
-		imageview.setFitWidth(y);
-		imageview.setPreserveRatio(true);
-		return imageview;
-	}
-    
+	public FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
+    	final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
+        return loader;
+    }
 	public class BuscaCep implements ChangeListener<Cidade.Estado>{
 		private JFXComboBox<Cidade> cbCidade;
 		public BuscaCep(JFXComboBox<Cidade> cbCidade){

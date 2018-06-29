@@ -32,20 +32,15 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	public enum TipoTarefa{
-		VISITA(1,"Visita"),REUNIAO(2,"Reunião"), PROPOSTA(3,"Proposta"), 
-		TELEFONE(4,"Telefone"),EMAIL(5,"E-Mail"),WHATSAPP (6,"WhatsApp");
-		private int ordem;
+		REUNIAO("Reunião"), PROPOSTA("Proposta"), 
+		TELEFONE("Telefone"),EMAIL("E-Mail"),WHATSAPP ("WhatsApp");
 		private String descricao;
-		TipoTarefa(int ordem,String descricao){
-			this.ordem=ordem;
+		TipoTarefa(String descricao){
 			this.descricao=descricao;
 		}
 		public String getDescricao() {
 			return descricao;
 		}
-		public int getOrdem() {
-			return ordem;
-		}	
 		@Override
 		public String toString() {
 			return getDescricao();

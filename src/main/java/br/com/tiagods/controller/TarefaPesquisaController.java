@@ -28,12 +28,16 @@ import com.jfoenix.controls.JFXToggleButton;
 import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.NegocioTarefaContato;
 import br.com.tiagods.model.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.helpers.ContatosImpl;
+import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
@@ -53,6 +57,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -116,9 +121,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	private Stage stage;
 	private UsuariosImpl usuarios;
 	private NegociosTarefasImpl tarefas;
-	private NegociosTarefasContatosImpl contatos;
-	private NegociosTarefasPropostasImpl propostas;
-	
+	private NegociosTarefasContatosImpl tarefasContatos;
+	private NegociosTarefasPropostasImpl tarefasPropostas;
+	private NegocioPropostaImpl propostas;
+	private ContatosImpl contatos;
 	
 	public TarefaPesquisaController (Stage stage) {
 		this.stage=stage;
@@ -153,15 +159,45 @@ public class TarefaPesquisaController extends UtilsController implements Initial
         }
 	}
 	void abrirCadastroContatoOrProposta(NegocioTarefa t) {
-//		try {
-//            Stage stage = new Stage();
-//            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFACADASTRO);
-//            //loader.setController(new ControllerTarefaCadastro(stage,t));
-//            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.TRANSPARENT);
-//        }catch(FXMLNaoEncontradoException e) {
-//            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-//                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFACADASTRO,e,true);
-//        }
+		try {
+			loadFactory();
+            
+			Stage stage = new Stage();
+            FXMLLoader loader = null;
+            if(t instanceof NegocioTarefaContato) {
+            	Contato c = ((NegocioTarefaContato)t).getContato();
+            	
+            	contatos = new ContatosImpl(getManager());
+            	c = contatos.findById(c.getId());
+            	loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
+            	loader.setController(new ContatoCadastroController(stage,c));	
+            }
+            else if(t instanceof NegocioTarefaProposta) {
+            	NegocioProposta p = ((NegocioTarefaProposta)t).getNegocio();
+            	
+            	propostas = new NegocioPropostaImpl(getManager());
+            	p = propostas.findById(p.getId());
+            	loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
+            	loader.setController(new NegocioCadastroController(stage,p));	
+            	
+            }
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            stage.setOnHiding(event -> {
+            	try {
+        			loadFactory();
+        			filtrar();
+        		}catch(Exception e) {
+        			e.printStackTrace();
+        		}finally {
+        			close();
+        		}
+            });
+        }catch(IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_CADASTRO+" ou "+FXMLEnum.NEGOCIO_CADASTRO,e,true);
+        }finally {
+			close();
+		}
 	}
 	
 	void combos() {
@@ -349,17 +385,17 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		try{
 			loadFactory();
 			if(tarefa instanceof NegocioTarefaContato) {
-				contatos = new NegociosTarefasContatosImpl(getManager());
-				NegocioTarefaContato t = contatos.findById(tarefa.getId());
+				tarefasContatos = new NegociosTarefasContatosImpl(getManager());
+				NegocioTarefaContato t = tarefasContatos.findById(tarefa.getId());
 				t.setFinalizado(status);
-				contatos.save(t);
+				tarefasContatos.save(t);
 				return true;
 			}
 			else if(tarefa instanceof NegocioTarefaProposta) {
-				propostas = new NegociosTarefasPropostasImpl(getManager());
-				NegocioTarefaProposta t = propostas.findById(tarefa.getId());
+				tarefasPropostas = new NegociosTarefasPropostasImpl(getManager());
+				NegocioTarefaProposta t = tarefasPropostas.findById(tarefa.getId());
 				t.setFinalizado(status);
-				propostas.save(t);
+				tarefasPropostas.save(t);
 				return true;
 			}
 			return false;
@@ -388,11 +424,11 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					setGraphic(null);
 				}
 				else{
-					setText(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(item.getTime()));
+					setText(sdfH.format(item.getTime()));
 				}
 			}
 		});
-		
+		colunaValidade.setPrefWidth(130);
 		TableColumn<NegocioTarefa, TipoTarefa> colunaTipo = new  TableColumn<>("Tipo");
 		colunaTipo.setCellValueFactory(new PropertyValueFactory<>("tipoTarefa"));
 		colunaTipo.setCellFactory(param -> new TableCell<NegocioTarefa,TipoTarefa>(){
@@ -405,11 +441,14 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					setGraphic(null);
 				}
 				else{
-					setText(item.getDescricao());
+					try {
+						setGraphic(imageTableTipoTarefa(item));
+					} catch (IOException e) {
+					}
 				}
 			}
 		});
-		
+		colunaTipo.setPrefWidth(40);
 		TableColumn<NegocioTarefa, Number> colunaNome = new  TableColumn<>("Nome");
 		colunaNome.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaNome.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
@@ -427,22 +466,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
-		TableColumn<NegocioTarefa, String> colunaLocalizacao = new  TableColumn<>("Localizacao");
-		colunaLocalizacao.setCellValueFactory(new PropertyValueFactory<>("classe"));
-		colunaLocalizacao.setCellFactory(param -> new TableCell<NegocioTarefa,String>(){
-			@Override
-			protected void updateItem(String item, boolean empty) {
-				super.updateItem(item, empty);
-				if(item==null){
-					setStyle("");
-					setText("");
-					setGraphic(null);
-				}
-				else{
-					setText(item);
-				}
-			}
-		});
+		colunaNome.setPrefWidth(150);
 		TableColumn<NegocioTarefa, String> colunaDescricao = new  TableColumn<>("Descricao");
 		colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
 		colunaDescricao.setCellFactory((TableColumn<NegocioTarefa, String> param) -> {
@@ -465,7 +489,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 			};
 			return cell;
 		});
-		colunaDescricao.setPrefWidth(200);
+		colunaDescricao.setMinWidth(300);
 		
 		TableColumn<NegocioTarefa, Number> colunaStatus = new  TableColumn<>("Status");
 		colunaStatus.setCellValueFactory(new PropertyValueFactory<>("finalizado"));
@@ -482,7 +506,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					JFXButton rb = new JFXButton();
 					rb.setText(item.intValue()==0?"Pendente":"Concluido");
 					rb.getStyleClass().add(item.intValue()==0?"btRed":"btGreen");
-
+					rb.setTooltip(new Tooltip("Possibilita alterar o status da tarefa \nde concluido para pendente e vice-versa"));
 					rb.onActionProperty().set(event -> {
 
 						Dialog dialog = new Dialog();
@@ -576,6 +600,8 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
+		colunaAbrir.setMaxWidth(50);
+		
 		TableColumn<NegocioTarefa, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
@@ -601,6 +627,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
+		colunaEditar.setMaxWidth(50);
 		TableColumn<NegocioTarefa, Number> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaExcluir.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
@@ -619,6 +646,8 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 						buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					}catch (IOException e) {
 					}
+					final Tooltip tooltip = new Tooltip("Clique para remover o registro!");
+					button.setTooltip(tooltip);
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if(removed) tbPrincipal.getItems().remove(getIndex());
@@ -627,10 +656,11 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
-		tbPrincipal.getColumns().addAll(colunaLocalizacao,colunaValidade,colunaTipo,colunaNome,colunaDescricao,
+		colunaExcluir.setMaxWidth(50);
+		tbPrincipal.getColumns().addAll(colunaValidade,colunaTipo,colunaNome,colunaDescricao,
 				columnAtendente,colunaStatus,colunaAbrir,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
-		tbPrincipal.setFixedCellSize(50);
+		tbPrincipal.setFixedCellSize(70);
     }
     private boolean validarDatas(){
 		if(dataInicial.getValue() == null || dataFinal.getValue()==null ) return false;
