@@ -80,9 +80,9 @@
                         </JFXTextField>
                         <Label text="Site:" GridPane.rowIndex="4" />
                         <Label text="Telefone 1:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <MaskedTextField fx:id="txTelefone1" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <JFXTextField fx:id="txTelefone1" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="Telefone 2:" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <MaskedTextField fx:id="txTelefone2" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <JFXTextField fx:id="txTelefone2" prefHeight="26.0" prefWidth="110.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <JFXTextField fx:id="txSite" prefHeight="26.0" prefWidth="238.0" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets right="10.0" />

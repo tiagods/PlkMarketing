@@ -7,6 +7,8 @@ import java.util.Set;
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.repository.Paginacao;
+import javafx.util.Pair;
 
 public interface NegocioTarefaDAO {
 	NegocioTarefa save(NegocioTarefa e);
@@ -14,6 +16,6 @@ public interface NegocioTarefaDAO {
     List<NegocioTarefa> getAll();
     NegocioTarefa findById(Long id);
 	int getQuantidade(Usuario usuario, Calendar dataInicio, Calendar dataFinal, int status);
-	List<NegocioTarefa> filtrar(int aberto, Usuario usuario, Calendar dataEventoInicial, Calendar dataEventoFinal,
-			Set<TipoTarefa> tipoTarefas);
+	Pair<List<NegocioTarefa>, Paginacao> filtrar(Paginacao paginacao, int finalizado, Usuario usuario,
+			Calendar dataEventoInicial, Calendar dataEventoFinal, Set<TipoTarefa> tipoTarefas);
 }

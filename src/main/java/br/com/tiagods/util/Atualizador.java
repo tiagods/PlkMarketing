@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
-import br.com.tiagods.config.VersaoSistema;
+import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.factory.ConnectionFactory;
 
 public class Atualizador {

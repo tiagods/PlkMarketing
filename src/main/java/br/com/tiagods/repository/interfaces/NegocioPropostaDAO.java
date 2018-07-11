@@ -20,7 +20,8 @@ public interface NegocioPropostaDAO {
     List<NegocioProposta> getAll();
     Pair<List<NegocioProposta>,Paginacao> getAll(Paginacao page);
     NegocioProposta findById(Long id);
-	List<NegocioProposta> filtrar(TipoStatus status, TipoEtapa etapa, NegocioCategoria categoria, NegocioNivel nivel,
+	Pair<List<NegocioProposta>, Paginacao> filtrar(Paginacao Paginacao,TipoStatus status, TipoEtapa etapa, NegocioCategoria categoria, NegocioNivel nivel,
 			NegocioOrigem origem, NegocioServico servico, Usuario atendente, LocalDate dataInicial, LocalDate dataFinal,
 			String dataFiltro, String ordenacao, String pesquisa);
+	
 }

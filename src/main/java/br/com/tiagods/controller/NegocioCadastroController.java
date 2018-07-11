@@ -34,9 +34,9 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.FranquiaPacote;
 import br.com.tiagods.model.NegocioCategoria;

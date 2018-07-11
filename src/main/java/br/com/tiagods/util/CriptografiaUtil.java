@@ -8,18 +8,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.slf4j.Logger;
-
 
 /**
  * Created by Tiago on 08/08/2017.
  */
 public class CriptografiaUtil {
-	
-	public static Logger log = org.slf4j.LoggerFactory.getLogger(CriptografiaUtil.class);
-	
-	
-	
+			
 	public String criptografar(String senha){
         String criptografia;
         StringBuilder builder = new StringBuilder();

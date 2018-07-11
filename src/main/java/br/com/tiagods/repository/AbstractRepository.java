@@ -58,15 +58,17 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 	}
 	@SuppressWarnings("unchecked")
 	public Pair<List<Entity>,Paginacao> filterPagination(Paginacao page, Criteria criteria, List<Criterion> criterios) {
-		criteria.setFirstResult(page.getPrimeiroRegistro());
-		criteria.setMaxResults(page.getLimitePorPagina());
+		if(page!=null) {
+			criteria.setFirstResult(page.getPrimeiroRegistro());
+			criteria.setMaxResults(page.getLimitePorPagina());
+		}
 		List<Entity> firstPage = (List<Entity>)criteria.list();
 		
 		Criteria criteria2 = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
 		criterios.forEach(c-> criteria2.add(c));
 		criteria2.setProjection(Projections.rowCount());
 		Long count = (Long) criteria2.uniqueResult();
-		page.setTotalRegistros(count);
+		if(page!=null) page.setTotalRegistros(count);
 		return new Pair<>(firstPage, page);
 	}
 	@SuppressWarnings("unchecked")

@@ -1,9 +1,9 @@
-package br.com.tiagods.config;
+package br.com.tiagods.config.init;
 
 public class VersaoSistema {
 	private final String nome="Negócios";
-	private final String versao="2.0.0";
-	private final String data="26/06/2018";
+	private final String versao="2.0.1";
+	private final String data="04/07/2018";
 	private final String versaoBanco="1.1.0";
 	private final String detalhes="Versao 2.0";
 	/**

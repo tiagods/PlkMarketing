@@ -3,7 +3,10 @@ package br.com.tiagods;
 import java.io.IOException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 
+import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,14 +56,16 @@ public class StartApp extends Application {
 					EntityManager manager = null;
 					try {
 						log.debug("Abrindo conexao");
-						manager = JPAConfig.getInstance().createManager();
+						JPAConfig jpa = JPAConfig.getInstance();
+						manager = jpa.createManager();
 						log.debug("Concluindo conexao");
 						Platform.runLater(() -> sta.close());
 						log.debug("Invocando login");
 						invocarLogin();
-					} catch (Exception e) {
+					} catch (ExceptionInInitializerError | PersistenceException | ServiceException | JDBCConnectionException e) {
 						alert("Falha ao estabelecer conexao com o banco de dados, verifique sua conexao com a internet\n"
 								+ e);
+						Platform.runLater(() -> sta.close());
 					} finally {
 						if (manager != null)
 							manager.close();
@@ -98,7 +103,7 @@ public class StartApp extends Application {
 					log.debug("show");
 					stage.show();
 				} catch (IOException e) {
-					alert("Falha ao abir login");
+					alert("Falha ao abrir login");
 				}
 			}
 		};
@@ -110,7 +115,7 @@ public class StartApp extends Application {
 		Platform.runLater(() -> {
 			Alert alert = new Alert(Alert.AlertType.ERROR);
 			alert.getDialogPane().setExpanded(true);
-			alert.getDialogPane().setMinSize(400, 600);
+			alert.getDialogPane().setMinSize(400, 200);
 			alert.setTitle("Erro");
 			alert.setContentText(mensagem);
 			alert.showAndWait();

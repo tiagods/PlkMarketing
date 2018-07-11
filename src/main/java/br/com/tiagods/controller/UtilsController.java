@@ -9,11 +9,14 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -21,19 +24,21 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
+import br.com.tiagods.model.UsuarioLog;
 import br.com.tiagods.repository.helpers.CidadesImpl;
+import br.com.tiagods.repository.helpers.UsuarioLogImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import br.com.tiagods.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -58,15 +63,18 @@ public abstract class UtilsController extends PersistenciaController{
 	//Locale locale = new Locale("pt", "BR");
 	final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	final Integer[] limiteTabela = new Integer[] {100};
-	
-	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
+	final Integer[] limiteTabela = new Integer[] {50,100,200};
+	public Alert alert(AlertType alertType,String title, String header, String contentText) {
 		Alert alert = new Alert(alertType);
-		alert.getDialogPane().setExpanded(true);
-		alert.getDialogPane().setMinSize(600,150);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(contentText);
+		return alert;
+	}
+	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
+		Alert alert = alert(alertType,title,header,contentText);
+		alert.getDialogPane().setExpanded(true);
+		alert.getDialogPane().setMinSize(600,150);
 		if(alert.getAlertType()==AlertType.ERROR && ex!=null) {
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -113,7 +121,18 @@ public abstract class UtilsController extends PersistenciaController{
 		}
 		alert.showAndWait();
 	}
-
+	public String carregarArquivo(String title){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        chooser.setDialogTitle(title);
+        String local = "";
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("Planilha do Excel (*.xls)", ".xls"));
+        int retorno = chooser.showSaveDialog(null);
+        if(retorno==JFileChooser.APPROVE_OPTION){
+        	local = chooser.getSelectedFile().getAbsolutePath(); //
+        }
+        return local;
+    }
 	public void comboRegiao(JFXComboBox<Cidade> cbCidade, JFXComboBox<Cidade.Estado> cbEstado, EntityManager manager){
 		CidadesImpl cidades = new CidadesImpl(manager);
 		Cidade cidade = cidades.findByNome("São Paulo");
@@ -213,6 +232,16 @@ public abstract class UtilsController extends PersistenciaController{
     	final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
         return loader;
     }
+	public void salvarLog(EntityManager manager,String menu, String acao, String descricao) throws Exception{
+		UsuarioLogImpl logImpl = new UsuarioLogImpl(manager);
+		UsuarioLog log = new UsuarioLog();
+		log.setData(Calendar.getInstance());
+		log.setUsuario(UsuarioLogado.getInstance().getUsuario());
+		log.setMenu(menu);
+		log.setAcao(acao);
+		log.setDescricao(descricao);
+		logImpl.save(log);
+	}
 	public class BuscaCep implements ChangeListener<Cidade.Estado>{
 		private JFXComboBox<Cidade> cbCidade;
 		public BuscaCep(JFXComboBox<Cidade> cbCidade){

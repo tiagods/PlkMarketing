@@ -25,7 +25,7 @@ public class JPAConfig {
 		return factory;
 	}
 
-	public EntityManager createManager() {
+	public EntityManager createManager(){
 		return factory.createEntityManager();
 	}
 }

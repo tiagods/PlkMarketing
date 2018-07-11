@@ -3,15 +3,15 @@ package br.com.tiagods.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 
-import br.com.tiagods.config.UsuarioLogado;
-import br.com.tiagods.config.VersaoSistema;
 import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
@@ -44,6 +44,8 @@ public class LoginController extends UtilsController implements Initializable{
     private UsuariosImpl usuarios;
     private Stage stage;
 
+    private UsuarioLogado logado = UsuarioLogado.getInstance();
+    
     public LoginController(Stage stage){
         this.stage=stage;
     }
@@ -55,13 +57,19 @@ public class LoginController extends UtilsController implements Initializable{
             usuarios = new UsuariosImpl(getManager());
             List<Usuario> contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
             cbNome.getItems().addAll(contas);
+            
             cbNome.getSelectionModel().selectFirst();
+            if(!logado.lastLogin().equals("")){
+            	Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(logado.lastLogin())).findFirst();
+            	if(result.isPresent()) cbNome.setValue(result.get());
+            }
             txSenha.setFocusTraversable(true);
             txSenha.requestFocus();
             
             String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
             lbDetalhes.setText(detalhes);
             lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
+            
         }catch(Exception e) {
             alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
         }finally {

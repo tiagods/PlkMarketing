@@ -23,9 +23,9 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.UsuarioLogado;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.Contato.ContatoTipo;
@@ -96,10 +96,10 @@ public class ContatoCadastroController extends UtilsController implements Initia
     private JFXTextField txEmail;
 
     @FXML
-    private MaskedTextField txTelefone1;
+    private JFXTextField txTelefone1;
 
     @FXML
-    private MaskedTextField txTelefone2;
+    private JFXTextField txTelefone2;
 
     @FXML
     private JFXTextField txSite;

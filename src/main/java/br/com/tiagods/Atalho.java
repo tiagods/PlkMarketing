@@ -2,15 +2,10 @@ package br.com.tiagods;
 
 import java.io.IOException;
 
-import javax.persistence.EntityManager;
-
-import br.com.tiagods.config.JPAConfig;
-import br.com.tiagods.config.UsuarioLogado;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.controller.MenuController;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

@@ -61,7 +61,7 @@
          <children>
             <ButtonBar prefHeight="50.0" prefWidth="256.0">
                <buttons>
-                  <JFXButton onAction="#exportar" styleClass="btDefault" text="Exportar">
+                  <JFXButton disable="true" onAction="#exportar" styleClass="btDefault" text="Exportar">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>

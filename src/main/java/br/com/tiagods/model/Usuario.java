@@ -16,7 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import br.com.tiagods.config.UsuarioLogado;
+import br.com.tiagods.config.init.UsuarioLogado;
 
 @Entity
 public class Usuario extends Pessoa implements AbstractEntity,Serializable{

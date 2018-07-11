@@ -23,7 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
-import br.com.tiagods.config.UsuarioLogado;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.modelcollections.NegocioProposta;
 
 @Entity
@@ -50,7 +50,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 		}
 	}
 	public enum ContatoTipo{
-		CONTATO("Prospeccao/Sondagem"),GENERICO("Generico"),
+		CONTATO("Prospeccao/Sondagem"),
 		PROSPECCAO("Prospecção"),SONDAGEM("Sondagem");
 		private String descricao;
 		private ContatoTipo(String descricao) {

@@ -20,6 +20,7 @@ import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoEtapa;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoStatus;
+import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
 import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
@@ -39,6 +40,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 public class TarefaPropostaDialogController extends UtilsController implements Initializable{
 	@FXML
@@ -77,7 +79,6 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 	public TarefaPropostaDialogController(Stage stage) {
 		this.stage = stage;
 	}
-	
 	private void combos() {
 		NegocioCategoria categoria = new NegocioCategoria(-1L,"Catetoria");
 		NegocioNivel nivel = new NegocioNivel(-1L,"Nivel");
@@ -109,9 +110,9 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		cbServico.getSelectionModel().selectFirst();
 		cbAtendente.getSelectionModel().selectFirst();
 		
-		ChangeListener<Object> change = new ChangeListener() {
+		ChangeListener<Object> change = new ChangeListener<Object>() {
 			@Override
-			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
 				try {
 					loadFactory();
 					filtrar();
@@ -121,7 +122,6 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 					close();
 				}
 			}
-			
 		};
 		cbCategoria.valueProperty().addListener(change);
 		cbNivel.valueProperty().addListener(change);
@@ -131,11 +131,11 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 	}
 	void filtrar() {
 		propostas = new NegocioPropostaImpl(getManager());
-		List<NegocioProposta> lista = propostas.filtrar(TipoStatus.STATUS, TipoEtapa.ETAPA, 
+		Pair<List<NegocioProposta>,Paginacao> lista = propostas.filtrar(null,TipoStatus.STATUS, TipoEtapa.ETAPA, 
 				cbCategoria.getValue(), cbNivel.getValue(), cbOrigem.getValue(), 
 				cbServico.getValue(), cbAtendente.getValue(), null, null, null, "criadoEm", txPesquisa.getText());
 		tbPrincipal.getItems().clear();
-		tbPrincipal.getItems().addAll(lista);
+		tbPrincipal.getItems().addAll(lista.getKey());
 	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
