@@ -2,8 +2,10 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -412,9 +414,12 @@ public class ContatoCadastroController extends UtilsController implements Initia
 			pnPessoaJuridica.setVisible(false);
 			
 			if(contato.getFisico()!=null) {
-				txRG.setText(contato.getFisico().getRg());
-				txCPF.setPlainText(contato.getFisico().getCpf());
-				txDataNascimento.setPlainText(contato.getFisico().getAniversario());
+				PessoaFisica f = contato.getFisico();
+				txRG.setText(f.getRg());
+				txCPF.setPlainText(f.getCpf());
+				//txDataNascimento.setText(f.getAniversario());
+				SimpleDateFormat sd = new SimpleDateFormat("ddMM");
+				txDataNascimento.setPlainText(f.getNiver()==null?"":sd.format(f.getNiver().getTime()));
 			}
 		}
 		if(contato.getPessoaTipo().equals(PessoaTipo.EMPRESA)) {
@@ -501,7 +506,22 @@ public class ContatoCadastroController extends UtilsController implements Initia
     	else if(rbPessoa.isSelected()) {
     		contato.setJuridico(null);
     		PessoaFisica fisica = new PessoaFisica();
-    		fisica.setAniversario(txDataNascimento.getPlainText());
+    		//fisica.setAniversario(txDataNascimento.getText());
+    		try {
+    			SimpleDateFormat sd = new SimpleDateFormat("ddMM");
+    			if(txDataNascimento.getPlainText().trim().length()==0) {
+    				fisica.setNiver(null);
+    			}
+    			else {
+    				Date date = sd.parse(txDataNascimento.getPlainText());
+    				Calendar calendar = Calendar.getInstance();
+    				calendar.setTime(date);
+    				fisica.setNiver(calendar);
+    			}
+    		}catch(ParseException e) {
+	    		alert(Alert.AlertType.ERROR,"Erro",null,"Verifique se a data de aniversário esta correta!",null,false);
+		        return false;
+    		}
     		fisica.setCpf(txCPF.getPlainText());
     		fisica.setRg(txRG.getText());
     		contato.setFisico(fisica);

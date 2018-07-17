@@ -1,8 +1,11 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 @Embeddable
@@ -14,6 +17,8 @@ public class PessoaFisica implements Serializable{
 	private String rg;
 	private String cpf;
 	private String aniversario;
+	@Temporal(TemporalType.DATE)
+	private Calendar niver;
 	
 	/**
 	 * @return the rg
@@ -51,6 +56,12 @@ public class PessoaFisica implements Serializable{
 	public void setAniversario(String aniversario) {
 		this.aniversario = aniversario;
 	}
-
-
+	
+	public Calendar getNiver() {
+		return niver;
+	}
+	
+	public void setNiver(Calendar niver) {
+		this.niver = niver;
+	}
 }

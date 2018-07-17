@@ -42,6 +42,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -241,6 +242,21 @@ public abstract class UtilsController extends PersistenciaController{
 		log.setAcao(acao);
 		log.setDescricao(descricao);
 		logImpl.save(log);
+	}
+	public Stage startProgress(){
+		try {
+			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+			Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			alert.setHeaderText("");
+			DialogPane dialogPane = new DialogPane();
+			dialogPane.setContent(loader.load());
+			alert.setDialogPane(dialogPane);
+			alert.show();
+			return (Stage) dialogPane.getScene().getWindow();
+		}catch(IOException e) {
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir Progresso", "");
+			return null;
+		}
 	}
 	public class BuscaCep implements ChangeListener<Cidade.Estado>{
 		private JFXComboBox<Cidade> cbCidade;

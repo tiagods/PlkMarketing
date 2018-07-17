@@ -16,6 +16,7 @@ import br.com.tiagods.controller.LoginController;
 import br.com.tiagods.util.Atualizador;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -27,18 +28,18 @@ import javafx.stage.Stage;
 public class StartApp extends Application {
 	private static Logger log = LoggerFactory.getLogger(StartApp.class);
 	Atualizador atualizador = new Atualizador();
-	
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		if(atualizador.atualizacaoPendente()) {
+		if (atualizador.atualizacaoPendente()) {
 			log.debug("Sistema desatualizado");
 			atualizador.iniciarAtualizacao();
-		}
-		else {
+		} else {
 			log.debug("Sistema atualizado");
 			iniciar();
 		}
 	}
+
 	private void iniciar() {
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
@@ -47,32 +48,51 @@ public class StartApp extends Application {
 			DialogPane dialogPane = new DialogPane();
 			dialogPane.setContent(loader.load());
 			alert.setDialogPane(dialogPane);
-			alert.show();
 			Stage sta = (Stage) dialogPane.getScene().getWindow();
 			
-			Runnable run = new Runnable() {
+			Task<Void> run = new Task<Void>() {
+				{
+					 	setOnFailed(a -> {
+	                        sta.close();
+	                    });
+	                    setOnSucceeded(a -> {
+	                        sta.close();
+	                    });
+	                    setOnCancelled(a -> {
+	                        sta.close();
+	                    });
+				}
 				@Override
-				public void run() {
+				protected Void call() throws Exception {
 					EntityManager manager = null;
 					try {
+						Platform.runLater(()->alert.show());
 						log.debug("Abrindo conexao");
 						JPAConfig jpa = JPAConfig.getInstance();
 						manager = jpa.createManager();
 						log.debug("Concluindo conexao");
-						Platform.runLater(() -> sta.close());
 						log.debug("Invocando login");
 						invocarLogin();
-					} catch (ExceptionInInitializerError | PersistenceException | ServiceException | JDBCConnectionException e) {
+					} catch (ExceptionInInitializerError | PersistenceException | ServiceException
+							| JDBCConnectionException e) {
 						alert("Falha ao estabelecer conexao com o banco de dados, verifique sua conexao com a internet\n"
 								+ e);
-						Platform.runLater(() -> sta.close());
 					} finally {
 						if (manager != null)
 							manager.close();
 					}
+					return null;
 				}
 			};
-			new Thread(run).start();
+			Thread thread = new Thread(run);
+			thread.start();
+			sta.setOnCloseRequest(event -> {
+				try {
+					thread.interrupt();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
 		} catch (Exception e) {
 			alert("Falha ao localizar o arquivo " + FXMLEnum.PROGRESS_SAMPLE);
 		}
@@ -83,9 +103,9 @@ public class StartApp extends Application {
 	}
 
 	private void invocarLogin() {
-		Runnable run2 = new Runnable() {
+		Task<Void> run2 = new Task<Void>() {
 			@Override
-			public void run() {
+			protected Void call() throws Exception {
 				try {
 					log.debug("Stage");
 					Stage stage = new Stage();
@@ -105,6 +125,7 @@ public class StartApp extends Application {
 				} catch (IOException e) {
 					alert("Falha ao abrir login");
 				}
+				return null;
 			}
 		};
 		Platform.runLater(run2);
@@ -112,13 +133,11 @@ public class StartApp extends Application {
 
 	private void alert(String mensagem) {
 		log.debug(mensagem);
-		Platform.runLater(() -> {
-			Alert alert = new Alert(Alert.AlertType.ERROR);
-			alert.getDialogPane().setExpanded(true);
-			alert.getDialogPane().setMinSize(400, 200);
-			alert.setTitle("Erro");
-			alert.setContentText(mensagem);
-			alert.showAndWait();
-		});
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.getDialogPane().setExpanded(true);
+		alert.getDialogPane().setMinSize(400, 200);
+		alert.setTitle("Erro");
+		alert.setContentText(mensagem);
+		alert.showAndWait();
 	}
 }
