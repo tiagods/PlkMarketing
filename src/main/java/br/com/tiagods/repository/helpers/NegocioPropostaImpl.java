@@ -74,7 +74,7 @@ public class NegocioPropostaImpl extends AbstractRepository<NegocioProposta, Lon
 				criterios.add(or1);
 			}
 		}
-		if(paginacao!=null) {
+		if(paginacao==null) {
 			criteria.setFetchMode("servicosContratados", FetchMode.JOIN);
 			criteria.setFetchMode("tarefas", FetchMode.JOIN);
 			criteria.setFetchMode("documentos", FetchMode.JOIN);

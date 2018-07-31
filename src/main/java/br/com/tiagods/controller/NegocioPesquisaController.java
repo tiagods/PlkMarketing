@@ -330,7 +330,6 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 						ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao,
 								colunasLenght);
 						planilha.gerarExcel();
-						
 						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
 						Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null,false));
 						Desktop.getDesktop().open(new File(export + ".xls"));

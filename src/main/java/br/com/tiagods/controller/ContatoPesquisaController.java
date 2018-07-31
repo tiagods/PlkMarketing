@@ -265,180 +265,159 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@FXML
 	void exportar(ActionEvent event) {
-		FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
-		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setHeaderText("");
-		DialogPane dialogPane = new DialogPane();
-		dialogPane.setContent(loader.load());
-		alert.setDialogPane(dialogPane);
-		Stage sta = (Stage) dialogPane.getScene().getWindow();
-		Task<Void> run = new Task<Void>() {
-			{
-				setOnFailed(a -> {
-                    sta.close();
-                });
-                setOnSucceeded(a -> {
-                    sta.close();
-                });
-                setOnCancelled(a -> {
-                    sta.close();
-                });
-			}
-			@Override
-			protected Void call() throws Exception {
-				String export = carregarArquivo("Salvar arquivo");
-				if (!"".equals(export)) {
-					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-					Integer[] colunasLenght = new Integer[] 
-							{10,20,20,20,30,20,20,10,10,10,10,10,10,10,10,10,15,15,10,15,10,10,10,15,10,15,15,15,20,10,10,10,15,15,15,15,20,20,20,10,10,20,20,20};
-					String[] cabecalho = new String[] { "Cod", "Periodo", "Empresa/Pessoa", "Tipo", "Nome", "Razao",
-							"Apelido", "Responsavel", "Cnpj", "IM", "IE", "RG","CPF","ANIVERSARIO","Telefone", "Celular", "E-Mail", "Site",
-							"CEP", "Logradouro", "Nº", "Bairro", "Compl", "Cidade", "UF", "Data Criacao", "Atendente",
-							"Criador", "Mala Direta", "Convite", "Material", "Newsletter", "Categoria", "Nivel",
-							"Servico", "Origem", "Detalhes Origem","Resumo", "Apresentacao","Listas","Qtd Negocios","Status Negocio","Honorário","Servicos Contratados"};
-					
-					listaImpressao.add(new ArrayList<>());
-					for (String c : cabecalho) {
-						listaImpressao.get(0).add(c);
-					}
-					
-					final Stage sta = startProgress();
-					
-					try {
-						loadFactory();
-						List<Contato> finalList = filtrar(null);
-						for (int i = 1; i <= finalList.size(); i++) {
-							listaImpressao.add(new ArrayList<String>());
-							Contato c = finalList.get(i-1);
-							listaImpressao.get(i).add(c.getId());
-							listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getCriadoEm().getTime()));
-							listaImpressao.get(i).add(c.getPessoaTipo().getDescricao());
-							listaImpressao.get(i).add(c.getContatoTipo().getDescricao());
-							listaImpressao.get(i).add(c.getNome());
-							
-							String razao="",apelido="",responsavel="",cnpj="",im="",ie="";
-							String rg="",cpf="",aniversario="";
-							
-							if(c.getPessoaTipo().equals(PessoaTipo.EMPRESA) && c.getJuridico()!=null) {
-								razao = c.getJuridico().getRazao();
-								apelido = c.getJuridico().getApelido();
-								responsavel = c.getJuridico().getResponsavel();
-								cnpj = c.getJuridico().getCnpj();
-								im = c.getJuridico().getIm();
-								ie = c.getJuridico().getIe();
-								
-							}
-							else if(c.getPessoaTipo().equals(PessoaTipo.PESSOA) && c.getFisico()!=null) {
-								rg = c.getFisico().getRg();
-								cpf = c.getFisico().getCpf();
-								Calendar calendar = c.getFisico().getNiver();
-								if(calendar!=null) rg = new SimpleDateFormat("dd/MM").format(calendar.getTime());
-							}
-							listaImpressao.get(i).add(razao);
-							listaImpressao.get(i).add(apelido);
-							listaImpressao.get(i).add(responsavel);
-							listaImpressao.get(i).add(cnpj);
-							listaImpressao.get(i).add(im);
-							listaImpressao.get(i).add(ie);
-							
-							listaImpressao.get(i).add(rg);
-							listaImpressao.get(i).add(cpf);
-							listaImpressao.get(i).add(aniversario);
-							
-							listaImpressao.get(i).add(c.getTelefone());
-							listaImpressao.get(i).add(c.getCelular());
-							listaImpressao.get(i).add(c.getEmail());
-							listaImpressao.get(i).add(c.getSite());
-							listaImpressao.get(i).add(c.getCep());
-							listaImpressao.get(i).add(c.getEndereco());
-							listaImpressao.get(i).add(c.getNumero());
-							listaImpressao.get(i).add(c.getBairro());
-							listaImpressao.get(i).add(c.getComplemento());
-							listaImpressao.get(i).add(c.getCidade());
-							listaImpressao.get(i).add(c.getEstado());
-							listaImpressao.get(i).add(sdfH.format(c.getCriadoEm().getTime()));
-							listaImpressao.get(i).add(c.getAtendente()==null?"":c.getAtendente().getNome());
-							listaImpressao.get(i).add(c.getCriadoPor()==null?"":c.getCriadoPor().getNome());
-							
-							listaImpressao.get(i).add(c.getMalaDireta());
-							listaImpressao.get(i).add(c.isConvite()?"Sim":"Não");
-							listaImpressao.get(i).add(c.isMaterial()?"Sim":"Não");
-							listaImpressao.get(i).add(c.isNewsletter()?"Sim":"Não");
-							
-							listaImpressao.get(i).add(c.getCategoria());
-							listaImpressao.get(i).add(c.getNivel());
-							listaImpressao.get(i).add(c.getServico());
-							listaImpressao.get(i).add(c.getOrigem());
-							listaImpressao.get(i).add(c.getDetalhesOrigem());
-							listaImpressao.get(i).add(c.getResumo());
-							listaImpressao.get(i).add(c.getApresentacao());
-							
-							String lista = c.getListas().stream().map(m->m.toString()).collect(Collectors.joining(","));							
-							listaImpressao.get(i).add(lista);
-							
-							listaImpressao.get(i).add(c.getNegocios().size());
-							
-							StringBuilder valorHonorario = new StringBuilder();
-							StringBuilder statusNegocio = new StringBuilder();
-							StringBuilder statusServicosNegocios = new StringBuilder();
-							
-							for (NegocioProposta negocio : c.getNegocios()) {
+			Task<Void> run = new Task<Void>() {
+				@Override
+				protected Void call() throws Exception {
+					String export = carregarArquivo("Salvar arquivo");
+					if (!"".equals(export)) {
+						ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+						Integer[] colunasLenght = new Integer[]
+								{10, 20, 20, 20, 30, 20, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 15, 15, 10, 15, 10, 10, 10, 15, 10, 15, 15, 15, 20, 10, 10, 10, 15, 15, 15, 15, 20, 20, 20, 10, 10, 20, 20, 20};
+						String[] cabecalho = new String[]{"Cod", "Periodo", "Empresa/Pessoa", "Tipo", "Nome", "Razao",
+								"Apelido", "Responsavel", "Cnpj", "IM", "IE", "RG", "CPF", "ANIVERSARIO", "Telefone", "Celular", "E-Mail", "Site",
+								"CEP", "Logradouro", "Nº", "Bairro", "Compl", "Cidade", "UF", "Data Criacao", "Atendente",
+								"Criador", "Mala Direta", "Convite", "Material", "Newsletter", "Categoria", "Nivel",
+								"Servico", "Origem", "Detalhes Origem", "Resumo", "Apresentacao", "Listas", "Qtd Negocios", "Status Negocio", "Honorário", "Servicos Contratados"};
 
-								valorHonorario.append(negocio.getId());
-								valorHonorario.append("-");
-								valorHonorario
-										.append(nf.format(negocio.getHonorario()));
-								valorHonorario.append("\n ");
-								statusNegocio.append(negocio.getId());
-								statusNegocio.append("-");
-								statusNegocio.append(negocio.getTipoStatus().getDescricao());
-								statusNegocio.append("\n ");
-								Set<ServicoContratado> servicos = negocio.getServicosContratados();
-								for (ServicoContratado sc : servicos) {
-									statusServicosNegocios.append(negocio.getId());
-									statusServicosNegocios.append(" - ");
-									statusServicosNegocios.append(sc.getServicosAgregados());
-									statusServicosNegocios.append(" - ");
-									statusServicosNegocios
-											.append(nf.format(sc.getValor()));
-									statusServicosNegocios.append("\n ");
-								}
-
-							}
-							listaImpressao.get(i).add(statusNegocio.toString());//status do negocio
-							listaImpressao.get(i).add(valorHonorario.toString());//valor do negocio
-							listaImpressao.get(i).add(statusServicosNegocios.toString());//valor do negocio
+						listaImpressao.add(new ArrayList<>());
+						for (String c : cabecalho) {
+							listaImpressao.get(0).add(c);
 						}
-						ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao, colunasLenght);
-						planilha.gerarExcel();
-						salvarLog(getManager(), "Contato","Exportar","Exportou relatorio xls");
-						Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null,false));
-						Desktop.getDesktop().open(new File(export + ".xls"));
-					} catch (Exception e1) {
-						Platform.runLater(() ->alert(AlertType.ERROR,"Erro","","Erro ao criar a planilha ",e1,true));
-					} finally {
-						close();
+						try {
+							loadFactory();
+							List<Contato> finalList = filtrar(null);
+							for (int i = 1; i <= finalList.size(); i++) {
+								listaImpressao.add(new ArrayList<String>());
+								Contato c = finalList.get(i - 1);
+								listaImpressao.get(i).add(c.getId());
+								listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getCriadoEm().getTime()));
+								listaImpressao.get(i).add(c.getPessoaTipo().getDescricao());
+								listaImpressao.get(i).add(c.getContatoTipo().getDescricao());
+								listaImpressao.get(i).add(c.getNome());
+
+								String razao = "", apelido = "", responsavel = "", cnpj = "", im = "", ie = "";
+								String rg = "", cpf = "", aniversario = "";
+
+								if (c.getPessoaTipo().equals(PessoaTipo.EMPRESA) && c.getJuridico() != null) {
+									razao = c.getJuridico().getRazao();
+									apelido = c.getJuridico().getApelido();
+									responsavel = c.getJuridico().getResponsavel();
+									cnpj = c.getJuridico().getCnpj();
+									im = c.getJuridico().getIm();
+									ie = c.getJuridico().getIe();
+
+								} else if (c.getPessoaTipo().equals(PessoaTipo.PESSOA) && c.getFisico() != null) {
+									rg = c.getFisico().getRg();
+									cpf = c.getFisico().getCpf();
+									Calendar calendar = c.getFisico().getNiver();
+									if (calendar != null) rg = new SimpleDateFormat("dd/MM").format(calendar.getTime());
+								}
+								listaImpressao.get(i).add(razao);
+								listaImpressao.get(i).add(apelido);
+								listaImpressao.get(i).add(responsavel);
+								listaImpressao.get(i).add(cnpj);
+								listaImpressao.get(i).add(im);
+								listaImpressao.get(i).add(ie);
+
+								listaImpressao.get(i).add(rg);
+								listaImpressao.get(i).add(cpf);
+								listaImpressao.get(i).add(aniversario);
+
+								listaImpressao.get(i).add(c.getTelefone());
+								listaImpressao.get(i).add(c.getCelular());
+								listaImpressao.get(i).add(c.getEmail());
+								listaImpressao.get(i).add(c.getSite());
+								listaImpressao.get(i).add(c.getCep());
+								listaImpressao.get(i).add(c.getEndereco());
+								listaImpressao.get(i).add(c.getNumero());
+								listaImpressao.get(i).add(c.getBairro());
+								listaImpressao.get(i).add(c.getComplemento());
+								listaImpressao.get(i).add(c.getCidade());
+								listaImpressao.get(i).add(c.getEstado());
+								listaImpressao.get(i).add(sdfH.format(c.getCriadoEm().getTime()));
+								listaImpressao.get(i).add(c.getAtendente() == null ? "" : c.getAtendente().getNome());
+								listaImpressao.get(i).add(c.getCriadoPor() == null ? "" : c.getCriadoPor().getNome());
+
+								listaImpressao.get(i).add(c.getMalaDireta());
+								listaImpressao.get(i).add(c.isConvite() ? "Sim" : "Não");
+								listaImpressao.get(i).add(c.isMaterial() ? "Sim" : "Não");
+								listaImpressao.get(i).add(c.isNewsletter() ? "Sim" : "Não");
+
+								listaImpressao.get(i).add(c.getCategoria());
+								listaImpressao.get(i).add(c.getNivel());
+								listaImpressao.get(i).add(c.getServico());
+								listaImpressao.get(i).add(c.getOrigem());
+								listaImpressao.get(i).add(c.getDetalhesOrigem());
+								listaImpressao.get(i).add(c.getResumo());
+								listaImpressao.get(i).add(c.getApresentacao());
+
+								String lista = c.getListas().stream().map(m -> m.toString()).collect(Collectors.joining(","));
+								listaImpressao.get(i).add(lista);
+
+								listaImpressao.get(i).add(c.getNegocios().size());
+
+								StringBuilder valorHonorario = new StringBuilder();
+								StringBuilder statusNegocio = new StringBuilder();
+								StringBuilder statusServicosNegocios = new StringBuilder();
+
+								for (NegocioProposta negocio : c.getNegocios()) {
+
+									valorHonorario.append(negocio.getId());
+									valorHonorario.append("-");
+									valorHonorario
+											.append(nf.format(negocio.getHonorario()));
+									valorHonorario.append("\n ");
+									statusNegocio.append(negocio.getId());
+									statusNegocio.append("-");
+									statusNegocio.append(negocio.getTipoStatus().getDescricao());
+									statusNegocio.append("\n ");
+									Set<ServicoContratado> servicos = negocio.getServicosContratados();
+									for (ServicoContratado sc : servicos) {
+										statusServicosNegocios.append(negocio.getId());
+										statusServicosNegocios.append(" - ");
+										statusServicosNegocios.append(sc.getServicosAgregados());
+										statusServicosNegocios.append(" - ");
+										statusServicosNegocios
+												.append(nf.format(sc.getValor()));
+										statusServicosNegocios.append("\n ");
+									}
+
+								}
+								listaImpressao.get(i).add(statusNegocio.toString());//status do negocio
+								listaImpressao.get(i).add(valorHonorario.toString());//valor do negocio
+								listaImpressao.get(i).add(statusServicosNegocios.toString());//valor do negocio
+							}
+							ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao, colunasLenght);
+							planilha.gerarExcel();
+							salvarLog(getManager(), "Contato", "Exportar", "Exportou relatorio xls");
+							Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
+							Desktop.getDesktop().open(new File(export + ".xls"));
+						} catch (Exception e1) {
+							e1.printStackTrace();
+							Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
+						} finally {
+							close();
+						}
 					}
+					return null;
 				}
-				return null;
+
+			};
+			if (tbPrincipal.getItems().size() >= 1) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Exportação");
+				alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
+				ButtonType ok = new ButtonType("Exportar e Abrir");
+				ButtonType cancelar = new ButtonType("Cancelar");
+				alert.getButtonTypes().clear();
+				alert.getButtonTypes().addAll(ok, cancelar);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ok) {
+					new Thread(run).start();
+				}
+			} else {
+				alert(AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato").showAndWait();
 			}
-			
-		};
-		if (tbPrincipal.getItems().size() >= 1) {
-			Alert alert2 = new Alert(Alert.AlertType.CONFIRMATION);
-			alert2.setTitle("Exportação");
-			alert2.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
-			ButtonType ok = new ButtonType("Exportar e Abrir");
-			ButtonType cancelar = new ButtonType("Cancelar");
-			alert2.getButtonTypes().clear();
-			alert2.getButtonTypes().addAll(ok, cancelar);
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ok) {
-				new Thread(run).start();
-			}
-		} else {
-			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato").showAndWait();
-		}
 		
 	}
 

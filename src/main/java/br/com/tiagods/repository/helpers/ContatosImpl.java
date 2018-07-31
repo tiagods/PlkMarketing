@@ -90,7 +90,7 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 		criterios.forEach(c-> criteria.add(c));
 		criteria.addOrder(Order.desc("criadoEm"));
 	
-		if(pagination!=null) {
+		if(pagination==null) {
 			criteria.setFetchMode("negocios", FetchMode.JOIN);
 			criteria.setFetchMode("listas", FetchMode.JOIN);
 		}

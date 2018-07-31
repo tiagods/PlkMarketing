@@ -14,6 +14,7 @@
 		<hibernate.version>5.1.0.Final</hibernate.version>
 	</properties>
 	<build>
+		<finalName>Negocios</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

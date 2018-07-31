@@ -1,0 +1,56 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="Negocios">
+    <output-path>$PROJECT_DIR$/classes/artifacts/Negocios</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="br.com.tiagods.StartApp" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="Negocios.jar" />
+      <element id="directory" name="Negocios_lib">
+        <element id="library" level="project" name="Maven: org.json:json:20151123" />
+        <element id="library" level="project" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" />
+        <element id="library" level="project" name="Maven: c3p0:c3p0:0.9.1" />
+        <element id="library" level="project" name="Maven: xml-apis:xml-apis:1.0.b2" />
+        <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-api:2.6" />
+        <element id="module-output" name="Marketing" />
+        <element id="library" level="project" name="Maven: org.hibernate:hibernate-entitymanager:5.1.0.Final" />
+        <element id="library" level="project" name="Maven: org.jboss.logging:jboss-logging:3.3.0.Final" />
+        <element id="library" level="project" name="Maven: org.hibernate:hibernate-core:5.1.0.Final" />
+        <element id="library" level="project" name="Maven: antlr:antlr:2.7.7" />
+        <element id="library" level="project" name="Maven: org.jboss:jandex:2.0.0.Final" />
+        <element id="library" level="project" name="Maven: com.fasterxml:classmate:1.3.0" />
+        <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
+        <element id="library" level="project" name="Maven: org.hibernate.common:hibernate-commons-annotations:5.0.1.Final" />
+        <element id="library" level="project" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final" />
+        <element id="library" level="project" name="Maven: org.javassist:javassist:3.20.0-GA" />
+        <element id="library" level="project" name="Maven: org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1" />
+        <element id="library" level="project" name="Maven: org.hibernate:hibernate-java8:5.1.0.Final" />
+        <element id="library" level="project" name="Maven: net.sourceforge.jexcelapi:jxl:2.6.12" />
+        <element id="library" level="project" name="Maven: log4j:log4j:1.2.14" />
+        <element id="library" level="project" name="Maven: org.apache.commons:commons-email:1.3.2" />
+        <element id="library" level="project" name="Maven: javax.mail:mail:1.4.5" />
+        <element id="library" level="project" name="Maven: javax.activation:activation:1.1.1" />
+        <element id="library" level="project" name="Maven: commons-net:commons-net:3.6" />
+        <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-slf4j-impl:2.6" />
+        <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.21" />
+        <element id="library" level="project" name="Maven: org.apache.logging.log4j:log4j-core:2.6" />
+        <element id="library" level="project" name="Maven: org.slf4j:jcl-over-slf4j:1.7.21" />
+        <element id="library" level="project" name="Maven: com.jfoenix:jfoenix:8.0.1" />
+        <element id="library" level="project" name="Maven: org.fxutil.maskedtextfield:maskedtextfield:1.2" />
+        <element id="library" level="project" name="Maven: javassist:javassist:3.8.0.GA" />
+        <element id="library" level="project" name="Maven: org.controlsfx:controlsfx:8.40.14" />
+        <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpclient:4.5.5" />
+        <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.9" />
+        <element id="library" level="project" name="Maven: commons-logging:commons-logging:1.2" />
+        <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.10" />
+      </element>
+    </root>
+  </artifact>
+</component>
