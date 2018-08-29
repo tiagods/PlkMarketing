@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.repository.helpers.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -35,19 +36,14 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.NegociosListasImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.ExcelGenerico;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -217,21 +213,17 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbTipo.getSelectionModel().select(PessoaTipo.CONTATO);
 		cbContatoTipo.getSelectionModel().select(ContatoTipo.CONTATO);
 
-		ChangeListener change = new ChangeListener<Object>() {
-			@Override
-			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-				// TODO Auto-generated method stub
-				try {
-					loadFactory();
-					paginacao = new Paginacao(cbLimite.getValue());
-					filtrar(paginacao);
-				} catch (Exception e) {
-					alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
-				} finally {
-					close();
-				}
-			}
-		};
+		ChangeListener change = (ChangeListener<Object>) (observable, oldValue, newValue) -> {
+            try {
+                loadFactory();
+                paginacao = new Paginacao(cbLimite.getValue());
+                filtrar(paginacao);
+            } catch (Exception e) {
+                alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
+            } finally {
+                close();
+            }
+        };
 		cbTipo.valueProperty().addListener(change);
 		cbContatoTipo.valueProperty().addListener(change);
 		cbLista.valueProperty().addListener(change);
@@ -265,11 +257,28 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@FXML
 	void exportar(ActionEvent event) {
+		try {
+			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+			Alert progress = new Alert(Alert.AlertType.INFORMATION);
+			progress.setHeaderText("");
+			DialogPane dialogPane = new DialogPane();
+			dialogPane.setContent(loader.load());
+			progress.setDialogPane(dialogPane);
+			Stage sta = (Stage) dialogPane.getScene().getWindow();
+
 			Task<Void> run = new Task<Void>() {
+				{
+					setOnFailed(a ->sta.close());
+					setOnSucceeded(a ->sta.close());
+					setOnCancelled(a ->sta.close());
+				}
 				@Override
-				protected Void call() throws Exception {
+				protected Void call() {
+
 					String export = carregarArquivo("Salvar arquivo");
 					if (!"".equals(export)) {
+						Platform.runLater(() -> sta.show());
+
 						ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 						Integer[] colunasLenght = new Integer[]
 								{10, 20, 20, 20, 30, 20, 20, 10, 10, 10, 10, 10, 10, 10, 10, 10, 15, 15, 10, 15, 10, 10, 10, 15, 10, 15, 15, 15, 20, 10, 10, 10, 15, 15, 15, 15, 20, 20, 20, 10, 10, 20, 20, 20};
@@ -285,10 +294,12 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 						}
 						try {
 							loadFactory();
+							NegocioPropostaImpl propostas = new NegocioPropostaImpl(getManager());
 							List<Contato> finalList = filtrar(null);
 							for (int i = 1; i <= finalList.size(); i++) {
 								listaImpressao.add(new ArrayList<String>());
-								Contato c = finalList.get(i - 1);
+								Long newId = finalList.get(i - 1).getId();
+								Contato c = contatos.findById(newId);
 								listaImpressao.get(i).add(c.getId());
 								listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getCriadoEm().getTime()));
 								listaImpressao.get(i).add(c.getPessoaTipo().getDescricao());
@@ -361,7 +372,6 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 								StringBuilder statusServicosNegocios = new StringBuilder();
 
 								for (NegocioProposta negocio : c.getNegocios()) {
-
 									valorHonorario.append(negocio.getId());
 									valorHonorario.append("-");
 									valorHonorario
@@ -371,17 +381,17 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 									statusNegocio.append("-");
 									statusNegocio.append(negocio.getTipoStatus().getDescricao());
 									statusNegocio.append("\n ");
+
 									Set<ServicoContratado> servicos = negocio.getServicosContratados();
 									for (ServicoContratado sc : servicos) {
 										statusServicosNegocios.append(negocio.getId());
 										statusServicosNegocios.append(" - ");
-										statusServicosNegocios.append(sc.getServicosAgregados());
+										statusServicosNegocios.append(sc.getServicosAgregados().getNome());
 										statusServicosNegocios.append(" - ");
 										statusServicosNegocios
 												.append(nf.format(sc.getValor()));
 										statusServicosNegocios.append("\n ");
 									}
-
 								}
 								listaImpressao.get(i).add(statusNegocio.toString());//status do negocio
 								listaImpressao.get(i).add(valorHonorario.toString());//valor do negocio
@@ -393,7 +403,6 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 							Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
 							Desktop.getDesktop().open(new File(export + ".xls"));
 						} catch (Exception e1) {
-							e1.printStackTrace();
 							Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
 						} finally {
 							close();
@@ -401,6 +410,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 					}
 					return null;
 				}
+
 
 			};
 			if (tbPrincipal.getItems().size() >= 1) {
@@ -413,12 +423,22 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				alert.getButtonTypes().addAll(ok, cancelar);
 				Optional<ButtonType> result = alert.showAndWait();
 				if (result.get() == ok) {
-					new Thread(run).start();
+					Thread thread = new Thread(run);
+					thread.start();
+					sta.setOnCloseRequest(ae -> {
+						try {
+							thread.interrupt();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					});
 				}
 			} else {
 				alert(AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato").showAndWait();
 			}
-		
+		}catch (IOException e){
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado").showAndWait();
+		}
 	}
 
 	boolean excluir(Contato n) {

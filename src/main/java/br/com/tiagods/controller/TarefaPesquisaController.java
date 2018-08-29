@@ -51,21 +51,14 @@ import br.com.tiagods.util.ExcelGenerico;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -312,11 +305,27 @@ public class TarefaPesquisaController extends UtilsController implements Initial
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@FXML
     void exportar(ActionEvent event) {
-    	Runnable run = new Runnable() {
-			@Override
-			public void run() {
-				String export = carregarArquivo("Salvar arquivo");
-				if (!"".equals(export)) {
+		try {
+			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+			Alert progress = new Alert(Alert.AlertType.INFORMATION);
+			progress.setHeaderText("");
+			DialogPane dialogPane = new DialogPane();
+			dialogPane.setContent(loader.load());
+			progress.setDialogPane(dialogPane);
+			Stage sta = (Stage) dialogPane.getScene().getWindow();
+
+			Task<Void> run = new Task<Void>() {
+				{
+					setOnFailed(a ->sta.close());
+					setOnSucceeded(a ->sta.close());
+					setOnCancelled(a ->sta.close());
+				}
+				@Override
+				protected Void call() {
+
+					String export = carregarArquivo("Salvar arquivo");
+					if (!"".equals(export)) {
+						Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 					Integer[] colunasLenght = new Integer[] { 10, 18, 18, 14, 10, 30, 10, 10, 10, 10,20, 15, 15 };
 					String[] cabecalho = new String[] { "Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
@@ -376,11 +385,12 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 						Platform.runLater(() ->alert(AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
 						Desktop.getDesktop().open(new File(export + ".xls"));
 					} catch (Exception e1) {
-						alert(AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true);
+						Platform.runLater(() ->alert(AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
 					} finally {
 						close();
 					}
 				}
+				return null;
 			}
     		
     	};
@@ -394,10 +404,21 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 			alert.getButtonTypes().addAll(ok, cancelar);
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ok) {
-				new Thread(run).start();
+				Thread thread = new Thread(run);
+				thread.start();
+				sta.setOnCloseRequest(ae -> {
+					try {
+						thread.interrupt();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 			}
 		} else {
 			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato").showAndWait();
+		}
+		}catch (IOException e){
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado").showAndWait();
 		}
     	
     }

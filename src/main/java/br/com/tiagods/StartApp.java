@@ -5,6 +5,8 @@ import java.io.IOException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
@@ -49,19 +51,12 @@ public class StartApp extends Application {
 			dialogPane.setContent(loader.load());
 			alert.setDialogPane(dialogPane);
 			Stage sta = (Stage) dialogPane.getScene().getWindow();
-			
 			Task<Void> run = new Task<Void>() {
-				{
-					 	setOnFailed(a -> {
-	                        sta.close();
-	                    });
-	                    setOnSucceeded(a -> {
-	                        sta.close();
-	                    });
-	                    setOnCancelled(a -> {
-	                        sta.close();
-	                    });
-				}
+                {
+                    setOnFailed(a ->sta.close());
+                    setOnSucceeded(a ->sta.close());
+                    setOnCancelled(a ->sta.close());
+                }
 				@Override
 				protected Void call() throws Exception {
 					EntityManager manager = null;
@@ -93,9 +88,8 @@ public class StartApp extends Application {
 					e.printStackTrace();
 				}
 			});
-		} catch (Exception e) {
-			alert("Falha ao localizar o arquivo " + FXMLEnum.PROGRESS_SAMPLE);
-		}
+		} catch (IOException e) {
+			alert("Falha ao localizar o arquivo " + FXMLEnum.PROGRESS_SAMPLE);		}
 	}
 
 	public static void main(String[] args) {

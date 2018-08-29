@@ -41,17 +41,13 @@ import br.com.tiagods.util.ExcelGenerico;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -263,21 +259,38 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 	@SuppressWarnings({"rawtypes","unchecked"})
 	@FXML
 	void exportar(ActionEvent event) {
-		Runnable run = new Runnable() {
-			@Override
-			public void run() {
-				String export = carregarArquivo("Salvar arquivo");
-				if (!"".equals(export)) {
+
+		try {
+			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+			Alert progress = new Alert(Alert.AlertType.INFORMATION);
+			progress.setHeaderText("");
+			DialogPane dialogPane = new DialogPane();
+			dialogPane.setContent(loader.load());
+			progress.setDialogPane(dialogPane);
+			Stage sta = (Stage) dialogPane.getScene().getWindow();
+
+			Task<Void> run = new Task<Void>() {
+				{
+					setOnFailed(a ->sta.close());
+					setOnSucceeded(a ->sta.close());
+					setOnCancelled(a ->sta.close());
+				}
+				@Override
+				protected Void call() {
+
+					String export = carregarArquivo("Salvar arquivo");
+					if (!"".equals(export)) {
+
+						Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 					Integer[] colunasLenght = new Integer[] { 8, 26, 11, 11, 8, 14, 16, 14, 17, 9, 12, 19,
 							30, 10, 10, 10, 30, 11, 11 };
 					String[] cabecalho = new String[] { "Negocio", "Nome", "E-mail", "Fone", "Celular",
 							"Data Inicio", "Data Limite", "Criador", "Etapa", "Status", "Atendente",
 							"Origem", "Categoria", "Nivel", "Servicos/Produtos", "Descricao", "Honorario",
-							"Servicos Contratados", "Motivo da Perda", "Detalhe da Perda", "Data da Perda",
+							"Valor Servicos Contratados", "Motivo da Perda", "Detalhe da Perda", "Data da Perda",
 							"Data Finalização" };
 					listaImpressao.add(new ArrayList<>());
-
 					for (String c : cabecalho) {
 						listaImpressao.get(0).add(c);
 					}
@@ -286,16 +299,17 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 						List<NegocioProposta> lista = filtrar(null);
 						for (int i = 1; i <= lista.size(); i++) {
 							listaImpressao.add(new ArrayList());
-							NegocioProposta n = lista.get(i-1);
+							Long newId = lista.get(i-1).getId();
+							NegocioProposta n = propostas.findById(newId);
 							
 							listaImpressao.get(i).add(n.getId());
 							listaImpressao.get(i).add(n.getNome());
 							
 							String [] param = new String[] {"","",""};
-							if(n.getPessoa()!=null) {
-								param[0]=(n.getPessoa().getEmail());
-								param[1]=(n.getPessoa().getTelefone());
-								param[2]=(n.getPessoa().getCelular());
+							if(n.getNegocioContato()!=null) {
+								param[0]=(n.getNegocioContato().getEmail());
+								param[1]=(n.getNegocioContato().getTelefone());
+								param[2]=(n.getNegocioContato().getCelular());
 							}
 							listaImpressao.get(i).add(param[0]);
 							listaImpressao.get(i).add(param[1]);
@@ -315,7 +329,6 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 							listaImpressao.get(i)
 									.add(nf.format(n.getHonorario()));
 							double vlrServicos = 0.00;
-							
 							Iterator<ServicoContratado> iterator = n.getServicosContratados().iterator();
 							while (iterator.hasNext()) {
 								ServicoContratado sc = iterator.next();
@@ -327,18 +340,18 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 							listaImpressao.get(i).add(n.getDataPerda() == null ? "" : sdf.format(n.getDataPerda().getTime()));
 							listaImpressao.get(i).add(n.getDataFinalizacao() == null ? "" : sdf.format(n.getDataFinalizacao().getTime()));
 						}
-						ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao,
-								colunasLenght);
+						ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao,colunasLenght);
 						planilha.gerarExcel();
 						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
 						Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null,false));
 						Desktop.getDesktop().open(new File(export + ".xls"));
 					} catch (Exception e1) {
-						alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true);
+						Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
 					} finally {
 						close();
 					}
-				}		
+				}
+				return null;
 			}
 		};
 		if (tbPrincipal.getItems().size() >= 1) {
@@ -351,11 +364,22 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 			alert.getButtonTypes().addAll(ok, cancelar);
 			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ok) {
-				new Thread(run).start();
+				Thread thread = new Thread(run);
+				thread.start();
+				sta.setOnCloseRequest(ae -> {
+					try {
+						thread.interrupt();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
 			}
 		} else {
 			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato").showAndWait();
 		}
+	}catch (IOException e){
+		alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado").showAndWait();
+	}
 	}
 
 	private List<NegocioProposta> filtrar(Paginacao paginacao) {
