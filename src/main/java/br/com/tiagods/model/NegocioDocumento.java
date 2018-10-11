@@ -34,7 +34,7 @@ public class NegocioDocumento implements AbstractEntity,Serializable{
 	@Column(name="NEG_DOC_DATA")	
 	private Calendar data;
 	@Column(name="NEG_DOC_URL")	
-	private String url;
+	private String url="";
 	@ManyToOne
 	@JoinColumn(name="NEG_DOC_NEGOCIO_COD")	
 	private NegocioProposta negocio;

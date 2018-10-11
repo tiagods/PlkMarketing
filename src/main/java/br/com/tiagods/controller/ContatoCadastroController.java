@@ -1,6 +1,9 @@
 package br.com.tiagods.controller;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -389,6 +392,18 @@ public class ContatoCadastroController extends UtilsController implements Initia
     		alert(AlertType.ERROR, "Erro", "Impossivel incluir lista","O contato ja tem a lista informada", null, false);
     	
     }
+	@FXML
+	void mailSend(ActionEvent event) {
+		if(!txEmail.getText().trim().equals("")){
+			try {
+				URI url = new URI("mailto", txEmail.getText(), null);
+				Desktop.getDesktop().mail(url);
+			} catch (IOException e) {} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
     @FXML
     void novaTarefa(ActionEvent event) {
     	if(contato==null) {
@@ -400,6 +415,18 @@ public class ContatoCadastroController extends UtilsController implements Initia
     	else
     		abrirTarefa(null);
     }
+	@FXML
+	void openBrowser(ActionEvent event) {
+		if(!txSite.getText().trim().equals("")){
+			try {
+				Desktop.getDesktop().browse(new URI(txSite.getText()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	private void preencherFormulario(Contato contato) {
 		if(contato.getContatoTipo().equals(ContatoTipo.PROSPECCAO)) {
 			rbProspeccao.setSelected(true);

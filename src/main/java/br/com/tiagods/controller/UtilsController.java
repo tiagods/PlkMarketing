@@ -1,5 +1,6 @@
 package br.com.tiagods.controller;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import br.com.tiagods.util.storage.Storage;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -188,6 +190,7 @@ public abstract class UtilsController extends PersistenciaController{
 	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
 		ImageView imageview = createImage(30,30,icon);
 		btn.setGraphic(imageview);
+		btn.setTooltip(icon.getTooltip());
 	}
 		
 	public Optional<String> cadastroRapido(){
@@ -280,4 +283,14 @@ public abstract class UtilsController extends PersistenciaController{
 			}
 		}
 	}
+	public void visualizarDocumento(String text, Storage storage){
+			try {
+				File file = storage.downloadFile(text);
+				if (file != null)
+					Desktop.getDesktop().open(file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+
 }

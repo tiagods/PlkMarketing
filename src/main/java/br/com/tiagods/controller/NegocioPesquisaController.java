@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.model.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -20,12 +21,6 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.NegocioCategoria;
-import br.com.tiagods.model.NegocioNivel;
-import br.com.tiagods.model.NegocioOrigem;
-import br.com.tiagods.model.NegocioServico;
-import br.com.tiagods.model.ServicoContratado;
-import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoEtapa;
@@ -40,7 +35,6 @@ import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.ExcelGenerico;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,19 +100,18 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 	private JFXComboBox<Integer> cbLimite;
 
 	private Paginacao paginacao;
-
 	private Stage stage;
 	private NegocioNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
 	private NegocioOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	private NegocioPropostaImpl propostas;
-
 	private UsuariosImpl usuarios;
 
 	public NegocioPesquisaController(Stage stage) {
 		this.stage = stage;
 	}
+
 
 	void abrirCadastro(NegocioProposta proposta) {
 		try {
@@ -129,7 +122,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 			}
 			Stage stage = new Stage();
 			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-			loader.setController(new NegocioCadastroController(stage, proposta));
+			loader.setController(new NegocioCadastroController(stage, proposta,null));
 			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
 			stage.setOnHiding(event -> {
 				try {
@@ -148,10 +141,23 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 			close();
 		}
 	}
+	private void abrirContato(Contato t) {
+		try {
+			loadFactory();
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
+			loader.setController(new ContatoCadastroController(stage, t));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+		} catch (IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo" + FXMLEnum.CONTATO_CADASTRO, e, true);
+		} finally {
+			close();
+		}
+	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void combos() {
-
 		NegocioCategoria categoria = new NegocioCategoria(-1L, "Categoria");
 		NegocioNivel nivel = new NegocioNivel(-1L, "Nivel");
 		NegocioOrigem origem = new NegocioOrigem(-1L, "Origem");
@@ -189,35 +195,28 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		cbEtapa.getSelectionModel().selectFirst();
 		cbLimite.getSelectionModel().selectFirst();
 
-		pagination.currentPageIndexProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				paginacao.setPaginaAtual(newValue.intValue());
-				try {
-					loadFactory();
-					filtrar(paginacao);
-				} catch (PersistenceException e) {
-					alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-				} finally {
-					close();
-				}
-			}
-		});
-		ChangeListener change = new ChangeListener<Object>() {
-			@Override
-			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-				try {
-					loadFactory();
-					paginacao = new Paginacao(cbLimite.getValue());
-					filtrar(paginacao);
-				} catch (Exception e) {
-					alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao filtrar os registros", e, true);
-				} finally {
-					close();
-				}
-			}
-		
-		};
+		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+            paginacao.setPaginaAtual(newValue.intValue());
+            try {
+                loadFactory();
+                filtrar(paginacao);
+            } catch (PersistenceException e) {
+                alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
+            } finally {
+                close();
+            }
+        });
+		ChangeListener change = (ChangeListener<Object>) (observable, oldValue, newValue) -> {
+            try {
+                loadFactory();
+                paginacao = new Paginacao(cbLimite.getValue());
+                filtrar(paginacao);
+            } catch (Exception e) {
+                alert(AlertType.ERROR, "Erro", null, "Falha ao filtrar os registros", e, true);
+            } finally {
+                close();
+            }
+        };
 		cbStatus.valueProperty().addListener(change);
 		cbEtapa.valueProperty().addListener(change);
 		cbCategoria.valueProperty().addListener(change);
@@ -228,7 +227,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		dataInicial.valueProperty().addListener(change);
 		dataFinal.valueProperty().addListener(change);
 		cbLimite.valueProperty().addListener(change);
-		
+
 		paginacao = new Paginacao(cbLimite.getValue());
 	}
 
@@ -256,10 +255,8 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		} else
 			return false;
 	}
-	@SuppressWarnings({"rawtypes","unchecked"})
 	@FXML
 	void exportar(ActionEvent event) {
-
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
 			Alert progress = new Alert(Alert.AlertType.INFORMATION);
@@ -277,11 +274,8 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 				}
 				@Override
 				protected Void call() {
-
 					String export = carregarArquivo("Salvar arquivo");
-					if (!"".equals(export)) {
-
-						Platform.runLater(() -> sta.show());
+					if (!"".equals(export)) {Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 					Integer[] colunasLenght = new Integer[] { 8, 26, 11, 11, 8, 14, 16, 14, 17, 9, 12, 19,
 							30, 10, 10, 10, 30, 11, 11 };
@@ -537,11 +531,32 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
+		TableColumn<NegocioProposta, Number> colunaAbrirContato = new TableColumn<>("");
+		colunaAbrirContato.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaAbrirContato.setCellFactory(param -> new TableCell<NegocioProposta, Number>() {
+			JFXButton button = new JFXButton();//
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					button.getStyleClass().add("btDefault");
+					try {
+						buttonTable(button, IconsEnum.BUTTON_CONTATO);
+					} catch (IOException e) {
+					}
+					button.setOnAction(event -> abrirContato(tbPrincipal.getItems().get(getIndex()).getNegocioContato()));
+					setGraphic(button);
+				}
+			}
+		});
 		TableColumn<NegocioProposta, Number> colunaExcluir = new TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaExcluir.setCellFactory(param -> new TableCell<NegocioProposta, Number>() {
 			JFXButton button = new JFXButton();// excluir
-
 			@Override
 			protected void updateItem(Number item, boolean empty) {
 				super.updateItem(item, empty);
@@ -565,6 +580,6 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 			}
 		});
 		tbPrincipal.getColumns().addAll(colunaId, colunaNome, colunaStatus, colunaEtapa, colunaOrigem, colunaServico,
-				colunaCategoria, colunaNivel, colunaCriadoEm, colunaVencimento, colunaAtendente, colunaEditar);
+				colunaCategoria, colunaNivel, colunaCriadoEm, colunaVencimento, colunaAtendente, colunaAbrirContato,colunaEditar);
 	}
 }

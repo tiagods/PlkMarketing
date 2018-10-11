@@ -1,4 +1,4 @@
-package br.com.tiagods.config;
+package br.com.tiagods.config.init;
 
 
 import java.io.File;

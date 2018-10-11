@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label />
       <VBox prefHeight="200.0" prefWidth="100.0">
@@ -93,7 +93,7 @@
                   <Insets bottom="20.0" />
                </VBox.margin>
                <children>
-                  <JFXTextArea fx:id="txDescricao" minHeight="200.0" prefHeight="200.0" promptText="Descreva um breve resumo sobre essa tarefa." style="-fx-background-color: #E7DFDD;" />
+                  <JFXTextArea fx:id="txDescricao" minHeight="200.0" prefHeight="200.0" promptText="Descreva um breve resumo sobre essa tarefa." />
                </children>
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="183.0" prefHeight="100.0" prefWidth="200.0">
@@ -155,7 +155,7 @@
                         <Insets right="10.0" />
                      </HBox.margin>
                   </JFXDatePicker>
-                  <Label layoutX="10.0" layoutY="22.0" text="as">
+                  <Label layoutX="10.0" layoutY="22.0" text="às">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
@@ -172,7 +172,20 @@
             </HBox>
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <JFXToggleButton fx:id="tggFinalizado" size="7.0" styleClass="btDefault" text="Marcar como Concluida">
+                  <HBox alignment="CENTER" prefHeight="56.0" prefWidth="465.0">
+                     <children>
+                        <JFXTextField fx:id="txFormulario" editable="false" maxWidth="345.0" prefHeight="26.0" prefWidth="345.0" promptText="Clique no icone ao lado para adicionar um arquivo (doc,pdf,xls)" />
+                        <JFXButton onAction="#operacaoArquivo" styleClass="btDefault" text="...">
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/button_clip.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children></HBox>
+                  <JFXToggleButton fx:id="tggFinalizado" styleClass="btDefault" text="Marcar como Concluida">
                      <graphic>
                         <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                            <image>

@@ -21,6 +21,8 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.util.storage.Storage;
+import br.com.tiagods.util.storage.StorageProducer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
@@ -136,6 +138,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	private NegociosTarefasPropostasImpl tarefasPropostas;
 	private NegocioPropostaImpl propostas;
 	private ContatosImpl contatos;
+	private Storage storage = StorageProducer.newConfig();
 	
 	public TarefaPesquisaController (Stage stage) {
 		this.stage=stage;
@@ -176,7 +179,6 @@ public class TarefaPesquisaController extends UtilsController implements Initial
             FXMLLoader loader = null;
             if(t instanceof NegocioTarefaContato) {
             	Contato c = ((NegocioTarefaContato)t).getContato();
-            	
             	contatos = new ContatosImpl(getManager());
             	c = contatos.findById(c.getId());
             	loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
@@ -188,7 +190,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
             	propostas = new NegocioPropostaImpl(getManager());
             	p = propostas.findById(p.getId());
             	loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-            	loader.setController(new NegocioCadastroController(stage,p));	
+            	loader.setController(new NegocioCadastroController(stage,p,null));
             	
             }
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
@@ -221,27 +223,24 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		ToggleGroup group = new ToggleGroup();
 		group.getToggles().addAll(rbDefinir,rbHoje,rbSemana,rbTudo);
 		usuarios = new UsuariosImpl(getManager());
-		Usuario usuario = new Usuario(-1,"Atendente");
+		Usuario usuario = new Usuario(-1L,"Todos");
 		cbAtendente.getItems().add(usuario);
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
 		
 		cbAtendente.getSelectionModel().select(UsuarioLogado.getInstance().getUsuario());
 		
-		ChangeListener<Object> changeListener = new ChangeListener<Object>() {
-			@Override
-			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-				try {
-					pnDatas.setVisible(rbDefinir.isSelected());
-					loadFactory();
-					paginacao = new Paginacao(cbLimite.getValue());
-					filtrar(paginacao);
-				}catch (PersistenceException e) {
-					alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
-				}finally {
-					close();
-				}
-			}
-		};
+		ChangeListener<Object> changeListener = (observable, oldValue, newValue) -> {
+            try {
+                pnDatas.setVisible(rbDefinir.isSelected());
+                loadFactory();
+                paginacao = new Paginacao(cbLimite.getValue());
+                filtrar(paginacao);
+            }catch (PersistenceException e) {
+                alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
+            }finally {
+                close();
+            }
+        };
 		cbLimite.valueProperty().addListener(changeListener);
 		
 		pnCheckBox.getChildren().forEach(c->{
@@ -262,20 +261,17 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		tggFinalizado.setSelected(true);
 		tggFinalizado.selectedProperty().addListener(changeListener);
 		
-		pagination.currentPageIndexProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				paginacao.setPaginaAtual(newValue.intValue());
-				try {
-					loadFactory();
-					filtrar(paginacao);
-				} catch (PersistenceException e) {
-					alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-				} finally {
-					close();
-				}
-			}
-		});
+		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+            paginacao.setPaginaAtual(newValue.intValue());
+            try {
+                loadFactory();
+                filtrar(paginacao);
+            } catch (PersistenceException e) {
+                alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
+            } finally {
+                close();
+            }
+        });
 		paginacao = new Paginacao(cbLimite.getValue());
 	}
 	boolean excluir(NegocioTarefa n) {
@@ -722,7 +718,34 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 			}
 		});
-		
+		TableColumn<NegocioTarefa, String> colunaAnexo = new  TableColumn<>("");
+		colunaAnexo.setCellValueFactory(new PropertyValueFactory<>("formulario"));
+		colunaAnexo.setCellFactory(param -> new TableCell<NegocioTarefa,String>(){
+			JFXButton button = new JFXButton("");
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null || item.equals("")){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.getStyleClass().add("btDefault");
+					try {
+						IconsEnum ic = IconsEnum.BUTTON_CLIP;
+						buttonTable(button, ic);
+					}catch (IOException e) {
+					}
+					button.setOnAction(event -> {
+						visualizarDocumento(item, storage);
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		colunaAnexo.setMaxWidth(50);
+
 		TableColumn<NegocioTarefa, Number> colunaAbrir = new  TableColumn<>("");
 		colunaAbrir.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaAbrir.setCellFactory(param -> new TableCell<NegocioTarefa,Number>(){
@@ -809,7 +832,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		});
 		colunaExcluir.setMaxWidth(50);
 		tbPrincipal.getColumns().addAll(colunaValidade,colunaTipo,colunaNome,colunaDescricao,
-				columnAtendente,colunaStatus,colunaAbrir,colunaEditar,colunaExcluir);
+				columnAtendente,colunaStatus,colunaAnexo,colunaAbrir,colunaEditar,colunaExcluir);
 		tbPrincipal.setTableMenuButtonVisible(true);
 		tbPrincipal.setFixedCellSize(70);
     }

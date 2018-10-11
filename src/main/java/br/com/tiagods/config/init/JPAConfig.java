@@ -1,4 +1,4 @@
-package br.com.tiagods.config;
+package br.com.tiagods.config.init;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;

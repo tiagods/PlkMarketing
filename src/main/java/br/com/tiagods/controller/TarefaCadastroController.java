@@ -1,15 +1,18 @@
 package br.com.tiagods.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.GregorianCalendar;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.util.storage.PathStorageEnum;
+import br.com.tiagods.util.storage.Storage;
+import br.com.tiagods.util.storage.StorageProducer;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -38,8 +41,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -93,6 +98,8 @@ public class TarefaCadastroController extends UtilsController implements Initial
 
     @FXML
     private JFXButton btBuscar;
+    @FXML
+	private JFXTextField txFormulario;
 	
     private Stage stage;
     
@@ -104,7 +111,8 @@ public class TarefaCadastroController extends UtilsController implements Initial
 
 	private NegociosTarefasContatosImpl contatos;
 	private NegociosTarefasPropostasImpl propostas;
-    
+    private Storage storage = StorageProducer.newConfig();
+
 	public TarefaCadastroController(Stage stage, NegocioTarefa tarefa,Object entidade) {
 		this.stage = stage;
 		this.entidade = entidade;
@@ -173,13 +181,10 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		
 		tggFinalizado.setSelected(false);
 		
-		ChangeListener<Boolean> listener = new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				txIdPesquisa.setText("");
-				txNomePesquisa.setText("");
-			}
-		};
+		ChangeListener<Boolean> listener = (observable, oldValue, newValue) -> {
+            txIdPesquisa.setText("");
+            txNomePesquisa.setText("");
+        };
 		rbNegocioContato.selectedProperty().addListener(listener);
 		rbNegocioProposta.selectedProperty().addListener(listener);
 		
@@ -216,6 +221,71 @@ public class TarefaCadastroController extends UtilsController implements Initial
 			close();
 		}
 	}
+	@FXML
+	private void operacaoArquivo(ActionEvent event){
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setTitle("");
+		ButtonType incluir = new ButtonType("Anexar Arquivo");
+		ButtonType remover = new ButtonType("Remover");
+		ButtonType visualizar = new ButtonType("Visualizar");
+		ButtonType cancelar = ButtonType.CANCEL;
+		alert.getButtonTypes().clear();
+		alert.getButtonTypes().add(incluir);
+		if(!txFormulario.getText().trim().equals(""))
+			alert.getButtonTypes().addAll(remover,visualizar);
+		alert.getButtonTypes().add(cancelar);
+		Optional<ButtonType> result = alert.showAndWait();
+
+		if(result.get().equals(incluir)){
+			Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
+			filters.add(new FileChooser.ExtensionFilter("pdf, doc, docx", "*.doc","*.pdf","*.docx"));
+			File file = storage.carregarArquivo(new Stage(), filters);
+			if (file != null) {
+				String novoNome = storage.gerarNome(file, PathStorageEnum.TAREFA_DOCUMENTO.getDescricao());
+				try{
+					storage.uploadFile(file, novoNome);
+					txFormulario.setText(novoNome);
+				} catch(Exception e) {
+					alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Armazenamento de arquivo");
+					alert.setHeaderText("Não foi possivel enviar o arquivo para o servidor");
+					alert.setContentText("Um erro desconhecido não permitiu o envio do arquivo para uma pasta do servidor\n"+e);
+					alert.showAndWait();
+					e.printStackTrace();
+				}
+			}
+		}
+		else if(!txFormulario.getText().equals("")) {
+			if (result.get().equals(remover)) {
+				try {
+					if(tarefa!=null){
+						try {
+							loadFactory();
+							storage.delete(txFormulario.getText());
+							txFormulario.setText("");
+							tarefa.setFormulario("");
+							if(tarefa instanceof NegocioTarefaContato) {
+								contatos = new NegociosTarefasContatosImpl(getManager());
+								this.tarefa = contatos.save((NegocioTarefaContato)tarefa);
+							}
+							else if(tarefa instanceof NegocioTarefaProposta) {
+								propostas = new NegociosTarefasPropostasImpl(getManager());
+								this.tarefa = propostas.save((NegocioTarefaProposta)tarefa);
+							}
+						}catch (Exception e) {
+							alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
+						}finally {
+							close();
+						}
+					}
+
+				} catch (Exception e) {
+				}
+			} else if (result.get().equals(visualizar)) {
+				visualizarDocumento(txFormulario.getText(), storage);
+			}
+		}
+	}
 	void preencherFormulario(NegocioTarefa tarefa) {
 		NegocioTarefa.TipoTarefa tipo =  tarefa.getTipoTarefa();
 		if(tipo.equals(NegocioTarefa.TipoTarefa.EMAIL)) rbEmail.setSelected(true);
@@ -233,7 +303,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		}
 		else if(tarefa instanceof NegocioTarefaProposta) {
 			rbNegocioProposta.setSelected(true);
-			NegocioProposta proposta = ((NegocioTarefaProposta)tarefa).getNegocio();
+			NegocioProposta proposta = (tarefa).getNegocio();
 			if(proposta!=null) {
 				txIdPesquisa.setText(""+proposta.getId());
 				txNomePesquisa.setText(proposta.toString());
@@ -247,6 +317,8 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		tpTime.setValue(tarefa.getDataEvento().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalTime());
 		
 		tggFinalizado.setSelected(tarefa.getFinalizado()==1);
+
+		txFormulario.setText(tarefa.getFormulario());
 		this.tarefa=tarefa;
 	}
     @FXML
@@ -289,6 +361,17 @@ public class TarefaCadastroController extends UtilsController implements Initial
     			(dpData.getValue().atTime(tpTime.getValue()).atZone(ZoneId.systemDefault())));
     	
     	tarefa.setFinalizado(tggFinalizado.isSelected()?1:0);
+		if (!txFormulario.getText().equals("") && !txFormulario.getText().startsWith(PathStorageEnum.TAREFA_DOCUMENTO.getDescricao()+"/")) {
+			try {
+				storage.transferTo(txFormulario.getText(), PathStorageEnum.TAREFA_DOCUMENTO.getDescricao()+"/"+txFormulario.getText());
+				txFormulario.setText(PathStorageEnum.TAREFA_DOCUMENTO.getDescricao()+"/" + txFormulario.getText());
+				tarefa.setFormulario(txFormulario.getText());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		else
+			tarefa.setFormulario(txFormulario.getText());
     	try {
     		loadFactory();
     		if(tarefa instanceof NegocioTarefaContato) {

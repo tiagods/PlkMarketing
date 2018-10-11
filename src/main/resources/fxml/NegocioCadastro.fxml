@@ -23,9 +23,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.Rating?>
-<?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1020.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1020.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER">
          <children>
@@ -162,7 +161,7 @@
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="93.0" prefWidth="415.0" GridPane.rowIndex="5">
                            <children>
-                              <JFXButton onAction="#buscar" styleClass="btDefault" text="Selecionar Contato">
+                              <JFXButton alignment="TOP_RIGHT" onAction="#buscar" styleClass="btDefault" text="Selecionar Contato">
                                  <graphic>
                                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -196,7 +195,7 @@
             </VBox>
             <ScrollPane prefHeight="320.0" prefWidth="542.0" styleClass="menu-top--linear-background">
                <content>
-                  <Accordion prefHeight="385.0" prefWidth="541.0" styleClass="menu-top--linear-background">
+                  <Accordion fx:id="accordion" prefHeight="385.0" prefWidth="541.0" styleClass="menu-top--linear-background">
                     <panes>
                         <TitledPane animated="false" layoutX="10.0" layoutY="10.0" styleClass="menu-top--linear-background" text="Definiçoes">
                            <content>
@@ -224,7 +223,7 @@
                               </AnchorPane>
                            </content>
                         </TitledPane>
-                      <TitledPane animated="false" text="Detalhes do Contato">
+                      <TitledPane fx:id="tpContato" animated="false" text="Detalhes do Contato">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
                                  <children>
@@ -249,7 +248,7 @@
                                                    </GridPane.margin>
                                                    <children>
                                                       <JFXTextField fx:id="txEmail" prefHeight="26.0" prefWidth="238.0" />
-                                                      <JFXButton disable="true" onAction="#mailSend" styleClass="btDefault">
+                                                      <JFXButton onAction="#mailSend" styleClass="btDefault">
                                                          <graphic>
                                                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
@@ -271,7 +270,7 @@
                                                    </GridPane.margin>
                                                    <children>
                                                       <JFXTextField fx:id="txSite" prefHeight="26.0" prefWidth="238.0" />
-                                                      <JFXButton disable="true" onAction="#openBrowser" styleClass="btDefault">
+                                                      <JFXButton onAction="#openBrowser" styleClass="btDefault">
                                                          <graphic>
                                                             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                                                <image>
@@ -322,7 +321,7 @@
                                           <HBox>
                                              <children>
                                                 <Label prefHeight="26.0" prefWidth="36.0" text="R$:" />
-                                                <MaskTextField fx:id="txHonorario" mask="N!,NN" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
+                                                <JFXTextField fx:id="txHonorario" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets bottom="20.0" />
@@ -343,7 +342,7 @@
                                                       </ImageView>
                                                    </graphic>
                                                 </JFXButton>
-                                                <MaskTextField fx:id="txValorServico" mask="N!,NN" prefHeight="26.0" prefWidth="115.0" />
+                                                <JFXTextField fx:id="txValorServico" prefHeight="26.0" prefWidth="115.0" />
                                                 <JFXButton onAction="#salvarServico" styleClass="btDefault" text="Incluir Serviço">
                                                    <graphic>
                                                       <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -364,34 +363,70 @@
                               </AnchorPane>
                         </content>
                       </TitledPane>
-                        <TitledPane animated="false" layoutX="10.0" layoutY="114.0" text="Documentos" visible="false">
+                        <TitledPane animated="false" layoutX="10.0" layoutY="114.0" text="Documentos/Propostas">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="tarefas--linear-background">
                                  <children>
-                                    <Label layoutX="21.0" layoutY="16.0" text="Nome:" />
-                                    <JFXButton layoutX="359.0" layoutY="30.0" onAction="#anexarDocumento" styleClass="btDefault" text="Anexar Documento">
-                                       <graphic>
-                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@imagens/button_upload.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </JFXButton>
-                                    <TableView fx:id="tbDocumentos" layoutX="8.0" layoutY="118.0" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
-                                    <JFXButton layoutX="358.0" layoutY="72.0" onAction="#salvarDocumento" styleClass="btDefault" text="Incluir Documentos">
-                                       <graphic>
-                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@imagens/button_save.png" />
-                                             </image>
-                                          </ImageView>
-                                       </graphic>
-                                    </JFXButton>
-                                    <JFXTextField fx:id="txDocumentoNome" layoutX="21.0" layoutY="49.0" maxWidth="120.0" prefHeight="26.0" prefWidth="120.0" />
-                                    <Label layoutX="162.0" layoutY="16.0" text="Descriçao:" />
-                                    <JFXTextArea fx:id="txDocumentoDescricao" layoutX="160.0" layoutY="38.0" maxWidth="189.0" prefHeight="26.0" prefWidth="189.0" />
-                                    <JFXTextField fx:id="txDocumentoLocalizacao" editable="false" layoutX="21.0" layoutY="78.0" maxWidth="327.0" prefHeight="26.0" prefWidth="327.0" />
+                                    <VBox layoutX="21.0" layoutY="16.0">
+                                       <children>
+                                          <HBox>
+                                             <children>
+                                                <Label prefHeight="17.0" prefWidth="117.0" text="Nome:">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <Label text="Descriçao:" />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <JFXTextField fx:id="txDocumentoNome" maxWidth="120.0" prefHeight="37.0" prefWidth="120.0">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </JFXTextField>
+                                                <JFXTextArea fx:id="txDocumentoDescricao" maxWidth="189.0" prefHeight="26.0" prefWidth="189.0">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </JFXTextArea>
+                                                <JFXButton onAction="#anexarDocumento" styleClass="btDefault" text="Anexar Documento">
+                                                   <graphic>
+                                                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@imagens/button_upload.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </JFXButton>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <padding>
+                                                <Insets bottom="20.0" />
+                                             </padding>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <JFXTextField fx:id="txFormulario" editable="false" maxWidth="327.0" prefHeight="26.0" prefWidth="327.0" />
+                                                <JFXButton onAction="#salvarDocumento" styleClass="btDefault" text="Salvar">
+                                                   <graphic>
+                                                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@imagens/button_save.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </JFXButton>
+                                                <Label fx:id="txDocumentoLocation" visible="false" />
+                                                <Label fx:id="txDocumentoId" visible="false" />
+                                             </children>
+                                          </HBox>
+                                          <TableView fx:id="tbDocumentos" prefHeight="138.0" prefWidth="518.0" styleClass="table" />
+                                       </children>
+                                    </VBox>
                                  </children>
                               </AnchorPane>
                            </content>

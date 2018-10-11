@@ -1,7 +1,11 @@
 package br.com.tiagods.controller;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,6 +27,13 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import br.com.tiagods.util.storage.PathStorageEnum;
+import br.com.tiagods.util.storage.Storage;
+import br.com.tiagods.util.storage.StorageProducer;
+import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
 import org.controlsfx.control.Rating;
 import org.fxutils.maskedtextfield.MaskTextField;
 import org.fxutils.maskedtextfield.MaskedTextField;
@@ -68,15 +79,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -128,7 +131,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
     private JFXDatePicker dtFinal;
 
     @FXML
-    private MaskTextField txHonorario;
+    private JFXTextField txHonorario;
 
     @FXML
     private JFXTextArea txDescricao;
@@ -170,7 +173,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
     private JFXTextArea txDetalhesOrigem;
 
     @FXML
-    private MaskTextField txValorServico;
+    private JFXTextField txValorServico;
 
     @FXML
     private TableView<ServicoContratado> tbServico;
@@ -188,7 +191,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
     private JFXTextField txDocumentoNome;
 
     @FXML
-    private JFXTextField txDocumentoLocalizacao;
+    private JFXTextField txFormulario;
     
     @FXML
     private JFXTextField txIdPesquisa;
@@ -205,8 +208,21 @@ public class NegocioCadastroController extends UtilsController implements Initia
     @FXML
     private Label txServicoId;
 
+	@FXML
+	private Label txDocumentoLocation;
+
+	@FXML
+	private Label txDocumentoId;
+
+	@FXML
+	private Accordion accordion;
+	@FXML
+	private TitledPane tpContato;
+
 	private NegocioProposta proposta;
 	private Stage stage;
+	private Contato contato;
+
 	private NegocioPropostaImpl propostas;
 	private NegociosTarefasPropostasImpl tarefas;
 	private NegocioNiveisImpl niveis;
@@ -216,10 +232,13 @@ public class NegocioCadastroController extends UtilsController implements Initia
 	private UsuariosImpl usuarios;
 	private NegocioServicoContratadoImpl contratados;
 	private NegocioServicoAgregadoImpl agregados;
-	
-	public NegocioCadastroController(Stage stage, NegocioProposta proposta) {
+
+	Storage storage = StorageProducer.newConfig();
+
+	public NegocioCadastroController(Stage stage, NegocioProposta proposta, Contato contato) {
 		this.stage = stage;
 		this.proposta = proposta;
+		this.contato = contato;
 	}
 	private void abrirTarefa(NegocioTarefaProposta t) {
 		try {
@@ -248,7 +267,23 @@ public class NegocioCadastroController extends UtilsController implements Initia
 	}
     @FXML
     void anexarDocumento(ActionEvent event) {
-
+			Set<FileChooser.ExtensionFilter> filters = new HashSet<>();
+			filters.add(new FileChooser.ExtensionFilter("pdf, doc, docx", "*.doc","*.pdf","*.docx"));
+			File file = storage.carregarArquivo(new Stage(), filters);
+			if (file != null) {
+				String novoNome = storage.gerarNome(file, PathStorageEnum.NEGOCIO_DOCUMENTO.getDescricao());
+				try{
+					storage.uploadFile(file, novoNome);
+					txFormulario.setText(novoNome);
+				} catch(Exception e) {
+					Alert alert = new Alert(Alert.AlertType.ERROR);
+					alert.setTitle("Armazenamento de arquivo");
+					alert.setHeaderText("Não foi possivel enviar o arquivo para o servidor");
+					alert.setContentText("Um erro desconhecido não permitiu o envio do arquivo para uma pasta do servidor\n"+e);
+					alert.showAndWait();
+					e.printStackTrace();
+				}
+			}
     }
     
     @FXML
@@ -368,18 +403,33 @@ public class NegocioCadastroController extends UtilsController implements Initia
 			loadFactory();
 			combos();
 			if(proposta!=null) preencherFormulario(this.proposta);
-			
+			else if(proposta==null && contato!=null){
+				preencherContato(contato,true);
+			}
 		}catch(PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
 		}finally {
 			close();
 		}	
 	}
+	void limparDocumentos(){
+		txDocumentoId.setText("");
+		txDocumentoLocation.setText("");
+		txDocumentoNome.setText("");
+		txDocumentoDescricao.setText("");
+		txFormulario.setText("");
+	}
     @FXML
     void mailSend(ActionEvent event) {
-    	
+		if(!txEmail.getText().trim().equals("")){
+			try {
+				URI url = new URI("mailto", txEmail.getText(), null);
+				Desktop.getDesktop().mail(url);
+			} catch (IOException e) {} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
     }
-
     @FXML
     void novaTarefa(ActionEvent event) {
     	if(proposta==null) {
@@ -388,10 +438,17 @@ public class NegocioCadastroController extends UtilsController implements Initia
     	else
     		abrirTarefa(null);
     }
-
     @FXML
     void openBrowser(ActionEvent event) {
-
+		if(!txSite.getText().trim().equals("")){
+			try {
+				Desktop.getDesktop().browse(new URI(txSite.getText()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
     }
     private void preencherContato(Contato c,boolean caixaSelecao) {
     	txIdPesquisa.setText(String.valueOf(c.getId()));
@@ -411,6 +468,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 			cbOrigem.setValue(c.getOrigem());
 			cbServico.setValue(c.getServico());
 		}
+		accordion.setExpandedPane(tpContato);
 	}
     private void preencherFormulario(NegocioProposta proposta) {
 		txNome.setText(proposta.getNome());
@@ -449,11 +507,13 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		if(proposta.getNegocioContato()!=null) {
 			Contato c = proposta.getNegocioContato();
 			preencherContato(c,false);
+
 		}		
 		tbServico.getItems().clear();
 		tbServico.getItems().addAll(proposta.getServicosContratados());
 		tbDocumentos.getItems().clear();
 		tbDocumentos.getItems().addAll(proposta.getDocumentos());
+		tbTarefas.getItems().clear();
 		tbTarefas.getItems().addAll(proposta.getTarefas());
 	}
     @FXML
@@ -508,16 +568,25 @@ public class NegocioCadastroController extends UtilsController implements Initia
     	
     	Set<NegocioDocumento> documentos = new HashSet<>();
     	documentos.addAll(tbDocumentos.getItems());
-    	proposta.setDocumentos(documentos);
+		documentos.stream().forEach(c->{
+			if (!c.getUrl().equals("") && !c.getUrl().startsWith(PathStorageEnum.NEGOCIO_DOCUMENTO.getDescricao()+"/")) {
+				try {
+					String to = PathStorageEnum.NEGOCIO_DOCUMENTO.getDescricao()+"/"+c.getUrl();
+					storage.transferTo(c.getUrl(), to);
+					c.setUrl(to);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		proposta.setDocumentos(documentos);
     	
     	Set<ServicoContratado> servicos = new HashSet<>();
     	servicos.addAll(tbServico.getItems());
-    	proposta.setServicosContratados(servicos);
-    	
+		proposta.setServicosContratados(servicos);
     	try {
     		Contato contato = new Contato(Long.parseLong(txIdPesquisa.getText()));
     		proposta.setNegocioContato(contato);
-    		
     		loadFactory();
     		propostas = new NegocioPropostaImpl(getManager());
     		this.proposta = propostas.save(proposta);
@@ -532,6 +601,37 @@ public class NegocioCadastroController extends UtilsController implements Initia
 
     @FXML
     void salvarDocumento(ActionEvent event) {
+		if(txFormulario.getText().equals("") || txDocumentoNome.getText().trim().equals("")) {
+			alert(AlertType.ERROR,"Erro","","Nome e Documento são obrigatórios!",null,false);
+			return;
+		}
+		else {
+			try {
+				NegocioDocumento documento = new NegocioDocumento();
+				if(txDocumentoId.getText().trim().length()>0) {
+					documento.setId(Long.parseLong(txDocumentoId.getText()));
+				}
+				int location = -1;
+				if(txDocumentoLocation.getText().trim().length()>0) {
+					location = Integer.parseInt(txDocumentoLocation.getText());
+				}
+				documento.setData(Calendar.getInstance());
+				documento.setNegocio(this.proposta);
+				documento.setNome(txDocumentoNome.getText());
+				documento.setDescricao(txDocumentoDescricao.getText());
+				documento.setUrl(txFormulario.getText());
+				documento.setUsuario(UsuarioLogado.getInstance().getUsuario());
+				if(location!=-1) {
+					tbDocumentos.getItems().set(location, documento);
+				}
+				else
+					tbDocumentos.getItems().add(documento);
+				limparDocumentos();
+				tbDocumentos.refresh();
+			}catch(Exception e) {
+				alert(AlertType.ERROR,"Erro","","Falha ao incluir registro",e,true);
+			}
+		}
 
     }
 
@@ -617,9 +717,60 @@ public class NegocioCadastroController extends UtilsController implements Initia
 			}
 		});
     	TableColumn<NegocioDocumento, Usuario> colunaUsuario = new  TableColumn<>("Usuario");
-    	colunaUsuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
-    	
-    	tbDocumentos.getColumns().addAll(colunaNome,colunaDescricao,colunaData,colunaUsuario);
+		colunaUsuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
+		TableColumn<NegocioDocumento, Number> colunaEditar = new  TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<NegocioDocumento,Number>(){
+			JFXButton button = new JFXButton();//Editar
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(empty){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.getStyleClass().add("btDefault");
+					try {buttonTable(button, IconsEnum.BUTTON_EDIT);}catch (IOException e) {}
+					button.setOnAction(event -> {
+						NegocioDocumento doc = tbDocumentos.getItems().get(getIndex());
+						txDocumentoDescricao.setText(doc.getDescricao());
+						txDocumentoId.setText(doc.getId()==null?"":String.valueOf(doc.getId()));
+						txDocumentoNome.setText(doc.getNome());
+						txDocumentoLocation.setText(String.valueOf(getIndex()));
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		TableColumn<NegocioDocumento, Number> colunaExcluir = new  TableColumn<>("");
+		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaExcluir.setCellFactory(param -> new TableCell<NegocioDocumento,Number>(){
+			JFXButton button = new JFXButton();//excluir
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if(empty){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.getStyleClass().add("btDefault");
+					try {
+						buttonTable(button,IconsEnum.BUTTON_REMOVE);
+					}catch (IOException e) {
+					}
+					button.setOnAction(event -> {
+						tbDocumentos.getItems().remove(getIndex());
+						limparDocumentos();
+					});
+					setGraphic(button);
+				}
+			}
+		});
+    	tbDocumentos.getColumns().addAll(colunaNome,colunaDescricao,colunaData,colunaUsuario,colunaEditar,colunaExcluir);
     	
     }
     void tabelaServicos() {
@@ -945,4 +1096,5 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		tbTarefas.setTableMenuButtonVisible(true);
 		tbTarefas.setFixedCellSize(50);
 	}
+
 }

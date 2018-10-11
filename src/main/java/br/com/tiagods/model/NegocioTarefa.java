@@ -30,7 +30,6 @@ import br.com.tiagods.modelcollections.NegocioProspeccao;
 @DiscriminatorColumn(name = "tarefa_type")
 public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
-	
 	public enum TipoTarefa{
 		REUNIAO("Reunião"), PROPOSTA("Proposta"), 
 		TELEFONE("Telefone"),EMAIL("E-Mail"),WHATSAPP ("WhatsApp");
@@ -90,7 +89,10 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	@ManyToOne
 	@JoinColumn(name="TAR_PROSPECCAO_COD")
 	private NegocioProspeccao prospeccao;
-	
+
+	@Column(name="TAR_FORMULARIO")
+	private String formulario;
+
 	@Column(name="TAR_FINALIZADO")
 	private int finalizado=0;
 	@Column(name="TAR_ALERTAENVIADO")
@@ -263,7 +265,14 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	public void setAlertaEnviado(int alertaEnviado) {
 		this.alertaEnviado = alertaEnviado;
 	}
-	
+
+	public String getFormulario() {
+		return formulario;
+	}
+	public void setFormulario(String formulario) {
+		this.formulario = formulario;
+	}
+
 	@Override
 	public String toString() {
 		return "";

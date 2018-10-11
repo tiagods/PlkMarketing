@@ -3,6 +3,8 @@ package br.com.tiagods.controller;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -131,6 +133,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	private NegocioOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	private NegociosListasImpl listas;
+	private NegocioPropostaImpl propostas;
 	private UsuariosImpl usuarios;
 
 	private Paginacao paginacao;
@@ -163,7 +166,34 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 			close();
 		}
 	}
-
+	void abrirCadastroNegocio(NegocioProposta proposta,Contato contato) {
+		try {
+			loadFactory();
+			if (proposta != null) {
+				propostas = new NegocioPropostaImpl(getManager());
+				proposta = propostas.findById(proposta.getId());
+			}
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
+			loader.setController(new NegocioCadastroController(stage, proposta,contato));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+			stage.setOnHiding(event -> {
+				try {
+					loadFactory();
+					filtrar(this.paginacao);
+				} catch (Exception e) {
+					alert(AlertType.ERROR, "Error", "", "Erro ao abrir cadastro", e, true);
+				} finally {
+					close();
+				}
+			});
+		} catch (IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
+		} finally {
+			close();
+		}
+	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	void combos() {
 		NegocioCategoria categoria = new NegocioCategoria(-1L, "Categoria");
@@ -567,6 +597,31 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 
 		TableColumn<Contato, String> colunaEmail = new TableColumn<>("E-Mail");
 		colunaEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+		colunaEmail.setCellFactory(param -> new TableCell<Contato, String>() {
+			JFXButton button = new JFXButton();//
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item==null || item.equals("") || empty) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					button.getStyleClass().add("btDefaultText");
+					try {
+						button.setText(item);
+						buttonTable(button, IconsEnum.BUTTON_MAIL);
+						final URI url = new URI("mailto", item, null);
+						button.setOnAction(event -> {
+							try {
+								Desktop.getDesktop().mail(url);
+							} catch (IOException e) {}
+						});
+						setGraphic(button);
+					} catch (URISyntaxException | IOException e) {}
+				}
+			}
+		});
 		colunaEmail.setPrefWidth(70);
 
 		TableColumn<Contato, NegocioOrigem> colunaOrigem = new TableColumn<>("Origem");
@@ -592,25 +647,30 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		TableColumn<Contato, NegocioProposta> colunaUtimoNegocio = new TableColumn<>("Negocio");
 		colunaUtimoNegocio.setCellValueFactory(new PropertyValueFactory<>("ultimoNegocio"));
 		colunaUtimoNegocio.setCellFactory(param -> new TableCell<Contato, NegocioProposta>() {
+			JFXButton button = new JFXButton();//
 			@Override
 			protected void updateItem(NegocioProposta item, boolean empty) {
 				super.updateItem(item, empty);
-				if (item == null) {
-					setStyle("");
-					setText("");
-					setGraphic(null);
-				} else {
-					setText("");
-				}
+				button.getStyleClass().add("btDefault");
+				try {
+					if (empty) {
+						setStyle("");
+						setText("");
+						setGraphic(null);
+					}
+					else {
+						IconsEnum en = item==null?IconsEnum.BUTTON_ADD:IconsEnum.BUTTON_PROPOSTA;
+						buttonTable(button, en);
+						setGraphic(button);
+					}
+					button.setOnAction(event -> abrirCadastroNegocio(item, tbPrincipal.getItems().get(getIndex())));
+				}catch (IOException e){}
 			}
 		});
-		colunaUtimoNegocio.setPrefWidth(40);
-
 		TableColumn<Contato, Number> colunaEditar = new TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<Contato, Number>() {
-			JFXButton button = new JFXButton();// Editar
-
+			JFXButton button = new JFXButton();//
 			@Override
 			protected void updateItem(Number item, boolean empty) {
 				super.updateItem(item, empty);

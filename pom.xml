@@ -94,10 +94,12 @@
 			<version>8.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.fxutil.maskedtextfield</groupId>
-			<artifactId>maskedtextfield</artifactId>
-			<version>1.2</version>
-		</dependency>
+            <groupId>org.fxutil.maskedtextfield</groupId>
+            <artifactId>maskedtextfield</artifactId>
+            <version>1.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/maskedtextfield-1.2.jar</systemPath>
+        </dependency>
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
 			<groupId>org.json</groupId>
@@ -119,5 +121,11 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.5</version>
         </dependency>
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>1.11.289</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -5,14 +5,12 @@ import java.io.IOException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
-import javafx.event.EventHandler;
-import javafx.stage.WindowEvent;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import br.com.tiagods.config.JPAConfig;
+import br.com.tiagods.config.init.JPAConfig;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.controller.LoginController;
 import br.com.tiagods.util.Atualizador;
