@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -131,9 +132,17 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 	}
 	void filtrar() {
 		propostas = new NegocioPropostaImpl(getManager());
-		Pair<List<NegocioProposta>,Paginacao> lista = propostas.filtrar(null,TipoStatus.STATUS, TipoEtapa.ETAPA, 
-				cbCategoria.getValue(), cbNivel.getValue(), cbOrigem.getValue(), 
-				cbServico.getValue(), cbAtendente.getValue(), null, null, null, "criadoEm", txPesquisa.getText());
+
+		NegocioPropostaFilter filter = new NegocioPropostaFilter();
+		filter.setCategoria(cbCategoria.getValue());
+		filter.setNivel(cbNivel.getValue());
+		filter.setOrigem(cbOrigem.getValue());
+		filter.setServico(cbServico.getValue());
+		filter.setAtendente(cbAtendente.getValue());
+		filter.setPesquisa(txPesquisa.getText());
+
+		Pair<List<NegocioProposta>,Paginacao> lista = propostas.filtrar(null,filter);
+
 		tbPrincipal.getItems().clear();
 		tbPrincipal.getItems().addAll(lista.getKey());
 	}

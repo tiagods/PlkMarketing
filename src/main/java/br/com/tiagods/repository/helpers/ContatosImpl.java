@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
@@ -90,7 +89,7 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 		criterios.forEach(c-> criteria.add(c));
 		criteria.addOrder(Order.desc("criadoEm"));
 
-		return super.filterPagination(pagination, criteria, criterios);
+		return super.filterWithPagination(pagination, criteria, criterios);
 	}
 	
 }

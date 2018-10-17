@@ -54,21 +54,23 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 	@SuppressWarnings("unchecked")
 	public Pair<List<Entity>,Paginacao> getAll(Paginacao page){
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
-		return filterPagination(page, criteria, new ArrayList<Criterion>());
+		return filterWithPagination(page, criteria, new ArrayList<>());
+	}
+	public long countResult(Criteria criteria, List<Criterion> criterios){
+		criterios.forEach(c-> criteria.add(c));
+		criteria.setProjection(Projections.rowCount());
+		return (Long)criteria.uniqueResult();
 	}
 	@SuppressWarnings("unchecked")
-	public Pair<List<Entity>,Paginacao> filterPagination(Paginacao page, Criteria criteria, List<Criterion> criterios) {
+	public Pair<List<Entity>,Paginacao> filterWithPagination(Paginacao page, Criteria criteria, List<Criterion> criterios) {
 		if(page!=null) {
 			criteria.setFirstResult(page.getPrimeiroRegistro());
 			criteria.setMaxResults(page.getLimitePorPagina());
 		}
 		List<Entity> firstPage = (List<Entity>)criteria.list();
-		
+
 		Criteria criteria2 = getEntityManager().unwrap(Session.class).createCriteria(entityClass);
-		criterios.forEach(c-> criteria2.add(c));
-		criteria2.setProjection(Projections.rowCount());
-		Long count = (Long) criteria2.uniqueResult();
-		if(page!=null) page.setTotalRegistros(count);
+		if(page!=null) page.setTotalRegistros(countResult(criteria2,criterios));
 		return new Pair<>(firstPage, page);
 	}
 	@SuppressWarnings("unchecked")

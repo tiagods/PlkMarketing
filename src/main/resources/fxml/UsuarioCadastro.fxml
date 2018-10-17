@@ -15,14 +15,14 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskedTextField?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="login--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" styleClass="login--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox layoutX="-2.0" layoutY="8.0" prefHeight="600.0" prefWidth="900.0">
          <children>
             <AnchorPane fx:id="pnCadastro" prefHeight="546.0" prefWidth="781.0">
                <children>
                   <JFXTextField fx:id="txCodigo" disable="true" layoutX="15.0" layoutY="14.0" prefHeight="26.0" prefWidth="40.0" />
-                  <Label layoutX="15.0" layoutY="48.0" prefHeight="15.0" prefWidth="360.0" text="Nome:">
+                  <Label layoutX="15.0" layoutY="48.0" prefHeight="17.0" prefWidth="225.0" text="Nome:">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -142,6 +142,12 @@
                      </font>
                   </Label>
                   <JFXComboBox fx:id="cbNivel" layoutX="251.0" layoutY="64.0" prefHeight="26.0" prefWidth="100.0" />
+                  <JFXComboBox fx:id="cbStatus" layoutX="365.0" layoutY="64.0" prefHeight="26.0" prefWidth="100.0" />
+                  <Label layoutX="368.0" layoutY="45.0" prefHeight="17.0" prefWidth="100.0" text="Status:">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
             <HBox alignment="CENTER_RIGHT" prefHeight="78.0" prefWidth="900.0">

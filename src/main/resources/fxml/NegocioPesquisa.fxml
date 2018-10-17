@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label styleClass="label-title" text="Gestao de Negocios" />
       <VBox prefHeight="200.0" prefWidth="100.0">
@@ -53,12 +53,12 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
                <children>
-                  <JFXComboBox fx:id="cbPesquisaData" prefHeight="26.0" prefWidth="117.0" promptText="Data Criaçao" style="-fx-background-color: #E7DFDD;">
+                  <JFXComboBox fx:id="cbPesquisaData" prefHeight="26.0" prefWidth="117.0" promptText="Data">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </JFXComboBox>
-                  <JFXDatePicker fx:id="dataInicial" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault">
+                  <JFXDatePicker fx:id="dataInicial" minWidth="120.0" prefWidth="120.0">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXDatePicker>
@@ -66,24 +66,22 @@
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></Label>
-                  <JFXDatePicker fx:id="dataFinal" minWidth="120.0" prefWidth="120.0" style="-fx-background-color: #E7DFDD;" styleClass="btDefault">
+                  <JFXDatePicker fx:id="dataFinal" minWidth="120.0" prefWidth="120.0">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin></JFXDatePicker>
                </children>
             </HBox>
-            <HBox alignment="CENTER" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
+            <HBox alignment="BOTTOM_CENTER" layoutX="10.0" layoutY="110.0" prefHeight="116.0" prefWidth="1000.0">
                <children>
-                  <JFXTextField fx:id="txPesquisa" onKeyTyped="#pesquisar" promptText="Pesquisar" />
-                  <Label text="Calassificar por">
+                  <JFXTextField fx:id="txPesquisa" onKeyTyped="#pesquisar" promptText="Pesquisar">
                      <HBox.margin>
-                        <Insets left="20.0" right="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <JFXComboBox fx:id="cbClassificar" prefHeight="26.0" prefWidth="117.0" promptText="Data Criaçao" style="-fx-background-color: #E7DFDD;" />
+                        <Insets right="20.0" />
+                     </HBox.margin></JFXTextField>
+                  <JFXComboBox fx:id="cbClassificar" prefHeight="26.0" prefWidth="117.0" promptText="Classificação" />
                </children>
                <VBox.margin>
-                  <Insets bottom="20.0" />
+                  <Insets />
                </VBox.margin>
             </HBox>
             <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="144.0" prefHeight="100.0" prefWidth="200.0">
@@ -112,7 +110,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Label>
-            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" promptText="100" />
+            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" />
             <Pagination fx:id="pagination" pageCount="10" prefHeight="47.0" prefWidth="320.0" />
          </children>
       </HBox>

@@ -45,14 +45,9 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
-			super.loadFactory();
-			usuarios = new UsuariosImpl(super.getManager());
-			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(usuarios.getAll());
+			filtrar();
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
-		}finally {
-			super.close();
 		}
 	}
 	
@@ -106,8 +101,8 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 
 	private void filtrar() {
 		try {
-			super.loadFactory();
-			usuarios = new UsuariosImpl(super.getManager());
+			loadFactory();
+			usuarios = new UsuariosImpl(getManager());
 			tbPrincipal.getItems().clear();
 			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,ConstantesTemporarias.pessoa_nome);
 			tbPrincipal.getItems().addAll(usuarioList);

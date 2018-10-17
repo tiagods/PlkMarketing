@@ -29,16 +29,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	@Column(name="ultimo_acesso")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar ultimoAcesso;
-	@Transient
-	private int totalTarefas=0;
-	@Transient
-	private int totalTarefasPendentes=0;
-	@Transient
-	private int totalEmpresas=0;
-	@Transient
-	private int totalPessoas=0;
-	@Transient
-	private int totalNegocios=0;
 	
 	@ManyToOne 
 	@JoinColumn(name="departamento_id")
@@ -109,66 +99,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	 */
 	public void setUltimoAcesso(Calendar ultimoAcesso) {
 		this.ultimoAcesso = ultimoAcesso;
-	}
-	/**
-	 * @return the totalTarefas
-	 */
-	public int getTotalTarefas() {
-		return totalTarefas;
-	}
-	/**
-	 * @param totalTarefas the totalTarefas to set
-	 */
-	public void setTotalTarefas(int totalTarefas) {
-		this.totalTarefas = totalTarefas;
-	}
-	/**
-	 * @return the totalTarefasPendentes
-	 */
-	public int getTotalTarefasPendentes() {
-		return totalTarefasPendentes;
-	}
-	/**
-	 * @param totalTarefasPendentes the totalTarefasPendentes to set
-	 */
-	public void setTotalTarefasPendentes(int totalTarefasPendentes) {
-		this.totalTarefasPendentes = totalTarefasPendentes;
-	}
-	/**
-	 * @return the totalEmpresas
-	 */
-	public int getTotalEmpresas() {
-		return totalEmpresas;
-	}
-	/**
-	 * @param totalEmpresas the totalEmpresas to set
-	 */
-	public void setTotalEmpresas(int totalEmpresas) {
-		this.totalEmpresas = totalEmpresas;
-	}
-	/**
-	 * @return the totalPessoas
-	 */
-	public int getTotalPessoas() {
-		return totalPessoas;
-	}
-	/**
-	 * @param totalPessoas the totalPessoas to set
-	 */
-	public void setTotalPessoas(int totalPessoas) {
-		this.totalPessoas = totalPessoas;
-	}
-	/**
-	 * @return the totalNegocios
-	 */
-	public int getTotalNegocios() {
-		return totalNegocios;
-	}
-	/**
-	 * @param totalNegocios the totalNegocios to set
-	 */
-	public void setTotalNegocios(int totalNegocios) {
-		this.totalNegocios = totalNegocios;
 	}
 	/**
 	 * @return the departamento

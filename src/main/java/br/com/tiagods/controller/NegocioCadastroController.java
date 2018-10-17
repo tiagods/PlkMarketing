@@ -700,7 +700,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
     	TableColumn<NegocioDocumento, String> colunaDescricao = new  TableColumn<>("Descricao");
     	colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
     	
-    	TableColumn<NegocioDocumento, Calendar> colunaData = new  TableColumn<>("Usuario");
+    	TableColumn<NegocioDocumento, Calendar> colunaData = new  TableColumn<>("Data");
     	colunaData.setCellValueFactory(new PropertyValueFactory<>("data"));
     	colunaData.setCellFactory(param -> new TableCell<NegocioDocumento,Calendar>(){
 			@Override
@@ -716,6 +716,34 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 			}
 		});
+
+		TableColumn<NegocioDocumento, String> colunaAnexo = new  TableColumn<>("");
+		colunaAnexo.setCellValueFactory(new PropertyValueFactory<>("url"));
+		colunaAnexo.setCellFactory(param -> new TableCell<NegocioDocumento,String>(){
+			JFXButton button = new JFXButton("");
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if(item==null || item.equals("")){
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				}
+				else{
+					button.getStyleClass().add("btDefault");
+					try {
+						IconsEnum ic = IconsEnum.BUTTON_CLIP;
+						buttonTable(button, ic);
+					}catch (IOException e) {
+					}
+					button.setOnAction(event -> {
+						visualizarDocumento(item, storage);
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		colunaAnexo.setMaxWidth(50);
     	TableColumn<NegocioDocumento, Usuario> colunaUsuario = new  TableColumn<>("Usuario");
 		colunaUsuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
 		TableColumn<NegocioDocumento, Number> colunaEditar = new  TableColumn<>("");
@@ -770,7 +798,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 			}
 		});
-    	tbDocumentos.getColumns().addAll(colunaNome,colunaDescricao,colunaData,colunaUsuario,colunaEditar,colunaExcluir);
+    	tbDocumentos.getColumns().addAll(colunaNome,colunaDescricao,colunaData,colunaUsuario,colunaAnexo,colunaEditar,colunaExcluir);
     	
     }
     void tabelaServicos() {
@@ -1039,7 +1067,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 			}
 		});
-		
+
 		TableColumn<NegocioTarefaProposta, Number> colunaEditar = new  TableColumn<>("");
 		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
 		colunaEditar.setCellFactory(param -> new TableCell<NegocioTarefaProposta,Number>(){
@@ -1058,9 +1086,9 @@ public class NegocioCadastroController extends UtilsController implements Initia
 						buttonTable(button, IconsEnum.BUTTON_EDIT);
 					}catch (IOException e) {
 					}
-					button.setOnAction(event -> {
-						abrirTarefa(tbTarefas.getItems().get(getIndex()));
-					});
+					button.setOnAction(event ->
+						abrirTarefa(tbTarefas.getItems().get(getIndex()))
+					);
 					setGraphic(button);
 				}
 			}

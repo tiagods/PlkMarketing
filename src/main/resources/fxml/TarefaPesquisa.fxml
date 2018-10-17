@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label styleClass="label-title" text="Gerenciamento de Agenda" />
       <VBox prefHeight="200.0" prefWidth="100.0">
@@ -157,12 +157,7 @@
                         </ImageView>
                      </graphic>
                   </JFXToggleButton>
-                  <Label text="de">
-                     <HBox.margin>
-                        <Insets left="20.0" right="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <JFXComboBox fx:id="cbAtendente" prefHeight="26.0" prefWidth="117.0" />
+                  <JFXComboBox fx:id="cbAtendente" prefHeight="26.0" prefWidth="117.0" promptText="Atendente" />
                </children>
                <VBox.margin>
                   <Insets bottom="20.0" />
@@ -194,7 +189,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Label>
-            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" promptText="100" />
+            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" />
             <Pagination fx:id="pagination" pageCount="10" prefHeight="47.0" prefWidth="320.0" />
          </children>
       </HBox>

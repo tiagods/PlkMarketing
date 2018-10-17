@@ -1,16 +1,16 @@
 package br.com.tiagods.repository.helpers;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
+import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
@@ -25,28 +25,28 @@ public class NegociosTarefasImpl extends AbstractRepository<NegocioTarefa, Long>
 	public NegociosTarefasImpl(EntityManager manager) {
 		super(manager);
 	}	
+
 	@Override
-	//Quantidade de tarefas de acordo com o usuario
-	public int getQuantidade(Usuario usuario, Calendar dataInicio, Calendar dataFinal, int status) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioTarefa.class);
-		if(usuario!=null) criteria.add(Restrictions.eq("atendente", usuario));
-		if(dataInicio!=null && dataFinal!=null) criteria.add(Restrictions.between("dataEvento", dataInicio, dataFinal));
-		if(status!=-1) criteria.add(Restrictions.eq("finalizado", status));
-		criteria.setMaxResults(100);
-		return criteria.list().size();
+	public long getQuantidade(NegocioTarefaFilter filter) {
+		List<Criterion> criterios = new ArrayList<>();
+		Criteria criteria = filtrar(filter,criterios);
+		criteria.setProjection(Projections.rowCount());
+		return (long)criteria.uniqueResult();
 	}
 	@Override
-	public Pair<List<NegocioTarefa>, Paginacao> filtrar(Paginacao paginacao, int finalizado, Usuario usuario, Calendar dataEventoInicial, Calendar dataEventoFinal, Set<TipoTarefa> tipoTarefas) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioTarefa.class);
-		
+	public Pair<List<NegocioTarefa>, Paginacao> filtrar(Paginacao paginacao, NegocioTarefaFilter filter) {
 		List<Criterion> criterios = new ArrayList<>();
-		if(usuario!=null && usuario.getId()!=-1L) criterios.add(Restrictions.eq("atendente", usuario));
-		if(dataEventoInicial!=null && dataEventoFinal!=null) criterios.add(Restrictions.between("dataEvento", dataEventoInicial, dataEventoFinal));
-		if(finalizado!=-1) criterios.add(Restrictions.eq("finalizado", finalizado));
-		if(!tipoTarefas.isEmpty()) criterios.add(Restrictions.in("tipoTarefa", tipoTarefas.toArray()));
-		
+		Criteria criteria = filtrar(filter, criterios);
+		return super.filterWithPagination(paginacao, criteria, criterios);
+	}
+	@Override
+	public Criteria filtrar(NegocioTarefaFilter f, List<Criterion> criterios){
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioTarefa.class);
+		if(f.getAtendente()!=null && f.getAtendente().getId()!=-1L) criterios.add(Restrictions.eq("atendente", f.getAtendente()));
+		if(f.getDataEventoInicial()!=null && f.getDataEventoFinal()!=null) criterios.add(Restrictions.between("dataEvento", f.getDataEventoInicial(), f.getDataEventoFinal()));
+		if(f.getFinalizado()!=-1) criterios.add(Restrictions.eq("finalizado", f.getFinalizado()));
+		if(!f.getTipoTarefas().isEmpty()) criterios.add(Restrictions.in("tipoTarefa", f.getTipoTarefas().toArray()));
 		criterios.forEach(c->criteria.add(c));
-		
-		return super.filterPagination(paginacao, criteria, criterios);
+		return criteria;
 	}
 }

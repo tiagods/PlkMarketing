@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 
 import br.com.tiagods.model.*;
+import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -107,12 +108,12 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 	private NegocioServicosImpl servicos;
 	private NegocioPropostaImpl propostas;
 	private UsuariosImpl usuarios;
+	private NegocioPropostaFilter filter;
 
-	public NegocioPesquisaController(Stage stage) {
+	public NegocioPesquisaController(NegocioPropostaFilter filter, Stage stage) {
+		this.filter = filter;
 		this.stage = stage;
 	}
-
-
 	void abrirCadastro(NegocioProposta proposta) {
 		try {
 			loadFactory();
@@ -158,11 +159,11 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void combos() {
-		NegocioCategoria categoria = new NegocioCategoria(-1L, "Categoria");
-		NegocioNivel nivel = new NegocioNivel(-1L, "Nivel");
-		NegocioOrigem origem = new NegocioOrigem(-1L, "Origem");
-		NegocioServico servico = new NegocioServico(-1L, "Servico");
-		Usuario usuario = new Usuario(-1L, "Atendente");
+		NegocioCategoria categoria = new NegocioCategoria(-1L, "Qualquer");
+		NegocioNivel nivel = new NegocioNivel(-1L, "Qualquer");
+		NegocioOrigem origem = new NegocioOrigem(-1L, "Qualquer");
+		NegocioServico servico = new NegocioServico(-1L, "Qualquer");
+		Usuario usuario = new Usuario(-1L, "Qualquer");
 
 		cbCategoria.getItems().add(categoria);
 		cbNivel.getItems().add(nivel);
@@ -172,6 +173,9 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		cbEtapa.getItems().addAll(TipoEtapa.values());
 		cbStatus.getItems().addAll(TipoStatus.values());
 		cbLimite.getItems().addAll(limiteTabela);
+
+		cbPesquisaData.getItems().add("Criado em");
+		cbPesquisaData.getSelectionModel().selectFirst();
 
 		categorias = new NegocioCategoriasImpl(getManager());
 		niveis = new NegocioNiveisImpl(getManager());
@@ -191,7 +195,11 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		cbOrigem.getSelectionModel().selectFirst();
 		cbServico.getSelectionModel().selectFirst();
 		cbAtendente.getSelectionModel().selectFirst();
-		cbStatus.getSelectionModel().selectFirst();
+
+		if(filter!=null && filter.getStatus().equals(TipoStatus.STATUS))
+			cbStatus.setValue(filter.getStatus());
+		else
+			cbStatus.getSelectionModel().selectFirst();
 		cbEtapa.getSelectionModel().selectFirst();
 		cbLimite.getSelectionModel().selectFirst();
 
@@ -274,8 +282,8 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 				}
 				@Override
 				protected Void call() {
-					String export = carregarArquivo("Salvar arquivo");
-					if (!"".equals(export)) {Platform.runLater(() -> sta.show());
+					File export = salvarTemp("xls");
+					Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 					Integer[] colunasLenght = new Integer[] { 8, 26, 11, 11, 8, 14, 16, 14, 17, 9, 12, 19,
 							30, 10, 10, 10, 30, 11, 11 };
@@ -334,17 +342,16 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 							listaImpressao.get(i).add(n.getDataPerda() == null ? "" : sdf.format(n.getDataPerda().getTime()));
 							listaImpressao.get(i).add(n.getDataFinalizacao() == null ? "" : sdf.format(n.getDataFinalizacao().getTime()));
 						}
-						ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao,colunasLenght);
+						ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao,colunasLenght);
 						planilha.gerarExcel();
 						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
 						Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null,false));
-						Desktop.getDesktop().open(new File(export + ".xls"));
+						Desktop.getDesktop().open(export);
 					} catch (Exception e1) {
 						Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
 					} finally {
 						close();
 					}
-				}
 				return null;
 			}
 		};
@@ -378,17 +385,26 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 	private List<NegocioProposta> filtrar(Paginacao paginacao) {
 		propostas = new NegocioPropostaImpl(getManager());
-		String dataFiltro = "criadoEm";
-		String ordenacao = "id";
-		Pair<List<NegocioProposta>, Paginacao> list = propostas.filtrar(paginacao, cbStatus.getValue(),
-				cbEtapa.getValue(), cbCategoria.getValue(), cbNivel.getValue(), cbOrigem.getValue(),
-				cbServico.getValue(), cbAtendente.getValue(), dataInicial.getValue(), dataFinal.getValue(), dataFiltro,
-				ordenacao, txPesquisa.getText());
+		if(this.filter==null) filter = new NegocioPropostaFilter();
+		filter.setStatus(cbStatus.getValue());
+		filter.setEtapa(cbEtapa.getValue());
+		filter.setCategoria(cbCategoria.getValue());
+		filter.setNivel(cbNivel.getValue());
+		filter.setOrigem(cbOrigem.getValue());
+		filter.setServico(cbServico.getValue());
+		filter.setAtendente(cbAtendente.getValue());
+		filter.setDataFiltro("criadoEm");
+		filter.setDataInicial(dataInicial.getValue());
+		filter.setDataFinal(dataFinal.getValue());
+		filter.setPesquisa(txPesquisa.getText());
+		filter.setOrdenacao("id");
+		Pair<List<NegocioProposta>,Paginacao> lista = propostas.filtrar(paginacao,filter);
 		if (paginacao != null) {
 			tbPrincipal.getItems().clear();
-			tbPrincipal.getItems().addAll(list.getKey());
+			tbPrincipal.getItems().addAll(lista.getKey());
 		}
-		return list.getKey();
+		filter = null;
+		return lista.getKey();
 	}
 
 	@Override

@@ -112,7 +112,7 @@
                   <Insets right="10.0" />
                </HBox.margin>
             </Label>
-            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" promptText="100" />
+            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" />
             <Pagination fx:id="pagination" pageCount="10" prefHeight="47.0" prefWidth="320.0" />
          </children>
       </HBox>

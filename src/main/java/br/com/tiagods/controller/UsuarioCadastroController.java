@@ -1,8 +1,11 @@
 package br.com.tiagods.controller;
 
 import java.net.URL;
+import java.util.Calendar;
 import java.util.ResourceBundle;
 
+import br.com.tiagods.config.init.UsuarioLogado;
+import javafx.application.Platform;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -86,12 +89,16 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 
     @FXML
     private JFXComboBox<?> cbNivel;
+
+    @FXML
+    private JFXComboBox<String> cbStatus;
+
     @FXML
     private JFXButton btnSalvar;
     @FXML
     private JFXButton btnSair;
 
-	private Usuario usuario = null;
+	private Usuario usuario;
 	private Stage stage;
 	private UsuariosImpl usuarios;
 
@@ -104,24 +111,27 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
     }
 	private void combos(){
-		comboRegiao(cbCidade,cbEstado,getManager());
+		cbStatus.getItems().add("Ativo");
+        cbStatus.getItems().add("Inativo");
+        cbStatus.getSelectionModel().selectFirst();
+        comboRegiao(cbCidade,cbEstado,getManager());
     }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		cbNivel.setDisable(true);
 		try {
-			super.loadFactory();
+			loadFactory();
             combos();
             if(usuario!=null) {
                 preencherFormulario(usuario);
             }
         }catch (Exception e){
-            super.alert(Alert.AlertType.ERROR, "Erro", null,
+            alert(Alert.AlertType.ERROR, "Erro", null,
                     "Falha ao listar os registros", e,true);
             e.printStackTrace();
         }finally {
-		    super.close();
+		    close();
         }
     }
 	void preencherFormulario(Usuario usuario) {
@@ -135,6 +145,8 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	        txDataNascimento.setPlainText(fisica.getAniversario()==null?"":fisica.getAniversario());
         }
         txNome.setText(usuario.getNome());
+        cbStatus.setValue(usuario.getAtivo()==1?"Ativo":"Inativo");
+
         txEmail.setText(usuario.getEmail());
         txTelefone.setPlainText(usuario.getTelefone());
         txCelular.setPlainText(usuario.getCelular());
@@ -149,20 +161,16 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	}
 	@FXML
 	void salvar(ActionEvent event) {
-        boolean validarLogin = false;
         if(txLogin.getText().trim().equals("")){
-            super.alert(Alert.AlertType.ERROR, "Login Invalido", null, "Login não informado",null, false);
+            alert(Alert.AlertType.ERROR, "Login Invalido", null, "Login não informado",null, false);
             return;
         }
-
         try {
-            super.loadFactory();
+            boolean validarLogin = false;
+            loadFactory();
             usuarios = new UsuariosImpl(getManager());
-            //Pessoa pessoa = new Pessoa();
             if(txCodigo.getText().equals("")) {
                 usuario = new Usuario();
-                //pessoa.setCriadoEm(Calendar.getInstance());
-                //pessoa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
                 validarLogin = validarLogin(txLogin.getText());
                 if (!validarLogin)
                     return;
@@ -176,47 +184,44 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 else
                     validarLogin = validarSenha();
             }
-
-            PessoaFisica pessoaFisica = new PessoaFisica();
-            pessoaFisica.setRg(txRG.getText().trim());
-            pessoaFisica.setCpf(txCPF.getPlainText());
-            pessoaFisica.setAniversario(txDataNascimento.getPlainText());
-            usuario.setFisica(pessoaFisica);
-
-            usuario.setNome(txNome.getText().trim());
-            usuario.setEmail(txEmail.getText().trim());
-            usuario.setTelefone(txTelefone.getPlainText());
-            usuario.setCelular(txCelular.getPlainText());
-            usuario.setCep(txCEP.getPlainText());
-            usuario.setEndereco(txLogradouro.getText().trim());
-            usuario.setNumero(txNumero.getText().trim());
-            usuario.setBairro(txBairro.getText().trim());
-            usuario.setComplemento(txComplemento.getText());
-            usuario.setEstado(cbEstado.getValue());
-            usuario.setCidade(cbCidade.getValue());
-            usuario.setLogin(txLogin.getText());
+            System.out.println(validarLogin);
             if (validarLogin) {
                 if (!txSenha.getText().trim().equals("")) {
                     CriptografiaUtil cripto = new CriptografiaUtil();
                     usuario.setSenha(cripto.criptografar(txSenha.getText()));
                 }
-                try {
-                    super.loadFactory();
-                    usuarios = new UsuariosImpl(getManager());
-                    usuario = usuarios.save(usuario);
-                    preencherFormulario(usuario);
-                    txSenha.setText("");
-                    txConfirmarSenha.setText("");
-                    alert(Alert.AlertType.INFORMATION,"Sucesso",null,
-                            "Salvo com sucesso",null,false);
-                    stage.close();
-                } catch (Exception e) {
-                    super.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
-                }
+                PessoaFisica pessoaFisica = new PessoaFisica();
+                pessoaFisica.setRg(txRG.getText().trim());
+                pessoaFisica.setCpf(txCPF.getPlainText());
+                pessoaFisica.setAniversario(txDataNascimento.getPlainText());
+                usuario.setFisica(pessoaFisica);
+
+                usuario.setNome(txNome.getText().trim());
+                usuario.setEmail(txEmail.getText().trim());
+                usuario.setTelefone(txTelefone.getPlainText());
+                usuario.setCelular(txCelular.getPlainText());
+                usuario.setCep(txCEP.getPlainText());
+                usuario.setEndereco(txLogradouro.getText().trim());
+                usuario.setNumero(txNumero.getText().trim());
+                usuario.setBairro(txBairro.getText().trim());
+                usuario.setComplemento(txComplemento.getText());
+                usuario.setEstado(cbEstado.getValue());
+                usuario.setCidade(cbCidade.getValue());
+                usuario.setLogin(txLogin.getText());
+                if(cbStatus.getValue().equalsIgnoreCase("Ativo"))
+                    usuario.setAtivo(1);
+                else
+                    usuario.setAtivo(0);
+                usuario = usuarios.save(usuario);
+                preencherFormulario(usuario);
+                txSenha.setText("");
+                txConfirmarSenha.setText("");
+                alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
             }
         } catch (Exception e) {
+            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
         } finally {
-            super.close();
+            close();
         }
 	}
 	@FXML
@@ -226,7 +231,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private boolean validarLogin(String login){
         Usuario u = usuarios.findByLogin(login);
         if(u!=null) {
-            super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
+            alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
                     u.getNome()+" já esta usando esse login",null,false);
             return false;
         }
@@ -235,14 +240,14 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     }
     private boolean validarSenha() {
         if (txSenha.getText().trim().equals("")) {
-            super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+            alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
                     "Por favor verifique se a senha esta correta",null,false);
             return false;
         } else {
             if (txSenha.getText().trim().equals(txConfirmarSenha.getText().trim()))
                 return true;
             else {
-                super.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+                alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
                         "Por favor verifique se a senha esta correta",null,false);
                 return false;
             }

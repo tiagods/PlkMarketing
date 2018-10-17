@@ -1,6 +1,5 @@
 package br.com.tiagods.repository.helpers;
 
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -9,20 +8,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 
-import br.com.tiagods.model.NegocioCategoria;
-import br.com.tiagods.model.NegocioNivel;
-import br.com.tiagods.model.NegocioOrigem;
-import br.com.tiagods.model.NegocioServico;
-import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoEtapa;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoStatus;
@@ -44,27 +34,36 @@ public class NegocioPropostaImpl extends AbstractRepository<NegocioProposta, Lon
         query.setParameter("id", id);
         return (NegocioProposta)query.getSingleResult();
 	}
+
 	@Override
-	public Pair<List<NegocioProposta>,Paginacao> filtrar(Paginacao paginacao, TipoStatus status, TipoEtapa etapa, NegocioCategoria categoria, NegocioNivel nivel,
-			NegocioOrigem origem, NegocioServico servico, Usuario atendente, LocalDate dataInicial, LocalDate dataFinal,
-			String dataFiltro, String ordenacao, String pesquisa) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioProposta.class);
-		
+	public long count(NegocioPropostaFilter filter){
 		List<Criterion> criterios = new ArrayList<>();
-		
-		if(!status.equals(TipoStatus.STATUS)) criterios.add(Restrictions.eq("tipoStatus",status));
-		if(!etapa.equals(TipoEtapa.ETAPA)) criterios.add(Restrictions.eq("tipoEtapa", etapa));
-		if(categoria!=null && categoria.getId()!=-1L) criterios.add(Restrictions.eq("categoria",categoria));
-		if(nivel!=null && nivel.getId()!=-1L) criterios.add(Restrictions.eq("nivel",nivel));
-		if(origem!=null && origem.getId()!=-1L) criterios.add(Restrictions.eq("origem",origem));
-		if(servico!=null && servico.getId()!=-1L) criterios.add(Restrictions.eq("servico", servico));
-		if(atendente!=null && atendente.getId()!=-1L) criterios.add(Restrictions.eq("atendente",atendente));
-		if(dataInicial!=null && dataFinal!=null) criterios.add(Restrictions.between(dataFiltro, 
-				GregorianCalendar.from(dataInicial.atStartOfDay(ZoneId.systemDefault())), GregorianCalendar.from(dataFinal.atStartOfDay(ZoneId.systemDefault()))));
-		if(pesquisa.length()>0) {
-			Criterion or1 = Restrictions.ilike("nome", pesquisa, MatchMode.ANYWHERE);
+		Criteria criteria = filtrar(filter,criterios);
+		criteria.setProjection(Projections.rowCount());
+		return (long)criteria.uniqueResult();
+	}
+	@Override
+	public Pair<List<NegocioProposta>,Paginacao> filtrar(Paginacao paginacao,NegocioPropostaFilter filter) {
+		List<Criterion> criterios = new ArrayList<>();
+		Criteria criteria = filtrar(filter, criterios);
+		return super.filterWithPagination(paginacao, criteria, criterios);
+	}
+	@Override
+	public Criteria filtrar(NegocioPropostaFilter f, List<Criterion> criterios){
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioProposta.class);
+		if(!f.getStatus().equals(TipoStatus.STATUS)) criterios.add(Restrictions.eq("tipoStatus",f.getStatus()));
+		if(!f.getEtapa().equals(TipoEtapa.ETAPA)) criterios.add(Restrictions.eq("tipoEtapa", f.getEtapa()));
+		if(f.getCategoria()!=null && f.getCategoria().getId()!=-1L) criterios.add(Restrictions.eq("categoria",f.getCategoria()));
+		if(f.getNivel()!=null && f.getNivel().getId()!=-1L) criterios.add(Restrictions.eq("nivel",f.getNivel()));
+		if(f.getOrigem()!=null && f.getOrigem().getId()!=-1L) criterios.add(Restrictions.eq("origem",f.getOrigem()));
+		if(f.getServico()!=null && f.getServico().getId()!=-1L) criterios.add(Restrictions.eq("servico", f.getServico()));
+		if(f.getAtendente()!=null && f.getAtendente().getId()!=-1L) criterios.add(Restrictions.eq("atendente",f.getAtendente()));
+		if(f.getDataFiltro()!=null && f.getDataInicial()!=null && f.getDataFinal()!=null) criterios.add(Restrictions.between(f.getDataFiltro(),
+				GregorianCalendar.from(f.getDataInicial().atStartOfDay(ZoneId.systemDefault())), GregorianCalendar.from(f.getDataFinal().atStartOfDay(ZoneId.systemDefault()))));
+		if(f.getPesquisa()!=null && f.getPesquisa().length()>0) {
+			Criterion or1 = Restrictions.ilike("nome", f.getPesquisa(), MatchMode.ANYWHERE);
 			try {
-				Long value = Long.parseLong(pesquisa);
+				Long value = Long.parseLong(f.getPesquisa());
 				Criterion or2 = Restrictions.eq("id",value);
 				Disjunction disjunction = Restrictions.disjunction();
 				disjunction.add(or1);
@@ -75,7 +74,7 @@ public class NegocioPropostaImpl extends AbstractRepository<NegocioProposta, Lon
 			}
 		}
 		criterios.forEach(c->criteria.add(c));
-		criteria.addOrder(Order.desc(ordenacao));
-		return super.filterPagination(paginacao, criteria, criterios);
+		if(f.getOrdenacao()!=null) criteria.addOrder(Order.desc(f.getOrdenacao()));
+		return criteria;
 	}
 }

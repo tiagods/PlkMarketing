@@ -8,14 +8,17 @@ import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import javafx.util.Pair;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 
 public interface NegocioTarefaDAO {
 	NegocioTarefa save(NegocioTarefa e);
     void remove(NegocioTarefa e);
     List<NegocioTarefa> getAll();
     NegocioTarefa findById(Long id);
-	int getQuantidade(Usuario usuario, Calendar dataInicio, Calendar dataFinal, int status);
-	Pair<List<NegocioTarefa>, Paginacao> filtrar(Paginacao paginacao, int finalizado, Usuario usuario,
-			Calendar dataEventoInicial, Calendar dataEventoFinal, Set<TipoTarefa> tipoTarefas);
+	long getQuantidade(NegocioTarefaFilter filter);
+    Pair<List<NegocioTarefa>, Paginacao> filtrar(Paginacao paginacao, NegocioTarefaFilter filter);
+    Criteria filtrar(NegocioTarefaFilter f, List<Criterion> criterios);
 }

@@ -304,9 +304,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				}
 				@Override
 				protected Void call() {
-
-					String export = carregarArquivo("Salvar arquivo");
-					if (!"".equals(export)) {
+						File export = salvarTemp("xls");
 						Platform.runLater(() -> sta.show());
 
 						ArrayList<ArrayList> listaImpressao = new ArrayList<>();
@@ -324,7 +322,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 						}
 						try {
 							loadFactory();
-							NegocioPropostaImpl propostas = new NegocioPropostaImpl(getManager());
+							propostas = new NegocioPropostaImpl(getManager());
 							List<Contato> finalList = filtrar(null);
 							for (int i = 1; i <= finalList.size(); i++) {
 								listaImpressao.add(new ArrayList<String>());
@@ -427,17 +425,16 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 								listaImpressao.get(i).add(valorHonorario.toString());//valor do negocio
 								listaImpressao.get(i).add(statusServicosNegocios.toString());//valor do negocio
 							}
-							ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao, colunasLenght);
+							ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao, colunasLenght);
 							planilha.gerarExcel();
 							salvarLog(getManager(), "Contato", "Exportar", "Exportou relatorio xls");
 							Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
-							Desktop.getDesktop().open(new File(export + ".xls"));
+							Desktop.getDesktop().open(export);
 						} catch (Exception e1) {
 							Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
 						} finally {
 							close();
 						}
-					}
 					return null;
 				}
 

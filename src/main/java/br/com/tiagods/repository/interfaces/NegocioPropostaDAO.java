@@ -12,7 +12,10 @@ import br.com.tiagods.modelcollections.NegocioProposta;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoEtapa;
 import br.com.tiagods.modelcollections.NegocioProposta.TipoStatus;
 import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import javafx.util.Pair;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Criterion;
 
 public interface NegocioPropostaDAO {
 	NegocioProposta save(NegocioProposta e);
@@ -20,8 +23,9 @@ public interface NegocioPropostaDAO {
     List<NegocioProposta> getAll();
     Pair<List<NegocioProposta>,Paginacao> getAll(Paginacao page);
     NegocioProposta findById(Long id);
-	Pair<List<NegocioProposta>, Paginacao> filtrar(Paginacao Paginacao,TipoStatus status, TipoEtapa etapa, NegocioCategoria categoria, NegocioNivel nivel,
-			NegocioOrigem origem, NegocioServico servico, Usuario atendente, LocalDate dataInicial, LocalDate dataFinal,
-			String dataFiltro, String ordenacao, String pesquisa);
-	
+
+    long count(NegocioPropostaFilter filter);
+
+    Pair<List<NegocioProposta>, Paginacao> filtrar(Paginacao paginacao, NegocioPropostaFilter f);
+    Criteria filtrar(NegocioPropostaFilter f, List<Criterion> criterios);
 }

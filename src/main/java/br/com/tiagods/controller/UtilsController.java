@@ -10,10 +10,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.swing.JFileChooser;
@@ -124,6 +122,13 @@ public abstract class UtilsController extends PersistenciaController{
 		}
 		alert.showAndWait();
 	}
+
+	public File salvarTemp(String extensao){
+		SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+		File file = new File(System.getProperty("java.io.tmpdir")+"/file-"+sdf.format(new Date())+"."+extensao);
+		return file;
+	}
+	/*
 	public String carregarArquivo(String title){
         JFileChooser chooser = new JFileChooser();
         chooser.setAcceptAllFileFilterUsed(false);
@@ -136,6 +141,7 @@ public abstract class UtilsController extends PersistenciaController{
         }
         return local;
     }
+    */
 	public void comboRegiao(JFXComboBox<Cidade> cbCidade, JFXComboBox<Cidade.Estado> cbEstado, EntityManager manager){
 		CidadesImpl cidades = new CidadesImpl(manager);
 		Cidade cidade = cidades.findByNome("São Paulo");

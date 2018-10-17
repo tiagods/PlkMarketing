@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.util.storage.Storage;
 import br.com.tiagods.util.storage.StorageProducer;
 import com.jfoenix.controls.JFXButton;
@@ -139,8 +140,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	private NegocioPropostaImpl propostas;
 	private ContatosImpl contatos;
 	private Storage storage = StorageProducer.newConfig();
-	
-	public TarefaPesquisaController (Stage stage) {
+	private NegocioTarefaFilter filter;
+
+	public TarefaPesquisaController (NegocioTarefaFilter filter, Stage stage) {
+		this.filter = filter;
 		this.stage=stage;
 	}
 	private void abrirCadastro(NegocioTarefa t) {
@@ -319,9 +322,8 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				@Override
 				protected Void call() {
 
-					String export = carregarArquivo("Salvar arquivo");
-					if (!"".equals(export)) {
-						Platform.runLater(() -> sta.show());
+					File export = salvarTemp("xls");
+					Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 					Integer[] colunasLenght = new Integer[] { 10, 18, 18, 14, 10, 30, 10, 10, 10, 10,20, 15, 15 };
 					String[] cabecalho = new String[] { "Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
@@ -373,20 +375,19 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 							listaImpressao.get(i).add(ultimoNegocio);
 							listaImpressao.get(i).add(statusUltimoNegocio);
 							listaImpressao.get(i).add(c.getAtendente().getNome());
-							listaImpressao.get(i).add(c.getCriadoPor().getNome());
+							listaImpressao.get(i).add(c.getCriadoPor()!=null?c.getCriadoPor().getNome():"");
 						}
-						ExcelGenerico planilha = new ExcelGenerico(export + ".xls", listaImpressao, colunasLenght);
+						ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao, colunasLenght);
 						planilha.gerarExcel();
 						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
 						Platform.runLater(() ->alert(AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
-						Desktop.getDesktop().open(new File(export + ".xls"));
+						Desktop.getDesktop().open(export);
 					} catch (Exception e1) {
 						Platform.runLater(() ->alert(AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
 					} finally {
 						close();
 					}
-				}
-				return null;
+					return null;
 			}
     		
     	};
@@ -434,21 +435,6 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		if(rbHoje.isSelected()){
 			dataEventoInicial=GregorianCalendar.from(LocalDate.now().atTime(0,0,0).atZone(ZoneId.systemDefault()));
 			dataEventoFinal=GregorianCalendar.from(LocalDate.now().atTime(23, 59, 59).atZone(ZoneId.systemDefault()));
-			
-			Calendar calendar1 = Calendar.getInstance();
-			calendar1.set(Calendar.HOUR_OF_DAY, 0);
-			calendar1.set(Calendar.MINUTE, 0);
-			calendar1.set(Calendar.SECOND, 0);
-			calendar1.set(Calendar.MILLISECOND, 0);
-    		
-			Calendar calendar2 = Calendar.getInstance();
-			calendar2.set(Calendar.HOUR_OF_DAY, 23);
-			calendar2.set(Calendar.MINUTE, 59);
-			calendar2.set(Calendar.SECOND, 59);
-			calendar2.set(Calendar.MILLISECOND, 999);
-			
-			dataEventoInicial = calendar1;
-			dataEventoFinal = calendar2;
 		}
 		else if(rbSemana.isSelected()){
 			Calendar[] datas = receberDatasSemana();
@@ -467,6 +453,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		}
 		int finalizado =-1;
 		if(tggFinalizado.isSelected()) finalizado = 0;
+
 		Pair<List<NegocioTarefa>, Paginacao> list = tarefas.filtrar
 				(paginacao,finalizado,cbAtendente.getValue(),dataEventoInicial,dataEventoFinal,tipoTarefas);
 		if(paginacao!=null) {
