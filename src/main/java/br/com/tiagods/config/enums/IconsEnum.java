@@ -19,8 +19,13 @@ public enum IconsEnum {
 	BUTTON_TAREFA_FONE("tarefas_fone","Telefone"),
 	BUTTON_TAREFA_PROPOSTA("tarefas_proposta","Abrir Proposta"),
 	BUTTON_TAREFA_REUNIAO("tarefas_reuniao","Reunião"),
-	BUTTON_TAREFA_WHATSAPP("tarefas_whatsapp","WhatsApp");
-	
+	BUTTON_TAREFA_WHATSAPP("tarefas_whatsapp","WhatsApp"),
+	BUTTON_NEGOCIO_CONTATO("negocio_fone","Contato"),
+	BUTTON_NEGOCIO_PROPOSTA("negocio_proposta","Envio de Proposta"),
+	BUTTON_NEGOCIO_FOLLOWUP("negocio_followup","Follow-Up"),
+	BUTTON_NEGOCIO_FECHAMENTO("negocio_fechamento","Fechamento"),
+	BUTTON_NEGOCIO_INDEFINIDA("negocio_question","Indefinida");
+
 	private String localizacao;
 	private String tooltip;
 

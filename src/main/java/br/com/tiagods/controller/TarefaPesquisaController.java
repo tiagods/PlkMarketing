@@ -453,9 +453,13 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		}
 		int finalizado =-1;
 		if(tggFinalizado.isSelected()) finalizado = 0;
-
-		Pair<List<NegocioTarefa>, Paginacao> list = tarefas.filtrar
-				(paginacao,finalizado,cbAtendente.getValue(),dataEventoInicial,dataEventoFinal,tipoTarefas);
+		NegocioTarefaFilter filter = new NegocioTarefaFilter();
+		filter.setFinalizado(finalizado);
+		filter.setAtendente(cbAtendente.getValue());
+		filter.setDataEventoInicial(dataEventoInicial);
+		filter.setDataEventoFinal(dataEventoFinal);
+		filter.setTipoTarefas(tipoTarefas);
+		Pair<List<NegocioTarefa>, Paginacao> list = tarefas.filtrar(paginacao,filter);
 		if(paginacao!=null) {
 			tbPrincipal.getItems().clear();
 			tbPrincipal.getItems().addAll(list.getKey());

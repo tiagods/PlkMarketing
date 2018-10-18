@@ -6,28 +6,36 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalField;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Pair;
+
+import javax.swing.text.html.ImageView;
 
 public class MenuController extends UtilsController implements Initializable{
     @FXML
@@ -40,7 +48,8 @@ public class MenuController extends UtilsController implements Initializable{
     private Label txTarefasMes;
     @FXML
     private Label txTarefasTodos;
-
+    @FXML
+    private ListView listView1;
 
     @FXML
     private Label txContatos;
@@ -62,9 +71,27 @@ public class MenuController extends UtilsController implements Initializable{
 
             NegocioPropostaFilter propostaFilter = new NegocioPropostaFilter();
             propostaFilter.setStatus(NegocioProposta.TipoStatus.ANDAMENTO);
-            long n1 = propostas.count(propostaFilter);
+
+            Pair<List<NegocioProposta>,Paginacao> propostaList = propostas.filtrar(null,propostaFilter);
+            long n1 = propostaList.getKey().size();
             txNegociosTodos.setText(String.valueOf(n1));
             txNegociosTodos.setOnMouseClicked(event -> abrirNegocio(propostaFilter));
+
+            propostaList.getKey().stream().forEach(c->{
+                JFXButton button = new JFXButton();
+                button.setText(c.getId()+"-"+c.getNome()+"("+c.getTipoEtapa()+")");
+                button.getStyleClass().add(c.getTipoEtapa().getStyle());
+                if(c.getDataFim()!=null){
+                    Calendar calendar = Calendar.getInstance();
+                }
+                try {
+                    buttonMin(button, c.getTipoEtapa().getIco());
+                } catch (IOException e) {}
+                listView1.getItems().add(button);
+                Tooltip tooltip = new Tooltip(c.getDataFim()!=null?"Prazo limite: "+sdf.format(c.getDataFim().getTime()):"Nenhum prazo foi informado");
+                button.setTooltip(tooltip);
+                button.setOnAction(event -> System.out.println(button.getText()));
+            });
 
             propostaFilter.setAtendente(UsuarioLogado.getInstance().getUsuario());
             long n2 = propostas.count(propostaFilter);
@@ -79,16 +106,16 @@ public class MenuController extends UtilsController implements Initializable{
             NegocioTarefaFilter tarefaFilter = new NegocioTarefaFilter();
             tarefaFilter.setAtendente(UsuarioLogado.getInstance().getUsuario());
             tarefaFilter.setFinalizado(0);
-
             long t2 = tarefas.getQuantidade(tarefaFilter);
-
             tarefaFilter.setDataEventoInicial(GregorianCalendar.from(inicio.atZone(ZoneId.systemDefault())));
             tarefaFilter.setDataEventoFinal(GregorianCalendar.from(fim.atZone(ZoneId.systemDefault())));
-
             long t1 = tarefas.getQuantidade(tarefaFilter);
 
             txTarefasMes.setText(String.valueOf(t1));
             txTarefasTodos.setText(String.valueOf(t2));
+
+
+
         }catch (Exception e){
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao atualizar","Falha ao atualizar registros do menu",e,true);
         }finally {
@@ -158,7 +185,7 @@ public class MenuController extends UtilsController implements Initializable{
     	try {
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_PESQUISA);
-            loader.setController(new TarefaPesquisaController(stage));
+            loader.setController(new TarefaPesquisaController(null,stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             onCloseRequestt(stage);
         }catch(IOException e) {

@@ -194,11 +194,16 @@ public abstract class UtilsController extends PersistenciaController{
 		}
 	}
 	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
-		ImageView imageview = createImage(30,30,icon);
+		buttonIcon(btn,icon,30);
+	}
+	public void buttonMin(JFXButton btn,IconsEnum icon) throws IOException{
+		buttonIcon(btn,icon,22);
+	}
+	private void buttonIcon(JFXButton btn,IconsEnum icon,int size){
+		ImageView imageview = createImage(size,size,icon);
 		btn.setGraphic(imageview);
 		btn.setTooltip(icon.getTooltip());
 	}
-		
 	public Optional<String> cadastroRapido(){
 		TextInputDialog dialog = new TextInputDialog("");
 		dialog.setTitle("Cadastro rapido");

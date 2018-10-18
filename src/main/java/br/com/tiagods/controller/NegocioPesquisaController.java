@@ -458,6 +458,28 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 		TableColumn<NegocioProposta, TipoEtapa> colunaEtapa = new TableColumn<>("Etapa");
 		colunaEtapa.setCellValueFactory(new PropertyValueFactory<>("tipoEtapa"));
+		colunaEtapa.setCellFactory(param -> new TableCell<NegocioProposta, TipoEtapa>() {
+			JFXButton button = new JFXButton();// Editar
+			@Override
+			protected void updateItem(TipoEtapa item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					button.getStyleClass().add("btDefault");
+					try {
+						buttonTable(button, item.getIco());
+					} catch (IOException e) {
+					}
+					button.setOnAction(event -> {
+						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
+					});
+					setGraphic(button);
+				}
+			}
+		});
 		colunaEtapa.setPrefWidth(40);
 
 		TableColumn<NegocioProposta, NegocioOrigem> colunaOrigem = new TableColumn<>("Origem");

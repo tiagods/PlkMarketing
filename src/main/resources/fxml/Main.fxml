@@ -3,6 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -67,34 +68,11 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Pane layoutX="518.0" layoutY="14.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+                  <VBox layoutX="14.0" layoutY="129.0" prefHeight="315.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="15.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@imagens/menu_megaphone.png" />
-                           </image></ImageView>
-                        <Label alignment="CENTER" layoutY="6.0" prefWidth="200.0" styleClass="label-card" text="TOTAL EM VENDAS" textFill="#666666">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="txContatos" alignment="CENTER" layoutX="40.0" layoutY="22.0" prefHeight="17.0" prefWidth="159.0" styleClass="label-card-value" text="..." textFill="#666666">
-                           <font>
-                              <Font name="System Bold" size="42.0" />
-                           </font>
-                        </Label>
+                        <ListView fx:id="listView1" prefHeight="319.0" prefWidth="200.0" />
                      </children>
-                  </Pane>
-                  <Pane layoutX="14.0" layoutY="129.0" prefHeight="311.0" prefWidth="200.0" style="-fx-background-color: white;">
-                     <children>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="15.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label alignment="CENTER" layoutY="6.0" prefWidth="200.0" textFill="#666666">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </Pane>
+                  </VBox>
                   <VBox layoutX="266.0" layoutY="14.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
                         <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="TAREFAS EM ABERTO" textFill="#666666">
@@ -143,26 +121,84 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Pane layoutX="266.0" layoutY="129.0" prefHeight="311.0" prefWidth="200.0" style="-fx-background-color: white;">
+                  <Pane layoutX="266.0" layoutY="129.0" prefHeight="315.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
                         <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="15.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label alignment="CENTER" layoutY="6.0" prefWidth="200.0" textFill="#666666">
+                        <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
+                        <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="52.0" layoutY="89.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/manutencao-96.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </Pane>
-                  <Pane layoutX="518.0" layoutY="129.0" prefHeight="311.0" prefWidth="200.0" style="-fx-background-color: white;">
+                  <Pane layoutX="518.0" layoutY="129.0" prefHeight="315.0" prefWidth="200.0" style="-fx-background-color: white;">
                      <children>
                         <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="15.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true" />
-                        <Label alignment="CENTER" layoutY="6.0" prefWidth="200.0" textFill="#666666">
+                        <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
+                        <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="52.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/manutencao-96.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </Pane>
+                  <VBox layoutX="516.0" layoutY="14.0" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+                     <children>
+                        <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <HBox>
+                           <children>
+                              <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="ESSE MÊS" textFill="#666666">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="EM ABERTO" textFill="#666666">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets left="30.0" />
+                           </VBox.margin>
+                        </HBox>
+                        <HBox alignment="CENTER" visible="false">
+                           <children>
+                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/menu_megaphone.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="txVendasmes" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                 <font>
+                                    <Font name="System Bold" size="42.0" />
+                                 </font>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label fx:id="txTarefasTodos1" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                 <font>
+                                    <Font name="System Bold" size="42.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                </children></Pane>
          </children>
       </AnchorPane>

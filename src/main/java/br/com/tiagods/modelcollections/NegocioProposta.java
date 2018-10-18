@@ -23,6 +23,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Contato;
 import br.com.tiagods.model.NegocioCategoria;
@@ -38,17 +39,27 @@ import br.com.tiagods.model.Usuario;
 @Table(name="negocio")
 public class NegocioProposta implements AbstractEntity,Serializable{
 	public enum TipoEtapa{
-		ETAPA(-1,"Qualquer"),CONTATO(1,"Contato"),PROPOSTA(2,"Envio de Proposta"),
-		FOLLOWUP(3,"Follow-up"),FECHAMENTO(4,"Fechamento"),INDEFINIDA(5,"Indefinida");
-		
+		ETAPA(-1,"Qualquer","btDefault", IconsEnum.BUTTON_NEGOCIO_CONTATO),
+		CONTATO(1,"Contato","btGreen",IconsEnum.BUTTON_NEGOCIO_CONTATO),
+		PROPOSTA(2,"Envio de Proposta","btBlue",IconsEnum.BUTTON_NEGOCIO_PROPOSTA),
+		FOLLOWUP(3,"Follow-up","btYellow",IconsEnum.BUTTON_NEGOCIO_FOLLOWUP),
+		FECHAMENTO(4,"Fechamento","btYellow",IconsEnum.BUTTON_NEGOCIO_FECHAMENTO),
+		INDEFINIDA(5,"Indefinida","btRed",IconsEnum.BUTTON_NEGOCIO_INDEFINIDA);
+
 		private int index;
 		private String descricao;
-		
-		private TipoEtapa(int index, String descricao) {
+		private String style;
+		private IconsEnum ico;
+
+		private TipoEtapa(int index, String descricao,String style, IconsEnum ico) {
 			this.index=index;
 			this.descricao=descricao;
+			this.style = style;
+			this.ico = ico;
 		}
-		
+
+		public String getStyle() {return style;}
+		public IconsEnum getIco() {return ico;}
 		public String getDescricao() {
 			return descricao;
 		}

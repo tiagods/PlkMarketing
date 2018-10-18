@@ -39,6 +39,8 @@ public class NegociosTarefasImpl extends AbstractRepository<NegocioTarefa, Long>
 		Criteria criteria = filtrar(filter, criterios);
 		return super.filterWithPagination(paginacao, criteria, criterios);
 	}
+
+
 	@Override
 	public Criteria filtrar(NegocioTarefaFilter f, List<Criterion> criterios){
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioTarefa.class);

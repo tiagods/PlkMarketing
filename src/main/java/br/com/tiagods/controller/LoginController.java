@@ -2,6 +2,8 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -24,9 +26,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
 
 public class LoginController extends UtilsController implements Initializable{
     @FXML
@@ -43,6 +50,8 @@ public class LoginController extends UtilsController implements Initializable{
     private JFXButton btnCancelar;
     private UsuariosImpl usuarios;
     private Stage stage;
+    @FXML
+    private MediaView mediaView;
 
     private UsuarioLogado logado = UsuarioLogado.getInstance();
     
@@ -53,6 +62,16 @@ public class LoginController extends UtilsController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            /*
+            Path path = Paths.get("C:\\Users\\Tiago\\Sunday Wordpress theme Video background.mp4");
+            MediaPlayer player = new MediaPlayer(new Media(path.toUri().toURL().toExternalForm()));
+            player.setOnEndOfMedia(() -> {
+                player.seek(Duration.ZERO);
+                player.play();
+            });
+            mediaView.setMediaPlayer(player);
+            player.play();
+            */
             loadFactory();
             usuarios = new UsuariosImpl(getManager());
             List<Usuario> contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
