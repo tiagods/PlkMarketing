@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalField;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
@@ -54,16 +51,18 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private Label txContatos;
 
+
+    @FXML
+    private Label lbUsuarioNome;
+
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
     private NegocioPropostaImpl propostas;
 
     void atualizar(){
-        Usuario usuario = new Usuario();
-        usuario.setId(Long.valueOf(2));
-        UsuarioLogado.getInstance().setUsuario(usuario);
-
         try{
+            listView1.getItems().clear();
+
             loadFactory();
             propostas = new NegocioPropostaImpl(getManager());
             tarefas = new NegociosTarefasImpl(getManager());
@@ -77,21 +76,39 @@ public class MenuController extends UtilsController implements Initializable{
             txNegociosTodos.setText(String.valueOf(n1));
             txNegociosTodos.setOnMouseClicked(event -> abrirNegocio(propostaFilter));
 
-            propostaList.getKey().stream().forEach(c->{
-                JFXButton button = new JFXButton();
-                button.setText(c.getId()+"-"+c.getNome()+"("+c.getTipoEtapa()+")");
-                button.getStyleClass().add(c.getTipoEtapa().getStyle());
-                if(c.getDataFim()!=null){
-                    Calendar calendar = Calendar.getInstance();
-                }
-                try {
-                    buttonMin(button, c.getTipoEtapa().getIco());
-                } catch (IOException e) {}
-                listView1.getItems().add(button);
-                Tooltip tooltip = new Tooltip(c.getDataFim()!=null?"Prazo limite: "+sdf.format(c.getDataFim().getTime()):"Nenhum prazo foi informado");
-                button.setTooltip(tooltip);
-                button.setOnAction(event -> System.out.println(button.getText()));
+            List<NegocioProposta> semData = new ArrayList<>();
+            List<NegocioProposta> vencidas = new ArrayList<>();
+            List<NegocioProposta> aVencer = new ArrayList<>();
+
+            Calendar calendar = Calendar.getInstance();
+            propostaList.getKey().forEach(c->{
+                if(c.getDataFim()==null) semData.add(c);
+                else if(calendar.getTime().after(c.getDataFim().getTime())) vencidas.add(c);
+                else aVencer.add(c);
             });
+
+            Comparator<NegocioProposta> comparator = (o1, o2) -> {
+                if (o1.getDataFim().getTime().before(o2.getDataFim().getTime())) return -1;
+                else if(o1.getDataFim().getTime().after(o2.getDataFim().getTime())) return 1;
+                else return 0;
+            };
+            Collections.sort(vencidas, comparator);
+            Collections.sort(aVencer, comparator);
+
+            Label lbNegVencidos = new Label("NEGOCIOS VENCIDOS");
+            lbNegVencidos.getStyleClass().add("label-card2");
+            if(!vencidas.isEmpty()) listView1.getItems().add(lbNegVencidos);
+            vencidas.forEach(c->botaoNegocios(c,"btRed"));
+
+            Label lbSemData = new Label("NEGOCIOS SEM PRAZO");
+            lbSemData.getStyleClass().add("label-card2");
+            if(!semData.isEmpty()) listView1.getItems().add(lbSemData);
+            semData.forEach(c->botaoNegocios(c,"btYellow"));
+
+            Label lbAVencer = new Label("DENTRO DO PRAZO");
+            lbAVencer.getStyleClass().add("label-card2");
+            if(!aVencer.isEmpty()) listView1.getItems().add(lbAVencer);
+            aVencer.forEach(c->botaoNegocios(c,c.getTipoEtapa().getStyle()));
 
             propostaFilter.setAtendente(UsuarioLogado.getInstance().getUsuario());
             long n2 = propostas.count(propostaFilter);
@@ -113,9 +130,6 @@ public class MenuController extends UtilsController implements Initializable{
 
             txTarefasMes.setText(String.valueOf(t1));
             txTarefasTodos.setText(String.valueOf(t2));
-
-
-
         }catch (Exception e){
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao atualizar","Falha ao atualizar registros do menu",e,true);
         }finally {
@@ -134,7 +148,21 @@ public class MenuController extends UtilsController implements Initializable{
                     "Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
         }
     }
-
+    void botaoNegocios(NegocioProposta c, String style){
+        JFXButton button = new JFXButton();
+        button.setText(c.getId()+"-"+c.getNome()+"=>Responsavel: "+c.getAtendente().getLogin()+"=>"+(c.getTarefas().size())+" Tarefa(s)"+(c.getDataFim()!=null?"=>Prazo limite: "+sdf.format(c.getDataFim().getTime()):""));
+        button.getStyleClass().add(style);
+        try {
+            buttonMin(button, c.getTipoEtapa().getIco());
+        } catch (IOException e) {}
+        Tooltip tooltip = new Tooltip(button.getText());
+        button.setTooltip(tooltip);
+        button.setOnAction(event -> {
+            Stage stage1 = abrirNegocioProposta(c);
+            stage1.setOnHiding(e -> atualizar());
+        });
+        listView1.getItems().add(button);
+    }
     @FXML
     void contato(ActionEvent event) {
     	try {
@@ -168,6 +196,7 @@ public class MenuController extends UtilsController implements Initializable{
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
         atualizar();
+        lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getLogin():"{usuario}");
 	}
 	void onCloseRequestt(Stage stage){ stage.setOnHiding(event -> atualizar());}
 

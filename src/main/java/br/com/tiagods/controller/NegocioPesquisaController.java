@@ -115,17 +115,8 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		this.stage = stage;
 	}
 	void abrirCadastro(NegocioProposta proposta) {
-		try {
-			loadFactory();
-			if (proposta != null) {
-				propostas = new NegocioPropostaImpl(getManager());
-				proposta = propostas.findById(proposta.getId());
-			}
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-			loader.setController(new NegocioCadastroController(stage, proposta,null));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-			stage.setOnHiding(event -> {
+			Stage stage1 = abrirNegocioProposta(proposta);
+			stage1.setOnHiding(event -> {
 				try {
 					loadFactory();
 					filtrar(this.paginacao);
@@ -135,12 +126,6 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					close();
 				}
 			});
-		} catch (IOException e) {
-			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
-		} finally {
-			close();
-		}
 	}
 	private void abrirContato(Contato t) {
 		try {
@@ -480,7 +465,6 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 				}
 			}
 		});
-		colunaEtapa.setPrefWidth(40);
 
 		TableColumn<NegocioProposta, NegocioOrigem> colunaOrigem = new TableColumn<>("Origem");
 		colunaOrigem.setCellValueFactory(new PropertyValueFactory<>("origem"));

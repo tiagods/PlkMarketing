@@ -28,9 +28,10 @@
 }
 .combo-box{
     -fx-background-color: #E7DFDD;
-    -jfx-focus-color: #009688;
-    -jfx-unfocus-color: E7DFDD;
+    -jfx-focus-color: rgb(19, 134, 242);
+    -jfx-unfocus-color: #E7DFDD;
     -jfx-label-float: true;
+    -fx-prompt-text-fill: #E7DFDD;
 }
 .my-list-cell {
     -fx-text-fill: blue;
@@ -48,7 +49,15 @@
     -jfx-unfocus-color: #E7DFDD;
     -jfx-label-float: true;
     -fx-text-fill: white;
-    -fx-prompt-text-fill: black;
+    -fx-prompt-text-fill: #E7DFDD;
+}
+.jfx-password-field{
+    -fx-font-size: 12px;
+    -jfx-focus-color: rgb(19, 134, 242);
+    -jfx-unfocus-color: #E7DFDD;
+    -jfx-label-float: true;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #E7DFDD;
 }
 .jfx-text-area{
     -fx-font-size: 12px;
@@ -86,6 +95,20 @@
 .label-title2{
     -fx-font-size: 24px;
     -fx-text-fill: #E7DFDD;
+}
+.label-card{
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-font-weight: bold;
+}
+.label-card2{
+    -fx-font-size: 12px;
+    -fx-text-fill: #666666;
+    -fx-font-weight: bold;
+}
+.label-card-value{
+    -fx-font-size: 28px;
+    -fx-text-fill: #666666;
 }
 .btYellow{
     -fx-font-size: 12px;

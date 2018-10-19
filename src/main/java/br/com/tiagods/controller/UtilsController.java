@@ -17,6 +17,8 @@ import javax.persistence.EntityManager;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.util.storage.Storage;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -65,6 +67,31 @@ public abstract class UtilsController extends PersistenciaController{
 	final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	final Integer[] limiteTabela = new Integer[] {50,100,200};
+
+	NegocioPropostaImpl propostas;
+
+	Stage abrirNegocioProposta(NegocioProposta proposta) {
+		try {
+			loadFactory();
+			if (proposta != null) {
+				propostas = new NegocioPropostaImpl(getManager());
+				proposta = propostas.findById(proposta.getId());
+			}
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
+			loader.setController(new NegocioCadastroController(stage, proposta,null));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+			return stage;
+		} catch (IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
+			return null;
+		} finally {
+			close();
+		}
+	}
+
+
 	public Alert alert(AlertType alertType,String title, String header, String contentText) {
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
