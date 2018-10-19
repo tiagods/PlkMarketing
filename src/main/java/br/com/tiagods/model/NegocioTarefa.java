@@ -91,7 +91,7 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	private NegocioProspeccao prospeccao;
 
 	@Column(name="TAR_FORMULARIO")
-	private String formulario;
+	private String formulario="";
 
 	@Column(name="TAR_FINALIZADO")
 	private int finalizado=0;

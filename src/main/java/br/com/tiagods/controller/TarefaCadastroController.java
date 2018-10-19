@@ -303,7 +303,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		}
 		else if(tarefa instanceof NegocioTarefaProposta) {
 			rbNegocioProposta.setSelected(true);
-			NegocioProposta proposta = (tarefa).getNegocio();
+			NegocioProposta proposta = ((NegocioTarefaProposta) tarefa).getProposta();
 			if(proposta!=null) {
 				txIdPesquisa.setText(""+proposta.getId());
 				txNomePesquisa.setText(proposta.toString());
@@ -318,7 +318,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		
 		tggFinalizado.setSelected(tarefa.getFinalizado()==1);
 
-		txFormulario.setText(tarefa.getFormulario());
+		//txFormulario.setText(tarefa.getFormulario());
 		this.tarefa=tarefa;
 	}
     @FXML
@@ -361,6 +361,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
     			(dpData.getValue().atTime(tpTime.getValue()).atZone(ZoneId.systemDefault())));
     	
     	tarefa.setFinalizado(tggFinalizado.isSelected()?1:0);
+		/*
 		if (!txFormulario.getText().equals("") && !txFormulario.getText().startsWith(PathStorageEnum.TAREFA_DOCUMENTO.getDescricao()+"/")) {
 			try {
 				storage.transferTo(txFormulario.getText(), PathStorageEnum.TAREFA_DOCUMENTO.getDescricao()+"/"+txFormulario.getText());
@@ -372,6 +373,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		}
 		else
 			tarefa.setFormulario(txFormulario.getText());
+		*/
     	try {
     		loadFactory();
     		if(tarefa instanceof NegocioTarefaContato) {

@@ -148,7 +148,6 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	}
 	private void abrirCadastro(NegocioTarefa t) {
 		try {
-			
 			loadFactory();
 			if(t!=null) {
 				tarefas = new NegociosTarefasImpl(getManager());
@@ -188,13 +187,11 @@ public class TarefaPesquisaController extends UtilsController implements Initial
             	loader.setController(new ContatoCadastroController(stage,c));	
             }
             else if(t instanceof NegocioTarefaProposta) {
-            	NegocioProposta p = ((NegocioTarefaProposta)t).getNegocio();
-            	
+            	NegocioProposta p = ((NegocioTarefaProposta)t).getProposta();
             	propostas = new NegocioPropostaImpl(getManager());
             	p = propostas.findById(p.getId());
             	loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
             	loader.setController(new NegocioCadastroController(stage,p,null));
-            	
             }
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
