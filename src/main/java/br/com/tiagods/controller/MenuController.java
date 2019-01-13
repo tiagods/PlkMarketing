@@ -24,7 +24,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.HPos;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -48,6 +51,8 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private ListView listView1;
 
+    @FXML
+    private FlowPane pnCalendario;
     @FXML
     private Label txContatos;
 
@@ -197,7 +202,28 @@ public class MenuController extends UtilsController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
         atualizar();
         lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getLogin():"{usuario}");
-	}
+
+        pnCalendario.setVgap(6);
+        pnCalendario.setHgap(6);
+
+        String[] week = new String[]{"Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"};
+        for(String s : week){
+            Label label = new Label(s);
+            label.setMinSize(110,10);
+            pnCalendario.getChildren().add(label);
+        }
+        LocalDate localDate = LocalDate.now();
+        for (int i=1;i<=30;i++){
+            ListView listView = new ListView();
+            listView.getItems().add(new Label(""+i));
+            listView.setMaxSize(110,100);
+            listView.setMinSize(110,100);
+            if(localDate.getDayOfMonth()==i)
+                listView .getStyleClass().add("btRed");
+            pnCalendario.getChildren().add(listView);
+        }
+
+    }
 	void onCloseRequestt(Stage stage){ stage.setOnHiding(event -> atualizar());}
 
     @FXML
