@@ -1,4 +1,4 @@
-package br.com.tiagods.modelcollections;
+package br.com.tiagods.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,16 +24,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.AbstractEntity;
-import br.com.tiagods.model.Contato;
-import br.com.tiagods.model.NegocioCategoria;
-import br.com.tiagods.model.NegocioDocumento;
-import br.com.tiagods.model.NegocioNivel;
-import br.com.tiagods.model.NegocioOrigem;
-import br.com.tiagods.model.NegocioServico;
-import br.com.tiagods.model.NegocioTarefaProposta;
-import br.com.tiagods.model.ServicoContratado;
-import br.com.tiagods.model.Usuario;
 
 @Entity
 @Table(name="negocio")
@@ -134,13 +124,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Column(name="NEG_DATAFIM")
 	@Temporal(TemporalType.DATE)
 	private Calendar dataFim;
-	
-	@Transient
-	private NegocioStatus status;
-	
-	@Transient
-	private NegocioEtapa etapa;
-	
+
 	@Column(name="NEG_ANDCONTATO")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar contato;
@@ -164,22 +148,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Column(name="NEG_DATAFINALIZACAO")
 	@Temporal(TemporalType.DATE)
 	private Calendar dataFinalizacao;
-	
-	//@ManyToOne
-	//@JoinColumn(name="NEG_EMPRESA_COD")
-	@Transient
-	private NegocioEmpresa empresa;
-	
-	//@ManyToOne
-	//@JoinColumn(name="NEG_PESSOA_COD")
-	@Transient
-	private NegocioPessoa pessoa;
-	
-	//@ManyToOne
-	//@JoinColumn(name="NEG_PROSPECCAO_COD")
-	@Transient
-	private NegocioProspeccao prospeccao;
-	
+
 	@Column(name="NEG_HONORARIO")
 	private BigDecimal honorario=new BigDecimal(0.00);
 	
@@ -324,34 +293,6 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	}
 
 	/**
-	 * @return the status
-	 */
-	public NegocioStatus getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(NegocioStatus status) {
-		this.status = status;
-	}
-
-	/**
-	 * @return the etapa
-	 */
-	public NegocioEtapa getEtapa() {
-		return etapa;
-	}
-
-	/**
-	 * @param etapa the etapa to set
-	 */
-	public void setEtapa(NegocioEtapa etapa) {
-		this.etapa = etapa;
-	}
-
-	/**
 	 * @return the contato
 	 */
 	public Calendar getContato() {
@@ -434,49 +375,6 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	public void setDataFinalizacao(Calendar dataFinalizacao) {
 		this.dataFinalizacao = dataFinalizacao;
 	}
-
-	/**
-	 * @return the empresa
-	 */
-	public NegocioEmpresa getEmpresa() {
-		return empresa;
-	}
-
-	/**
-	 * @param empresa the empresa to set
-	 */
-	public void setEmpresa(NegocioEmpresa empresa) {
-		this.empresa = empresa;
-	}
-
-	/**
-	 * @return the pessoa
-	 */
-	public NegocioPessoa getPessoa() {
-		return pessoa;
-	}
-
-	/**
-	 * @param pessoa the pessoa to set
-	 */
-	public void setPessoa(NegocioPessoa pessoa) {
-		this.pessoa = pessoa;
-	}
-
-	/**
-	 * @return the prospeccao
-	 */
-	public NegocioProspeccao getProspeccao() {
-		return prospeccao;
-	}
-
-	/**
-	 * @param prospeccao the prospeccao to set
-	 */
-	public void setProspeccao(NegocioProspeccao prospeccao) {
-		this.prospeccao = prospeccao;
-	}
-
 	/**
 	 * @return the honorario
 	 */

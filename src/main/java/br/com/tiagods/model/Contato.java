@@ -24,7 +24,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.modelcollections.NegocioProposta;
 
 @Entity
 public class Contato extends Pessoa implements AbstractEntity,Serializable{

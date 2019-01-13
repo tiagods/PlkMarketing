@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.tiagods.modelcollections.NegocioProposta;
-
 @Entity
 @Table(name="NEGOCIO_DOCUMENTO")
 public class NegocioDocumento implements AbstractEntity,Serializable{

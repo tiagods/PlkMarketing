@@ -13,9 +13,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.*;
 
-import br.com.tiagods.modelcollections.NegocioProposta;
-import br.com.tiagods.modelcollections.NegocioProposta.TipoEtapa;
-import br.com.tiagods.modelcollections.NegocioProposta.TipoStatus;
+import br.com.tiagods.model.NegocioProposta;
+import br.com.tiagods.model.NegocioProposta.TipoEtapa;
+import br.com.tiagods.model.NegocioProposta.TipoStatus;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.interfaces.NegocioPropostaDAO;

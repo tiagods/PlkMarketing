@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import br.com.tiagods.modelcollections.NegocioProposta;
-
 @Entity
 @DiscriminatorValue(value = "proposta")
 public class NegocioTarefaProposta extends NegocioTarefa{

@@ -1,7 +1,7 @@
 package br.com.tiagods.repository.helpers.filters;
 
 import br.com.tiagods.model.*;
-import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.model.NegocioProposta;
 
 import java.time.LocalDate;
 

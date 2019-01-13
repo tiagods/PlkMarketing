@@ -5,14 +5,11 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.TemporalField;
 import java.util.*;
 
 import br.com.tiagods.config.enums.FXMLEnum;
-import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.model.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
@@ -24,18 +21,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.HPos;
-import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
-
-import javax.swing.text.html.ImageView;
 
 public class MenuController extends UtilsController implements Initializable{
     @FXML

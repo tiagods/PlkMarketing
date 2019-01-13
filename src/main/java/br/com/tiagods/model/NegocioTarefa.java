@@ -20,10 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import br.com.tiagods.modelcollections.NegocioEmpresa;
-import br.com.tiagods.modelcollections.NegocioPessoa;
-import br.com.tiagods.modelcollections.NegocioProposta;
-import br.com.tiagods.modelcollections.NegocioProspeccao;
 @Entity
 @Table(name="tarefa")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -68,27 +64,6 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	@Column(name="tipo")
 	@Enumerated(value=EnumType.STRING)
 	private TipoTarefa tipoTarefa;
-	//excluir
-	@Column(name="TAR_CLASSE")
-	private String classe="";
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="TAR_PESSOA_COD")
-	private NegocioPessoa pessoa;
-	
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="TAR_EMPRESA_COD")
-	private NegocioEmpresa empresa;
-	
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="TAR_NEGOCIO_COD")
-	private NegocioProposta negocio;
-	
-	@ManyToOne
-	@JoinColumn(name="TAR_PROSPECCAO_COD")
-	private NegocioProspeccao prospeccao;
 
 	@Column(name="TAR_FORMULARIO")
 	private String formulario="";
@@ -132,18 +107,6 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	 */
 	public void setDataEvento(Calendar dataEvento) {
 		this.dataEvento = dataEvento;
-	}
-	/**
-	 * @return the classe
-	 */
-	public String getClasse() {
-		return classe;
-	}
-	/**
-	 * @param classe the classe to set
-	 */
-	public void setClasse(String classe) {
-		this.classe = classe;
 	}
 	/**
 	 * @return the criadoEm
@@ -192,54 +155,6 @@ public abstract class NegocioTarefa implements AbstractEntity,Serializable{
 	 */
 	public void setAtendente(Usuario atendente) {
 		this.atendente = atendente;
-	}
-	/**
-	 * @return the pessoa
-	 */
-	public NegocioPessoa getPessoa() {
-		return pessoa;
-	}
-	/**
-	 * @param pessoa the pessoa to set
-	 */
-	public void setPessoa(NegocioPessoa pessoa) {
-		this.pessoa = pessoa;
-	}
-	/**
-	 * @return the empresa
-	 */
-	public NegocioEmpresa getEmpresa() {
-		return empresa;
-	}
-	/**
-	 * @param empresa the empresa to set
-	 */
-	public void setEmpresa(NegocioEmpresa empresa) {
-		this.empresa = empresa;
-	}
-	/**
-	 * @return the negocio
-	 */
-	public NegocioProposta getNegocio() {
-		return negocio;
-	}
-	/**
-	 * @param negocio the negocio to set
-	 */
-	public void setNegocio(NegocioProposta negocio) {
-		this.negocio = negocio;
-	}
-	/**
-	 * @return the prospeccao
-	 */
-	public NegocioProspeccao getProspeccao() {
-		return prospeccao;
-	}
-	/**
-	 * @param prospeccao the prospeccao to set
-	 */
-	public void setProspeccao(NegocioProspeccao prospeccao) {
-		this.prospeccao = prospeccao;
 	}
 	/**
 	 * @return the finalizado

@@ -15,8 +15,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import br.com.tiagods.modelcollections.NegocioProspeccao;
-
 @Entity
 @Table(name="lista")
 public class NegocioLista implements AbstractEntity,Serializable{
@@ -31,16 +29,7 @@ public class NegocioLista implements AbstractEntity,Serializable{
 	@ManyToOne
 	@JoinColumn(name="criado_por_id")
 	private Usuario criadoPor;
-	/*
-	@ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="PROSPECCAO_REL_LISTA",
-            joinColumns = { @JoinColumn(name = "LIS_REL_COD", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "PRO_REL_COD", referencedColumnName = "id") })
-    */
-	@Transient
-	private Set<NegocioProspeccao> prospects = new HashSet<>();
-	
-	
+
 	public NegocioLista() {}
 	public NegocioLista(long id, String nome) {
 		this.id=id;
@@ -106,18 +95,7 @@ public class NegocioLista implements AbstractEntity,Serializable{
 	public void setCriadoPor(Usuario criadoPor) {
 		this.criadoPor = criadoPor;
 	}
-	/**
-	 * @return the prospects
-	 */
-	public Set<NegocioProspeccao> getProspects() {
-		return prospects;
-	}
-	/**
-	 * @param prospects the prospects to set
-	 */
-	public void setProspects(Set<NegocioProspeccao> prospects) {
-		this.prospects = prospects;
-	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

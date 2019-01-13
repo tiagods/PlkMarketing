@@ -12,8 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import br.com.tiagods.modelcollections.NegocioProposta;
-
 @Entity
 @Table(name="SERVICO_CONTRATADO")
 public class ServicoContratado implements AbstractEntity,Serializable{

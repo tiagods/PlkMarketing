@@ -1,20 +1,15 @@
 package br.com.tiagods.repository.helpers;
 
-import java.time.ZoneId;
 import java.util.*;
 
 import javax.persistence.EntityManager;
 
-import br.com.tiagods.modelcollections.NegocioProposta;
-import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.*;
 
 import br.com.tiagods.model.NegocioTarefa;
-import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
-import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.interfaces.NegocioTarefaDAO;

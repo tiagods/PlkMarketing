@@ -14,10 +14,8 @@ import java.util.*;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
-import br.com.tiagods.modelcollections.NegocioProposta;
+import br.com.tiagods.model.NegocioProposta;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.util.storage.Storage;
 import org.fxutils.maskedtextfield.MaskedTextField;
