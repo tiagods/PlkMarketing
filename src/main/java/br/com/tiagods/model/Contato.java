@@ -63,17 +63,18 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 			return getDescricao();
 		}
 	}
+
 	@Embedded
 	private PessoaFisica fisico;
 	@Embedded
 	private PessoaJuridica juridico;
 	@Enumerated(value = EnumType.STRING)
 	@Column(name="pessoa_tipo")
-	private PessoaTipo pessoaTipo;
+	private PessoaTipo pessoaTipo = PessoaTipo.PESSOA;
 	
 	@Enumerated(value= EnumType.STRING)
 	@Column(name="contato_tipo")
-	private ContatoTipo contatoTipo;
+	private ContatoTipo contatoTipo = ContatoTipo.SONDAGEM;
 	
 	@ManyToOne
 	@JoinColumn(name = "ultimo_negocio_id")
@@ -82,6 +83,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@ManyToOne
 	@JoinColumn(name = "origem_id")
 	private NegocioOrigem origem;
+
 	@ManyToOne
 	@JoinColumn(name = "atendente_id")
 	private Usuario atendente;
@@ -96,9 +98,11 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	@ManyToOne
 	@JoinColumn(name = "servico_id")
 	private NegocioServico servico;
+
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
 	private NegocioCategoria categoria;
+
 	@ManyToOne
 	@JoinColumn(name = "nivel_id")
 	private NegocioNivel nivel;
@@ -112,6 +116,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	private boolean material = false;
 	private boolean convite = false;
 	private boolean newsletter = false;
+
 	@ManyToOne
 	@JoinColumn(name="mala_direta_id")
 	private NegocioMalaDireta malaDireta;
@@ -121,6 +126,7 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 	
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="contato",cascade=CascadeType.ALL)
 	private Set<NegocioTarefaContato> tarefas = new LinkedHashSet<>();
+
 	public Contato() {
 	}
 	public Contato(long id) {

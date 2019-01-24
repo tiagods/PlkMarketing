@@ -4,17 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import br.com.tiagods.config.init.UsuarioLogado;
 
@@ -39,7 +29,7 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	@Column(name="total_vendas")
 	private BigDecimal totalVendas;
 	private int ativo=1;
-	
+	@Embedded
 	private PessoaFisica fisica;
 	
 	public Usuario(){}
