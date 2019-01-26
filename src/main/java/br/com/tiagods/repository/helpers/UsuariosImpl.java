@@ -17,14 +17,20 @@ import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.UsuarioDAO;
 
 public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements UsuarioDAO{
-
 	public UsuariosImpl(EntityManager manager) {
 		super(manager);
 	}
+
 	@Override
 	public Usuario findByNome(String nome) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
 		criteria.add(Restrictions.ilike(ConstantesTemporarias.pessoa_nome, nome));
+		return (Usuario) criteria.uniqueResult();
+	}
+	@Override
+	public Usuario findByEmail(String email){
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
+		criteria.add(Restrictions.ilike(ConstantesTemporarias.pessoa_email, email));
 		return (Usuario) criteria.uniqueResult();
 	}
 

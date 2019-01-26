@@ -18,6 +18,7 @@ import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -48,6 +49,8 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private Label txContatos;
 
+    @FXML
+    JFXButton btnContato;
 
     @FXML
     private Label lbUsuarioNome;
@@ -162,7 +165,8 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @FXML
     void contato(ActionEvent event) {
-    	try {
+
+        try {
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_PESQUISA);
             loader.setController(new ContatoPesquisaController(stage));
@@ -172,6 +176,7 @@ public class MenuController extends UtilsController implements Initializable{
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_PESQUISA,e,true);
         }
+
     }
     @FXML
     void franquia(ActionEvent event) {
@@ -193,6 +198,20 @@ public class MenuController extends UtilsController implements Initializable{
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
         atualizar();
+
+/*        final ContextMenu contextMenu = new ContextMenu();
+        MenuItem cut = new MenuItem("Cut");
+        MenuItem copy = new MenuItem("Copy");
+        MenuItem paste = new MenuItem("Paste");
+
+        contextMenu.getItems().addAll(cut, copy, paste);
+        cut.setOnAction(event1 -> System.out.println("Cut..."));
+        btnContato.setContextMenu(contextMenu);
+        btnContato.setOnAction(e->
+                contextMenu.show(btnContato.getScene().getWindow(),
+                        btnContato.getScene().getWindow().getX()+btnContato.getLayoutX(),
+                        btnContato.getScene().getWindow().getX()+btnContato.getLayoutY()));
+*/
         lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getLogin():"{usuario}");
 
         pnCalendario.setVgap(6);

@@ -18,7 +18,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="650.0" prefWidth="1080.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="650.0" prefWidth="1080.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane prefHeight="477.0" prefWidth="731.0" style="-fx-background-color: #E7DFDD;" BorderPane.alignment="CENTER">
          <children>
@@ -259,7 +259,8 @@
             <AnchorPane prefHeight="77.0" prefWidth="376.0">
                <HBox.margin>
                   <Insets />
-               </HBox.margin></AnchorPane>
+               </HBox.margin>
+            </AnchorPane>
             <AnchorPane layoutX="143.0" layoutY="10.0" prefHeight="77.0" prefWidth="526.0">
                <children>
                	<JFXButton layoutX="376.0" layoutY="21.0" mnemonicParsing="false" onAction="#sair" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="SAIR" textFill="WHITE">
@@ -271,7 +272,8 @@
                         </ImageView>
                      </graphic>
                   </JFXButton>
-               </children></AnchorPane>
+               </children>
+            </AnchorPane>
 	               </children>
          </HBox>
    </top>
@@ -297,7 +299,7 @@
    <left>
       <VBox prefHeight="459.0" prefWidth="135.0" styleClass="menu-lerf--linear-background" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton mnemonicParsing="false" onAction="#contato" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="CONTATO" textFill="WHITE">
+            <JFXButton fx:id="btnContato" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="CONTATO" textFill="WHITE">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>

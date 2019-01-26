@@ -19,11 +19,11 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	@Column(name="ultimo_acesso")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar ultimoAcesso;
-	
-	@ManyToOne 
+
+	@ManyToOne
 	@JoinColumn(name="departamento_id")
 	private UsuarioDepartamento departamento;
-	@ManyToOne 
+	@ManyToOne
 	@JoinColumn(name="funcao_id")
 	private UsuarioFuncao funcao;
 	@Column(name="total_vendas")
@@ -31,9 +31,27 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	private int ativo=1;
 	@Embedded
 	private PessoaFisica fisica;
-	
+
+	@Column(name="cod_anterior")
+	private int codigoAnterior=0;
+
+	@Column(name="senha_anterior")
+	private String senhaAnterior;
+
 	public Usuario(){}
-	
+
+	public int getCodigoAnterior() {
+		return codigoAnterior;
+	}
+	public void setCodigoAnterior(int codigoAnterior) {
+		this.codigoAnterior = codigoAnterior;
+	}
+	public String getSenhaAnterior() {
+		return senhaAnterior;
+	}
+	public void setSenhaAnterior(String senhaAnterior) {
+		this.senhaAnterior = senhaAnterior;
+	}
 	public Usuario(long id, String login) {
 		this.id=id;
 		this.login=login;

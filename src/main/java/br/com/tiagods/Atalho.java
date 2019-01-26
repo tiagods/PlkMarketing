@@ -35,7 +35,7 @@ public class Atalho extends Application {
 	        stage.initStyle(StageStyle.TRANSPARENT);
             stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
             stage.show();
-            
+
     	}catch (IOException ex) {
 		}
 	}

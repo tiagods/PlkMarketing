@@ -13,7 +13,7 @@
 <?import javafx.scene.media.MediaView?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="268.0" maxWidth="477.0" prefHeight="268.0" prefWidth="476.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="268.0" maxWidth="477.0" prefHeight="268.0" prefWidth="476.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane prefHeight="268.0" prefWidth="477.0">
          <children>
@@ -22,21 +22,25 @@
       </AnchorPane>
       <VBox alignment="TOP_CENTER" prefHeight="268.0" prefWidth="477.0" styleClass="login--linear-background" stylesheets="@css/estilo.css">
          <children>
-            <Label alignment="CENTER" prefHeight="23.0" prefWidth="350.0" styleClass="label-title2" text="Negocios 2.0">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="414.0" styleClass="label-title2" text="Negocios">
                <font>
-                  <Font name="System Bold Italic" size="20.0" />
+                  <Font name="System Bold Italic" size="18.0" />
                </font>
             </Label>
             <Label fx:id="lbBanco" text="banco" />
             <Label fx:id="lbDetalhes" text="sistema" />
-            <ImageView fitHeight="70.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@imagens/theme.png" />
-               </image>
+            <HBox alignment="CENTER">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
-            </ImageView>
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="75.0" layoutX="249.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/theme.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
             <JFXComboBox fx:id="cbNome" focusTraversable="false" prefHeight="28.0" prefWidth="200.0" style="-fx-background-color: #E7DFDD;">
                <VBox.margin>
                   <Insets bottom="20.0" />
