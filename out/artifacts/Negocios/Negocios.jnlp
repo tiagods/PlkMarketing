@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Negocios.jar" size="611867" download="eager" />
+    <jar href="Negocios.jar" size="634031" download="eager" />
     <jar href="Negocios_lib\activation-1.1.1.jar" size="69409" download="eager" />
     <jar href="Negocios_lib\antlr-2.7.7.jar" size="445288" download="eager" />
     <jar href="Negocios_lib\aws-java-sdk-core-1.11.289.jar" size="860346" download="eager" />
@@ -47,10 +47,10 @@
     <jar href="Negocios_lib\jxl-2.6.12.jar" size="725735" download="eager" />
     <jar href="Negocios_lib\log4j-1.2.14.jar" size="367444" download="eager" />
     <jar href="Negocios_lib\log4j-api-2.6.jar" size="190791" download="eager" />
-    <jar href="Negocios_lib\log4j-core-2.6.jar" size="1907646" download="eager" />
+    <jar href="Negocios_lib\log4j-core-2.6.jar" size="1186750" download="eager" />
     <jar href="Negocios_lib\log4j-slf4j-impl-2.6.jar" size="22921" download="eager" />
     <jar href="Negocios_lib\mail-1.4.5.jar" size="508143" download="eager" />
-    <jar href="Negocios_lib\maskedtextfield-1.2.jar" size="16729" download="eager" />
+    <jar href="Negocios_lib\maskedtextfield-1.2.jar" size="16713" download="eager" />
     <jar href="Negocios_lib\postgresql-9.1-901-1.jdbc4.jar" size="551290" download="eager" />
     <jar href="Negocios_lib\slf4j-api-1.7.21.jar" size="41071" download="eager" />
     <jar href="Negocios_lib\xml-apis-1.0.b2.jar" size="109318" download="eager" />

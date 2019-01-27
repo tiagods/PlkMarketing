@@ -265,18 +265,15 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		dataInicial.valueProperty().addListener(change);
 		cbLimite.valueProperty().addListener(change);
 		
-		pagination.currentPageIndexProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				paginacao.setPaginaAtual(newValue.intValue());
-				try {
-					loadFactory();
-					filtrar(paginacao);
-				} catch (PersistenceException e) {
-					alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-				} finally {
-					close();
-				}
+		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
+			paginacao.setPaginaAtual(newValue.intValue());
+			try {
+				loadFactory();
+				filtrar(paginacao);
+			} catch (PersistenceException e) {
+				alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
+			} finally {
+				close();
 			}
 		});
 		paginacao = new Paginacao(cbLimite.getValue());

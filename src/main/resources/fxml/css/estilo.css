@@ -1,3 +1,7 @@
+.menu-item{
+    -fx-text-fill: #FFF;
+}
+
 .linear-background {
    -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
 }

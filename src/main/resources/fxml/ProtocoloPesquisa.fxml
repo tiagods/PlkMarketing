@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Protocolos de Entrada" />
+      <VBox prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <HBox fx:id="pnCheckBox" alignment="CENTER" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+               <children>
+                  <JFXComboBox fx:id="cbStatus" maxWidth="100.0" prefWidth="100.0" promptText="Tipo">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></JFXComboBox>
+                  <JFXComboBox fx:id="cbRecebimento" maxWidth="100.0" prefWidth="100.0" promptText="Tipo Contato">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></JFXComboBox>
+               </children>
+            </HBox>
+            <HBox fx:id="pnCheckBox1" alignment="CENTER" layoutX="10.0" layoutY="30.0" minWidth="50.0" prefHeight="45.0" prefWidth="900.0">
+               <children>
+                  <JFXDatePicker fx:id="dataInicial" minWidth="120.0" prefWidth="120.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></JFXDatePicker>
+                  <Label alignment="CENTER" maxWidth="20.0" minWidth="20.0" prefHeight="20.0" text="ate">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></Label>
+                  <JFXDatePicker fx:id="dataFinal" minWidth="120.0" prefWidth="120.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin></JFXDatePicker>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="110.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXTextField fx:id="txPesquisa" onKeyTyped="#pesquisar" prefHeight="26.0" prefWidth="200.0" promptText="Digite aqui para pesquisar">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></JFXTextField>
+                  <JFXComboBox fx:id="cbAtendente" maxWidth="100.0" prefWidth="100.0" promptText="Atendente" />
+                  <Label text="Classificar por:">
+                     <HBox.margin>
+                        <Insets left="20.0" right="10.0" />
+                     </HBox.margin>
+                  </Label>
+                  <JFXComboBox fx:id="cbClassificar" prefHeight="26.0" prefWidth="117.0" promptText="Data Criaçao" style="-fx-background-color: #E7DFDD;" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="144.0" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <JFXButton onAction="#novo" styleClass="btDefault" text="Novo">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_add.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+      <TableView fx:id="tbPrincipal" prefHeight="281.0" prefWidth="900.0" styleClass="table" tableMenuButtonVisible="true" />
+      <HBox alignment="CENTER">
+         <children>
+            <Label text="Limite de Registros por paginas:">
+               <HBox.margin>
+                  <Insets right="10.0" />
+               </HBox.margin>
+            </Label>
+            <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" />
+            <Pagination fx:id="pagination" pageCount="10" prefHeight="47.0" prefWidth="320.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="1000.0">
+         <children>
+            <ButtonBar prefHeight="50.0" prefWidth="256.0">
+               <buttons>
+                  <JFXButton onAction="#exportar" styleClass="btDefault" text="Exportar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_export.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btDefault" text="Sair">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </buttons>
+            </ButtonBar>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

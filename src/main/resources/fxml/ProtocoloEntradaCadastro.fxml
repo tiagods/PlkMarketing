@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="900.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Cadastro - Protocolo de Entrada">
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin></Label>
+      <HBox prefHeight="350.0" prefWidth="890.0">
+         <children>
+            <VBox layoutX="10.0" layoutY="10.0" prefHeight="188.0" prefWidth="334.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT">
+                     <VBox.margin>
+                        <Insets bottom="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <JFXTextField fx:id="txCodigo" disable="true" prefHeight="25.0" prefWidth="55.0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
+                     <children>
+                        <Label text="Entregue por:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="20.0" />
+                           </HBox.margin>
+                        </Label>
+                        <JFXTextField fx:id="txEntreguePor" prefHeight="25.0" prefWidth="131.0" promptText="Correios..etc" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="55.0">
+                     <children>
+                        <Label text="Cliente Apelido:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <JFXTextField fx:id="txCliente" onKeyReleased="#textoAdicionado" prefHeight="25.0" prefWidth="131.0" promptText="ex...: 2000" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="80.0">
+                     <children>
+                        <Label text="Cliente Nome:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <JFXTextArea fx:id="txClienteNome" disable="true" editable="false" prefHeight="49.0" prefWidth="257.0" promptText="Prenchimento automático" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="105.0">
+                     <children>
+                        <Label text="Dep...Destino:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <JFXComboBox fx:id="cbDepartamento" prefHeight="25.0" prefWidth="132.0" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="105.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="75.0" text="Funcionário:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </Label>
+                        <JFXComboBox fx:id="cbFuncionario" prefHeight="25.0" prefWidth="132.0" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="105.0" prefHeight="62.0" prefWidth="334.0">
+                     <children>
+                        <Label prefHeight="17.0" prefWidth="83.0" text="Observacao:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextArea fx:id="txObservacao" disable="true" editable="false" prefHeight="36.0" prefWidth="247.0" promptText="Esse campo é preenchido pelo Funcionário Destino" styleClass="jfx-text-area" wrapText="true" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+               </children>
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox prefHeight="350.0" prefWidth="547.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="61.0" prefWidth="535.0">
+                     <children>
+                        <JFXComboBox fx:id="cbItemNome" editable="true" prefHeight="25.0" prefWidth="122.0" promptText="Nome do Item">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </JFXComboBox>
+                        <JFXComboBox fx:id="cbItemQuantidade" prefHeight="25.0" prefWidth="97.0" promptText="ex:2000">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                        </JFXComboBox>
+                        <JFXTextArea fx:id="txDetalhes" prefHeight="61.0" prefWidth="213.0" promptText="Incluir detalhes do documento recebido" styleClass="jfx-text-area" wrapText="true" />
+                        <JFXButton fx:id="btItemIncluir" mnemonicParsing="false" onAction="#novoItem" prefHeight="38.0" prefWidth="84.0" styleClass="btDefault" text="Incluir">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                           <graphic>
+                              <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@imagens/button_add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <TableView fx:id="tbItem" prefHeight="239.0" prefWidth="535.0" />
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" />
+         </VBox.margin>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0">
+         <children>
+            <ButtonBar prefHeight="50.0" prefWidth="256.0">
+               <buttons>
+                  <JFXButton onAction="#salvar" styleClass="btDefault" text="Salvar">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></JFXButton>
+                  <JFXButton onAction="#sair" prefHeight="32.0" prefWidth="114.0" styleClass="btDefault" text="Sair">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </buttons>
+            </ButtonBar>
+         </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

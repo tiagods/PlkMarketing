@@ -14,6 +14,8 @@ public enum IconsEnum {
 	BUTTON_CLIP("button_clip","Visualizar Formulario"),
 	BUTTON_OK("button_ok","OK"),
 	BUTTON_CONTATO("button_people","Abrir Contato"),
+	BUTTON_PARTILHAR("button_partilhar","Abrir Partilha"),
+	BUTTON_RETUITAR("button_retuitar","Redirecionar"),
 	BUTTON_SEARCH("button_search","Buscar"),
 	BUTTON_TAREFA_EMAIL("tarefas_email","E-Mail"),
 	BUTTON_TAREFA_FONE("tarefas_fone","Telefone"),
@@ -24,8 +26,13 @@ public enum IconsEnum {
 	BUTTON_NEGOCIO_PROPOSTA("negocio_proposta","Envio de Proposta"),
 	BUTTON_NEGOCIO_FOLLOWUP("negocio_followup","Follow-Up"),
 	BUTTON_NEGOCIO_FECHAMENTO("negocio_fechamento","Fechamento"),
-	BUTTON_NEGOCIO_INDEFINIDA("negocio_question","Indefinida");
-
+	BUTTON_NEGOCIO_INDEFINIDA("negocio_question","Indefinida"),
+	MENU_CHECKLIST("menu_checklist","Abrir CheckList"),
+	MENU_CONTATO("button_people","Abrir Contatos"),
+	MENU_FRANQUIA("menu_franquia","Abrir Franquias"),
+	MENU_NEGOCIO("menu_negocios","Abrir Negocios"),
+	MENU_TAREFA("menu_task","Abrir Tarefas"),
+	MENU_USUARIO("menu_user","Abrir Usuarios");
 	private String localizacao;
 	private String tooltip;
 

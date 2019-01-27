@@ -1,13 +1,18 @@
 package br.com.tiagods.controller;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.List;
 
 import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
@@ -18,11 +23,12 @@ import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -42,18 +48,39 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private Label txTarefasTodos;
     @FXML
-    private ListView listView1;
-
+    private ListView listViewNegocios;
+    @FXML
+    private Label txProtocoloPerfil;
+    @FXML
+    private Label txProtocoloTodos;
     @FXML
     private FlowPane pnCalendario;
     @FXML
     private Label txContatos;
 
     @FXML
-    JFXButton btnContato;
+    private JFXButton btnCadastro;
+
+    @FXML
+    private JFXButton btnProtocolo;
+
+    @FXML
+    private JFXButton btnExtras;
+
+    @FXML
+    private JFXButton btnNegocios;
 
     @FXML
     private Label lbUsuarioNome;
+
+    @FXML
+    private Label lbUsuarioNome2;
+
+    @FXML
+    private Tab tabNegocios;
+
+    @FXML
+    private Tab tabProtocolo;
 
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
@@ -61,7 +88,7 @@ public class MenuController extends UtilsController implements Initializable{
 
     void atualizar(){
         try{
-            listView1.getItems().clear();
+            listViewNegocios.getItems().clear();
 
             loadFactory();
             propostas = new NegocioPropostaImpl(getManager());
@@ -97,17 +124,17 @@ public class MenuController extends UtilsController implements Initializable{
 
             Label lbNegVencidos = new Label("NEGOCIOS VENCIDOS");
             lbNegVencidos.getStyleClass().add("label-card2");
-            if(!vencidas.isEmpty()) listView1.getItems().add(lbNegVencidos);
+            if(!vencidas.isEmpty()) listViewNegocios.getItems().add(lbNegVencidos);
             vencidas.forEach(c->botaoNegocios(c,"btRed"));
 
             Label lbSemData = new Label("NEGOCIOS SEM PRAZO");
             lbSemData.getStyleClass().add("label-card2");
-            if(!semData.isEmpty()) listView1.getItems().add(lbSemData);
+            if(!semData.isEmpty()) listViewNegocios.getItems().add(lbSemData);
             semData.forEach(c->botaoNegocios(c,"btYellow"));
 
             Label lbAVencer = new Label("DENTRO DO PRAZO");
             lbAVencer.getStyleClass().add("label-card2");
-            if(!aVencer.isEmpty()) listView1.getItems().add(lbAVencer);
+            if(!aVencer.isEmpty()) listViewNegocios.getItems().add(lbAVencer);
             aVencer.forEach(c->botaoNegocios(c,c.getTipoEtapa().getStyle()));
 
             propostaFilter.setAtendente(UsuarioLogado.getInstance().getUsuario());
@@ -136,13 +163,14 @@ public class MenuController extends UtilsController implements Initializable{
             close();
         }
     }
+
     void abrirNegocio(NegocioPropostaFilter filter){
         try {
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_PESQUISA);
             loader.setController(new NegocioPesquisaController(filter,stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequestt(stage);
+            onCloseRequest(stage);
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
@@ -161,17 +189,86 @@ public class MenuController extends UtilsController implements Initializable{
             Stage stage1 = abrirNegocioProposta(c);
             stage1.setOnHiding(e -> atualizar());
         });
-        listView1.getItems().add(button);
+        listViewNegocios.getItems().add(button);
+    }
+
+    void combos(){
+        btnProtocolo.setOnAction(this::protocolo);
+
+        final ContextMenu cmNegocios = new ContextMenu();
+        MenuItem miContato = new MenuItem("Contato");
+        iconMenuItem(miContato,30,30, IconsEnum.MENU_CONTATO);
+        miContato.setOnAction(this::contato);
+
+        MenuItem miFranquia = new MenuItem("Franquia");
+        iconMenuItem(miFranquia,30,30,IconsEnum.MENU_FRANQUIA);
+        miFranquia.setOnAction(this::franquia);
+
+        MenuItem miNegocio = new MenuItem("Negocios");
+        iconMenuItem(miNegocio,30,30,IconsEnum.MENU_NEGOCIO);
+        miNegocio.setOnAction(this::negocio);
+
+        MenuItem miTarefa = new MenuItem("Tarefas");
+        iconMenuItem(miTarefa,30,30,IconsEnum.MENU_TAREFA);
+        miTarefa.setOnAction(this::tarefa);
+
+        cmNegocios.getItems().addAll(miContato, miFranquia, miNegocio,miTarefa);
+        btnNegocios.setContextMenu(cmNegocios);
+        btnNegocios.setOnAction(e->
+                cmNegocios.show(btnNegocios.getScene().getWindow(),
+                        btnNegocios.getScene().getWindow().getX()+50,
+                        btnNegocios.getScene().getWindow().getY()+btnNegocios.getLayoutY()+100));
+        cmNegocios.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
+
+        final ContextMenu cmCadastros = new ContextMenu();
+        MenuItem miUsuario = new MenuItem("Usuarios");
+        iconMenuItem(miUsuario,30,30, IconsEnum.MENU_USUARIO);
+        miUsuario.setOnAction(this::usuario);
+
+        cmCadastros.getItems().addAll(miUsuario);
+        btnCadastro.setContextMenu(cmCadastros);
+        btnCadastro.setOnAction(e->
+                cmCadastros.show(btnCadastro.getScene().getWindow(),
+                        btnCadastro.getScene().getWindow().getX()+50,
+                        btnCadastro.getScene().getWindow().getY()+btnCadastro.getLayoutY()+100));
+        cmCadastros.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
+
+        final ContextMenu cmExtras = new ContextMenu();
+        MenuItem miCheckList = new MenuItem("CheckList");
+        iconMenuItem(miCheckList,30,30, IconsEnum.MENU_CHECKLIST);
+        miCheckList.setOnAction(event -> {
+            Path path = Paths.get(System.getProperty("user.dir"),"checklist.jar");
+            Runnable run = () -> {
+                try {
+                    Desktop.getDesktop().open(path.toFile());
+                } catch (IOException e) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Erro");
+                    alert.setHeaderText("Não foi possivel iniciar o programa");
+                    alert.setContentText("Falha ao abrir o aplicativo\n"+e);
+                    alert.showAndWait();
+                }
+            };
+            new Thread(run).start();
+        });
+
+        cmExtras.getItems().addAll(miCheckList);
+        btnExtras.setContextMenu(cmExtras);
+        btnExtras.setOnAction(e->
+                cmExtras.show(btnExtras.getScene().getWindow(),
+                        btnExtras.getScene().getWindow().getX()+50,
+                        btnExtras.getScene().getWindow().getY()+btnExtras.getLayoutY()+100));
+        cmExtras.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
+
     }
     @FXML
     void contato(ActionEvent event) {
-
         try {
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_PESQUISA);
             loader.setController(new ContatoPesquisaController(stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequestt(stage);
+            onCloseRequest(stage);
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_PESQUISA,e,true);
@@ -185,7 +282,7 @@ public class MenuController extends UtilsController implements Initializable{
             FXMLLoader loader = loaderFxml(FXMLEnum.FRANQUIA_PESQUISA);
             loader.setController(new FranquiaPesquisaController(stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequestt(stage);
+            onCloseRequest(stage);
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.FRANQUIA_PESQUISA,e,true);
@@ -199,21 +296,10 @@ public class MenuController extends UtilsController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
         atualizar();
 
-/*        final ContextMenu contextMenu = new ContextMenu();
-        MenuItem cut = new MenuItem("Cut");
-        MenuItem copy = new MenuItem("Copy");
-        MenuItem paste = new MenuItem("Paste");
+        combos();
 
-        contextMenu.getItems().addAll(cut, copy, paste);
-        cut.setOnAction(event1 -> System.out.println("Cut..."));
-        btnContato.setContextMenu(contextMenu);
-        btnContato.setOnAction(e->
-                contextMenu.show(btnContato.getScene().getWindow(),
-                        btnContato.getScene().getWindow().getX()+btnContato.getLayoutX(),
-                        btnContato.getScene().getWindow().getX()+btnContato.getLayoutY()));
-*/
-        lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getLogin():"{usuario}");
-
+        lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getLogin().toUpperCase():"{usuario}");
+        lbUsuarioNome2.setText(lbUsuarioNome.getText());
         pnCalendario.setVgap(6);
         pnCalendario.setHgap(6);
 
@@ -233,10 +319,24 @@ public class MenuController extends UtilsController implements Initializable{
                 listView .getStyleClass().add("btRed");
             pnCalendario.getChildren().add(listView);
         }
+        pnCalendario.setDisable(true);
 
     }
-	void onCloseRequestt(Stage stage){ stage.setOnHiding(event -> atualizar());}
+	void onCloseRequest(Stage stage){ stage.setOnHiding(event -> atualizar());}
 
+    @FXML
+    void protocolo(ActionEvent event) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.PROTOCOLO_ENTRADA_PESQUISA);
+            loader.setController(new ProtocoloEntradaPesquisaController(stage, null));
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            onCloseRequest(stage);
+        } catch (IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo " + FXMLEnum.PROTOCOLO_ENTRADA_PESQUISA, e, true);
+        }
+    }
     @FXML
     void sair(ActionEvent event) {
 	    System.exit(0);
@@ -253,7 +353,7 @@ public class MenuController extends UtilsController implements Initializable{
             FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_PESQUISA);
             loader.setController(new TarefaPesquisaController(null,stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequestt(stage);
+            onCloseRequest(stage);
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_PESQUISA,e,true);
@@ -267,7 +367,7 @@ public class MenuController extends UtilsController implements Initializable{
             FXMLLoader loader = loaderFxml(FXMLEnum.USUARIO_PESQUISA);
             loader.setController(new UsuarioPesquisaController(stage));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequestt(stage);
+            onCloseRequest(stage);
         }catch(IOException e) {
         	 alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                      "Falha ao localizar o arquivo "+FXMLEnum.USUARIO_PESQUISA,e,true);

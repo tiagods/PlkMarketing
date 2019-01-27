@@ -1,0 +1,73 @@
+package br.com.tiagods.repository.helpers.filters;
+
+import br.com.tiagods.model.ProtocoloEntrada;
+import br.com.tiagods.model.Usuario;
+
+import java.time.LocalDate;
+import java.util.Calendar;
+
+public class ProtocoloEntradaFilter {
+    private ProtocoloEntrada.StatusRecebimento recebimento;
+    private ProtocoloEntrada.StatusDevolucao devolucao;
+    private ProtocoloEntrada.Classificacao classificacao;
+    private LocalDate dataInicial;
+    private LocalDate dataFinal;
+    private Usuario usuario;
+    private String pesquisa;
+
+    public ProtocoloEntrada.StatusRecebimento getRecebimento() {
+        return recebimento;
+    }
+
+    public void setRecebimento(ProtocoloEntrada.StatusRecebimento recebimento) {
+        this.recebimento = recebimento;
+    }
+
+    public ProtocoloEntrada.StatusDevolucao getDevolucao() {
+        return devolucao;
+    }
+
+    public void setDevolucao(ProtocoloEntrada.StatusDevolucao devolucao) {
+        this.devolucao = devolucao;
+    }
+
+    public ProtocoloEntrada.Classificacao getClassificacao() {
+        return classificacao;
+    }
+
+    public void setClassificacao(ProtocoloEntrada.Classificacao classificacao) {
+        this.classificacao = classificacao;
+    }
+
+    public LocalDate getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(LocalDate dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public LocalDate getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(LocalDate dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getPesquisa() {
+        return pesquisa;
+    }
+
+    public void setPesquisa(String pesquisa) {
+        this.pesquisa = pesquisa;
+    }
+}

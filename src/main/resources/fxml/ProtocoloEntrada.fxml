@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Reflection?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="670.0" prefWidth="970.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.prolink.controller.ControllerProtocoloEntrada">
+   <children>
+      <Label alignment="CENTER" layoutX="10.0" layoutY="11.0" minWidth="60.0" prefHeight="40.0" prefWidth="600.0" style="&#10;" text="Controle de Entrada de Documentos" textAlignment="CENTER" wrapText="false" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <font>
+            <Font size="18.0" fx:id="x1" />
+         </font>
+         <textFill>
+            <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+         </textFill>
+      </Label>
+      <JFXTabPane fx:id="tabPane" layoutY="51.0" prefHeight="327.0" prefWidth="970.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="51.0">
+         <tabs>
+            <Tab fx:id="tabPesquisa" text="Pesquisa">
+               <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="39.0" text="Buscar por:" />
+                        <JFXRadioButton fx:id="rbProtocolo" layoutX="88.0" layoutY="39.0" mnemonicParsing="false" onAction="#checarSelecao" selected="true" text="Protocolo" />
+                        <JFXRadioButton fx:id="rbApelido" layoutX="173.0" layoutY="39.0" mnemonicParsing="false" onAction="#checarSelecao" text="Apelido" />
+                        <JFXRadioButton fx:id="rbUsuario" layoutX="251.0" layoutY="39.0" mnemonicParsing="false" onAction="#checarSelecao" text="Usuario" />
+                        <JFXRadioButton fx:id="rbTudo" layoutX="326.0" layoutY="39.0" mnemonicParsing="false" onAction="#checarSelecao" text="Tudo" />
+                        <JFXRadioButton fx:id="rbQualquer" layoutX="251.0" layoutY="69.0" mnemonicParsing="false" text="Qualquer" />
+                        <JFXRadioButton fx:id="rbRecebido" layoutX="173.0" layoutY="69.0" mnemonicParsing="false" text="Recebido" />
+                        <JFXRadioButton fx:id="rbAberto" layoutX="88.0" layoutY="69.0" mnemonicParsing="false" selected="true" text="Em Aberto" />
+                        <Label layoutX="14.0" layoutY="69.0" text="Status:" />
+                        <JFXCheckBox fx:id="ckInformarPeriodo" layoutX="14.0" layoutY="102.0" mnemonicParsing="false" onAction="#checarSelecao" text="Informar período:" />
+                        <JFXDatePicker fx:id="dtInicial" disable="true" editable="false" layoutX="173.0" layoutY="98.0" prefHeight="25.0" prefWidth="100.0" promptText="Inicio" />
+                        <JFXDatePicker fx:id="dtFinal" disable="true" editable="false" layoutX="276.0" layoutY="98.0" prefHeight="25.0" prefWidth="100.0" promptText="Fim" />
+                        <JFXComboBox fx:id="cbBusca" editable="true" layoutX="13.0" layoutY="143.0" prefHeight="25.0" prefWidth="241.0" promptText="Informe aqui o valor para buscar">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXComboBox>
+                        <JFXButton fx:id="btOk" layoutX="261.0" layoutY="143.0" mnemonicParsing="false" onAction="#executarPesquisa" prefHeight="25.0" prefWidth="50.0" styleClass="btJFXDefault" text="OK">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXButton fx:id="btExportar" disable="true" layoutX="320.0" layoutY="143.0" mnemonicParsing="false" onAction="#gerarExcel" styleClass="btJFXDefault" text="Exportar">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="tabCadastro" text="Cadastro">
+               <content>
+                  <AnchorPane fx:id="pnCadastro" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <JFXTextArea fx:id="txObservacao" disable="true" editable="false" layoutX="107.0" layoutY="241.0" prefHeight="31.0" prefWidth="134.0" promptText="Esse campo é preenchido pelo Funcionário Destino" wrapText="true" />
+                        <Label layoutX="14.0" layoutY="244.0" prefHeight="17.0" prefWidth="83.0" text="Observacao:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="txCodigo" disable="true" layoutX="19.0" layoutY="4.0" prefHeight="25.0" prefWidth="55.0" />
+                        <Label layoutX="15.0" layoutY="52.0" text="Entregue por:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextField fx:id="txEntreguePor" layoutX="109.0" layoutY="48.0" prefHeight="25.0" prefWidth="131.0" promptText="Correios..etc" />
+                        <Label layoutX="15.0" layoutY="86.0" text="Cliente Apelido:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXTextArea fx:id="txClienteNome" disable="true" editable="false" layoutX="109.0" layoutY="114.0" prefHeight="49.0" prefWidth="131.0" promptText="Prenchimento automático" />
+                        <Label layoutX="15.0" layoutY="118.0" text="Cliente Nome:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="12.0" layoutY="184.0" text="Dep...Destino:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="14.0" layoutY="213.0" prefHeight="17.0" prefWidth="75.0" text="Funcionário:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <JFXButton fx:id="btNovo" layoutX="278.0" layoutY="247.0" mnemonicParsing="false" onAction="#novo" prefHeight="25.0" prefWidth="62.0" styleClass="btJFXDefault" text="Novo">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXButton fx:id="btAlterar" layoutX="354.0" layoutY="247.0" mnemonicParsing="false" onAction="#alterar" prefHeight="25.0" prefWidth="62.0" styleClass="btJFXDefault" text="Alterar">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXButton fx:id="btSalvar" layoutX="509.0" layoutY="247.0" mnemonicParsing="false" onAction="#salvar" prefHeight="25.0" prefWidth="62.0" styleClass="btJFXDefault" text="Salvar">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXButton fx:id="btCancelar" layoutX="432.0" layoutY="247.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="25.0" prefWidth="62.0" style="-fx-font-size: 10;" styleClass="btJFXDefault" text="Cancelar">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXButton fx:id="btAlerta" layoutX="664.0" layoutY="247.0" mnemonicParsing="false" onAction="#alerta" prefHeight="25.0" prefWidth="62.0" styleClass="btJFXDefault" text="Alerta">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXButton fx:id="btExcluir" layoutX="587.0" layoutY="247.0" mnemonicParsing="false" onAction="#excluir" prefHeight="25.0" prefWidth="62.0" styleClass="btJFXDefault" text="Excluir">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <Label fx:id="txData" layoutX="109.0" layoutY="16.0" prefHeight="17.0" prefWidth="131.0" />
+                        <Label layoutX="257.0" layoutY="16.0" prefHeight="17.0" prefWidth="262.0" />
+                        <JFXComboBox fx:id="cbItemNome" editable="true" layoutX="257.0" layoutY="49.0" prefHeight="25.0" prefWidth="122.0" promptText="Nome do Item" />
+                        <JFXButton fx:id="btItemIncluir" layoutX="741.0" layoutY="49.0" mnemonicParsing="false" onAction="#novoItem" prefHeight="25.0" prefWidth="62.0" styleClass="btJFXDefault" text="Incluir">
+                           <effect>
+                              <Reflection />
+                           </effect>
+                        </JFXButton>
+                        <JFXComboBox fx:id="cbItemQuantidade" layoutX="388.0" layoutY="49.0" prefHeight="25.0" prefWidth="97.0" promptText="ex:2000" />
+                        <JFXTextArea fx:id="txDetalhes" layoutX="491.0" layoutY="50.0" prefHeight="40.0" prefWidth="242.0" promptText="Incluir detalhes do documento recebido" wrapText="true" />
+                        <TableView fx:id="tbItem" layoutX="257.0" layoutY="98.0" prefHeight="107.0" prefWidth="546.0" />
+                        <JFXTextField fx:id="txCliente" layoutX="110.0" layoutY="81.0" onKeyReleased="#textoAdicionado" prefHeight="25.0" prefWidth="131.0" promptText="ex...: 2000" />
+                        <JFXComboBox fx:id="cbDepartamento" layoutX="108.0" layoutY="180.0" prefHeight="25.0" prefWidth="132.0" />
+                        <JFXComboBox fx:id="cbFuncionario" layoutX="108.0" layoutY="209.0" prefHeight="25.0" prefWidth="132.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+         </tabs>
+      </JFXTabPane>
+      <TableView fx:id="tbPrincipal" layoutY="388.0" prefHeight="282.0" prefWidth="970.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="388.0">
+                        </TableView>
+   </children>
+</AnchorPane>

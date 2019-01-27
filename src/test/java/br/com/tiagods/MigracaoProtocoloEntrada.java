@@ -65,8 +65,8 @@ public class MigracaoProtocoloEntrada {
             p.setParaQuem(null);
             p.setQuemRecebeu(null);
 
-            p.setParaQuemId(c.getParaQuemId());
-            p.setQuemRecebeuId(c.getQuemRecebeuId());
+            //p.setParaQuemId(c.getParaQuemId());
+            //p.setQuemRecebeuId(c.getQuemRecebeuId());
 
             Set<ProtocoloItem> items = new HashSet<>();
             for(ProtocoloItemBean bean : c.getItems()){

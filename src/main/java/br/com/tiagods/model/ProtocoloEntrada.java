@@ -8,6 +8,50 @@ import java.util.*;
 @Entity
 @Table(name="protocolo_entrada")
 public class ProtocoloEntrada implements AbstractEntity,Serializable {
+
+    public enum StatusRecebimento{
+        STATUS("Status do Recebimento"),ABERTO("Não Recebido"),FECHADO("Entregue");
+        private String descricao;
+        StatusRecebimento(String descricao){
+            this.descricao=descricao;
+        }
+        public String getDescricao() {
+            return descricao;
+        }
+        @Override
+        public String toString() {
+            return getDescricao();
+        }
+    }
+    public enum StatusDevolucao{
+        DEVOLVIDO("Saida do Documento"),NAOSEENQUADA("Desnecessario"),SIM("Devolvido"),NAO("Pendente");
+        private String descricao;
+        StatusDevolucao(String descricao){
+            this.descricao=descricao;
+        }
+        public String getDescricao() {
+            return descricao;
+        }
+        @Override
+        public String toString() {
+            return getDescricao();
+        }
+    }
+    public enum Classificacao{
+        USUARIO("Usuario"),CLIENTE("Cliente ou Apelido"),PROTOCOLO("Nº do Protocolo");
+        private String descricao;
+        Classificacao(String descricao){
+            this.descricao=descricao;
+        }
+        public String getDescricao() {
+            return descricao;
+        }
+        @Override
+        public String toString() {
+            return getDescricao();
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,12 +77,6 @@ public class ProtocoloEntrada implements AbstractEntity,Serializable {
     private Calendar prazo;
     private boolean adiado=false;
     private String motivo;
-
-    //excluir
-    @Column(name = "para_ultimo_id")
-    private int paraQuemId;
-    @Column(name = "recebido_ultimo_id")
-    private int quemRecebeuId;
 
     @ManyToOne
     @JoinColumn(name = "para_id")
@@ -173,22 +211,6 @@ public class ProtocoloEntrada implements AbstractEntity,Serializable {
 
     public void setMotivo(String motivo) {
         this.motivo = motivo;
-    }
-
-    public int getParaQuemId() {
-        return paraQuemId;
-    }
-
-    public void setParaQuemId(int paraQuemId) {
-        this.paraQuemId = paraQuemId;
-    }
-
-    public int getQuemRecebeuId() {
-        return quemRecebeuId;
-    }
-
-    public void setQuemRecebeuId(int quemRecebeuId) {
-        this.quemRecebeuId = quemRecebeuId;
     }
 
     public Usuario getParaQuem() {

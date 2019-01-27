@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import br.com.tiagods.model.NegocioProposta;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.util.storage.Storage;
+import javafx.scene.control.MenuItem;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -235,6 +236,9 @@ public abstract class UtilsController extends PersistenciaController{
 		dialog.setHeaderText("Crie um novo registro:");
 		dialog.setContentText("Por favor entre com um novo nome");
 		return dialog.showAndWait();
+	}
+	public void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
+		item.setGraphic(createImage(x,y,icon));
 	}
 	private ImageView createImage(int x, int y, IconsEnum icon) {
 		Image image = new Image(icon.getLocalizacao().toString());

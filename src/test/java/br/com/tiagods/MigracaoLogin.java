@@ -49,7 +49,7 @@ public class MigracaoLogin{
         }
         for(Usuario u : salvar){
             System.out.println("Salvo >>> "+u.getLogin());
-            em.persist(u);
+            //m.persist(u);
         }
         for(Usuario u : update){
             System.out.println("Update >>> "+u.getLogin());

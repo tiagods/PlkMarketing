@@ -22,198 +22,283 @@
    <center>
       <AnchorPane prefHeight="477.0" prefWidth="731.0" style="-fx-background-color: #E7DFDD;" BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane layoutX="20.0" layoutY="20.0" prefHeight="525.0" prefWidth="758.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="20.0">
+            <ScrollPane layoutX="20.0" layoutY="20.0" prefHeight="525.0" prefWidth="758.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                <content>
-                  <VBox>
+                  <VBox prefHeight="549.0" prefWidth="911.0">
                      <children>
-                        <HBox prefHeight="100.0" prefWidth="760.0">
-                           <children>
-                              <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
-                                 <children>
-                                    <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="NEGOCIOS EM ABERTO" textFill="#666666">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <HBox>
-                                       <children>
-                                          <Label fx:id="lbUsuarioNome" alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="{USUARIO}" textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Label>
-                                          <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TUDO" textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="30.0" />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox alignment="CENTER">
-                                       <children>
-                                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@imagens/menu_news.png" />
-                                             </image>
-                                          </ImageView>
-                                          <Label fx:id="txNegociosPerfil" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="42.0" />
-                                             </font>
-                                             <HBox.margin>
-                                                <Insets right="10.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                          <Label fx:id="txNegociosTodos" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="42.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets right="20.0" />
-                                 </HBox.margin>
-                              </VBox>
-                              <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
-                                 <children>
-                                    <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="MINHAS TAREFAS EM ABERTO" textFill="#666666">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <HBox>
-                                       <children>
-                                          <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="ESSE MÊS" textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Label>
-                                          <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TUDO" textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="30.0" />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox alignment="CENTER">
-                                       <children>
-                                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@imagens/menu_activity-feed.png" />
-                                             </image>
-                                          </ImageView>
-                                          <Label fx:id="txTarefasMes" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="42.0" />
-                                             </font>
-                                             <HBox.margin>
-                                                <Insets right="10.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                          <Label fx:id="txTarefasTodos" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="42.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets right="20.0" />
-                                 </HBox.margin>
-                              </VBox>
-                              <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
-                                 <children>
-                                    <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
-                                       <font>
-                                          <Font name="System Bold" size="12.0" />
-                                       </font>
-                                    </Label>
-                                    <HBox>
-                                       <children>
-                                          <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="ESSE MÊS" textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Label>
-                                          <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="EM ABERTO" textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="12.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                       <VBox.margin>
-                                          <Insets left="30.0" />
-                                       </VBox.margin>
-                                    </HBox>
-                                    <HBox alignment="CENTER" visible="false">
-                                       <children>
-                                          <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                             <image>
-                                                <Image url="@imagens/menu_megaphone.png" />
-                                             </image>
-                                          </ImageView>
-                                          <Label fx:id="txVendasmes" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="42.0" />
-                                             </font>
-                                             <HBox.margin>
-                                                <Insets right="10.0" />
-                                             </HBox.margin>
-                                          </Label>
-                                          <Label fx:id="txTarefasTodos1" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
-                                             <font>
-                                                <Font name="System Bold" size="42.0" />
-                                             </font>
-                                          </Label>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                                 <HBox.margin>
-                                    <Insets right="20.0" />
-                                 </HBox.margin>
-                              </VBox>
-                           </children>
-                           <VBox.margin>
-                              <Insets bottom="20.0" />
-                           </VBox.margin>
-                        </HBox>
-                        <TabPane>
+                        <TabPane prefWidth="911.0">
                            <tabs>
-                              <Tab text="Listagem">
+                              <Tab fx:id="tabProtocolo" closable="false" text="Protocolos">
                                  <content>
-                                    <HBox prefWidth="760.0">
+                                    <VBox>
                                        <children>
-                                          <ListView fx:id="listView1" prefWidth="423.0">
-                                             <HBox.margin>
-                                                <Insets right="20.0" />
-                                             </HBox.margin>
-                                          </ListView>
-                                          <Pane prefWidth="200.0" style="-fx-background-color: white;">
+                                          <HBox prefHeight="100.0" prefWidth="760.0">
                                              <children>
-                                                <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="15.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true" />
-                                                <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
-                                                   <font>
-                                                      <Font name="System Bold" size="12.0" />
-                                                   </font>
-                                                </Label>
-                                                <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="52.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
-                                                   <image>
-                                                      <Image url="@imagens/manutencao-96.png" />
-                                                   </image>
-                                                </ImageView>
+                                                <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="PROTOCOLOS EM ABERTO" textFill="#666666">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label fx:id="lbUsuarioNome2" alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="{USUARIO}" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TUDO" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets left="30.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER">
+                                                         <children>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/menu_news.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <Label fx:id="txProtocoloPerfil" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets right="10.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="txProtocoloTodos" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
                                              </children>
-                                          </Pane>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox prefWidth="760.0">
+                                             <children>
+                                                <ListView fx:id="listViewProtocolo" prefHeight="376.0" prefWidth="642.0">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </ListView>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
                                        </children>
-                                    </HBox>
+                                    </VBox>
+                                 </content>
+                              </Tab>
+                              <Tab fx:id="tabNegocios" closable="false" text="Negocios">
+                                 <content>
+                                    <VBox>
+                                       <children>
+                                          <HBox prefHeight="100.0" prefWidth="760.0">
+                                             <children>
+                                                <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="NEGOCIOS EM ABERTO" textFill="#666666">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label fx:id="lbUsuarioNome" alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="{USUARIO}" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TUDO" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets left="30.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER">
+                                                         <children>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/menu_news.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <Label fx:id="txNegociosPerfil" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets right="10.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="txNegociosTodos" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                                <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="MINHAS TAREFAS EM ABERTO" textFill="#666666">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="ESSE MÊS" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TUDO" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets left="30.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER">
+                                                         <children>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/menu_activity-feed.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <Label fx:id="txTarefasMes" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets right="10.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="txTarefasTodos" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                                <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;" visible="false">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="ESSE MÊS" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="EM ABERTO" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets left="30.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER" visible="false">
+                                                         <children>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/menu_megaphone.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <Label fx:id="txVendasmes" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets right="10.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="txTarefasTodos1" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox prefWidth="760.0">
+                                             <children>
+                                                <ListView fx:id="listViewNegocios" prefHeight="376.0" prefWidth="642.0">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </ListView>
+                                                <Pane prefHeight="376.0" prefWidth="200.0" style="-fx-background-color: white;" visible="false">
+                                                   <children>
+                                                      <ImageView fitHeight="24.0" fitWidth="24.0" layoutX="15.0" layoutY="40.0" pickOnBounds="true" preserveRatio="true" />
+                                                      <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="EM DESENVOLVIMENTO" textFill="#666666">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ImageView fitHeight="96.0" fitWidth="96.0" layoutX="52.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@imagens/manutencao-96.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </children>
+                                                </Pane>
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
                                  </content>
                               </Tab>
                               <Tab closable="false" disable="true" text="Calendario">
@@ -230,20 +315,6 @@
          </children>
       </AnchorPane>
    </center>
-   <right>
-          <AnchorPane prefHeight="534.0" prefWidth="167.0" style="-fx-background-color: #E7DFDD;" BorderPane.alignment="CENTER">
-              <children>
-                  <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" style="&#10;" text="..." textAlignment="CENTER" wrapText="false" AnchorPane.topAnchor="14.0">
-               <font>
-                  <Font size="18.0" fx:id="x7" />
-               </font>
-               <textFill>
-                  <Color blue="0.624" green="0.624" red="0.624" fx:id="x8" />
-               </textFill>
-            </Label>
-              </children>
-          </AnchorPane>
-   </right>
    <top>
         <HBox alignment="CENTER_LEFT" prefHeight="77.0" prefWidth="1032.0" styleClass="menu-top--linear-background" BorderPane.alignment="CENTER">
 	               <children>
@@ -299,18 +370,25 @@
    <left>
       <VBox prefHeight="459.0" prefWidth="135.0" styleClass="menu-lerf--linear-background" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton fx:id="btnContato" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="CONTATO" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
+            <JFXButton fx:id="btnCadastro" layoutX="10.0" layoutY="202.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="CADASTROS" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@imagens/menu_people.png" />
+                        <Image url="@imagens/menu_user.png" />
                      </image>
                   </ImageView>
-               </graphic></JFXButton>
-            <JFXButton layoutX="10.0" layoutY="20.0" mnemonicParsing="false" onAction="#franquia" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="FRANQUIA" textFill="WHITE">
+               </graphic>
+            </JFXButton>
+            <JFXButton disable="true" layoutX="10.0" layoutY="402.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="IMPLANTACAO" textFill="WHITE">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/menu_negocios.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnNegocios" layoutX="10.0" layoutY="58.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="COMERCIAL" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -319,50 +397,24 @@
                   </ImageView>
                </graphic>
             </JFXButton>
-            <JFXButton mnemonicParsing="false" onAction="#negocio" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="NEGOCIO" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@imagens/menu_negocios.png" />
-                     </image>
-                  </ImageView>
-               </graphic></JFXButton>
-         	<JFXButton mnemonicParsing="false" onAction="#tarefa" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="TAREFA" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
+            <JFXButton fx:id="btnProtocolo" layoutX="10.0" layoutY="154.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="PROTOCOLOS" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@imagens/menu_task.png" />
                      </image>
                   </ImageView>
-               </graphic></JFXButton>
-            <JFXButton mnemonicParsing="false" onAction="#usuario" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="USUARIO" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@imagens/menu_user.png" />
-                     </image>
-                  </ImageView>
-               </graphic></JFXButton>
-            <JFXButton mnemonicParsing="false" onAction="#sobre" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="SOBRE" textFill="WHITE">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btnExtras" layoutX="10.0" layoutY="106.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="EXTRAS" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@imagens/menu_about.png" />
                      </image>
                   </ImageView>
-               </graphic></JFXButton>
+               </graphic>
+            </JFXButton>
          </children>
       </VBox>
    </left>

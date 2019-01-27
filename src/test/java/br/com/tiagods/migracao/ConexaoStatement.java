@@ -18,8 +18,8 @@ public class ConexaoStatement{
     private String driver = "com.mysql.jdbc.Driver";
     
     private String url="jdbc:mysql://localhost:3306/clientev1";
-    private String user = "root";
-    private String password = "root";
+    private String user = "prolink";
+    private String password = "77i#EUz";
     
     private static ConexaoStatement instance;
     public static ConexaoStatement getInstance(){

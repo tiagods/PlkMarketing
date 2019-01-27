@@ -14,4 +14,6 @@ public interface UsuarioDAO {
     List<Usuario> getUsuariosByNome(String nome);
 	Usuario findById(Long id);
 	Usuario findByLoginAndSenha(String login, String senha);
+
+    List<Usuario> listarAtivos();
 }

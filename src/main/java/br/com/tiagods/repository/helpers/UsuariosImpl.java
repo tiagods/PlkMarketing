@@ -73,4 +73,11 @@ public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements U
 		return (List<Usuario>) criteria.list();
 	}
 
+	@Override
+    public List<Usuario> listarAtivos() {
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
+		criteria.add(Restrictions.eq("ativo", 1));
+		criteria.addOrder(Order.asc("nome"));
+		return criteria.list();
+	}
 }
