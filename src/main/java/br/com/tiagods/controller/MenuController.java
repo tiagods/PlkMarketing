@@ -21,6 +21,7 @@ import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -329,7 +330,7 @@ public class MenuController extends UtilsController implements Initializable{
         try {
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.PROTOCOLO_ENTRADA_PESQUISA);
-            loader.setController(new ProtocoloEntradaPesquisaController(stage, null));
+            loader.setController(new ProtocoloEntradaPesquisaController(stage, new ProtocoloEntradaFilter()));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             onCloseRequest(stage);
         } catch (IOException e) {

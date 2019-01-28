@@ -1,19 +1,21 @@
 package br.com.tiagods.repository.helpers.filters;
 
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioLog;
 
 import java.time.LocalDate;
 import java.util.Calendar;
 
 public class ProtocoloEntradaFilter {
-    private ProtocoloEntrada.StatusRecebimento recebimento;
-    private ProtocoloEntrada.StatusDevolucao devolucao;
-    private ProtocoloEntrada.Classificacao classificacao;
+    private ProtocoloEntrada.StatusRecebimento recebimento = ProtocoloEntrada.StatusRecebimento.STATUS;
+    private ProtocoloEntrada.StatusDevolucao devolucao = ProtocoloEntrada.StatusDevolucao.DEVOLVIDO;
+    private ProtocoloEntrada.Classificacao classificacao = ProtocoloEntrada.Classificacao.USUARIO;
     private LocalDate dataInicial;
     private LocalDate dataFinal;
-    private Usuario usuario;
-    private String pesquisa;
+    private Usuario usuario = UsuarioLogado.getInstance().getUsuario();
+    private String pesquisa = "";
 
     public ProtocoloEntrada.StatusRecebimento getRecebimento() {
         return recebimento;

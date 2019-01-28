@@ -95,9 +95,13 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 	private void abrirCadastro(ProtocoloEntrada t) {
 		try {
 			loadFactory();
+			protocolos = new ProtocolosEntradasImpl(getManager());
+			if(t!=null){
+				t = protocolos.findById(t.getId());
+			}
 			Stage stage = new Stage();
 			FXMLLoader loader = loaderFxml(FXMLEnum.PROTOCOLO_ENTRADA_CADASTRO);
-			//loader.setController(new ProtocoloEntradaCadastroController(stage, t));
+			loader.setController(new ProtocoloEntradaCadastroController(stage, t));
 			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
 			stage.setOnHiding(event -> {
 				try {
@@ -119,12 +123,10 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 
 	void combos(){
 		usuarios = new UsuariosImpl(getManager());
-		List<Usuario> list = usuarios.getAll();
-
 		usuarioAtivos = usuarios.listarAtivos();
 
 		cbAtendente.getItems().add(new Usuario(-1L,"Todos"));
-		cbAtendente.getItems().addAll(list);
+		cbAtendente.getItems().addAll(usuarioAtivos);
 		cbLimite.getItems().addAll(limiteTabela);
 
 		cbAtendente.getSelectionModel().selectFirst();
@@ -158,6 +160,15 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
                 close();
             }
         };
+		if(filter!=null){
+			cbRecebimento.setValue(filter.getRecebimento());
+			cbDevolucao.setValue(filter.getDevolucao());
+			cbClassificar.setValue(filter.getClassificacao());
+			cbAtendente.setValue(filter.getUsuario());
+			dataInicial.setValue(filter.getDataInicial());
+			dataFinal.setValue(filter.getDataFinal());
+		}
+
 		cbRecebimento.valueProperty().addListener(change);
 		cbDevolucao.valueProperty().addListener(change);
 		cbClassificar.valueProperty().addListener(change);
@@ -178,21 +189,12 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 			}
 		});
 		paginacao = new Paginacao(cbLimite.getValue());
-		if(filter!=null){
-			cbRecebimento.setValue(filter.getRecebimento());
-			cbDevolucao.setValue(filter.getDevolucao());
-			cbClassificar.setValue(filter.getClassificacao());
-			cbAtendente.setValue(filter.getUsuario());
-			dataInicial.setValue(filter.getDataInicial());
-			dataFinal.setValue(filter.getDataFinal());
-		}
 	}
 	@FXML
 	void exportar(ActionEvent event) {
-
+		alert(AlertType.INFORMATION,"Ajuda","Recurso em desenvolvimento","Este recurso ainda não foi liberado...aguarde...");
 	}
 	List<ProtocoloEntrada> filtrar(Paginacao paginacao){
-
 		protocolos = new ProtocolosEntradasImpl(getManager());
 		Pair<List<ProtocoloEntrada>, Paginacao> list = protocolos.filtrar(paginacao, cbRecebimento.getValue(),
 				cbDevolucao.getValue(), cbClassificar.getValue(), cbAtendente.getValue(), dataInicial.getValue(),
@@ -361,6 +363,33 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 		});
 		tbPrincipal.getColumns().add(colunaDataRecebimento);
 
+		TableColumn<ProtocoloEntrada, Number> colunaEditar = new TableColumn<>("");
+		colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
+		colunaEditar.setCellFactory(param -> new TableCell<ProtocoloEntrada, Number>() {
+			JFXButton button = new JFXButton();// Editar
+
+			@Override
+			protected void updateItem(Number item, boolean empty) {
+				super.updateItem(item, empty);
+				if (item == null) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					button.getStyleClass().add("btDefault");
+					try {
+						buttonTable(button, IconsEnum.BUTTON_EDIT);
+					} catch (IOException e) {
+					}
+					button.setOnAction(event -> {
+						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
+					});
+					setGraphic(button);
+				}
+			}
+		});
+		tbPrincipal.getColumns().add(colunaEditar);
+
 		TableColumn actionEdit = new TableColumn("Alterações");
 		actionEdit.setCellValueFactory(new PropertyValueFactory<>("id"));
 		Callback<TableColumn<ProtocoloEntrada, Long>, TableCell<ProtocoloEntrada, Long>> editFactory
@@ -378,7 +407,6 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 						button.getStyleClass().add("btDefaultText");
 						try {
 							buttonTable(button, IconsEnum.BUTTON_RETUITAR);
-
 							setGraphic(button);
 						} catch (IOException e) {}
 						ProtocoloEntrada prot = tbPrincipal.getItems().get(getIndex());

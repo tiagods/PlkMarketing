@@ -108,16 +108,24 @@ public class ProtocoloItem implements AbstractEntity,Serializable {
     }
 
     @Override
-
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProtocoloItem that = (ProtocoloItem) o;
-        return Objects.equals(id, that.id);
+        ProtocoloItem item = (ProtocoloItem) o;
+        return quantidade == item.quantidade &&
+                Objects.equals(id, item.id) &&
+                Objects.equals(nome, item.nome) &&
+                Objects.equals(detalhes, item.detalhes) &&
+                Objects.equals(dataEntrada, item.dataEntrada) &&
+                Objects.equals(dataSaida, item.dataSaida) &&
+                Objects.equals(cliente, item.cliente) &&
+                Objects.equals(entrada, item.entrada) &&
+                Objects.equals(saida, item.saida);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+
+        return Objects.hash(id, nome, quantidade, detalhes, dataEntrada, dataSaida, cliente, entrada, saida);
     }
 }

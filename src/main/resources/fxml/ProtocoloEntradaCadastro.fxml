@@ -14,10 +14,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.fxutils.maskedtextfield.MaskTextField?>
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="900.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label styleClass="label-title" text="Cadastro - Protocolo de Entrada">
+      <Label styleClass="label-title" text="Protocolo de Entrada">
          <VBox.margin>
             <Insets bottom="20.0" />
          </VBox.margin></Label>
@@ -46,7 +47,7 @@
                         <JFXTextField fx:id="txEntreguePor" prefHeight="25.0" prefWidth="131.0" promptText="Correios..etc" />
                      </children>
                      <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="55.0">
@@ -59,10 +60,10 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </Label>
-                        <JFXTextField fx:id="txCliente" onKeyReleased="#textoAdicionado" prefHeight="25.0" prefWidth="131.0" promptText="ex...: 2000" />
+                        <MaskTextField fx:id="txCliente" mask="N!" onKeyReleased="#textoAdicionado" promptText="ex...:9999" />
                      </children>
                      <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="80.0">
@@ -75,7 +76,7 @@
                               <Insets right="10.0" />
                            </HBox.margin>
                         </Label>
-                        <JFXTextArea fx:id="txClienteNome" disable="true" editable="false" prefHeight="49.0" prefWidth="257.0" promptText="Prenchimento automático" />
+                        <JFXTextArea fx:id="txClienteNome" disable="true" editable="false" prefHeight="49.0" prefWidth="239.0" promptText="Prenchimento automático" />
                      </children>
                      <VBox.margin>
                         <Insets bottom="10.0" />
@@ -94,7 +95,7 @@
                         <JFXComboBox fx:id="cbDepartamento" prefHeight="25.0" prefWidth="132.0" />
                      </children>
                      <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="105.0">
@@ -110,7 +111,7 @@
                         <JFXComboBox fx:id="cbFuncionario" prefHeight="25.0" prefWidth="132.0" />
                      </children>
                      <VBox.margin>
-                        <Insets bottom="10.0" />
+                        <Insets bottom="20.0" />
                      </VBox.margin>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="105.0" prefHeight="62.0" prefWidth="334.0">

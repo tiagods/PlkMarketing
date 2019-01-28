@@ -3,6 +3,7 @@ package br.com.tiagods.repository.interfaces;
 import java.util.List;
 
 import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.UsuarioDepartamento;
 
 public interface UsuarioDAO {
 	Usuario save(Usuario usuario);
@@ -16,4 +17,6 @@ public interface UsuarioDAO {
 	Usuario findByLoginAndSenha(String login, String senha);
 
     List<Usuario> listarAtivos();
+
+    List<Usuario> getUsuariosByDepartamento(UsuarioDepartamento departamento);
 }

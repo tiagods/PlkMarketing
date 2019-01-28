@@ -32,26 +32,18 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	@Embedded
 	private PessoaFisica fisica;
 
-	@Column(name="cod_anterior")
-	private int codigoAnterior=0;
-
 	@Column(name="senha_anterior")
 	private String senhaAnterior;
 
 	public Usuario(){}
 
-	public int getCodigoAnterior() {
-		return codigoAnterior;
-	}
-	public void setCodigoAnterior(int codigoAnterior) {
-		this.codigoAnterior = codigoAnterior;
-	}
 	public String getSenhaAnterior() {
 		return senhaAnterior;
 	}
 	public void setSenhaAnterior(String senhaAnterior) {
 		this.senhaAnterior = senhaAnterior;
 	}
+
 	public Usuario(long id, String login) {
 		this.id=id;
 		this.login=login;

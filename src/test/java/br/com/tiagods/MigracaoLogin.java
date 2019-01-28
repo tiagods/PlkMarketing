@@ -37,12 +37,12 @@ public class MigracaoLogin{
                 r.setCriadoEm(Calendar.getInstance());
                 r.setSenha(util.criptografar(u.getSenha()));
                 r.setSenhaAnterior(u.getSenha());
-                r.setCodigoAnterior(u.getCod());
+                //r.setCodigoAnterior(u.getCod());
                 r.setEmail(u.getEmail().trim());
                 salvar.add(r);
             }
             else{
-                result.setCodigoAnterior(u.getCod());
+                //result.setCodigoAnterior(u.getCod());
                 result.setSenhaAnterior(u.getSenha());
                 update.add(result);
             }

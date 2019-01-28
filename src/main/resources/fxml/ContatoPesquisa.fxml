@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label styleClass="label-title" text="Gestão de Contatos" />
       <VBox prefHeight="200.0" prefWidth="100.0">
@@ -113,7 +113,7 @@
                </HBox.margin>
             </Label>
             <JFXComboBox fx:id="cbLimite" maxWidth="100.0" prefWidth="100.0" />
-            <Pagination fx:id="pagination" pageCount="10" prefHeight="47.0" prefWidth="320.0" />
+            <Pagination fx:id="pagination" pageCount="1" prefHeight="47.0" prefWidth="320.0" />
          </children>
       </HBox>
       <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="1000.0">

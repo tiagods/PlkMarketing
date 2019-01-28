@@ -17,7 +17,7 @@ import javax.persistence.Id;
  * @author Tiago
  */
 @Entity
-public class Cliente implements Serializable{
+public class Cliente implements AbstractEntity,Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="cod")

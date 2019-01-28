@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import br.com.tiagods.model.UsuarioDepartamento;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -77,6 +78,14 @@ public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements U
     public List<Usuario> listarAtivos() {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
 		criteria.add(Restrictions.eq("ativo", 1));
+		criteria.addOrder(Order.asc("nome"));
+		return criteria.list();
+	}
+	@Override
+	public List<Usuario> getUsuariosByDepartamento(UsuarioDepartamento departamento) {
+		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
+		criteria.add(Restrictions.eq("ativo", 1));
+		criteria.add(Restrictions.eq("departamento", departamento));
 		criteria.addOrder(Order.asc("nome"));
 		return criteria.list();
 	}

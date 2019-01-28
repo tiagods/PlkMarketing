@@ -14,6 +14,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -24,6 +25,17 @@ public class ProtocolosEntradasImpl extends AbstractRepository<ProtocoloEntrada,
     public ProtocolosEntradasImpl(EntityManager manager) {
         super(manager);
     }
+
+    @Override
+    public ProtocoloEntrada findById(Long id) {
+        Query query = getEntityManager().createQuery("from ProtocoloEntrada as a "
+                + "LEFT JOIN FETCH a.items "
+                + "where a.id=:id");
+        query.setParameter("id", id);
+        ProtocoloEntrada a = (ProtocoloEntrada)query.getSingleResult();
+        return a;
+    }
+
     @Override
     public Pair<List<ProtocoloEntrada>,Paginacao> filtrar(Paginacao paginacao, ProtocoloEntrada.StatusRecebimento recebimento,
                                                           ProtocoloEntrada.StatusDevolucao devolucao,
