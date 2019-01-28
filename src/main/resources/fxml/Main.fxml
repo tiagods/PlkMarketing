@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -18,19 +19,19 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="650.0" prefWidth="1080.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="650.0" prefWidth="1200.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane prefHeight="477.0" prefWidth="731.0" style="-fx-background-color: #E7DFDD;" BorderPane.alignment="CENTER">
          <children>
             <ScrollPane layoutX="20.0" layoutY="20.0" prefHeight="525.0" prefWidth="758.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
                <content>
-                  <VBox prefHeight="549.0" prefWidth="911.0">
+                  <VBox prefHeight="549.0" prefWidth="1040.0">
                      <children>
-                        <TabPane prefWidth="911.0">
+                        <TabPane prefHeight="525.0" prefWidth="945.0">
                            <tabs>
                               <Tab fx:id="tabProtocolo" closable="false" text="Protocolos">
                                  <content>
-                                    <VBox>
+                                    <VBox prefHeight="496.0" prefWidth="1022.0">
                                        <children>
                                           <HBox prefHeight="100.0" prefWidth="760.0">
                                              <children>
@@ -48,7 +49,7 @@
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font>
                                                             </Label>
-                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TUDO" textFill="#666666">
+                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TODOS" textFill="#666666">
                                                                <font>
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font>
@@ -90,17 +91,13 @@
                                                 <Insets bottom="10.0" left="10.0" top="10.0" />
                                              </VBox.margin>
                                           </HBox>
-                                          <HBox prefWidth="760.0">
-                                             <children>
-                                                <ListView fx:id="listViewProtocolo" prefHeight="376.0" prefWidth="642.0">
-                                                   <HBox.margin>
-                                                      <Insets right="20.0" />
-                                                   </HBox.margin>
-                                                </ListView>
-                                             </children>
+                                          <HBox prefHeight="372.0" prefWidth="901.0">
                                              <VBox.margin>
                                                 <Insets left="10.0" />
                                              </VBox.margin>
+                                             <children>
+                                                <TableView fx:id="tbProtocoloEntrada" prefHeight="372.0" prefWidth="1030.0" styleClass="table" tableMenuButtonVisible="true" />
+                                             </children>
                                           </HBox>
                                        </children>
                                     </VBox>
@@ -332,9 +329,9 @@
                   <Insets />
                </HBox.margin>
             </AnchorPane>
-            <AnchorPane layoutX="143.0" layoutY="10.0" prefHeight="77.0" prefWidth="526.0">
+            <AnchorPane layoutX="143.0" layoutY="10.0" prefHeight="78.0" prefWidth="685.0">
                <children>
-               	<JFXButton layoutX="376.0" layoutY="21.0" mnemonicParsing="false" onAction="#sair" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="SAIR" textFill="WHITE">
+               	<JFXButton layoutX="536.0" layoutY="20.0" mnemonicParsing="false" onAction="#sair" prefHeight="32.0" prefWidth="135.0" styleClass="btDefault" text="SAIR" textFill="WHITE">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -374,7 +371,7 @@
                <graphic>
                   <ImageView fitHeight="30.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@imagens/menu_user.png" />
+                        <Image url="@imagens/menu_home.png" />
                      </image>
                   </ImageView>
                </graphic>

@@ -38,7 +38,7 @@ public class ProtocoloEntrada implements AbstractEntity,Serializable {
         }
     }
     public enum Classificacao{
-        USUARIO("Usuario"),CLIENTE("Cliente ou Apelido"),PROTOCOLO("Nº do Protocolo");
+        USUARIO("Usuario"),CLIENTE("Apelido do Cliente"),PROTOCOLO("Nº do Protocolo");
         private String descricao;
         Classificacao(String descricao){
             this.descricao=descricao;
@@ -87,6 +87,11 @@ public class ProtocoloEntrada implements AbstractEntity,Serializable {
 
     @OneToMany(mappedBy = "entrada",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<ProtocoloItem> items = new HashSet<>();
+
+    @PrePersist
+    void prePersist(){
+        setDataEntrada(Calendar.getInstance());
+    }
 
     @Override
     public boolean equals(Object o) {

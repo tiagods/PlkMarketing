@@ -50,7 +50,6 @@ public class Atalho extends Application {
 				"Servico", "Origem", "Detalhes Origem","Resumo", "Apresentacao","Listas","Qtd Negocios","Status Negocio","Honorário","Servicos Contratados"};
 		System.out.println("1>"+colunasLenght.length+" \t2>"+cabecalho.length);
 		launch(args);
-		
-		
+
 	}
 }

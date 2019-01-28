@@ -22,7 +22,7 @@
       </AnchorPane>
       <VBox alignment="TOP_CENTER" prefHeight="268.0" prefWidth="477.0" styleClass="login--linear-background" stylesheets="@css/estilo.css">
          <children>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="414.0" styleClass="label-title2" text="Negocios">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="414.0" styleClass="label-title2" text="Controle de Processos">
                <font>
                   <Font name="System Bold Italic" size="18.0" />
                </font>

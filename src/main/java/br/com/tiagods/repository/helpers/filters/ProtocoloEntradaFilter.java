@@ -6,11 +6,10 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.UsuarioLog;
 
 import java.time.LocalDate;
-import java.util.Calendar;
 
 public class ProtocoloEntradaFilter {
-    private ProtocoloEntrada.StatusRecebimento recebimento = ProtocoloEntrada.StatusRecebimento.STATUS;
-    private ProtocoloEntrada.StatusDevolucao devolucao = ProtocoloEntrada.StatusDevolucao.DEVOLVIDO;
+    private ProtocoloEntrada.StatusRecebimento recebimento = ProtocoloEntrada.StatusRecebimento.ABERTO;
+    private ProtocoloEntrada.StatusDevolucao devolucao = ProtocoloEntrada.StatusDevolucao.NAO;
     private ProtocoloEntrada.Classificacao classificacao = ProtocoloEntrada.Classificacao.USUARIO;
     private LocalDate dataInicial;
     private LocalDate dataFinal;

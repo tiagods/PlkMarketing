@@ -290,8 +290,10 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
     }
     @FXML
     void textoAdicionado(KeyEvent event) {
-        if (txCliente.getText().trim().equals(""))
-            cliente=null;
+        if (txCliente.getText().trim().equals("")){
+            cliente = null;
+            txClienteNome.setText("");
+        }
         else{
             try {
                 loadFactory();

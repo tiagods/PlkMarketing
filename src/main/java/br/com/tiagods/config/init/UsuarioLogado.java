@@ -6,7 +6,7 @@ import br.com.tiagods.model.Usuario;
 
 public class UsuarioLogado {
     private static UsuarioLogado instance;
-    private Usuario usuario = null;
+    private static Usuario usuario = null;
 
     public static UsuarioLogado getInstance() {
         if (instance == null) instance = new UsuarioLogado();

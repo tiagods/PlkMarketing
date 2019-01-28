@@ -49,6 +49,7 @@ public class StartApp extends Application {
 			dialogPane.setContent(loader.load());
 			alert.setDialogPane(dialogPane);
 			Stage sta = (Stage) dialogPane.getScene().getWindow();
+			sta.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
 			Task<Void> run = new Task<Void>() {
                 {
                     setOnFailed(a ->sta.close());

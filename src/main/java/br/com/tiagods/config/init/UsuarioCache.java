@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class UsuarioCache {
 	private static UsuarioCache instance;
-    private File userCache = new File(System.getProperty("user.dir")+"/usercache.properties");
+    private File userCache = new File(System.getProperty("java.io.tmpdir")+"/usercache.properties");
 	private Properties props;
     
 	public static UsuarioCache getInstance() {

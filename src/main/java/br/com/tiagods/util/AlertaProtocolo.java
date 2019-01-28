@@ -36,8 +36,8 @@ public class AlertaProtocolo extends PersistenciaController {
                 String mensagem = montarMensagem(p.getId() + "", novoId, novoNome, itemNome.iterator(),
                         qtde.iterator(), detalhes.iterator(), p.getParaQuem().getNome(),"");
 
-                //String email = p.getParaQuem().getEmail();
-                String email = "tiago.dias@prolinkcontabil.com.br";
+                String email = p.getParaQuem().getEmail();
+                //String email = "tiago.dias@prolinkcontabil.com.br";
 
                 if (aviso.enviaAlerta("documento@prolinkcontabil.com.br","Documentos \\ Prolink Contabil",email, novoId+" - Protocolo de Entrada N." +p.getId(), mensagem)) {
 //                    Alert alert = new Alert(Alert.AlertType.INFORMATION);

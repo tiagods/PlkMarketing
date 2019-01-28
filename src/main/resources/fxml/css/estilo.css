@@ -2,20 +2,22 @@
     -fx-text-fill: #FFF;
 }
 
+//Gradiente vermelho #cf6766,#6e3667
+
 .linear-background {
-   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#000066,#800000);
 }
 .login--linear-background {
-   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#000066,#800000);
 }
 .menu-top--linear-background{
-   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#000066,#800000);
 }
 .menu-lerf--linear-background{
-   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#000066,#800000);
 }
 .tarefas--linear-background{
-   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#cf6766,#6e3667);
+   -fx-background-color: linear-gradient(from 25% 25% to 75% 100%,#000066,#800000);
 }
 .btDefault{
     -fx-font-size: 12px;

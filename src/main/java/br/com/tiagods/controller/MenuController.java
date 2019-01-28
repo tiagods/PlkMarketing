@@ -15,14 +15,15 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.NegocioProposta;
+import br.com.tiagods.model.ProtocoloEntrada;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
+import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRadioButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -82,6 +83,9 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     private Tab tabProtocolo;
+
+    @FXML
+    private TableView<ProtocoloEntrada> tbProtocoloEntrada;
 
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
@@ -158,6 +162,26 @@ public class MenuController extends UtilsController implements Initializable{
 
             txTarefasMes.setText(String.valueOf(t1));
             txTarefasTodos.setText(String.valueOf(t2));
+
+            JFXRadioButton rbComum = new JFXRadioButton();
+            rbComum.setSelected(true);
+
+            UsuariosImpl usuarios = new UsuariosImpl(getManager());
+            ProtocolosEntradasImpl protocolosEntradas = new ProtocolosEntradasImpl(getManager());
+            TabelaProtocoloEntrada protocoloEntrada = new TabelaProtocoloEntrada(null,tbProtocoloEntrada,new JFXRadioButton(),rbComum);
+            protocoloEntrada.tabela();
+
+            protocoloEntrada.setUsuarioAtivos(usuarios.listarAtivos());
+            List<ProtocoloEntrada> list = protocoloEntrada.filtrar(null,getManager());
+
+            ProtocoloEntradaFilter protocoloEntradaFilter = new ProtocoloEntradaFilter();
+            protocoloEntradaFilter.setDevolucao(ProtocoloEntrada.StatusDevolucao.DEVOLVIDO);
+            protocoloEntradaFilter.setRecebimento(ProtocoloEntrada.StatusRecebimento.STATUS);
+            protocoloEntradaFilter.setClassificacao(ProtocoloEntrada.Classificacao.USUARIO);
+            Pair<List<ProtocoloEntrada>,Paginacao> result = protocolosEntradas.filtrar(null,protocoloEntradaFilter);
+
+            txProtocoloPerfil.setText(""+list.size());
+            txProtocoloTodos.setText(""+result.getKey().size());
         }catch (Exception e){
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao atualizar","Falha ao atualizar registros do menu",e,true);
         }finally {

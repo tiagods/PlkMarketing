@@ -164,7 +164,7 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <TableView fx:id="tbItem" prefHeight="239.0" prefWidth="535.0" />
+                  <TableView fx:id="tbItem" prefHeight="239.0" prefWidth="535.0" styleClass="table" />
                </children>
             </VBox>
          </children>

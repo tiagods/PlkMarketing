@@ -6,8 +6,11 @@ import java.net.URL;
 
 public enum IconsEnum {
 	BUTTON_ADD("button_add","Novo Registro"),
+	BUTTON_DEVOLVER("button_advance","Devolver"),
+	BUTTON_DOWNLOAD("button_download","Baixar"),
 	BUTTON_EDIT("button_edit","Editar Registro"),
 	BUTTON_REMOVE("button_trash","Excluir"),
+	BUTTON_RETURN("button_return","Voltar"),
 	BUTTON_PROPOSTA("button_negocios","Negocio"),
 	BUTTON_EMPRESA("button_empresas","Empresa"),
 	BUTTON_MAIL("button_mail","E-Mail"),

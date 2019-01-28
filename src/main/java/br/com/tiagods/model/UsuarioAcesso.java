@@ -20,6 +20,7 @@ public class UsuarioAcesso implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+
 	@Column(name="USU_ACE_COD")
 	private Long id;
 	@Temporal(TemporalType.TIMESTAMP)
