@@ -14,9 +14,8 @@ import java.util.List;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.NegocioProposta;
-import br.com.tiagods.model.ProtocoloEntrada;
-import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.negocio.NegocioProposta;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
@@ -71,6 +70,9 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     private JFXButton btnNegocios;
+
+    @FXML
+    private JFXButton btnImplantacao;
 
     @FXML
     private Label lbUsuarioNome;
@@ -285,6 +287,29 @@ public class MenuController extends UtilsController implements Initializable{
                         btnExtras.getScene().getWindow().getY()+btnExtras.getLayoutY()+100));
         cmExtras.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
 
+        final ContextMenu cmImplantacao = new ContextMenu();
+        MenuItem miPacote = new MenuItem("Pacotes");
+        iconMenuItem(miPacote,30,30, IconsEnum.MENU_USUARIO);
+        miPacote.setOnAction(event -> {
+            try {
+                Stage stage = new Stage();
+                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE);
+                loader.setController(new ImplantacaoPacoteController(stage));
+                initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+                onCloseRequest(stage);
+            }catch(IOException e) {
+                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                        "Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE,e,true);
+            }
+        });
+
+        cmImplantacao.getItems().addAll(miPacote);
+        btnImplantacao.setContextMenu(cmImplantacao);
+        btnImplantacao.setOnAction(e->
+                cmImplantacao.show(btnImplantacao.getScene().getWindow(),
+                        btnImplantacao.getScene().getWindow().getX()+50,
+                        btnImplantacao.getScene().getWindow().getY()+btnImplantacao.getLayoutY()+100));
+        cmImplantacao.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
     }
     @FXML
     void contato(ActionEvent event) {
@@ -312,10 +337,6 @@ public class MenuController extends UtilsController implements Initializable{
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.FRANQUIA_PESQUISA,e,true);
         }
-    }
-    @FXML
-    void negocio(ActionEvent event) {
-    	abrirNegocio(null);
     }
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -349,6 +370,11 @@ public class MenuController extends UtilsController implements Initializable{
     }
 	void onCloseRequest(Stage stage){ stage.setOnHiding(event -> atualizar());}
 
+
+    @FXML
+    void negocio(ActionEvent event) {
+        abrirNegocio(null);
+    }
     @FXML
     void protocolo(ActionEvent event) {
         try {

@@ -12,13 +12,13 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.NegocioCategoria;
-import br.com.tiagods.model.NegocioNivel;
-import br.com.tiagods.model.NegocioOrigem;
-import br.com.tiagods.model.NegocioServico;
+import br.com.tiagods.model.negocio.NegocioCategoria;
+import br.com.tiagods.model.negocio.NegocioNivel;
+import br.com.tiagods.model.negocio.NegocioOrigem;
+import br.com.tiagods.model.negocio.NegocioServico;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.model.NegocioProposta;
+import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;

@@ -1,4 +1,7 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
+
+import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.model.Usuario;
 
 import java.io.Serializable;
 import java.util.Calendar;

@@ -5,8 +5,8 @@ import br.com.tiagods.migracao.protocolo.ProtocoloDao;
 import br.com.tiagods.migracao.protocolo.ProtocoloEntradaBean;
 import br.com.tiagods.migracao.protocolo.ProtocoloItemBean;
 import br.com.tiagods.model.Cliente;
-import br.com.tiagods.model.ProtocoloEntrada;
-import br.com.tiagods.model.ProtocoloItem;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
+import br.com.tiagods.model.protocolo.ProtocoloItem;
 
 import javax.persistence.EntityManager;
 import java.sql.Time;

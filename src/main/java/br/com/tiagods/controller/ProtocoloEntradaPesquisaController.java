@@ -1,6 +1,7 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.model.*;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;

@@ -1,4 +1,6 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
+
+import br.com.tiagods.model.AbstractEntity;
 
 import java.io.Serializable;
 
@@ -10,19 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="nivel")
-public class NegocioNivel implements AbstractEntity,Serializable{
+@Table(name="origem")
+public class NegocioOrigem implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="NIV_COD")
+	@Column(name="ORI_COD")
 	private Long id;
-	@Column(name="NIV_NOME")
+	@Column(name="ORI_NOME")
 	private String nome;
 	
-	public NegocioNivel() {}
+	public NegocioOrigem() {}
 	
-	public NegocioNivel(long id, String nome) {
+	public NegocioOrigem(long id, String nome) {
 		this.id=id;
 		this.nome=nome;
 	}
@@ -73,7 +75,7 @@ public class NegocioNivel implements AbstractEntity,Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NegocioNivel other = (NegocioNivel) obj;
+		NegocioOrigem other = (NegocioOrigem) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

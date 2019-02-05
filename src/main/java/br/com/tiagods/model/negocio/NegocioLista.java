@@ -1,32 +1,40 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
+
+import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.model.Usuario;
 
 import java.io.Serializable;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Calendar;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="SERVICO_AGREGADO")
-public class ServicoAgregado implements AbstractEntity,Serializable{
+@Table(name="lista")
+public class NegocioLista implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="SER_AGR_COD")
 	private Long id;
-	@Column(name="SER_AGR_NOME")
 	private String nome;
-	
-	@OneToMany(cascade=CascadeType.ALL,mappedBy="servicosAgregados")
-	private Set<ServicoContratado> servicosContratados = new LinkedHashSet<>();
-	
+	private String detalhes;
+	@Column(name="criado_em")
+	private Calendar criadoEm;
+	@ManyToOne
+	@JoinColumn(name="criado_por_id")
+	private Usuario criadoPor;
+
+	public NegocioLista() {}
+	public NegocioLista(long id, String nome) {
+		this.id=id;
+		this.nome=nome;
+	}
 	/**
 	 * @return the id
 	 */
@@ -52,21 +60,42 @@ public class ServicoAgregado implements AbstractEntity,Serializable{
 		this.nome = nome;
 	}
 	/**
-	 * @return the servicosContratados
+	 * @return the detalhes
 	 */
-	public Set<ServicoContratado> getServicosContratados() {
-		return servicosContratados;
+	public String getDetalhes() {
+		return detalhes;
 	}
 	/**
-	 * @param servicosContratados the servicosContratados to set
+	 * @param detalhes the detalhes to set
 	 */
-	public void setServicosContratados(Set<ServicoContratado> servicosContratados) {
-		this.servicosContratados = servicosContratados;
+	public void setDetalhes(String detalhes) {
+		this.detalhes = detalhes;
 	}
-	@Override
-	public String toString() {
-		return this.nome;
+	/**
+	 * @return the criadoEm
+	 */
+	public Calendar getCriadoEm() {
+		return criadoEm;
 	}
+	/**
+	 * @param criadoEm the criadoEm to set
+	 */
+	public void setCriadoEm(Calendar criadoEm) {
+		this.criadoEm = criadoEm;
+	}
+	/**
+	 * @return the criadoPor
+	 */
+	public Usuario getCriadoPor() {
+		return criadoPor;
+	}
+	/**
+	 * @param criadoPor the criadoPor to set
+	 */
+	public void setCriadoPor(Usuario criadoPor) {
+		this.criadoPor = criadoPor;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -88,7 +117,7 @@ public class ServicoAgregado implements AbstractEntity,Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ServicoAgregado other = (ServicoAgregado) obj;
+		NegocioLista other = (NegocioLista) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -96,5 +125,8 @@ public class ServicoAgregado implements AbstractEntity,Serializable{
 			return false;
 		return true;
 	}
-	
+	@Override
+	public String toString() {
+		return nome;
+	}
 }

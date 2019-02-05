@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_RIGHT" prefHeight="12.0" prefWidth="600.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="339.0">
+               <children>
+                  <JFXButton fx:id="btnCadastrarPacote" text="Novo Pacote" />
+               </children>
+            </HBox>
+            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="219.0">
+               <children>
+                  <JFXButton text="Nova Atividade" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0">
+         <children>
+            <TableView fx:id="tbPacote" prefHeight="200.0" prefWidth="200.0" />
+            <TableView fx:id="tbEtapa" layoutX="10.0" layoutY="10.0" prefHeight="400.0" prefWidth="385.0">
+               <HBox.margin>
+                  <Insets left="40.0" />
+               </HBox.margin>
+            </TableView>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_RIGHT">
+         <children>
+            <JFXButton onAction="#sair" text="Sair" />
+            <JFXButton text="Salvar" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

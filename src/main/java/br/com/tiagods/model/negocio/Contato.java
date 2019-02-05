@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
 import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.model.*;
 
 @Entity
 public class Contato extends Pessoa implements AbstractEntity,Serializable{

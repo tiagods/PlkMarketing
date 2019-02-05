@@ -1,4 +1,4 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,24 +6,11 @@ import java.util.Calendar;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.model.Usuario;
 
 @Entity
 @Table(name="negocio")
@@ -41,7 +28,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 		private String style;
 		private IconsEnum ico;
 
-		private TipoEtapa(int index, String descricao,String style, IconsEnum ico) {
+		TipoEtapa(int index, String descricao,String style, IconsEnum ico) {
 			this.index=index;
 			this.descricao=descricao;
 			this.style = style;
@@ -67,7 +54,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 		private int index;
 		private String descricao;
 		
-		private TipoStatus(int index, String descricao) {
+		TipoStatus(int index, String descricao) {
 			this.index=index;
 			this.descricao=descricao;
 		}
@@ -214,9 +201,13 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 	@Enumerated(value=EnumType.STRING)
 	@Column(name="tipo_status")
 	private TipoStatus tipoStatus;
-	
-	public NegocioProposta() {
+
+	@PrePersist
+	void prePersist(){
+		setCriadoEm(Calendar.getInstance());
 	}
+
+	public NegocioProposta() {}
 	
 	public NegocioProposta(long id) {
 		this.id=id;

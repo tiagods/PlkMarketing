@@ -2,7 +2,7 @@ package br.com.tiagods.repository.interfaces;
 
 import java.util.List;
 
-import br.com.tiagods.model.NegocioOrigem;
+import br.com.tiagods.model.negocio.NegocioOrigem;
 
 public interface NegocioOrigemDAO {
 	NegocioOrigem save(NegocioOrigem e);

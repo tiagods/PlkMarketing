@@ -9,8 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 
-import br.com.tiagods.model.Franquia;
-import br.com.tiagods.model.Franquia.Tipo;
+import br.com.tiagods.model.negocio.Franquia;
+import br.com.tiagods.model.negocio.Franquia.Tipo;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.FranquiaDAO;

@@ -4,7 +4,7 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Cliente;
-import br.com.tiagods.model.ProtocoloEntrada;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;

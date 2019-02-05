@@ -1,4 +1,6 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
+
+import br.com.tiagods.model.AbstractEntity;
 
 import java.io.Serializable;
 
@@ -10,19 +12,24 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="origem")
-public class NegocioOrigem implements AbstractEntity,Serializable{
+@Table(name="categoria")
+public class NegocioCategoria implements AbstractEntity,Serializable{
+
+	/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="ORI_COD")
+	@Column(name="CAT_COD")
 	private Long id;
-	@Column(name="ORI_NOME")
+	
+	@Column(name="CAT_NOME",length=100)
 	private String nome;
+
+	public NegocioCategoria() {}
 	
-	public NegocioOrigem() {}
-	
-	public NegocioOrigem(long id, String nome) {
+	public NegocioCategoria(long id, String nome) {
 		this.id=id;
 		this.nome=nome;
 	}
@@ -32,18 +39,21 @@ public class NegocioOrigem implements AbstractEntity,Serializable{
 	public Long getId() {
 		return id;
 	}
+
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	/**
 	 * @return the nome
 	 */
 	public String getNome() {
 		return nome;
 	}
+
 	/**
 	 * @param nome the nome to set
 	 */
@@ -73,7 +83,7 @@ public class NegocioOrigem implements AbstractEntity,Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NegocioOrigem other = (NegocioOrigem) obj;
+		NegocioCategoria other = (NegocioCategoria) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -81,8 +91,14 @@ public class NegocioOrigem implements AbstractEntity,Serializable{
 			return false;
 		return true;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return this.nome;
 	}
+	
+	
 }

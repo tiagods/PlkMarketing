@@ -1,4 +1,6 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
+
+import br.com.tiagods.model.NegocioTarefa;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -7,7 +9,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @DiscriminatorValue(value = "proposta")
-public class NegocioTarefaProposta extends NegocioTarefa{
+public class NegocioTarefaProposta extends NegocioTarefa {
 	
 	/**
 	 * 

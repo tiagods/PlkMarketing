@@ -1,9 +1,8 @@
 package br.com.tiagods.repository.helpers.filters;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.ProtocoloEntrada;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.model.UsuarioLog;
 
 import java.time.LocalDate;
 

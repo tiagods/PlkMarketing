@@ -2,7 +2,7 @@ package br.com.tiagods.repository.interfaces;
 
 import java.util.List;
 
-import br.com.tiagods.model.Franquia;
+import br.com.tiagods.model.negocio.Franquia;
 import br.com.tiagods.model.Usuario;
 
 

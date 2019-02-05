@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 
 import br.com.tiagods.model.*;
+import br.com.tiagods.model.negocio.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -23,9 +24,8 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.model.NegocioProposta;
-import br.com.tiagods.model.NegocioProposta.TipoEtapa;
-import br.com.tiagods.model.NegocioProposta.TipoStatus;
+import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
+import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
 import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
@@ -302,7 +302,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 							listaImpressao.get(i).add(param[1]);
 							listaImpressao.get(i).add(param[2]);
 							
-							listaImpressao.get(i).add(sdf.format(n.getDataInicio().getTime()));
+							listaImpressao.get(i).add(n.getDataInicio() == null?"": sdf.format(n.getDataInicio().getTime()));
 							listaImpressao.get(i).add(n.getDataFim() == null ? "" : sdf.format(n.getDataFim().getTime()));
 							listaImpressao.get(i).add(n.getCriadoPor()!=null?n.getCriadoPor().getNome():"");
 							listaImpressao.get(i).add(n.getTipoEtapa().getDescricao());

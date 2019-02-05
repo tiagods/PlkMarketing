@@ -1,8 +1,7 @@
 package br.com.tiagods.util;
 
 import br.com.tiagods.controller.PersistenciaController;
-import br.com.tiagods.model.ProtocoloEntrada;
-import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 
 import javax.swing.*;

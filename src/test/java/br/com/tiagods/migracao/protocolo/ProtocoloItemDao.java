@@ -8,7 +8,6 @@ package br.com.tiagods.migracao.protocolo;
 import br.com.tiagods.migracao.ConexaoStatement;
 import br.com.tiagods.migracao.ConfigTables;
 import br.com.tiagods.migracao.InterfaceDao;
-import br.com.tiagods.model.ProtocoloItem;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

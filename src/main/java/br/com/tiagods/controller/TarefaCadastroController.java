@@ -24,12 +24,12 @@ import com.jfoenix.controls.JFXToggleButton;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.Contato;
+import br.com.tiagods.model.negocio.Contato;
 import br.com.tiagods.model.NegocioTarefa;
-import br.com.tiagods.model.NegocioTarefaContato;
-import br.com.tiagods.model.NegocioTarefaProposta;
+import br.com.tiagods.model.negocio.NegocioTarefaContato;
+import br.com.tiagods.model.negocio.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.model.NegocioProposta;
+import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;

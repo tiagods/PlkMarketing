@@ -1,8 +1,11 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.protocolo;
+
+import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.model.Cliente;
+import br.com.tiagods.model.Usuario;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.*;
 
 @Entity

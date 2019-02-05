@@ -1,7 +1,6 @@
 package br.com.tiagods.repository.helpers;
 
-import br.com.tiagods.model.ProtocoloEntrada;
-import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;

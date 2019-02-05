@@ -1,4 +1,6 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.protocolo;
+
+import br.com.tiagods.model.AbstractEntity;
 
 import java.io.Serializable;
 import java.util.Date;

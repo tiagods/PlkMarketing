@@ -1,4 +1,6 @@
-package br.com.tiagods.model;
+package br.com.tiagods.model.negocio;
+
+import br.com.tiagods.model.AbstractEntity;
 
 import java.io.Serializable;
 
@@ -10,24 +12,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="categoria")
-public class NegocioCategoria implements AbstractEntity,Serializable{
-
-	/**
-	 * 
-	 */
+@Table(name="nivel")
+public class NegocioNivel implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="CAT_COD")
+	@Column(name="NIV_COD")
 	private Long id;
-	
-	@Column(name="CAT_NOME",length=100)
+	@Column(name="NIV_NOME")
 	private String nome;
-
-	public NegocioCategoria() {}
 	
-	public NegocioCategoria(long id, String nome) {
+	public NegocioNivel() {}
+	
+	public NegocioNivel(long id, String nome) {
 		this.id=id;
 		this.nome=nome;
 	}
@@ -37,21 +34,18 @@ public class NegocioCategoria implements AbstractEntity,Serializable{
 	public Long getId() {
 		return id;
 	}
-
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	/**
 	 * @return the nome
 	 */
 	public String getNome() {
 		return nome;
 	}
-
 	/**
 	 * @param nome the nome to set
 	 */
@@ -81,7 +75,7 @@ public class NegocioCategoria implements AbstractEntity,Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NegocioCategoria other = (NegocioCategoria) obj;
+		NegocioNivel other = (NegocioNivel) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -89,14 +83,8 @@ public class NegocioCategoria implements AbstractEntity,Serializable{
 			return false;
 		return true;
 	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return this.nome;
 	}
-	
-	
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import br.com.tiagods.model.NegocioProposta;
+import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.util.storage.Storage;
 import javafx.scene.control.MenuItem;

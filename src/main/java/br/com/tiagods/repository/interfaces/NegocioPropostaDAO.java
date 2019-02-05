@@ -2,7 +2,7 @@ package br.com.tiagods.repository.interfaces;
 
 import java.util.List;
 
-import br.com.tiagods.model.NegocioProposta;
+import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import javafx.util.Pair;
