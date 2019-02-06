@@ -36,6 +36,16 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 		em.getTransaction().commit();
 		return e;
 	}
+	public void saveAll(List<Entity> list){
+		em.getTransaction().begin();
+		for(Entity e : list) {
+			if (e.getId() != null)
+				em.merge(e);
+			else
+				em.persist(e);
+		}
+		em.getTransaction().commit();
+	}
 	public void remove(Entity e) {
 		em.getTransaction().begin();
 		em.remove(e);

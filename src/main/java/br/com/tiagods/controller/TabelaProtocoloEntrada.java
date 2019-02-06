@@ -131,6 +131,8 @@ public class TabelaProtocoloEntrada extends UtilsController{
         return list;
     }
     void tabela(){
+        tbPrincipal.getColumns().clear();
+
         TableColumn<ProtocoloEntrada, Number> colunaId = new TableColumn<>("*");
         colunaId.setCellValueFactory(new PropertyValueFactory<>("id"));
         tbPrincipal.getColumns().add(colunaId);

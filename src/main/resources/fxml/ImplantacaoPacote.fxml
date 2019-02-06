@@ -10,14 +10,14 @@
    <children>
       <HBox alignment="CENTER_RIGHT" prefHeight="12.0" prefWidth="600.0">
          <children>
-            <HBox prefHeight="100.0" prefWidth="339.0">
+            <HBox alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="263.0">
                <children>
                   <JFXButton fx:id="btnCadastrarPacote" text="Novo Pacote" />
                </children>
             </HBox>
-            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="219.0">
+            <HBox alignment="TOP_RIGHT" prefHeight="25.0" prefWidth="485.0">
                <children>
-                  <JFXButton text="Nova Atividade" />
+                  <JFXButton fx:id="btnNovaEtapa" text="Nova Etapa" />
                </children>
             </HBox>
          </children>
@@ -34,8 +34,8 @@
       </HBox>
       <HBox alignment="CENTER_RIGHT">
          <children>
+            <JFXButton onAction="#salvar" text="Salvar" />
             <JFXButton onAction="#sair" text="Sair" />
-            <JFXButton text="Salvar" />
          </children>
       </HBox>
    </children>

@@ -50,13 +50,12 @@ public class ImplantacaoAtividade implements AbstractEntity,Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ImplantacaoAtividade that = (ImplantacaoAtividade) o;
-        return Objects.equals(id, that.id);
+        ImplantacaoAtividade atividade = (ImplantacaoAtividade) o;
+        return Objects.equals(id, atividade.id);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id);
     }
 }

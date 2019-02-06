@@ -1,5 +1,6 @@
 package br.com.tiagods.model.implantacao;
 
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
@@ -25,9 +26,14 @@ public class ImplantacaoPacote implements AbstractEntity,Serializable {
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-    //muitos para muitos
-    @Transient
+    @OneToMany(mappedBy="pacote",cascade=CascadeType.ALL,fetch=FetchType.EAGER,orphanRemoval=true)
     private Set<ImplantacaoPacoteEtapa> etapas = new HashSet<>();
+
+    @PrePersist
+    void prePersist(){
+        setCriadoEm(Calendar.getInstance());
+        setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+    }
 
     @Override
     public Long getId() {

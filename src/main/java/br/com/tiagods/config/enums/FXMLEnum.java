@@ -8,6 +8,7 @@ public enum FXMLEnum {
 	FRANQUIA_PESQUISA("FranquiaPesquisa"),
 	FRANQUIA_CADASTRO("FranquiaCadastro"),
 	IMPLATACAO_PACOTE("ImplantacaoPacote"),
+	IMPLATACAO_ETAPA("ImplantacaoEtapa"),
 	LOGIN("Login"),
 	MAIN("Main"),
 	NEGOCIO_PESQUISA("NegocioPesquisa"),
