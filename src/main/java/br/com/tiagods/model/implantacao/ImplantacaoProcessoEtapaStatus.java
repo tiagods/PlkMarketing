@@ -1,19 +1,38 @@
 package br.com.tiagods.model.implantacao;
 
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
 
+@Entity
+@Table(name = "imp_pro_eta_status")
 public class ImplantacaoProcessoEtapaStatus implements AbstractEntity,Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private ImplantacaoProcessoEtapa etapa;
+    @ManyToOne
+    @JoinColumn(name = "processo_etapa_id")
+    private ImplantacaoProcessoEtapa processoEtapa;
+    @ManyToOne
+    @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "criado_em")
     private Calendar criadoEm;
     private boolean status = true;
+    @Column(columnDefinition = "text")
     private String descricao;
+
+    @PrePersist
+    void prePersist(){
+        setCriadoEm(Calendar.getInstance());
+        setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+    }
 
     @Override
     public Long getId() {
@@ -24,12 +43,12 @@ public class ImplantacaoProcessoEtapaStatus implements AbstractEntity,Serializab
         this.id = id;
     }
 
-    public ImplantacaoProcessoEtapa getEtapa() {
-        return etapa;
+    public ImplantacaoProcessoEtapa getProcessoEtapa() {
+        return processoEtapa;
     }
 
-    public void setEtapa(ImplantacaoProcessoEtapa etapa) {
-        this.etapa = etapa;
+    public void setProcessoEtapa(ImplantacaoProcessoEtapa processoEtapa) {
+        this.processoEtapa = processoEtapa;
     }
 
     public Usuario getCriadoPor() {
