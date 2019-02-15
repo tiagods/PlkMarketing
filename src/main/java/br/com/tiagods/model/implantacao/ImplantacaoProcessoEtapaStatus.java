@@ -24,7 +24,7 @@ public class ImplantacaoProcessoEtapaStatus implements AbstractEntity,Serializab
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "criado_em")
     private Calendar criadoEm;
-    private boolean status = true;
+    private boolean finalizado = true;
     @Column(columnDefinition = "text")
     private String descricao;
 
@@ -75,12 +75,12 @@ public class ImplantacaoProcessoEtapaStatus implements AbstractEntity,Serializab
         return Objects.equals(id, that.id);
     }
 
-    public boolean isStatus() {
-        return status;
+    public void setFinalizado(boolean finalizado) {
+        this.finalizado = finalizado;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public boolean isFinalizado() {
+        return finalizado;
     }
 
     public String getDescricao() {

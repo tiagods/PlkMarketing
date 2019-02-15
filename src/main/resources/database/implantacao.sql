@@ -21,7 +21,7 @@ create table imp_pac_etapa(
 	departamento_id integer,
 	tempo integer,
 	descricao varchar,
-	status boolean,
+	finalizado boolean,
 	atividade_id integer,
 	pacote_id integer,
 	criado_em timestamp,
@@ -43,6 +43,8 @@ create table imp_processo(
 	cliente_id integer,
 	criado_por_id integer,
 	criado_em timestamp,
+	finalizado boolean,
+	finalizado_em date,
 	primary key(id)
 );
 
@@ -58,7 +60,7 @@ create table imp_pro_etapa(
 	departamento_id integer,
 	tempo integer,
 	descricao varchar,
-	status boolean,
+	finalizado boolean,
 	atividade_id integer,
 	processo_id integer,
 	criado_em timestamp,
@@ -77,7 +79,7 @@ create table imp_pro_eta_status(
 	id serial,
 	criado_por_id integer,
 	criado_em timestamp,
-	status boolean,
+	finalizado boolean,
 	processo_etapa_id integer,
 	descricao text,
 	primary key(id)

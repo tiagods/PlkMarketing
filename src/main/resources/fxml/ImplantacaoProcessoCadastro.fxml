@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import org.fxutils.maskedtextfield.MaskTextField?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox prefHeight="46.0" prefWidth="600.0">
+         <children>
+            <Label text="Cliente:" />
+            <MaskTextField fx:id="txCliente" mask="N!" />
+            <Label fx:id="txNomeCliente" prefHeight="17.0" prefWidth="423.0" text="Nome do Cliente" />
+         </children>
+      </HBox>
+      <HBox layoutX="10.0" layoutY="10.0" prefHeight="46.0" prefWidth="600.0">
+         <children>
+            <Label text="Pacote:" />
+            <Label fx:id="txPacoteNome" alignment="CENTER" prefHeight="17.0" prefWidth="136.0" text="Nome do Pacote" />
+            <JFXButton fx:id="btnCopiarAlterarPacote" text="Copiar Pacote / Alterar Pacote" />
+         </children>
+      </HBox>
+      <VBox alignment="TOP_RIGHT" prefHeight="262.0" prefWidth="600.0">
+         <children>
+            <JFXButton fx:id="btnEtapa" text="Adicionar Etapa" />
+            <TableView fx:id="tbEtapa" prefHeight="238.0" prefWidth="600.0" />
+         </children>
+      </VBox>
+      <HBox alignment="TOP_RIGHT" prefHeight="36.0" prefWidth="600.0">
+         <children>
+            <JFXButton onAction="#salvar" text="Salvar" />
+            <JFXButton onAction="#sair" text="Sair" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

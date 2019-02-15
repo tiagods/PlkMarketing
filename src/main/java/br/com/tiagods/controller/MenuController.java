@@ -182,6 +182,8 @@ public class MenuController extends UtilsController implements Initializable{
             protocoloEntradaFilter.setClassificacao(ProtocoloEntrada.Classificacao.USUARIO);
             Pair<List<ProtocoloEntrada>,Paginacao> result = protocolosEntradas.filtrar(null,protocoloEntradaFilter);
 
+            tbProtocoloEntrada.itemsProperty().addListener(observable -> atualizar());
+
             txProtocoloPerfil.setText(""+list.size());
             txProtocoloTodos.setText(""+result.getKey().size());
         }catch (Exception e){
@@ -302,9 +304,23 @@ public class MenuController extends UtilsController implements Initializable{
                         "Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE,e,true);
             }
         });
-
-        cmImplantacao.getItems().addAll(miPacote);
+        MenuItem miProcessos = new MenuItem("Processos");
+        iconMenuItem(miProcessos,30,30,IconsEnum.MENU_USUARIO);
+        miProcessos.setOnAction(event -> {
+            try {
+                Stage stage = new Stage();
+                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_PROCESSO_PESQUISA);
+                loader.setController(new ImplantacaoPacoteController(stage));
+                initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+                onCloseRequest(stage);
+            }catch(IOException e) {
+                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                        "Falha ao localizar o arquivo "+FXMLEnum.IMPLANTACAO_PROCESSO_PESQUISA,e,true);
+            }
+        });
+        cmImplantacao.getItems().addAll(miPacote,miProcessos);
         btnImplantacao.setContextMenu(cmImplantacao);
+
         btnImplantacao.setOnAction(e->
                 cmImplantacao.show(btnImplantacao.getScene().getWindow(),
                         btnImplantacao.getScene().getWindow().getX()+50,

@@ -1,15 +1,17 @@
 package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.model.AbstractEntity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "imp_pro_etapa")
-public class ImplantacaoProcessoEtapa extends ImplantacaoEtapa {
+public class ImplantacaoProcessoEtapa extends ImplantacaoEtapa{
 
     @OneToMany(mappedBy="processoEtapa",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
     private Set<ImplantacaoProcessoEtapaStatus> status = new HashSet<>();

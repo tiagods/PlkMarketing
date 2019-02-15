@@ -12,15 +12,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="imp_processo")
+@Table(name = "imp_processo")
 public class ImplantacaoProcesso implements AbstractEntity, Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
-    //muitos para muitos
+
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
@@ -28,6 +29,12 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "criado_em")
     private Calendar criadoEm;
+
+    private boolean finalizado = false;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "finalizado_em")
+    private Calendar dataFinalizacao;
 
     @OneToMany(mappedBy="processo",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
     private Set<ImplantacaoProcessoEtapa> etapas = new HashSet<>();
@@ -69,6 +76,18 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
 
     public void setCriadoEm(Calendar criadoEm) {
         this.criadoEm = criadoEm;
+    }
+
+    public void setFinalizado(boolean finalizado) { this.finalizado = finalizado; }
+
+    public boolean isFinalizado() { return finalizado; }
+
+    public void setDataFinalizacao(Calendar dataFinalizacao) {
+        this.dataFinalizacao = dataFinalizacao;
+    }
+
+    public Calendar getDataFinalizacao() {
+        return dataFinalizacao;
     }
 
     public Set<ImplantacaoProcessoEtapa> getEtapas() {

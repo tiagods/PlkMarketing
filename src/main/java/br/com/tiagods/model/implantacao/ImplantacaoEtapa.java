@@ -9,10 +9,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
-
-@MappedSuperclass
-@Embeddable
-public abstract class ImplantacaoEtapa implements Serializable,AbstractEntity {
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class ImplantacaoEtapa implements AbstractEntity, Serializable{
     public enum Etapa{
         PRIMEIRA(1),SEGUNDA(2),TERCEIRA(3);
         //QUARTA(4),QUINTA(5),SEXTA(6),SETIMA(7),OITAVA(8),NONA(9),DECIMA(10)
@@ -27,7 +26,7 @@ public abstract class ImplantacaoEtapa implements Serializable,AbstractEntity {
         }
     }
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Enumerated(EnumType.STRING)
     private Etapa etapa = Etapa.PRIMEIRA;
@@ -40,7 +39,7 @@ public abstract class ImplantacaoEtapa implements Serializable,AbstractEntity {
     private String descricao;
 
     private int tempo = 15;
-    private boolean status = false;
+    private boolean finalizado = false;
     @ManyToOne
     @JoinColumn(name = "atividade_id")
     private ImplantacaoAtividade atividade;
@@ -51,7 +50,6 @@ public abstract class ImplantacaoEtapa implements Serializable,AbstractEntity {
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
 
-    @Override
     public Long getId() {
         return id;
     }
@@ -100,13 +98,11 @@ public abstract class ImplantacaoEtapa implements Serializable,AbstractEntity {
         this.descricao = descricao;
     }
 
-    public boolean isStatus() {
-        return status;
+    public void setFinalizado(boolean finalizado) {
+        this.finalizado = finalizado;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+    public boolean isFinalizado() { return finalizado; }
 
     public ImplantacaoAtividade getAtividade() {
         return atividade;

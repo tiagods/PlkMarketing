@@ -7,8 +7,10 @@ public enum FXMLEnum {
 	CONTATO_CADASTRO("ContatoCadastro"),
 	FRANQUIA_PESQUISA("FranquiaPesquisa"),
 	FRANQUIA_CADASTRO("FranquiaCadastro"),
-	IMPLATACAO_PACOTE("ImplantacaoPacote"),
 	IMPLATACAO_ETAPA("ImplantacaoEtapa"),
+	IMPLATACAO_PACOTE("ImplantacaoPacote"),
+	IMPLANTACAO_PROCESSO_CADASTRO("ImplantacaoProcessoCadastro"),
+	IMPLANTACAO_PROCESSO_PESQUISA("ImplantacaoProcessoPesquisa"),
 	LOGIN("Login"),
 	MAIN("Main"),
 	NEGOCIO_PESQUISA("NegocioPesquisa"),
@@ -22,7 +24,7 @@ public enum FXMLEnum {
 	TAREFA_DIALOG_CONTATO("TarefaDialogContato"),
 	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta"),
 	PROGRESS_SAMPLE("Progress");
-	private String localizacao;
+    private String localizacao;
 	private FXMLEnum(String localizacao) {
 		this.localizacao=localizacao;
 	}
