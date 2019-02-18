@@ -59,17 +59,17 @@ import javafx.stage.StageStyle;
 
 public abstract class UtilsController extends PersistenciaController{
 	private boolean habilidarFiltroCidade = true;
-	final VersaoSistema sistemaVersao = new VersaoSistema();
+	protected final VersaoSistema sistemaVersao = new VersaoSistema();
 	
-	final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+	protected final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 	//Locale locale = new Locale("pt", "BR");
-	final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	final Integer[] limiteTabela = new Integer[] {50,100,200};
+	protected final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	protected final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	protected final Integer[] limiteTabela = new Integer[] {50,100,200};
 
-	NegocioPropostaImpl propostas;
+	private NegocioPropostaImpl propostas;
 
-	Stage abrirNegocioProposta(NegocioProposta proposta) {
+	protected Stage abrirNegocioProposta(NegocioProposta proposta) {
 		try {
 			loadFactory();
 			if (proposta != null) {
@@ -90,15 +90,14 @@ public abstract class UtilsController extends PersistenciaController{
 		}
 	}
 
-
-	public Alert alert(AlertType alertType,String title, String header, String contentText) {
+	private Alert alert(AlertType alertType,String title, String header, String contentText) {
 		Alert alert = new Alert(alertType);
 		alert.setTitle(title);
 		alert.setHeaderText(header);
 		alert.setContentText(contentText);
 		return alert;
 	}
-	public void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
+	protected void alert(AlertType alertType, String title, String header, String contentText,Exception ex, boolean print) {
 		Alert alert = alert(alertType,title,header,contentText);
 		alert.getDialogPane().setExpanded(true);
 		alert.getDialogPane().setMinSize(600,150);
@@ -149,7 +148,7 @@ public abstract class UtilsController extends PersistenciaController{
 		alert.showAndWait();
 	}
 
-	public File salvarTemp(String extensao){
+	protected File salvarTemp(String extensao){
 		SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
 		File file = new File(System.getProperty("java.io.tmpdir")+"/file-"+sdf.format(new Date())+"."+extensao);
 		return file;
@@ -168,7 +167,7 @@ public abstract class UtilsController extends PersistenciaController{
         return local;
     }
     */
-	public void comboRegiao(JFXComboBox<Cidade> cbCidade, JFXComboBox<Cidade.Estado> cbEstado, EntityManager manager){
+	protected void comboRegiao(JFXComboBox<Cidade> cbCidade, JFXComboBox<Cidade.Estado> cbEstado, EntityManager manager){
 		CidadesImpl cidades = new CidadesImpl(manager);
 		Cidade cidade = cidades.findByNome("São Paulo");
 		cbCidade.getItems().addAll(cidades.findByEstado(Cidade.Estado.SP));
@@ -179,7 +178,7 @@ public abstract class UtilsController extends PersistenciaController{
 		new ComboBoxAutoCompleteUtil<>(cbCidade);
 	}
 	
-	void bucarCep(MaskedTextField txCEP, JFXTextField txLogradouro, JFXTextField txNumero,JFXTextField txComplemento,
+	protected void bucarCep(MaskedTextField txCEP, JFXTextField txLogradouro, JFXTextField txNumero,JFXTextField txComplemento,
 				  JFXTextField txBairro, JFXComboBox<Cidade> cbCidade, JFXComboBox<Cidade.Estado> cbEstado
 				  ){
 		try{
@@ -219,10 +218,10 @@ public abstract class UtilsController extends PersistenciaController{
 			close();
 		}
 	}
-	public void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
+	protected void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
 		buttonIcon(btn,icon,30);
 	}
-	public void buttonMin(JFXButton btn,IconsEnum icon) throws IOException{
+	protected void buttonMin(JFXButton btn,IconsEnum icon) throws IOException{
 		buttonIcon(btn,icon,22);
 	}
 	private void buttonIcon(JFXButton btn,IconsEnum icon,int size){
@@ -230,17 +229,17 @@ public abstract class UtilsController extends PersistenciaController{
 		btn.setGraphic(imageview);
 		btn.setTooltip(icon.getTooltip());
 	}
-	public Optional<String> cadastroRapido(){
+	protected Optional<String> cadastroRapido(){
 		TextInputDialog dialog = new TextInputDialog("");
 		dialog.setTitle("Cadastro rapido");
 		dialog.setHeaderText("Crie um novo registro:");
 		dialog.setContentText("Por favor entre com um novo nome");
 		return dialog.showAndWait();
 	}
-	public void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
+	protected void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
 		item.setGraphic(createImage(x,y,icon));
 	}
-	private ImageView createImage(int x, int y, IconsEnum icon) {
+	protected ImageView createImage(int x, int y, IconsEnum icon) {
 		Image image = new Image(icon.getLocalizacao().toString());
 		ImageView imageview = new ImageView(image);
 		imageview.setFitHeight(x);
@@ -248,21 +247,7 @@ public abstract class UtilsController extends PersistenciaController{
 		imageview.setPreserveRatio(true);
 		return imageview;
 	}
-	
-	public Label imageTableTipoTarefa(TipoTarefa item) throws IOException{
-		IconsEnum icon = IconsEnum.BUTTON_TAREFA_EMAIL;
-		if(item.equals(TipoTarefa.EMAIL)) icon = IconsEnum.BUTTON_TAREFA_EMAIL;
-		else if(item.equals(TipoTarefa.PROPOSTA)) icon= IconsEnum.BUTTON_TAREFA_PROPOSTA;
-		else if(item.equals(TipoTarefa.REUNIAO)) icon= IconsEnum.BUTTON_TAREFA_REUNIAO;
-		else if(item.equals(TipoTarefa.TELEFONE)) icon= IconsEnum.BUTTON_TAREFA_FONE;
-		else if(item.equals(TipoTarefa.WHATSAPP)) icon= IconsEnum.BUTTON_TAREFA_WHATSAPP;
-		ImageView image =  createImage(30,30,icon);
-		Label label = new Label();
-		label.setGraphic(image);
-		label.setTooltip(new Tooltip(item.getDescricao()));
-		return label;
-	}
-	public Stage initPanel(FXMLLoader loader,Stage stage, Modality modality, StageStyle ss) throws IOException{
+	protected Stage initPanel(FXMLLoader loader,Stage stage, Modality modality, StageStyle ss) throws IOException{
     		final Parent root = loader.load();
 	        final Scene scene = new Scene(root);
 	        stage.initModality(modality);
@@ -272,11 +257,11 @@ public abstract class UtilsController extends PersistenciaController{
 	        stage.show();
 	        return stage;
     }
-	public FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
+	protected FXMLLoader loaderFxml(FXMLEnum e) throws IOException{
     	final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
         return loader;
     }
-	public void salvarLog(EntityManager manager,String menu, String acao, String descricao) throws Exception{
+	protected void salvarLog(EntityManager manager,String menu, String acao, String descricao) throws Exception{
 		UsuarioLogImpl logImpl = new UsuarioLogImpl(manager);
 		UsuarioLog log = new UsuarioLog();
 		log.setData(Calendar.getInstance());
@@ -286,7 +271,7 @@ public abstract class UtilsController extends PersistenciaController{
 		log.setDescricao(descricao);
 		logImpl.save(log);
 	}
-	public Stage startProgress(){
+	protected Stage startProgress(){
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
 			Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -323,14 +308,14 @@ public abstract class UtilsController extends PersistenciaController{
 			}
 		}
 	}
-	public void visualizarDocumento(String text, Storage storage){
-			try {
-				File file = storage.downloadFile(text);
-				if (file != null)
-					Desktop.getDesktop().open(file);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	protected void visualizarDocumento(String text, Storage storage){
+		try {
+			File file = storage.downloadFile(text);
+			if (file != null)
+				Desktop.getDesktop().open(file);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

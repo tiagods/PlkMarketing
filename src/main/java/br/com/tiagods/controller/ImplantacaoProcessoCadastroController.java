@@ -5,6 +5,7 @@ import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.helpers.ClientesImpl;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDatePicker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,6 +32,9 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
 
     @FXML
     private Label txNomeCliente;
+
+    @FXML
+    private JFXDatePicker dtFinalizacao;
 
     @FXML
     private TableView<ImplantacaoProcessoEtapa> tbEtapa;

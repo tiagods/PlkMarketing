@@ -355,7 +355,7 @@ public class TabelaProtocoloEntrada extends UtilsController{
                                             loadFactory();
                                             protocolos = new ProtocolosEntradasImpl(getManager());
                                             protocolos.save(p);
-                                            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso");
+                                            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,false);
                                             filtrar(paginacao,getManager());
                                         } catch (Exception e) {
                                             alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);
@@ -461,7 +461,7 @@ public class TabelaProtocoloEntrada extends UtilsController{
                                                 loadFactory();
                                                 protocolos = new ProtocolosEntradasImpl(getManager());
                                                 protocolos.save(p);
-                                                alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso");
+                                                alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,true);
                                                 filtrar(paginacao,getManager());
                                             } catch (Exception e) {
                                                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);
@@ -486,7 +486,7 @@ public class TabelaProtocoloEntrada extends UtilsController{
                                             loadFactory();
                                             protocolos = new ProtocolosEntradasImpl(getManager());
                                             protocolos.save(p);
-                                            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso");
+                                            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,false);
                                             filtrar(paginacao,getManager());
                                         } catch (Exception e) {
                                             alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);

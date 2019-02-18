@@ -62,6 +62,7 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -408,10 +409,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				});
 			}
 		} else {
-			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato").showAndWait();
+			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
 		}
 		}catch (IOException e){
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado").showAndWait();
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
 		}
     	
     }
@@ -462,6 +463,20 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		}
 		return list.getKey();
     }
+	private Label imageTableTipoTarefa(TipoTarefa item) throws IOException{
+		IconsEnum icon = IconsEnum.BUTTON_TAREFA_EMAIL;
+		if(item.equals(TipoTarefa.EMAIL)) icon = IconsEnum.BUTTON_TAREFA_EMAIL;
+		else if(item.equals(TipoTarefa.PROPOSTA)) icon= IconsEnum.BUTTON_TAREFA_PROPOSTA;
+		else if(item.equals(TipoTarefa.REUNIAO)) icon= IconsEnum.BUTTON_TAREFA_REUNIAO;
+		else if(item.equals(TipoTarefa.TELEFONE)) icon= IconsEnum.BUTTON_TAREFA_FONE;
+		else if(item.equals(TipoTarefa.WHATSAPP)) icon= IconsEnum.BUTTON_TAREFA_WHATSAPP;
+		ImageView image =  createImage(30,30,icon);
+		Label label = new Label();
+		label.setGraphic(image);
+		label.setTooltip(new Tooltip(item.getDescricao()));
+		return label;
+	}
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();

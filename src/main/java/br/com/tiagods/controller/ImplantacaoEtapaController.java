@@ -60,15 +60,15 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
     @FXML
     private void aplicar(ActionEvent event){
         if(cbAtividade.getValue()==null){
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Atividades/Documentos é obrigatório").showAndWait();
+            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Atividades/Documentos é obrigatório",null,false);
             return;
         }
         if(cbEtapa.getValue()==null){
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Etapa é obrigatório").showAndWait();
+            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Etapa é obrigatório",null,false);
             return;
         }
         if(cbDepartamento.getValue()==null){
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Departamento é obrigatório").showAndWait();
+            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Departamento é obrigatório",null,false);
             return;
         }
         else {
@@ -80,8 +80,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                 if(result.isPresent()){
                     if(result.get().getId()==etapa.getId() && edicao) aplicarESair();
                     else alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
-                            "Já foi informado um processo para Atividade:"+result.get().getAtividade()+"\t e Etapa:"+result.get().getEtapa()+"Mude alguns dos parametros e tente novamente")
-                            .showAndWait();
+                            "Já foi informado um processo para Atividade:"+result.get().getAtividade()+"\t e Etapa:"+result.get().getEtapa()+"Mude alguns dos parametros e tente novamente",null,false);
                 }
                 else aplicarESair();
             }

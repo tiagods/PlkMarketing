@@ -39,7 +39,7 @@ public class ComboBoxAutoCompleteUtil<T> {
             filter = filter.substring(0, filter.length() - 1);
             cmb.getItems().setAll(originalItems);
         }
-        if (code == KeyCode.ESCAPE ) {
+        if (code == KeyCode.ESCAPE) {
             if(filter.trim().length()>0)
                 filter += " ";
             else
