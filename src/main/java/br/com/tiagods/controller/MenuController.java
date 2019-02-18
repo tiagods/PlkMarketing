@@ -310,7 +310,7 @@ public class MenuController extends UtilsController implements Initializable{
             try {
                 Stage stage = new Stage();
                 FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_PROCESSO_PESQUISA);
-                loader.setController(new ImplantacaoPacoteController(stage));
+                loader.setController(new ImplantacaoProcessoPesquisaController(stage));
                 initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
                 onCloseRequest(stage);
             }catch(IOException e) {

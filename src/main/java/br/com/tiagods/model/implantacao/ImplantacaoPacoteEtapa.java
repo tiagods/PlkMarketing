@@ -9,15 +9,21 @@ import java.util.Calendar;
 
 @Entity
 @Table(name = "imp_pac_etapa")
-public class ImplantacaoPacoteEtapa extends ImplantacaoEtapa{
+public class ImplantacaoPacoteEtapa extends ImplantacaoEtapa implements AbstractEntity,Serializable{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "pacote_id")
     private ImplantacaoPacote pacote;
 
-    @PrePersist
-    void prePersist(){
-        setCriadoEm(Calendar.getInstance());
-        setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+    @Override
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public ImplantacaoPacote getPacote() {

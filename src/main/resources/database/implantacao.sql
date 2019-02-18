@@ -43,6 +43,7 @@ create table imp_processo(
 	cliente_id integer,
 	criado_por_id integer,
 	criado_em timestamp,
+	pacote_id integer,
 	finalizado boolean,
 	finalizado_em date,
 	primary key(id)
@@ -51,6 +52,8 @@ create table imp_processo(
 alter table imp_processo add constraint fk_cliente_id foreign key (cliente_id) references cliente(COD);
 
 alter table imp_processo add constraint fk_criado_por_id foreign key (criado_por_id) references usuario(id);
+
+alter table imp_processo add constraint fk_pacote_id foreign key (pacote_id) references imp_pacote(id);
 
 ALTER TABLE imp_processo OWNER TO prolink;
 

@@ -58,7 +58,6 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
     }
 
     void cadastrarEtapa(boolean editar, int tableLocation, ImplantacaoPacoteEtapa etapa){
-
         try {
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_ETAPA);
@@ -87,14 +86,14 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
         boolean novoRegistro = pacote.getId()==null;
         dialog.setHeaderText(novoRegistro?"Informe os campos abaixo para cadastrar um novo registro":"Informe os campos abaixo para atualizar o registro");
 
-// Set the icon (must be included in the project).
+        // Set the icon (must be included in the project).
         //dialog.setGraphic(new ImageView(getClass().getResource("/fxml/imagens/theme.png").toString()));
 
-// Set the button types.
+        // Set the button types.
         ButtonType loginButtonType = new ButtonType("Salvar", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
 
-// Create the username and password labels and fields.
+        // Create the username and password labels and fields.
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);

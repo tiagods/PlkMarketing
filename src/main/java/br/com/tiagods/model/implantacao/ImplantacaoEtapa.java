@@ -9,9 +9,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class ImplantacaoEtapa implements AbstractEntity, Serializable{
+
+@MappedSuperclass
+@Embeddable
+public class ImplantacaoEtapa{
     public enum Etapa{
         PRIMEIRA(1),SEGUNDA(2),TERCEIRA(3);
         //QUARTA(4),QUINTA(5),SEXTA(6),SETIMA(7),OITAVA(8),NONA(9),DECIMA(10)
@@ -25,9 +26,6 @@ public class ImplantacaoEtapa implements AbstractEntity, Serializable{
             return valor;
         }
     }
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     @Enumerated(EnumType.STRING)
     private Etapa etapa = Etapa.PRIMEIRA;
     @Transient
@@ -49,14 +47,6 @@ public class ImplantacaoEtapa implements AbstractEntity, Serializable{
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Etapa getEtapa() {
         return etapa;
@@ -125,6 +115,12 @@ public class ImplantacaoEtapa implements AbstractEntity, Serializable{
 
     public void setCriadoPor(Usuario criadoPor) {
         this.criadoPor = criadoPor;
+    }
+
+    @PrePersist
+    void prePersist(){
+        setCriadoEm(Calendar.getInstance());
+        setCriadoPor(UsuarioLogado.getInstance().getUsuario());
     }
 
     @Override

@@ -121,10 +121,20 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabela();
+        try{
+            loadFactory();
+            processos = new ImplantacaoProcessosImpl(getManager());
+            tbPrincipal.getItems().clear();
+            tbPrincipal.getItems().addAll(processos.getAll());
+        }catch (Exception e){
+            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao listar registros",e,true);
+        }finally {
+            close();
+        }
     }
     @FXML
     void novo(ActionEvent event) {
-
+        abrirCadastro(null);
     }
 
     private boolean salvarStatus(ImplantacaoProcesso n,boolean status){
@@ -178,14 +188,12 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             @Override
             protected void updateItem(Cliente item, boolean empty) {
                 super.updateItem(item, empty);
-                if(item==null){
+                if(item==null || empty){
                     setStyle("");
                     setText("");
                     setGraphic(null);
                 }
-                else
-                    setText(item.getId()+""+item.getNome());
-
+                else setText(item.toString());
             }
         });
         colunaData.setPrefWidth(130);
@@ -221,13 +229,13 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
                         int value = item?1:0;
 
                         for(int i=0;i<2;i++) {
-                            JFXRadioButton jfxRadioButton = new JFXRadioButton(item?"Concluido":"Pendente");
+                            JFXRadioButton jfxRadioButton = new JFXRadioButton(i==1?"Concluido":"Pendente");
                             jfxRadioButton.setSelectedColor(Color.GREEN);
                             jfxRadioButton.setUnSelectedColor(Color.RED);
                             if(value==i) jfxRadioButton.setSelected(true);
                             group.getToggles().add(jfxRadioButton);
                             stackPane.getChildren().add(jfxRadioButton);
-                            map.put(jfxRadioButton,i==0);
+                            map.put(jfxRadioButton,i==1);
                         }
                         ButtonType ok = new ButtonType("Alterar");
                         ButtonType cancelar = new ButtonType("Cancelar");
@@ -273,8 +281,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
                     button.getStyleClass().add("btDefault");
                     try {
                         buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {
-                    }
+                    }catch (IOException e) {}
                     button.setOnAction(event -> {
                         abrirCadastro(tbPrincipal.getItems().get(getIndex()));
                     });

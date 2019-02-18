@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.*;
 
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
@@ -204,6 +205,7 @@ public class NegocioProposta implements AbstractEntity,Serializable{
 
 	@PrePersist
 	void prePersist(){
+		setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		setCriadoEm(Calendar.getInstance());
 	}
 

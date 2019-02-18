@@ -36,6 +36,10 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
     @Column(name = "finalizado_em")
     private Calendar dataFinalizacao;
 
+    @ManyToOne
+    @JoinColumn(name = "pacote_id")
+    private ImplantacaoPacote pacote;
+
     @OneToMany(mappedBy="processo",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
     private Set<ImplantacaoProcessoEtapa> etapas = new HashSet<>();
 
@@ -82,13 +86,13 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
 
     public boolean isFinalizado() { return finalizado; }
 
-    public void setDataFinalizacao(Calendar dataFinalizacao) {
-        this.dataFinalizacao = dataFinalizacao;
-    }
+    public void setDataFinalizacao(Calendar dataFinalizacao) { this.dataFinalizacao = dataFinalizacao; }
 
-    public Calendar getDataFinalizacao() {
-        return dataFinalizacao;
-    }
+    public Calendar getDataFinalizacao() { return dataFinalizacao; }
+
+    public ImplantacaoPacote getPacote() { return pacote; }
+
+    public void setPacote(ImplantacaoPacote pacote) { this.pacote = pacote; }
 
     public Set<ImplantacaoProcessoEtapa> getEtapas() {
         return etapas;

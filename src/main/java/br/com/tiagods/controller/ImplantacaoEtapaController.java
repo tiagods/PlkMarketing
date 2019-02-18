@@ -41,7 +41,6 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
     @FXML
     private JFXTextField txDescricao;
 
-
     private ImplantacaoEtapa etapa;
     private Stage stage;
     private ImplantacaoAtividadesImpl atividades;
@@ -78,16 +77,24 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                         .filter(c->c.getAtividade().getId()==cbAtividade.getValue().getId() && c.getEtapa().equals(cbEtapa.getValue()))
                         .findFirst();
                 if(result.isPresent()){
-                    if(result.get().getId()==etapa.getId() && edicao) aplicarESair();
+                    if(result.get().getId() == ((ImplantacaoPacoteEtapa) etapa).getId() && edicao) aplicarESair();
                     else alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
-                            "Já foi informado um processo para Atividade:"+result.get().getAtividade()+"\t e Etapa:"+result.get().getEtapa()+"Mude alguns dos parametros e tente novamente",null,false);
+                            "Já foi informado um processo para Atividade:"+result.get().getAtividade()+"\n e Etapa:"+result.get().getEtapa()+"\nMude alguns dos parametros e tente novamente",null,false);
                 }
                 else aplicarESair();
             }
             else if(object instanceof ImplantacaoProcesso){
-
+                Set<ImplantacaoProcessoEtapa> items = ((ImplantacaoProcesso) object).getEtapas();
+                Optional<ImplantacaoProcessoEtapa> result = items.stream()
+                        .filter(c->c.getEtapa().getAtividade().getId()==cbAtividade.getValue().getId() && c.getEtapa().getEtapa().equals(cbEtapa.getValue()))
+                        .findFirst();
+                if(result.isPresent()){
+                    if(result.get().getId() == ((ImplantacaoProcesso) object).getId() && edicao) aplicarESair();
+                    else alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
+                            "Já foi informado um processo para Atividade:"+result.get().getEtapa().getAtividade()+"\n e Etapa:"+result.get().getEtapa()+"\nMude alguns dos parametros e tente novamente",null,false);
+                }
+                else aplicarESair();
             }
-
         }
     }
     private void aplicarESair(){
@@ -197,12 +204,10 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                     cbEtapa.setValue(etapa.getEtapa());
                 }
                 else if(res.isEmpty()) {
-                    System.out.println("Caiu na primeira");
                     cbEtapa.getItems().clear();
                     cbEtapa.getItems().add(ImplantacaoEtapa.Etapa.PRIMEIRA);
                 }
                 else{
-                    System.out.println("Caiu na segunda");
                     for(ImplantacaoEtapa.Etapa e : ImplantacaoEtapa.Etapa.values()){
                         Optional<ImplantacaoPacoteEtapa> value = res.stream().filter(c-> c.getEtapa().equals(e)).findAny();
                         if(!value.isPresent()) {
@@ -214,6 +219,32 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                     }
                 }
             }
+            if(object instanceof ImplantacaoProcesso){
+                Set<ImplantacaoProcessoEtapa> etapaSet = ((ImplantacaoProcesso) object).getEtapas();
+                List<ImplantacaoProcessoEtapa> res = etapaSet.stream()
+                        .filter(c->c.getEtapa().getAtividade().getId()==newValue.getId()).collect(Collectors.toList());
+                if(edicao && etapa.getAtividade().getId()==newValue.getId()){
+                    cbEtapa.getItems().clear();
+                    cbEtapa.getItems().add(etapa.getEtapa());
+                    cbEtapa.setValue(etapa.getEtapa());
+                }
+                else if(res.isEmpty()) {
+                    cbEtapa.getItems().clear();
+                    cbEtapa.getItems().add(ImplantacaoEtapa.Etapa.PRIMEIRA);
+                }
+                else{
+                    for(ImplantacaoEtapa.Etapa e : ImplantacaoEtapa.Etapa.values()){
+                        Optional<ImplantacaoProcessoEtapa> value = res.stream().filter(c-> c.getEtapa().getEtapa().equals(e)).findAny();
+                        if(!value.isPresent()) {
+                            cbEtapa.getItems().clear();
+                            cbEtapa.getItems().add(e);
+                            cbEtapa.setValue(e);
+                            break;
+                        }
+                    }
+                }
+            }
+
         });
 
         departamentos = new UsuariosDepartamentosImpl(getManager());
