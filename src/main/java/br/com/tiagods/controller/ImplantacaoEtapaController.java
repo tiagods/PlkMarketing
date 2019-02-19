@@ -1,13 +1,13 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.model.UsuarioDepartamento;
+import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoAtividadesImpl;
-import br.com.tiagods.repository.helpers.UsuariosDepartamentosImpl;
+import br.com.tiagods.repository.helpers.DepartamentosImpl;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,7 +30,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
     private JFXComboBox<ImplantacaoEtapa.Etapa> cbEtapa;
 
     @FXML
-    private JFXComboBox<UsuarioDepartamento> cbDepartamento;
+    private JFXComboBox<Departamento> cbDepartamento;
 
     @FXML
     private JFXComboBox<ImplantacaoAtividade> cbAtividade;
@@ -41,10 +41,13 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
     @FXML
     private JFXTextField txDescricao;
 
+    @FXML
+    private JFXButton btnHelp;
+
     private ImplantacaoEtapa etapa;
     private Stage stage;
     private ImplantacaoAtividadesImpl atividades;
-    private UsuariosDepartamentosImpl departamentos;
+    private DepartamentosImpl departamentos;
     private Object object;
     private boolean valida = false;
     private boolean edicao = false;
@@ -68,6 +71,10 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
         }
         if(cbDepartamento.getValue()==null){
             alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Departamento é obrigatório",null,false);
+            return;
+        }
+        if(txDescricao.getText().trim().equals("")) {
+            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Descrição",null,false);
             return;
         }
         else {
@@ -178,7 +185,6 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                 atividades.save(atividade);
                 cbAtividade.getItems().clear();
                 cbAtividade.getItems().addAll(atividades.getAll());
-
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR,"Erro","Não foi possivel salvar","Falha ao tentar salvar o registro",e,true);
             }finally {
@@ -244,10 +250,11 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                     }
                 }
             }
+            cbEtapa.getSelectionModel().selectFirst();
 
         });
 
-        departamentos = new UsuariosDepartamentosImpl(getManager());
+        departamentos = new DepartamentosImpl(getManager());
         cbDepartamento.getItems().addAll(departamentos.getAll());
 
         for(int i = 1; i<=1000; i++) cbTempo.getItems().add(i);
@@ -271,7 +278,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
         cbEtapa.setValue(etapa.getEtapa());
         cbDepartamento.setValue(etapa.getDepartamento());
         cbTempo.setValue(etapa.getTempo());
-        txDescricao.setText(etapa.getDescricao());
+        txDescricao.setText(etapa.getDescricao()!=null?etapa.getDescricao():"");
         this.etapa=etapa;
     }
 

@@ -21,7 +21,6 @@ create table imp_pac_etapa(
 	departamento_id integer,
 	tempo integer,
 	descricao varchar,
-	finalizado boolean,
 	atividade_id integer,
 	pacote_id integer,
 	criado_em timestamp,
@@ -44,7 +43,7 @@ create table imp_processo(
 	criado_por_id integer,
 	criado_em timestamp,
 	pacote_id integer,
-	finalizado boolean,
+	status varchar,
 	finalizado_em date,
 	primary key(id)
 );
@@ -64,12 +63,13 @@ create table imp_pro_etapa(
 	tempo integer,
 	descricao varchar,
 	finalizado boolean,
+	data_liberacao date,
 	atividade_id integer,
 	processo_id integer,
 	criado_em timestamp,
     criado_por_id integer,
-	primary key(id)	
-	
+    status varchar,
+	primary key(id)
 );
 
 alter table imp_pro_etapa add constraint fk_departamento_id foreign key (departamento_id) references USUARIO_DEPARTAMENTO(USU_DEP_COD);
@@ -92,3 +92,5 @@ alter table imp_pro_eta_status add constraint fk_criado_por_id foreign key (cria
 alter table imp_pro_eta_status add constraint fk_processo_etapa_id foreign key (processo_etapa_id) references imp_pro_etapa(id);
 
 ALTER TABLE imp_pro_eta_status OWNER TO prolink;
+
+ALTER TABLE usuario_departamento add column email text;

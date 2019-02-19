@@ -61,6 +61,10 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 		Query query = getEntityManager().createQuery("FROM " + entityClass.getName() + " o order by o.id");
 		return (List<Entity>) query.getResultList();
 	}
+	public List<Entity> getAllByName() {
+		Query query = getEntityManager().createQuery("FROM " + entityClass.getName() + " o order by o.nome");
+		return (List<Entity>) query.getResultList();
+	}
 	@SuppressWarnings("unchecked")
 	public Pair<List<Entity>,Paginacao> getAll(Paginacao page){
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(entityClass);

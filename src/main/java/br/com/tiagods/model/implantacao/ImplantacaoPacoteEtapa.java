@@ -26,6 +26,12 @@ public class ImplantacaoPacoteEtapa extends ImplantacaoEtapa implements Abstract
         this.id = id;
     }
 
+    @PrePersist
+    void prePersist(){
+        setCriadoEm(Calendar.getInstance());
+        setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+    }
+
     public ImplantacaoPacote getPacote() {
         return pacote;
     }

@@ -6,7 +6,7 @@ import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.protocolo.ProtocoloItem;
 import br.com.tiagods.repository.helpers.ClientesImpl;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
-import br.com.tiagods.repository.helpers.UsuariosDepartamentosImpl;
+import br.com.tiagods.repository.helpers.DepartamentosImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
@@ -44,7 +44,7 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
     private JFXTextArea txClienteNome;
 
     @FXML
-    private JFXComboBox<UsuarioDepartamento> cbDepartamento;
+    private JFXComboBox<Departamento> cbDepartamento;
 
     @FXML
     private JFXComboBox<Usuario> cbFuncionario;
@@ -70,7 +70,7 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
     private Stage stage;
     private ProtocoloEntrada protocolo;
     private ProtocolosEntradasImpl entradas;
-    private UsuariosDepartamentosImpl departamentos;
+    private DepartamentosImpl departamentos;
     private UsuariosImpl usuarios;
     private ClientesImpl clientes;
     private Cliente cliente;
@@ -101,7 +101,7 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
 
         for(int i = 1; i<=100;i++) cbItemQuantidade.getItems().add(i);
 
-        departamentos = new UsuariosDepartamentosImpl(getManager());
+        departamentos = new DepartamentosImpl(getManager());
         cbDepartamento.getItems().addAll(departamentos.getAll());
 
         cbDepartamento.valueProperty().addListener((observable, oldValue, newValue) -> {

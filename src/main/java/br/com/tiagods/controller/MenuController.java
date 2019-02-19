@@ -14,6 +14,8 @@ import java.util.List;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
+import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.Paginacao;
@@ -22,6 +24,7 @@ import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -89,9 +92,19 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private TableView<ProtocoloEntrada> tbProtocoloEntrada;
 
+    @FXML
+    private Tab tabProcesso;
+
+    @FXML
+    private TableView<ImplantacaoProcessoEtapa> tbProcesso;
+
+    @FXML
+    private JFXComboBox<ImplantacaoProcesso> cbProcesso;
+
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
     private NegocioPropostaImpl propostas;
+    private ImplantacaoProcessosImpl processos;
 
     void atualizar(){
         try{
@@ -186,6 +199,15 @@ public class MenuController extends UtilsController implements Initializable{
 
             txProtocoloPerfil.setText(""+list.size());
             txProtocoloTodos.setText(""+result.getKey().size());
+
+
+            cbProcesso.getItems().clear();
+            ImplantacaoProcesso pro = new ImplantacaoProcesso(-1L);
+            cbProcesso.getItems().add(pro);
+            cbProcesso.getSelectionModel().selectFirst();
+            processos = new ImplantacaoProcessosImpl(getManager());
+            cbProcesso.getItems().addAll(processos.listarAtivos());
+
         }catch (Exception e){
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao atualizar","Falha ao atualizar registros do menu",e,true);
         }finally {
@@ -254,7 +276,11 @@ public class MenuController extends UtilsController implements Initializable{
         iconMenuItem(miUsuario,30,30, IconsEnum.MENU_USUARIO);
         miUsuario.setOnAction(this::usuario);
 
-        cmCadastros.getItems().addAll(miUsuario);
+        MenuItem miDepartamento = new MenuItem("Departamento");
+        iconMenuItem(miDepartamento,30,30, IconsEnum.MENU_USUARIO);
+        miDepartamento.setOnAction(this::departamento);
+
+        cmCadastros.getItems().addAll(miUsuario,miDepartamento);
         btnCadastro.setContextMenu(cmCadastros);
         btnCadastro.setOnAction(e->
                 cmCadastros.show(btnCadastro.getScene().getWindow(),
@@ -340,6 +366,19 @@ public class MenuController extends UtilsController implements Initializable{
                     "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_PESQUISA,e,true);
         }
 
+    }
+    @FXML
+    void departamento(ActionEvent event) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.DEPARTAMENTO);
+            loader.setController(new DepartamentoController(stage));
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            onCloseRequest(stage);
+        }catch(IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.DEPARTAMENTO,e,true);
+        }
     }
     @FXML
     void franquia(ActionEvent event) {
@@ -440,4 +479,5 @@ public class MenuController extends UtilsController implements Initializable{
                      "Falha ao localizar o arquivo "+FXMLEnum.USUARIO_PESQUISA,e,true);
         }
     }
+
 }

@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="USUARIO_DEPARTAMENTO")
-public class UsuarioDepartamento implements AbstractEntity,Serializable{
+public class Departamento implements AbstractEntity,Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -19,6 +19,9 @@ public class UsuarioDepartamento implements AbstractEntity,Serializable{
 	private Long id;
 	@Column(name="USU_DEP_NOME")	
 	private String nome;
+	@Column(columnDefinition = "text")
+	private String email;
+
 	/**
 	 * @return the id
 	 */
@@ -43,6 +46,11 @@ public class UsuarioDepartamento implements AbstractEntity,Serializable{
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
+	public String getEmail() { return email; }
+
+	public void setEmail(String email) { this.email = email; }
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -64,7 +72,7 @@ public class UsuarioDepartamento implements AbstractEntity,Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UsuarioDepartamento other = (UsuarioDepartamento) obj;
+		Departamento other = (Departamento) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

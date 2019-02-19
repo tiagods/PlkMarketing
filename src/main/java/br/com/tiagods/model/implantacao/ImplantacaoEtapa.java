@@ -1,12 +1,10 @@
 package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.model.UsuarioDepartamento;
+import br.com.tiagods.model.Departamento;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -32,12 +30,11 @@ public class ImplantacaoEtapa{
     private Usuario responsavel;
     @ManyToOne
     @JoinColumn(name = "departamento_id")
-    private UsuarioDepartamento departamento;
+    private Departamento departamento;
 
     private String descricao;
 
     private int tempo = 15;
-    private boolean finalizado = false;
     @ManyToOne
     @JoinColumn(name = "atividade_id")
     private ImplantacaoAtividade atividade;
@@ -64,11 +61,11 @@ public class ImplantacaoEtapa{
         this.responsavel = responsavel;
     }
 
-    public UsuarioDepartamento getDepartamento() {
+    public Departamento getDepartamento() {
         return departamento;
     }
 
-    public void setDepartamento(UsuarioDepartamento departamento) {
+    public void setDepartamento(Departamento departamento) {
         this.departamento = departamento;
     }
 
@@ -88,15 +85,10 @@ public class ImplantacaoEtapa{
         this.descricao = descricao;
     }
 
-    public void setFinalizado(boolean finalizado) {
-        this.finalizado = finalizado;
-    }
-
-    public boolean isFinalizado() { return finalizado; }
-
     public ImplantacaoAtividade getAtividade() {
         return atividade;
     }
+
     public void setAtividade(ImplantacaoAtividade atividade) {
         this.atividade = atividade;
     }
@@ -117,11 +109,6 @@ public class ImplantacaoEtapa{
         this.criadoPor = criadoPor;
     }
 
-    @PrePersist
-    void prePersist(){
-        setCriadoEm(Calendar.getInstance());
-        setCriadoPor(UsuarioLogado.getInstance().getUsuario());
-    }
 
     @Override
     public boolean equals(Object o) {

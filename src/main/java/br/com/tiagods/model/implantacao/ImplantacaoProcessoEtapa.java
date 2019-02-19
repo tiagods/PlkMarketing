@@ -12,12 +12,27 @@ import java.util.Set;
 @Entity
 @Table(name = "imp_pro_etapa")
 public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
+
+    public enum Status{
+        ABERTO("Pendente"),
+        CONCLUIDO("Concluido"),
+        AGUARDANDO_ANTERIOR("Aguardando Liberação");
+        private String descricao;
+        Status(String descricao){
+            this.descricao = descricao;
+        }
+        @Override
+        public String toString() {
+            return this.descricao;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy="processoEtapa",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
-    private Set<ImplantacaoProcessoEtapaStatus> status = new HashSet<>();
+    private Set<ImplantacaoProcessoEtapaStatus> historico = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "processo_id")
@@ -26,11 +41,28 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     @Embedded
     private ImplantacaoEtapa etapa = new ImplantacaoEtapa();
 
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.AGUARDANDO_ANTERIOR;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "data_liberacao")
+    private Calendar dataLiberacao;
+
     public ImplantacaoProcessoEtapa(){}
 
     public ImplantacaoProcessoEtapa(ImplantacaoEtapa implantacaoEtapa,ImplantacaoProcesso processo){
         this.processo=processo;
         this.etapa=implantacaoEtapa;
+    }
+
+    @PrePersist
+    void prePersist(){
+        if(etapa.getEtapa().equals(ImplantacaoEtapa.Etapa.PRIMEIRA)) {
+            status = Status.ABERTO;
+            setDataLiberacao(Calendar.getInstance());
+        }
+        etapa.setCriadoEm(Calendar.getInstance());
+        etapa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
     }
 
     @Override
@@ -50,13 +82,9 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
         this.etapa = etapa;
     }
 
-    public Set<ImplantacaoProcessoEtapaStatus> getStatus() {
-        return status;
-    }
+    public Set<ImplantacaoProcessoEtapaStatus> getHistorico() { return historico; }
 
-    public void setStatus(Set<ImplantacaoProcessoEtapaStatus> status) {
-        this.status = status;
-    }
+    public void setHistorico(Set<ImplantacaoProcessoEtapaStatus> historico) { this.historico = historico; }
 
     public ImplantacaoProcesso getProcesso() {
         return processo;
@@ -66,4 +94,15 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
         this.processo = processo;
     }
 
+    public void setStatus(Status status) { this.status = status; }
+
+    public Status getStatus() { return status; }
+
+    public Calendar getDataLiberacao() {
+        return dataLiberacao;
+    }
+
+    public void setDataLiberacao(Calendar dataLiberacao) {
+        this.dataLiberacao = dataLiberacao;
+    }
 }

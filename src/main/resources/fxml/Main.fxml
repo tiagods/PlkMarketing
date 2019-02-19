@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -19,7 +20,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="650.0" prefWidth="1200.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="650.0" prefWidth="1200.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <AnchorPane prefHeight="477.0" prefWidth="731.0" style="-fx-background-color: #E7DFDD;" BorderPane.alignment="CENTER">
          <children>
@@ -97,6 +98,86 @@
                                              </VBox.margin>
                                              <children>
                                                 <TableView fx:id="tbProtocoloEntrada" prefHeight="372.0" prefWidth="1030.0" styleClass="table" tableMenuButtonVisible="true" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </Tab>
+                              <Tab fx:id="tabProcesso" closable="false" text="Processos">
+                                 <content>
+                                    <VBox prefHeight="496.0" prefWidth="1022.0">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="760.0">
+                                             <children>
+                                                <VBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white;">
+                                                   <children>
+                                                      <Label alignment="CENTER" prefWidth="200.0" styleClass="label-card" text="PROCESSOS EM ABERTO" textFill="#666666">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <HBox>
+                                                         <children>
+                                                            <Label fx:id="lbUsuarioNome21" alignment="CENTER" prefWidth="200.0" styleClass="label-card2" text="{USUARIO}" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" prefWidth="200.0" styleClass="label-card2" text="TODOS" textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets left="30.0" />
+                                                         </VBox.margin>
+                                                      </HBox>
+                                                      <HBox alignment="CENTER">
+                                                         <children>
+                                                            <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                                               <image>
+                                                                  <Image url="@imagens/menu_news.png" />
+                                                               </image>
+                                                            </ImageView>
+                                                            <Label fx:id="txProcessoPerfil" alignment="CENTER" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                               <HBox.margin>
+                                                                  <Insets right="10.0" />
+                                                               </HBox.margin>
+                                                            </Label>
+                                                            <Label fx:id="txProcessoTodos" alignment="CENTER" layoutX="87.0" layoutY="10.0" prefHeight="62.0" prefWidth="70.0" styleClass="label-card-value" text="..." textFill="#666666">
+                                                               <font>
+                                                                  <Font name="System Bold" size="42.0" />
+                                                               </font>
+                                                            </Label>
+                                                         </children>
+                                                      </HBox>
+                                                   </children>
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </VBox>
+                                                <Label styleClass="label-card" text="Processo:">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <JFXComboBox fx:id="cbProcesso" prefHeight="25.0" prefWidth="160.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets bottom="10.0" left="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox prefHeight="372.0" prefWidth="901.0">
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
+                                             </VBox.margin>
+                                             <children>
+                                                <TableView fx:id="tbProcesso" prefHeight="372.0" prefWidth="1030.0" styleClass="table" tableMenuButtonVisible="true" />
                                              </children>
                                           </HBox>
                                        </children>

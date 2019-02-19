@@ -2,7 +2,7 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.UsuarioDepartamento;
+import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
@@ -12,8 +12,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -204,7 +202,7 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
         TableColumn<ImplantacaoPacoteEtapa, ImplantacaoAtividade> colunaDescricao = new TableColumn<>("Descricao");
         colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
 
-        TableColumn<ImplantacaoPacoteEtapa, UsuarioDepartamento> colunaDepartamento = new TableColumn<>("Departamento");
+        TableColumn<ImplantacaoPacoteEtapa, Departamento> colunaDepartamento = new TableColumn<>("Departamento");
         colunaDepartamento.setCellValueFactory(new PropertyValueFactory<>("departamento"));
 
         TableColumn<ImplantacaoPacoteEtapa, Integer> colunaTempo = new TableColumn<>("Tempo(dias)");

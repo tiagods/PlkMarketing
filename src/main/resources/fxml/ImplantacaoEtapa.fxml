@@ -35,7 +35,16 @@
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin></Label>
-            <JFXTextField fx:id="txDescricao" />
+            <JFXTextField fx:id="txDescricao" prefHeight="25.0" prefWidth="200.0" promptText="(Cobrar Cliente,Receber,Validar)" />
+            <JFXButton fx:id="btnHelp" styleClass="btDefault" text="Ajuda">
+               <graphic>
+                  <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/button_help.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </JFXButton>
          </children>
       </HBox>
       <HBox prefHeight="50.0" prefWidth="600.0">

@@ -49,6 +49,12 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
         setCriadoPor(UsuarioLogado.getInstance().getUsuario());
     }
 
+    public ImplantacaoProcesso(){}
+
+    public ImplantacaoProcesso(Long id){
+        this.id = id;
+    }
+
     @Override
     public Long getId() {
         return id;
@@ -100,5 +106,15 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
 
     public void setEtapas(Set<ImplantacaoProcessoEtapa> etapas) {
         this.etapas = etapas;
+    }
+
+    @Override
+    public String toString() {
+        if (getId()==-1L)
+            return "Mostrar Todos";
+        else if(cliente==null)
+            return "Erro";
+        else
+            return cliente.getId()+" - "+cliente.getNome();
     }
 }

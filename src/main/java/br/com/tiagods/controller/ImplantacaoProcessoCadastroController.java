@@ -3,7 +3,6 @@ package br.com.tiagods.controller;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.Cliente;
-import br.com.tiagods.model.UsuarioDepartamento;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ClientesImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
@@ -11,7 +10,6 @@ import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -243,7 +241,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             processos = new ImplantacaoProcessosImpl(getManager());
             processo = processos.save(processo);
             preencherFormulario(processo);
-            alert(Alert.AlertType.ERROR,"Salvo","","Salvo com sucesso!",null,false);
+            alert(Alert.AlertType.INFORMATION,"Salvo","","Salvo com sucesso!",null,false);
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Ocorreu um erro ao tentar salvar",e,true);
         }finally {
