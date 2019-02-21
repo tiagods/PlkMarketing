@@ -48,6 +48,10 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     @Column(name = "data_liberacao")
     private Calendar dataLiberacao;
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "data_atualizacao")
+    private Calendar dataAtualizacao;
+
     public ImplantacaoProcessoEtapa(){}
 
     public ImplantacaoProcessoEtapa(ImplantacaoEtapa implantacaoEtapa,ImplantacaoProcesso processo){
@@ -60,6 +64,7 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
         if(etapa.getEtapa().equals(ImplantacaoEtapa.Etapa.PRIMEIRA)) {
             status = Status.ABERTO;
             setDataLiberacao(Calendar.getInstance());
+            setDataAtualizacao(Calendar.getInstance());
         }
         etapa.setCriadoEm(Calendar.getInstance());
         etapa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
@@ -105,4 +110,8 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     public void setDataLiberacao(Calendar dataLiberacao) {
         this.dataLiberacao = dataLiberacao;
     }
+
+    public Calendar getDataAtualizacao() { return dataAtualizacao; }
+
+    public void setDataAtualizacao(Calendar dataAtualizacao) { this.dataAtualizacao = dataAtualizacao; }
 }

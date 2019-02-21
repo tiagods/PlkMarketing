@@ -26,6 +26,8 @@ import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -105,12 +107,14 @@ public class MenuController extends UtilsController implements Initializable{
     private NegociosTarefasImpl tarefas;
     private NegocioPropostaImpl propostas;
     private ImplantacaoProcessosImpl processos;
+    private ImplantacaoProcessoEtapasImpl etapas;
+
 
     void atualizar(){
         try{
             listViewNegocios.getItems().clear();
-
             loadFactory();
+
             propostas = new NegocioPropostaImpl(getManager());
             tarefas = new NegociosTarefasImpl(getManager());
             contatos = new ContatosImpl(getManager());
@@ -200,13 +204,32 @@ public class MenuController extends UtilsController implements Initializable{
             txProtocoloPerfil.setText(""+list.size());
             txProtocoloTodos.setText(""+result.getKey().size());
 
-
             cbProcesso.getItems().clear();
             ImplantacaoProcesso pro = new ImplantacaoProcesso(-1L);
             cbProcesso.getItems().add(pro);
             cbProcesso.getSelectionModel().selectFirst();
             processos = new ImplantacaoProcessosImpl(getManager());
             cbProcesso.getItems().addAll(processos.listarAtivos());
+
+            cbProcesso.valueProperty().addListener((observable, oldValue, newValue) -> {
+                try{
+                    loadFactory();
+                    etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+                    tbProcesso.getItems().clear();
+                    tbProcesso.getItems().addAll(etapas.filtrar(null,cbProcesso.getValue()));
+                }catch (Exception e){
+                    alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
+                }finally {
+                    close();
+                }
+            });
+
+            TabelaProcessosEtapa tabelaProcessosEtapa = new TabelaProcessosEtapa(tbProcesso);
+            tabelaProcessosEtapa.tabela();
+
+            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            tbProcesso.getItems().clear();
+            tbProcesso.getItems().addAll(etapas.filtrar(null,cbProcesso.getValue()));
 
         }catch (Exception e){
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao atualizar","Falha ao atualizar registros do menu",e,true);

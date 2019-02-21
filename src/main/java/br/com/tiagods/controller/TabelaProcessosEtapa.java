@@ -65,22 +65,21 @@ public class TabelaProcessosEtapa extends UtilsController {
         });
         tbPrincipal.getColumns().add(colunaEtapa);
 
-        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaPrazo = new TableColumn<>("Data Liberaçao");
-        colunaPrazo.setCellValueFactory(new PropertyValueFactory<>("etapa"));
-        colunaPrazo.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
+        TableColumn<ImplantacaoProcessoEtapa, Calendar> colunaPrazo = new TableColumn<>("Prazo");
+        colunaPrazo.setCellValueFactory(new PropertyValueFactory<>("dataAtualizacao"));
+        colunaPrazo.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, Calendar> param) -> new TableCell<ImplantacaoProcessoEtapa, Calendar>() {
             @Override
-            protected void updateItem(ImplantacaoEtapa item, boolean empty) {
+            protected void updateItem(Calendar item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null) {
                     setText("");
                     setStyle("");
                 } else {
-                    setText("");
-
+                    setText(sdf.format(item.getTime()));
                 }
             }
         });
-        tbPrincipal.getColumns().add(colunaData);
+        tbPrincipal.getColumns().add(colunaPrazo);
 
         TableColumn<ImplantacaoProcessoEtapa, Number> colunaEditar = new  TableColumn<>("Historico");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -114,6 +113,5 @@ public class TabelaProcessosEtapa extends UtilsController {
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("Status");
         colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         tbPrincipal.getColumns().add(colunaStatus);
-
     }
 }

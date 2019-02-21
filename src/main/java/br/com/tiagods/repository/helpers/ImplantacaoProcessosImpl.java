@@ -24,6 +24,7 @@ public class ImplantacaoProcessosImpl extends AbstractRepository<ImplantacaoProc
         query.setParameter("id", id);
         return (ImplantacaoProcesso) query.getSingleResult();
     }
+
     @Override
     public List<ImplantacaoProcesso> listarAtivos(){
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcesso.class);

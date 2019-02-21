@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.List;
 
 public class ImplantacaoPacotesImpl extends AbstractRepository<ImplantacaoPacote,Long> implements ImplantacaoPacoteDAO {
 
@@ -24,6 +25,7 @@ public class ImplantacaoPacotesImpl extends AbstractRepository<ImplantacaoPacote
         query.setParameter("id", id);
         return (ImplantacaoPacote)query.getSingleResult();
     }
+
     @Override
     public ImplantacaoPacote findByNome(String nome) {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoPacote.class);

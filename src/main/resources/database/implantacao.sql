@@ -64,6 +64,7 @@ create table imp_pro_etapa(
 	descricao varchar,
 	finalizado boolean,
 	data_liberacao date,
+	data_atualizacao date,
 	atividade_id integer,
 	processo_id integer,
 	criado_em timestamp,

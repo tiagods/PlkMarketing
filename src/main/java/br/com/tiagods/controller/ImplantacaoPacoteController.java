@@ -77,6 +77,43 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
 
     }
 
+    private void combos(){
+        btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
+
+        btnNovaEtapa.setOnAction(event -> {
+            ImplantacaoPacote pacote = tbPacote.getSelectionModel().getSelectedItem();
+            if(pacote!=null) {
+                ImplantacaoPacoteEtapa etapa = new ImplantacaoPacoteEtapa();
+                etapa.setPacote(pacote);
+                cadastrarEtapa(false,-1,etapa);
+            }
+            else
+                alert(Alert.AlertType.ERROR,"Erro","Pacote não selecionado","Por favor, selecione um pacote e tente novamente",null, false);
+        });
+        tbPacote.getItems().addAll(pacotes.getAll());
+        tbPacote.setOnMouseClicked(event -> {
+            salvar();
+
+            ImplantacaoPacote pck = tbPacote.getSelectionModel().getSelectedItem();
+            if (pck != null) {
+                try {
+                    loadFactory();
+                    pacotes = new ImplantacaoPacotesImpl(getManager());
+                    pck = pacotes.findById(pck.getId());
+                    tbEtapa.getItems().addAll(pck.getEtapas());
+                    this.pacote = pck;
+                }catch (Exception e){
+                    alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
+                }finally {
+                    close();
+                }
+
+            }
+            else this.pacote = null;
+        });
+
+    }
+
     private void cadastrarPacote(int tableLocation,ImplantacaoPacote pacote){
         // Create the custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -159,32 +196,10 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
     public void initialize(URL location, ResourceBundle resources) {
         tabelaPacote();
         tabelaEtapa();
-
-        btnNovaEtapa.setOnAction(event -> {
-            ImplantacaoPacote pacote = tbPacote.getSelectionModel().getSelectedItem();
-            if(pacote!=null) {
-                ImplantacaoPacoteEtapa etapa = new ImplantacaoPacoteEtapa();
-                etapa.setPacote(pacote);
-                cadastrarEtapa(false,-1,etapa);
-            }
-            else
-                alert(Alert.AlertType.ERROR,"Erro","Pacote não selecionado","Por favor, selecione um pacote e tente novamente",null, false);
-        });
-        btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
-
         try {
             loadFactory();
             pacotes = new ImplantacaoPacotesImpl(getManager());
-            tbPacote.getItems().addAll(pacotes.getAll());
-            tbPacote.setOnMouseClicked(event -> {
-                tbEtapa.getItems().clear();
-                    ImplantacaoPacote pck = tbPacote.getSelectionModel().getSelectedItem();
-                    if (pck != null) {
-                        tbEtapa.getItems().addAll(pck.getEtapas());
-                        this.pacote = pck;
-                    }
-                    else this.pacote = null;
-            });
+            combos();
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","Erro ao listar registros","Ocorreu um erro ao listar os registros",e,true);
         }finally {
@@ -309,12 +324,16 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
 
     @FXML
     void salvar(ActionEvent event){
+        salvar();
+    }
+    void salvar(){
         try{
             loadFactory();
             pacotes = new ImplantacaoPacotesImpl(getManager());
             pacotes.saveAll(tbPacote.getItems());
             tbPacote.getItems().clear();
             tbPacote.getItems().addAll(pacotes.getAll());
+            tbEtapa.getItems().clear();
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
         }finally {

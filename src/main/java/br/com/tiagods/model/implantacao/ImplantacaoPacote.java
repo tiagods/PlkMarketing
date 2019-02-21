@@ -14,19 +14,24 @@ import java.util.Set;
 @Entity
 @Table(name = "imp_pacote")
 public class ImplantacaoPacote implements AbstractEntity,Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+
     @Column(columnDefinition = "text")
     private String descricao;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "criado_em")
     private Calendar criadoEm;
+
     @ManyToOne
     @JoinColumn(name = "criado_por_id")
     private Usuario criadoPor;
-    @OneToMany(mappedBy="pacote",cascade=CascadeType.ALL,fetch=FetchType.EAGER,orphanRemoval=true)
+
+    @OneToMany(mappedBy="pacote",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
     private Set<ImplantacaoPacoteEtapa> etapas = new HashSet<>();
 
     @PrePersist
