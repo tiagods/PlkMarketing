@@ -7,6 +7,7 @@ import java.net.URL;
 public enum IconsEnum {
 	BUTTON_ADD("button_add","Novo Registro"),
 	BUTTON_DEVOLVER("button_advance","Devolver"),
+	BUTTON_DEADLINE("button_deadline","Aguardando"),
 	BUTTON_DOWNLOAD("button_download","Baixar"),
 	BUTTON_EDIT("button_edit","Editar Registro"),
 	BUTTON_REMOVE("button_trash","Excluir"),
@@ -30,6 +31,8 @@ public enum IconsEnum {
 	BUTTON_NEGOCIO_FOLLOWUP("negocio_followup","Follow-Up"),
 	BUTTON_NEGOCIO_FECHAMENTO("negocio_fechamento","Fechamento"),
 	BUTTON_NEGOCIO_INDEFINIDA("negocio_question","Indefinida"),
+	BUTTON_VIEW("button_view","Consultar"),
+	BUTTON_UP("button_up","UP"),
 	MENU_CHECKLIST("menu_checklist","Abrir CheckList"),
 	MENU_CONTATO("button_people","Abrir Contatos"),
 	MENU_FRANQUIA("menu_franquia","Abrir Franquias"),

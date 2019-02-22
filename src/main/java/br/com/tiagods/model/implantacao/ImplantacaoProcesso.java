@@ -111,7 +111,7 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
     @Override
     public String toString() {
         if (getId()==-1L)
-            return "Mostrar Todos";
+            return "Todos";
         else if(cliente==null)
             return "Erro";
         else

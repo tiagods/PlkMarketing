@@ -1,5 +1,6 @@
 package br.com.tiagods.model.implantacao;
 
+import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.AbstractEntity;
 
@@ -14,13 +15,20 @@ import java.util.Set;
 public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
 
     public enum Status{
-        ABERTO("Pendente"),
-        CONCLUIDO("Concluido"),
-        AGUARDANDO_ANTERIOR("Aguardando Liberação");
+        ABERTO("Pendente",IconsEnum.BUTTON_OK),
+        CONCLUIDO("Concluido",IconsEnum.BUTTON_UP),
+        AGUARDANDO_ANTERIOR("Aguardando Liberação",IconsEnum.BUTTON_DEADLINE);
         private String descricao;
-        Status(String descricao){
+        private IconsEnum icon;
+        Status(String descricao,IconsEnum icon){
             this.descricao = descricao;
+            this.icon=icon;
         }
+
+        public IconsEnum getIcon() {
+            return icon;
+        }
+
         @Override
         public String toString() {
             return this.descricao;

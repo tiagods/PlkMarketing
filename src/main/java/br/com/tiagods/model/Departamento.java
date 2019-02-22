@@ -22,6 +22,11 @@ public class Departamento implements AbstractEntity,Serializable{
 	@Column(columnDefinition = "text")
 	private String email;
 
+	public Departamento(){}
+	public Departamento(Long id, String nome){
+		this.id = id;
+		this.nome= nome;
+	}
 	/**
 	 * @return the id
 	 */

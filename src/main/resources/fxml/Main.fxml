@@ -166,7 +166,16 @@
                                                       <Insets right="20.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <JFXComboBox fx:id="cbProcesso" prefHeight="25.0" prefWidth="160.0" />
+                                                <JFXComboBox fx:id="cbProcesso" prefHeight="25.0" prefWidth="160.0">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin></JFXComboBox>
+                                                <Label layoutX="230.0" layoutY="50.0" styleClass="label-card" text="Departamento:">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <JFXComboBox fx:id="cbProcessoDepartamento" layoutX="312.0" layoutY="48.0" prefHeight="25.0" prefWidth="160.0" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets bottom="10.0" left="10.0" top="10.0" />

@@ -19,7 +19,7 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
     public List<ImplantacaoProcessoEtapa> filtrar(Departamento departamento, ImplantacaoProcesso processo){
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcessoEtapa.class);
         if(departamento!=null && departamento.getId()!=-1L){
-            criteria.add(Restrictions.eq("departamento",departamento));
+            criteria.add(Restrictions.eq("etapa.departamento",departamento));
         }
         if(departamento!=null && processo.getId()!=-1L){
             criteria.add(Restrictions.eq("processo",processo));

@@ -30,8 +30,6 @@ public class TabelaProcessosEtapa extends UtilsController {
 
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcesso> colunaId = new TableColumn<>("*");
         colunaId.setCellValueFactory(new PropertyValueFactory<>("processo"));
-        tbPrincipal.getColumns().add(colunaId);
-
 
         TableColumn<ImplantacaoProcessoEtapa, Calendar> colunaData = new TableColumn<>("Data Liberaçao");
         colunaData.setCellValueFactory(new PropertyValueFactory<>("dataLiberacao"));
@@ -47,23 +45,6 @@ public class TabelaProcessosEtapa extends UtilsController {
                 }
             }
         });
-        tbPrincipal.getColumns().add(colunaData);
-
-        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaEtapa = new TableColumn<>("Etapa");
-        colunaEtapa.setCellValueFactory(new PropertyValueFactory<>("etapa"));
-        colunaEtapa.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
-            @Override
-            protected void updateItem(ImplantacaoEtapa item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null) {
-                    setText("");
-                    setStyle("");
-                } else {
-                    setText(item.getEtapa().toString());
-                }
-            }
-        });
-        tbPrincipal.getColumns().add(colunaEtapa);
 
         TableColumn<ImplantacaoProcessoEtapa, Calendar> colunaPrazo = new TableColumn<>("Prazo");
         colunaPrazo.setCellValueFactory(new PropertyValueFactory<>("dataAtualizacao"));
@@ -79,7 +60,21 @@ public class TabelaProcessosEtapa extends UtilsController {
                 }
             }
         });
-        tbPrincipal.getColumns().add(colunaPrazo);
+
+        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaEtapa = new TableColumn<>("Etapa");
+        colunaEtapa.setCellValueFactory(new PropertyValueFactory<>("etapa"));
+        colunaEtapa.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
+            @Override
+            protected void updateItem(ImplantacaoEtapa item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setText("");
+                    setStyle("");
+                } else {
+                    setText(item.getEtapa().toString());
+                }
+            }
+        });
 
         TableColumn<ImplantacaoProcessoEtapa, Number> colunaEditar = new  TableColumn<>("Historico");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -94,12 +89,48 @@ public class TabelaProcessosEtapa extends UtilsController {
                     setGraphic(null);
                 }
                 else{
+                    ImplantacaoProcessoEtapa ip = tbPrincipal.getItems().get(getIndex());
                     button.getStyleClass().add("btDefault");
+                    setGraphic(button);
                     try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
+                        if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
+                            buttonTable(button, IconsEnum.BUTTON_VIEW);
+                        else if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO))
+                            buttonTable(button, IconsEnum.BUTTON_EDIT);
+                        else setGraphic(null);
+                    }catch (IOException e) {}
+                    final Tooltip tooltip = new Tooltip("Clique para criar uma nota!");
+                    button.setTooltip(tooltip);
+                    button.setOnAction(event -> {
+                        //abrirCadastro(tbPrincipal.getItems().get(getIndex()));
+                    });
+                }
+            }
+        });
+
+        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("Status");
+        colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colunaStatus.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,ImplantacaoProcessoEtapa.Status>(){
+            JFXButton button = new JFXButton();
+            @Override
+            protected void updateItem(ImplantacaoProcessoEtapa.Status item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else{
+                    button.setDisable(item.equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO) ||
+                            item.equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR));
+
+                    button.getStyleClass().add("");
+                    try {
+                        buttonTable(button, item.getIcon());
                     }catch (IOException e) {
                     }
                     final Tooltip tooltip = new Tooltip("Clique para criar uma nota!");
+                    button.setText(item.toString());
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> {
                         //abrirCadastro(tbPrincipal.getItems().get(getIndex()));
@@ -108,10 +139,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                 }
             }
         });
-        tbPrincipal.getColumns().add(colunaEditar);
 
-        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("Status");
-        colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        tbPrincipal.getColumns().add(colunaStatus);
+        tbPrincipal.getColumns().addAll(colunaId,colunaData,colunaPrazo,colunaEtapa,colunaEditar,colunaStatus);
     }
 }
