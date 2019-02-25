@@ -11,6 +11,7 @@ public enum IconsEnum {
 	BUTTON_DOWNLOAD("button_download","Baixar"),
 	BUTTON_EDIT("button_edit","Editar Registro"),
 	BUTTON_REMOVE("button_trash","Excluir"),
+	BUTTON_RENAME("button_rename","Renomear"),
 	BUTTON_RETURN("button_return","Voltar"),
 	BUTTON_PROPOSTA("button_negocios","Negocio"),
 	BUTTON_EMPRESA("button_empresas","Empresa"),

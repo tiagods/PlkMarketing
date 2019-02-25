@@ -114,7 +114,10 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
             return "Todos";
         else if(cliente==null)
             return "Erro";
-        else
-            return cliente.getId()+" - "+cliente.getNome();
+        else {
+            String[] nome = cliente.getNome().split(" ");
+            String newNome = nome.length>=2?nome[0]+" "+nome[1]:cliente.getNome();
+            return cliente.getId() + " - " + newNome;
+        }
     }
 }

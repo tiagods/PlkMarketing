@@ -176,7 +176,7 @@ public class MenuController extends UtilsController implements Initializable{
                 loadFactory();
                 etapas = new ImplantacaoProcessoEtapasImpl(getManager());
                 tbProcesso.getItems().clear();
-                tbProcesso.getItems().addAll(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue()));
+                tbProcesso.getItems().addAll(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null));
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
             }finally {
@@ -334,13 +334,13 @@ public class MenuController extends UtilsController implements Initializable{
         miPacote.setOnAction(event -> {
             try {
                 Stage stage = new Stage();
-                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE);
+                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE_PESQUISA);
                 loader.setController(new ImplantacaoPacoteController(stage));
                 initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
                 onCloseRequest(stage);
             }catch(IOException e) {
                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                        "Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE,e,true);
+                        "Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE_PESQUISA,e,true);
             }
         });
         MenuItem miProcessos = new MenuItem("Processos");
@@ -438,7 +438,7 @@ public class MenuController extends UtilsController implements Initializable{
         tabelaProcessosEtapa.tabela();
 
         tbProcesso.getItems().clear();
-        tbProcesso.getItems().addAll(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue()));
+        tbProcesso.getItems().addAll(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null));
     }
     private void preencherProtocolos() throws Exception{
         JFXRadioButton rbComum = new JFXRadioButton();

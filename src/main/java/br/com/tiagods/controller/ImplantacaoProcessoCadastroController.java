@@ -92,7 +92,6 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
         }
-
     }
     private void combos(){
         txPacoteNome.setText("");
@@ -163,7 +162,13 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             }
         });
     }
-
+    private List<ImplantacaoProcessoEtapa> ordenar(ImplantacaoProcesso processo){
+        Comparator<ImplantacaoProcessoEtapa> comparator = Comparator.comparing(c->c.getEtapa().getAtividade().getNome());
+        List<ImplantacaoProcessoEtapa> etapas = new ArrayList<>();
+        etapas.addAll(processo.getEtapas());
+        Collections.sort(etapas,comparator.thenComparingInt(c->c.getEtapa().getEtapa().getValor()));
+        return etapas;
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -190,6 +195,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             ImplantacaoProcessoEtapa ipe = new ImplantacaoProcessoEtapa(et, processo);
             tbEtapa.getItems().add(ipe);
         }
+        processo.setEtapas(tbEtapa.getItems().stream().collect(Collectors.toSet()));
         btnCopiarAlterarPacote.setText(BotaoPacote.ALTERAR.toString());
         txPacoteNome.setText(pack.getNome());
     }
@@ -201,7 +207,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 null:
                 processo.getDataFinalizacao().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         tbEtapa.getItems().clear();
-        tbEtapa.getItems().addAll(processo.getEtapas());
+        tbEtapa.getItems().addAll(ordenar(processo));
         if(processo.getPacote()!=null){
             txPacoteNome.setText(processo.getPacote().getNome());
             btnCopiarAlterarPacote.setText(BotaoPacote.ALTERAR.toString());
@@ -345,6 +351,29 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
             }
         });
-        tbEtapa.getColumns().addAll(colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaEditar);
+        TableColumn<ImplantacaoProcessoEtapa, Long> colunaExcluir = new  TableColumn<>("");
+        colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaExcluir.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,Long>(){
+            JFXButton button = new JFXButton();//Editar
+            @Override
+            protected void updateItem(Long item, boolean empty) {
+                super.updateItem(item, empty);
+                if(empty){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else{
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_REMOVE);
+                    }catch (IOException e) {
+                    }
+                    button.setOnAction(event -> tbEtapa.getItems().remove(getIndex()));
+                    setGraphic(button);
+                }
+            }
+        });
+        tbEtapa.getColumns().addAll(colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaEditar,colunaExcluir);
     }
 }

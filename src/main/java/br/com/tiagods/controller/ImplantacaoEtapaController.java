@@ -96,7 +96,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                         .filter(c->c.getEtapa().getAtividade().getId()==cbAtividade.getValue().getId() && c.getEtapa().getEtapa().equals(cbEtapa.getValue()))
                         .findFirst();
                 if(result.isPresent()){
-                    if(result.get().getId() == ((ImplantacaoProcesso) object).getId() && edicao) aplicarESair();
+                    if(edicao) aplicarESair();
                     else alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
                             "Já foi informado um processo para Atividade:"+result.get().getEtapa().getAtividade()+"\n e Etapa:"+result.get().getEtapa()+"\nMude alguns dos parametros e tente novamente",null,false);
                 }

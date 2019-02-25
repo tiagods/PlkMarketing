@@ -32,8 +32,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ImplantacaoPacoteController extends UtilsController implements Initializable{
-
-
     @FXML
     private JFXButton btnCadastrarPacote;
 
@@ -58,9 +56,8 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
             ImplantacaoPacoteEtapaController controller = new ImplantacaoPacoteEtapaController(pck,stage);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event1 -> salvar());
         } catch (IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,ex,true);
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE_CADASTRO,ex,true);
         } catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
         } finally {
@@ -132,10 +129,12 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
         result.ifPresent(pair -> {
             pacote.setNome(pair.getKey());
             pacote.setDescricao(pair.getValue());
-            if(tableLocation==-1) tbPacote.getItems().addAll(pacote);
-            else
-                tbPacote.getItems().set(tableLocation, pacote);
-            salvar();
+            ImplantacaoPacote newPacote = salvar(pacote);
+            if(newPacote!=null) {
+                if (tableLocation == -1) tbPacote.getItems().addAll(pacote);
+                else
+                    tbPacote.getItems().set(tableLocation, pacote);
+            }
         });
     }
 
@@ -215,7 +214,7 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
                 else{
                     button.getStyleClass().add("btDefault");
                     try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
+                        buttonTable(button, IconsEnum.BUTTON_RENAME);
                     }catch (IOException e) {
                     }
                     button.setOnAction(event -> cadastrarPacote(getIndex(),tbPacote.getItems().get(getIndex())));
@@ -252,20 +251,15 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
         tbPacote.getColumns().addAll(colunaNome,colunaDescricao,colunaCriadoEm,colunaEditar,colunaEtapa);
         tbPacote.setFixedCellSize(50);
     }
-
-    @FXML
-    void salvar(ActionEvent event){
-        salvar();
-    }
-    void salvar(){
+    private ImplantacaoPacote salvar(ImplantacaoPacote pacote){
         try{
             loadFactory();
             pacotes = new ImplantacaoPacotesImpl(getManager());
-            pacotes.saveAll(tbPacote.getItems());
-            tbPacote.getItems().clear();
-            tbPacote.getItems().addAll(pacotes.getAll());
+            ImplantacaoPacote pck = pacotes.save(pacote);
+            return pck;
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
+            return null;
         }finally {
             close();
         }

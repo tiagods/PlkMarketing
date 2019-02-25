@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" styleClass="linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox prefHeight="46.0" prefWidth="600.0">
          <children>
@@ -29,10 +29,17 @@
          <children>
             <Label text="Pacote:" />
             <Label fx:id="txPacoteNome" alignment="CENTER" prefHeight="17.0" prefWidth="136.0" text="Nome do Pacote" />
-            <JFXButton fx:id="btnCopiarAlterarPacote" styleClass="btDefault" text="Copiar Pacote / Alterar Pacote" />
+            <JFXButton fx:id="btnCopiarAlterarPacote" styleClass="btDefault" text="Copiar Pacote / Alterar Pacote">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/button_retuitar.png" />
+                     </image>
+                  </ImageView>
+               </graphic></JFXButton>
          </children>
       </HBox>
-      <VBox alignment="TOP_RIGHT" prefHeight="262.0" prefWidth="600.0">
+      <VBox alignment="TOP_RIGHT" prefHeight="325.0" prefWidth="600.0">
          <children>
             <JFXButton fx:id="btnEtapa" styleClass="btDefault" text="Adicionar Etapa">
                <graphic>
@@ -42,7 +49,7 @@
                      </image>
                   </ImageView>
                </graphic></JFXButton>
-            <TableView fx:id="tbEtapa" prefHeight="238.0" prefWidth="600.0" />
+            <TableView fx:id="tbEtapa" prefHeight="289.0" prefWidth="600.0" />
          </children>
       </VBox>
       <HBox alignment="TOP_RIGHT" prefHeight="36.0" prefWidth="600.0">

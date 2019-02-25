@@ -28,10 +28,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ImplantacaoPacoteEtapaController extends UtilsController implements Initializable{
@@ -81,14 +78,17 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabelaEtapa();
-        tbEtapa.setSortPolicy(param -> {
-            Comparator<ImplantacaoPacoteEtapa> comparator = Comparator.comparing(c->c.getAtividade().getNome());
-            tbEtapa.getItems().sort(comparator.thenComparingInt(c->c.getEtapa().getValor()));
-            return true;
-        });
         combos();
+        tbEtapa.getItems().addAll(ordenar(pacote));
     }
 
+    private List<ImplantacaoPacoteEtapa> ordenar(ImplantacaoPacote pacote){
+        Comparator<ImplantacaoPacoteEtapa> comparator = Comparator.comparing(c->c.getAtividade().getNome());
+        List<ImplantacaoPacoteEtapa> etapas = new ArrayList<>();
+        etapas.addAll(pacote.getEtapas());
+        Collections.sort(etapas,comparator.thenComparingInt(c->c.getEtapa().getValor()));
+        return etapas;
+    }
     void tabelaEtapa(){
         TableColumn<ImplantacaoPacoteEtapa, ImplantacaoPacoteEtapa.Etapa> colunaNome = new TableColumn<>("Etapa");
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("etapa"));
@@ -165,7 +165,8 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
             pacotes = new ImplantacaoPacotesImpl(getManager());
             pacote = pacotes.save(pacote);
             tbEtapa.getItems().clear();
-            tbEtapa.getItems().addAll(pacote.getEtapas());
+            tbEtapa.getItems().addAll(ordenar(pacote));
+            alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!",null,false);
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
         }finally {

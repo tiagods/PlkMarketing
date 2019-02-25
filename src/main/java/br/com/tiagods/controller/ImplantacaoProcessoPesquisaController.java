@@ -115,7 +115,16 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
     }
 
     void filtrar(Paginacao paginacao){
-
+        try{
+            loadFactory();
+            processos = new ImplantacaoProcessosImpl(getManager());
+            tbPrincipal.getItems().clear();
+            tbPrincipal.getItems().addAll(processos.getAll());
+        }catch (Exception e){
+            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao buscar registros",e,true);
+        }finally {
+            close();
+        }
     }
 
     @Override
@@ -127,7 +136,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             tbPrincipal.getItems().clear();
             tbPrincipal.getItems().addAll(processos.getAll());
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao getAllFetchJoin registros",e,true);
+            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao buscar registros",e,true);
         }finally {
             close();
         }
