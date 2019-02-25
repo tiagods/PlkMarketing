@@ -44,6 +44,7 @@ create table imp_processo(
 	criado_em timestamp,
 	pacote_id integer,
 	status varchar,
+	finalizado boolean,
 	finalizado_em date,
 	primary key(id)
 );
@@ -95,3 +96,33 @@ alter table imp_pro_eta_status add constraint fk_processo_etapa_id foreign key (
 ALTER TABLE imp_pro_eta_status OWNER TO prolink;
 
 ALTER TABLE usuario_departamento add column email text;
+
+-- Copiando dados para a tabela public.imp_atividade: 0 rows
+/*!40000 ALTER TABLE "imp_atividade" DISABLE KEYS */;
+INSERT INTO "imp_atividade" ("id", "nome", "descricao") VALUES
+	(1, E'Ato Constitutivo', E''),
+	(2, E'Documentos dos Socios', E''),
+	(3, E'Comprovantes dos Socios', E''),
+	(4, E'Pis Socio e/ou Administrativo', E''),
+	(5, E'Habilitação NF-e PMSP', E''),
+	(6, E'Senha Posto Fiscal', E''),
+	(7, E'Senha Simples Nacional', E''),
+	(8, E'Perfil Fiscal Prefeitura', E''),
+	(9, E'Balanço e DRE', E''),
+	(10, E'Contas Patrimoniais', E''),
+	(11, E'Plano de Contas', E''),
+	(12, E'Balancete', E''),
+	(13, E'Folha de Pagamento', E''),
+	(14, E'Ficha de Funcionários', E''),
+	(15, E'CAGED', E''),
+	(16, E'Recisões', E''),
+	(17, E'Recibos de Férias', E''),
+	(18, E'Afastamentos', E''),
+	(19, E'Senha Receita Federal', E''),
+	(20, E'Termo de Responsabilidade Tecnica', E''),
+	(21, E'Senha do INSS', E'');
+/*!40000 ALTER TABLE "imp_atividade" ENABLE KEYS */;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

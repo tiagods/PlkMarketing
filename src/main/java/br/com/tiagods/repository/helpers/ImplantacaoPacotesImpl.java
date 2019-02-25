@@ -4,6 +4,7 @@ import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.ImplantacaoPacoteDAO;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -25,7 +26,6 @@ public class ImplantacaoPacotesImpl extends AbstractRepository<ImplantacaoPacote
         query.setParameter("id", id);
         return (ImplantacaoPacote)query.getSingleResult();
     }
-
     @Override
     public ImplantacaoPacote findByNome(String nome) {
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoPacote.class);

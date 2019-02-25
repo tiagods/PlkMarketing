@@ -128,7 +128,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
             }
         }catch (Exception e){
             alert(Alert.AlertType.ERROR, "Erro", null,
-                    "Falha ao listar os registros", e,true);
+                    "Falha ao getAllFetchJoin os registros", e,true);
             e.printStackTrace();
         }finally {
 		    close();

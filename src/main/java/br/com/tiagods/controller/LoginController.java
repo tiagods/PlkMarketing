@@ -90,7 +90,7 @@ public class LoginController extends UtilsController implements Initializable{
             lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
             
         }catch(Exception e) {
-            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
+            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao getAllFetchJoin Usuarios",e,true);
         }finally {
             close();
         }

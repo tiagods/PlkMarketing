@@ -47,7 +47,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 		try {
 			filtrar();
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
+			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao getAllFetchJoin clientes",e,true);
 		}
 	}
 	
@@ -107,7 +107,7 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,ConstantesTemporarias.pessoa_nome);
 			tbPrincipal.getItems().addAll(usuarioList);
 		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao listar clientes",e,true);
+			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao getAllFetchJoin clientes",e,true);
 			e.printStackTrace();
 		}finally {
 			super.close();

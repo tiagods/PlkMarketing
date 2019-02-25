@@ -417,7 +417,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 			loadFactory();
 			filtrar(paginacao);
 		} catch (Exception e) {
-			alert(AlertType.ERROR, "Error", "", "Erro ao listar registros", e, true);
+			alert(AlertType.ERROR, "Error", "", "Erro ao getAllFetchJoin registros", e, true);
 		} finally {
 			close();
 		}

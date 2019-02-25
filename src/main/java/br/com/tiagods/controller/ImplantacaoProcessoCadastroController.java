@@ -157,7 +157,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                     }
                 }
             }catch (Exception e){
-                alert(Alert.AlertType.ERROR,"Erro","Erro ao listar registros","Ocorreu um erro ao listar os registros",e,true);
+                alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","Ocorreu um erro ao getAllFetchJoin os registros",e,true);
             }finally {
                 close();
             }
@@ -176,7 +176,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             else
                 processo = new ImplantacaoProcesso();
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao listar registros","Ocorreu um erro ao listar os registros",e,true);
+            alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","Ocorreu um erro ao getAllFetchJoin os registros",e,true);
         }finally {
             close();
         }

@@ -33,85 +33,39 @@ import java.util.stream.Collectors;
 
 public class ImplantacaoPacoteController extends UtilsController implements Initializable{
 
-    @FXML
-    private TableView<ImplantacaoPacote> tbPacote;
-
-    @FXML
-    private TableView<ImplantacaoPacoteEtapa> tbEtapa;
 
     @FXML
     private JFXButton btnCadastrarPacote;
 
     @FXML
-    private JFXButton btnNovaEtapa;
+    private TableView<ImplantacaoPacote> tbPacote;
 
     private Stage stage;
 
     private ImplantacaoPacotesImpl pacotes;
 
-    private ImplantacaoPacote pacote;
-
     public ImplantacaoPacoteController(Stage stage) {
         this.stage=stage;
     }
 
-    void cadastrarEtapa(boolean editar, int tableLocation, ImplantacaoPacoteEtapa etapa){
+    private void cadastrarEtapas(ImplantacaoPacote pck){
         try {
+            loadFactory();
+            pacotes = new ImplantacaoPacotesImpl(getManager());
+            pck = pacotes.findById(pck.getId());
             Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_ETAPA);
-            ImplantacaoEtapaController controller = new ImplantacaoEtapaController(editar,etapa,pacote,stage);
+            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE_CADASTRO);
+            ImplantacaoPacoteEtapaController controller = new ImplantacaoPacoteEtapaController(pck,stage);
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-                ImplantacaoPacoteEtapa et = (ImplantacaoPacoteEtapa)controller.getEtapa();
-                if(et!=null && controller.isEtapaValida()) {
-                    if (tableLocation == -1) tbEtapa.getItems().add(et);
-                    else tbEtapa.getItems().set(tableLocation, et);
-                    pacote.setEtapas(tbEtapa.getItems().stream().collect(Collectors.toSet()));
-                    tbEtapa.refresh();
-                }
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
+            stage.setOnHiding(event1 -> salvar());
+        } catch (IOException ex) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,ex,true);
+        } catch (Exception e){
+            alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
+        } finally {
+            close();
         }
-
-    }
-
-    private void combos(){
-        btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
-
-        btnNovaEtapa.setOnAction(event -> {
-            ImplantacaoPacote pacote = tbPacote.getSelectionModel().getSelectedItem();
-            if(pacote!=null) {
-                ImplantacaoPacoteEtapa etapa = new ImplantacaoPacoteEtapa();
-                etapa.setPacote(pacote);
-                cadastrarEtapa(false,-1,etapa);
-            }
-            else
-                alert(Alert.AlertType.ERROR,"Erro","Pacote não selecionado","Por favor, selecione um pacote e tente novamente",null, false);
-        });
-        tbPacote.getItems().addAll(pacotes.getAll());
-        tbPacote.setOnMouseClicked(event -> {
-            salvar();
-
-            ImplantacaoPacote pck = tbPacote.getSelectionModel().getSelectedItem();
-            if (pck != null) {
-                try {
-                    loadFactory();
-                    pacotes = new ImplantacaoPacotesImpl(getManager());
-                    pck = pacotes.findById(pck.getId());
-                    tbEtapa.getItems().addAll(pck.getEtapas());
-                    this.pacote = pck;
-                }catch (Exception e){
-                    alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
-                }finally {
-                    close();
-                }
-
-            }
-            else this.pacote = null;
-        });
-
     }
 
     private void cadastrarPacote(int tableLocation,ImplantacaoPacote pacote){
@@ -165,10 +119,8 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
             }
         });
         dialog.getDialogPane().setContent(grid);
-
         // Request focus on the username field by default.
         Platform.runLater(() -> pacoteNome.requestFocus());
-
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == loginButtonType) {
@@ -180,77 +132,30 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
         result.ifPresent(pair -> {
             pacote.setNome(pair.getKey());
             pacote.setDescricao(pair.getValue());
-
             if(tableLocation==-1) tbPacote.getItems().addAll(pacote);
             else
                 tbPacote.getItems().set(tableLocation, pacote);
+            salvar();
+        });
+    }
 
-        });
-        tbEtapa.setSortPolicy(param -> {
-            Comparator<ImplantacaoPacoteEtapa> comparator = Comparator.comparing(c->c.getAtividade().getNome());
-            tbEtapa.getItems().sort(comparator.thenComparingInt(c->c.getEtapa().getValor()));
-            return true;
-        });
+    private void combos(){
+        btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
+        tbPacote.getItems().addAll(pacotes.getAll());
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabelaPacote();
-        tabelaEtapa();
         try {
             loadFactory();
             pacotes = new ImplantacaoPacotesImpl(getManager());
             combos();
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao listar registros","Ocorreu um erro ao listar os registros",e,true);
+            alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","Ocorreu um erro ao getAllFetchJoin os registros",e,true);
         }finally {
             close();
         }
     }
-
-    void tabelaEtapa(){
-        TableColumn<ImplantacaoPacoteEtapa, ImplantacaoPacoteEtapa.Etapa> colunaNome = new TableColumn<>("Etapa");
-        colunaNome.setCellValueFactory(new PropertyValueFactory<>("etapa"));
-
-        TableColumn<ImplantacaoPacoteEtapa, ImplantacaoAtividade> colunaAtividade = new TableColumn<>("Atividade");
-        colunaAtividade.setCellValueFactory(new PropertyValueFactory<>("atividade"));
-
-        TableColumn<ImplantacaoPacoteEtapa, ImplantacaoAtividade> colunaDescricao = new TableColumn<>("Descricao");
-        colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("descricao"));
-
-        TableColumn<ImplantacaoPacoteEtapa, Departamento> colunaDepartamento = new TableColumn<>("Departamento");
-        colunaDepartamento.setCellValueFactory(new PropertyValueFactory<>("departamento"));
-
-        TableColumn<ImplantacaoPacoteEtapa, Integer> colunaTempo = new TableColumn<>("Tempo(dias)");
-        colunaTempo.setCellValueFactory(new PropertyValueFactory<>("tempo"));
-
-        TableColumn<ImplantacaoPacoteEtapa, ImplantacaoEtapa.Etapa> colunaEditar = new  TableColumn<>("");
-        colunaEditar.setCellValueFactory(new PropertyValueFactory<>("etapa"));
-        colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoPacoteEtapa,ImplantacaoEtapa.Etapa>(){
-            JFXButton button = new JFXButton();//Editar
-            @Override
-            protected void updateItem(ImplantacaoEtapa.Etapa item, boolean empty) {
-                super.updateItem(item, empty);
-                if(item==null){
-                    setStyle("");
-                    setText("");
-                    setGraphic(null);
-                }
-                else{
-                    button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {
-                    }
-                    button.setOnAction(event -> cadastrarEtapa(true,getIndex(),tbEtapa.getItems().get(getIndex())));
-                    setGraphic(button);
-                }
-            }
-        });
-
-        tbEtapa.getColumns().addAll(colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaEditar);
-
-    }
-
     void tabelaPacote(){
         TableColumn<ImplantacaoPacote, String> colunaNome = new TableColumn<>("Nome");
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -294,6 +199,7 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
             }
         });
         colunaCriadoEm.setPrefWidth(120);
+
         TableColumn<ImplantacaoPacote, Number> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoPacote,Number>(){
@@ -317,8 +223,33 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
                 }
             }
         });
-
-        tbPacote.getColumns().addAll(colunaNome,colunaDescricao,colunaCriadoEm,colunaEditar);
+        TableColumn<ImplantacaoPacote, Number> colunaEtapa = new  TableColumn<>("");
+        colunaEtapa.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaEtapa.setCellFactory(param -> new TableCell<ImplantacaoPacote,Number>(){
+            JFXButton button = new JFXButton();//Editar
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else{
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_EDIT);
+                    }catch (IOException e) {
+                    }
+                    button.setOnAction(event -> {
+                        ImplantacaoPacote pck = tbPacote.getItems().get(getIndex());
+                        cadastrarEtapas(pck);
+                    });
+                    setGraphic(button);
+                }
+            }
+        });
+        tbPacote.getColumns().addAll(colunaNome,colunaDescricao,colunaCriadoEm,colunaEditar,colunaEtapa);
         tbPacote.setFixedCellSize(50);
     }
 
@@ -333,7 +264,6 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
             pacotes.saveAll(tbPacote.getItems());
             tbPacote.getItems().clear();
             tbPacote.getItems().addAll(pacotes.getAll());
-            tbEtapa.getItems().clear();
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
         }finally {

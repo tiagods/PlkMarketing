@@ -267,7 +267,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
             combos();
             if(etapa!=null) preencherFormulario(etapa);
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao listar registros","",e,true);
+            alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","",e,true);
         }finally {
             close();
         }

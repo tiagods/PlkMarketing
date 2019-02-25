@@ -127,7 +127,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             tbPrincipal.getItems().clear();
             tbPrincipal.getItems().addAll(processos.getAll());
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao listar registros",e,true);
+            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao getAllFetchJoin registros",e,true);
         }finally {
             close();
         }
