@@ -36,6 +36,9 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
     private JFXButton btnCadastrarPacote;
 
     @FXML
+    private JFXButton btnCopiaDePacote;
+
+    @FXML
     private TableView<ImplantacaoPacote> tbPacote;
 
     private Stage stage;
@@ -141,6 +144,52 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
     private void combos(){
         btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
         tbPacote.getItems().addAll(pacotes.getAll());
+
+        btnCopiaDePacote.setOnAction(event->{
+            if(tbPacote.getItems().size()<2) alert(Alert.AlertType.ERROR,"Erro","","Precisa ter no minimo 2 pacotes cadastrados no sistema",null, false);
+            else{
+                //ao realizar esse processo, todos os registros do pacote de destino serão removidos
+                List<ImplantacaoPacote> items = new ArrayList<>(tbPacote.getItems());
+                ImplantacaoPacote origem = Pacote1(items,"Primeiro, selecione a origem");
+                if(origem!=null){
+                    items.remove(origem);
+                    ImplantacaoPacote destino = Pacote1(items,"Agora selecione o destino");
+                    if(destino!=null){
+                        try{
+                            loadFactory();
+                            pacotes = new ImplantacaoPacotesImpl(getManager());
+                            origem = pacotes.findById(origem.getId());
+                            destino = pacotes.findById(destino.getId());
+                            Set<ImplantacaoPacoteEtapa> copiaOrigem = origem.getEtapas();
+                            Set<ImplantacaoPacoteEtapa> copiaDestino = new HashSet<>();
+                            copiaOrigem.forEach(c->{
+                                c.setId(null);
+                                c.setPacote(destino);
+                            });
+                            destino.setEtapas(copia);
+                            pacotes.save(destino);
+                        }catch (Exception e){
+                            alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
+                        } finally {
+                            close();
+                        }
+                    }
+                }
+
+            }
+        });
+    }
+
+    private ImplantacaoPacote Pacote1(List<ImplantacaoPacote> list, String header){
+        List<ImplantacaoPacote> choices = new ArrayList<>();
+        choices.addAll(list);
+        ChoiceDialog<ImplantacaoPacote> dialog = new ChoiceDialog<>(choices.get(0), choices);
+        dialog.setTitle("Copia de Pacotes");
+        dialog.setHeaderText(header);
+        dialog.setContentText("Escolha um pacote:");
+        Optional<ImplantacaoPacote> result = dialog.showAndWait();
+        if (result.isPresent()) return result.get();
+        else return null;
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
