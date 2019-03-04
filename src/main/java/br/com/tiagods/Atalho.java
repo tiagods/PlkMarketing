@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.controller.MenuController;
+import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.Usuario;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +23,11 @@ public class Atalho extends Application {
 		try {
 			Usuario u  = new Usuario();
 			u.setId(1L);			
-            UsuarioLogado.getInstance().setUsuario(u);      
+            Departamento departamento = new Departamento();
+            departamento.setId(1L);
+            departamento.setNome("Tecnologia");
+            u.setDepartamento(departamento);
+			UsuarioLogado.getInstance().setUsuario(u);
             Stage stage = new Stage();
             final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Main.fxml"));
             MenuController controller = new MenuController();
@@ -35,7 +40,6 @@ public class Atalho extends Application {
 	        stage.initStyle(StageStyle.TRANSPARENT);
             stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
             stage.show();
-
     	}catch (IOException ex) {
 		}
 	}

@@ -3,9 +3,15 @@ package br.com.tiagods.model.implantacao;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.AbstractEntity;
+import br.com.tiagods.util.CalculoDePeriodo;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,8 +21,8 @@ import java.util.Set;
 public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
 
     public enum Status{
-        ABERTO("Pendente",IconsEnum.BUTTON_OK),
-        CONCLUIDO("Concluido",IconsEnum.BUTTON_UP),
+        ABERTO("Pendente",IconsEnum.BUTTON_DOWNLOAD),
+        CONCLUIDO("Concluido",IconsEnum.BUTTON_OK),
         AGUARDANDO_ANTERIOR("Aguardando Liberação",IconsEnum.BUTTON_DEADLINE);
         private String descricao;
         private IconsEnum icon;
@@ -60,6 +66,16 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     @Column(name = "data_atualizacao")
     private Calendar dataAtualizacao;
 
+    @Transient
+    private Vencido vencido = Vencido.NO_PRAZO;
+
+    @Transient
+    private String statusVencimento="";
+
+    public enum Vencido{
+        PENDENTE,NO_PRAZO,VENCIDO,VENCE_HOJE
+    }
+
     public ImplantacaoProcessoEtapa(){}
 
     public ImplantacaoProcessoEtapa(ImplantacaoEtapa implantacaoEtapa,ImplantacaoProcesso processo){
@@ -77,7 +93,31 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
         etapa.setCriadoEm(Calendar.getInstance());
         etapa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
     }
-
+    @PostLoad
+    void load(){
+        if(getDataAtualizacao()==null) {
+            vencido = Vencido.PENDENTE;
+            return;
+        }
+        CalculoDePeriodo periodo = new CalculoDePeriodo();
+        LocalDate dataAtualizacao = getDataAtualizacao().getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate dataFim = dataAtualizacao.plusDays(getEtapa().getTempo());
+        LocalDate dataAgora = LocalDate.now();
+        Period period = Period.between(dataAgora, dataFim);
+        long p2 = ChronoUnit.DAYS.between(dataAgora, dataFim);
+        if(period.isZero()){
+            setStatusVencimento("Vence Hoje");
+            vencido = Vencido.VENCE_HOJE;
+        }
+        else if(period.isNegative()){
+            setStatusVencimento(periodo.getValue(CalculoDePeriodo.Tipo.DIA, -1*p2));
+            vencido = Vencido.VENCIDO;
+        }
+        else{
+            setStatusVencimento("No prazo ("+dataFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))+")");
+            vencido = Vencido.NO_PRAZO;
+        }
+    }
     @Override
     public Long getId() {
         return id;
@@ -122,4 +162,16 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     public Calendar getDataAtualizacao() { return dataAtualizacao; }
 
     public void setDataAtualizacao(Calendar dataAtualizacao) { this.dataAtualizacao = dataAtualizacao; }
+
+    public void setStatusVencimento(String statusVencimento) {
+        this.statusVencimento = statusVencimento;
+    }
+
+    public String getStatusVencimento() {
+        return statusVencimento;
+    }
+
+    public Vencido getVencido() {
+        return vencido;
+    }
 }

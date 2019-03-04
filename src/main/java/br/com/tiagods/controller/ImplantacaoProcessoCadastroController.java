@@ -6,6 +6,7 @@ import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ClientesImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -56,6 +57,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
     private ImplantacaoProcesso processo;
     private ImplantacaoProcessosImpl processos;
     private ImplantacaoPacotesImpl pacotes;
+    private ImplantacaoProcessoEtapasImpl etapas;
 
     public ImplantacaoProcessoCadastroController(Stage stage, ImplantacaoProcesso processo){
         this.stage=stage;
@@ -327,6 +329,31 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 else setText(""+item.getTempo());
             }
         });
+        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("*");
+        colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
+        colunaStatus.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,ImplantacaoProcessoEtapa.Status>(){
+            JFXButton button = new JFXButton();//Editar
+            @Override
+            protected void updateItem(ImplantacaoProcessoEtapa.Status item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null || empty){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else {
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, item.getIcon());
+                    }catch (IOException e) {
+                    }
+                    button.setFocusTraversable(false);
+                    Tooltip tooltip = new Tooltip(item.toString());
+                    button.setTooltip(tooltip);
+                    setGraphic(button);
+                }
+            }
+        });
 
         TableColumn<ImplantacaoProcessoEtapa, Long> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -374,6 +401,6 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
             }
         });
-        tbEtapa.getColumns().addAll(colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaEditar,colunaExcluir);
+        tbEtapa.getColumns().addAll(colunaStatus,colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaEditar,colunaExcluir);
     }
 }

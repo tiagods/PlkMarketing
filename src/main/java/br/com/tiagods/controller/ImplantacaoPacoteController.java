@@ -145,7 +145,9 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
         btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
         tbPacote.getItems().addAll(pacotes.getAll());
 
+        btnCopiaDePacote.setVisible(false);
         btnCopiaDePacote.setOnAction(event->{
+
             if(tbPacote.getItems().size()<2) alert(Alert.AlertType.ERROR,"Erro","","Precisa ter no minimo 2 pacotes cadastrados no sistema",null, false);
             else{
                 //ao realizar esse processo, todos os registros do pacote de destino serão removidos
@@ -162,12 +164,6 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
                             destino = pacotes.findById(destino.getId());
                             Set<ImplantacaoPacoteEtapa> copiaOrigem = origem.getEtapas();
                             Set<ImplantacaoPacoteEtapa> copiaDestino = new HashSet<>();
-                            copiaOrigem.forEach(c->{
-                                c.setId(null);
-                                c.setPacote(destino);
-                            });
-                            destino.setEtapas(copia);
-                            pacotes.save(destino);
                         }catch (Exception e){
                             alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
                         } finally {

@@ -43,6 +43,13 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
     @OneToMany(mappedBy="processo",cascade=CascadeType.ALL,fetch=FetchType.LAZY,orphanRemoval=true)
     private Set<ImplantacaoProcessoEtapa> etapas = new HashSet<>();
 
+    @Transient
+    private Status status = Status.PENDENTE;
+
+    public enum Status{
+        PENDENTE,CONCLUIDO
+    }
+
     @PrePersist
     void prePersist(){
         setCriadoEm(Calendar.getInstance());
@@ -119,5 +126,8 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
             String newNome = nome.length>=2?nome[0]+" "+nome[1]:cliente.getNome();
             return cliente.getId() + " - " + newNome;
         }
+    }
+    public Status getStatus() {
+        return status;
     }
 }

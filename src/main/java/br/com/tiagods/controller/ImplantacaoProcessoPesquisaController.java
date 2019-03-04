@@ -8,6 +8,7 @@ import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ClientesImpl;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -48,20 +49,19 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
 
     private ImplantacaoProcessosImpl processos;
 
-    private Stage stage;
+    private ImplantacaoProcessoEtapasImpl etapas;
 
+    private Stage stage;
 
     public ImplantacaoProcessoPesquisaController(Stage stage){
         this.stage = stage;
     }
 
-
     void abrirCadastro(ImplantacaoProcesso t){
         try {
             loadFactory();
-
+            processos = new ImplantacaoProcessosImpl(getManager());
             if(t!=null) {
-                processos = new ImplantacaoProcessosImpl(getManager());
                 t = processos.findById(t.getId());
             }
             Stage stage = new Stage();
@@ -69,14 +69,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             loader.setController(new ImplantacaoProcessoCadastroController(stage,t));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
-                try {
-                    loadFactory();
-                    filtrar(this.paginacao);
-                }catch(Exception e) {
-                    e.printStackTrace();
-                }finally {
-                    close();
-                }
+                invocarFiltro();
             });
 
         }catch(IOException e) {
@@ -87,8 +80,9 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         }
 
     }
-
-
+    void combos(){
+        tggFinalizado.selectedProperty().addListener(event->invocarFiltro());
+    }
     boolean excluir(ImplantacaoProcesso n){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Exclusão...");
@@ -113,34 +107,30 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         }
         else return false;
     }
-
     void filtrar(Paginacao paginacao){
-        try{
-            loadFactory();
-            processos = new ImplantacaoProcessosImpl(getManager());
-            tbPrincipal.getItems().clear();
-            tbPrincipal.getItems().addAll(processos.getAll());
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao buscar registros",e,true);
-        }finally {
-            close();
-        }
+        tbPrincipal.getItems().clear();
+        List<ImplantacaoProcesso> list = processos.listarAtivos(tggFinalizado.isSelected());
+        list.forEach(c-> c=processos.findById(c.getId()));
+        tbPrincipal.getItems().addAll(list);
     }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabela();
+        combos();
+        invocarFiltro();
+    }
+    void invocarFiltro(){
         try{
             loadFactory();
             processos = new ImplantacaoProcessosImpl(getManager());
-            tbPrincipal.getItems().clear();
-            tbPrincipal.getItems().addAll(processos.getAll());
+            filtrar(this.paginacao);
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao buscar registros",e,true);
         }finally {
             close();
         }
     }
+
     @FXML
     void novo(ActionEvent event) {
         abrirCadastro(null);
@@ -274,6 +264,31 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         });
         colunaStatus.setPrefWidth(100);
 
+        TableColumn<ImplantacaoProcesso, Number> colunaPendentes = new  TableColumn<>("");
+        colunaPendentes.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaPendentes.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
+            JFXButton button = new JFXButton();//Editar
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else{
+                    Set<ImplantacaoProcessoEtapa> etapaSet = tbPrincipal.getItems().get(getIndex()).getEtapas();
+                    int valor = 0;
+                    int size = etapaSet.size();
+                    for(ImplantacaoProcessoEtapa e : etapaSet){
+                        if(e.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO)) valor++;
+                    }
+                    if(size==0) setText("Nenhuma Etapa foi Encontrada");
+                    else setText(valor+" de "+size+" Etapas Concluidas");
+                }
+            }
+        });
+
         TableColumn<ImplantacaoProcesso, Number> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
@@ -299,6 +314,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             }
         });
         colunaEditar.setMaxWidth(50);
+
         TableColumn<ImplantacaoProcesso, Number> colunaExcluir = new  TableColumn<>("");
         colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaExcluir.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
@@ -328,7 +344,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             }
         });
         colunaExcluir.setMaxWidth(50);
-        tbPrincipal.getColumns().addAll(colunaData,colunaCliente,colunaStatus,colunaEditar,colunaExcluir);
+        tbPrincipal.getColumns().addAll(colunaData,colunaCliente,colunaStatus,colunaPendentes,colunaEditar,colunaExcluir);
         tbPrincipal.setTableMenuButtonVisible(true);
         tbPrincipal.setFixedCellSize(70);
     }

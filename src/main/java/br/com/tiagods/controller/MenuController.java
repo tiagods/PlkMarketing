@@ -176,7 +176,8 @@ public class MenuController extends UtilsController implements Initializable{
                 loadFactory();
                 etapas = new ImplantacaoProcessoEtapasImpl(getManager());
                 tbProcesso.getItems().clear();
-                tbProcesso.getItems().addAll(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null));
+                List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null));
+                tbProcesso.getItems().addAll(list);
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
             }finally {
@@ -425,12 +426,12 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcesso.getItems().add(pro);
         cbProcesso.getSelectionModel().selectFirst();
 
-        cbProcesso.getItems().addAll(processos.listarAtivos());
+        cbProcesso.getItems().addAll(processos.listarAtivos(false));
 
         cbProcessoDepartamento.getItems().clear();
         Departamento departamento = new Departamento(-1L,"Todos");
         cbProcessoDepartamento.getItems().add(departamento);
-        cbProcessoDepartamento.getSelectionModel().selectFirst();
+        cbProcessoDepartamento.setValue(UsuarioLogado.getInstance().getUsuario().getDepartamento());
 
         cbProcessoDepartamento.getItems().addAll(departamentos.getAllByName());
 
@@ -438,7 +439,13 @@ public class MenuController extends UtilsController implements Initializable{
         tabelaProcessosEtapa.tabela();
 
         tbProcesso.getItems().clear();
-        tbProcesso.getItems().addAll(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null));
+        List<ImplantacaoProcessoEtapa> etapaList = etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null);
+        tbProcesso.getItems().addAll(ordenar(etapaList));
+    }
+    private List<ImplantacaoProcessoEtapa> ordenar(List<ImplantacaoProcessoEtapa> lista){
+        Comparator<ImplantacaoProcessoEtapa> comparator = Comparator.comparing(c->c.getEtapa().getAtividade().getNome());
+        Collections.sort(lista,comparator.thenComparingInt(c->c.getEtapa().getEtapa().getValor()));
+        return lista;
     }
     private void preencherProtocolos() throws Exception{
         JFXRadioButton rbComum = new JFXRadioButton();

@@ -9,6 +9,5 @@ public interface ImplantacaoProcessoDAO {
     void remove(ImplantacaoProcesso i);
     List<ImplantacaoProcesso> getAll();
     ImplantacaoProcesso findByNome(String nome);
-
-    List<ImplantacaoProcesso> listarAtivos();
+    List<ImplantacaoProcesso> listarAtivos(boolean finalizado);
 }

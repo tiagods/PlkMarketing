@@ -1,6 +1,7 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
@@ -139,6 +140,10 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
                 }
             }
         });
+
+        TableColumn<ImplantacaoProcessoEtapaStatus, Usuario> colunaResponsavel = new TableColumn<>("Responsavel");
+        colunaResponsavel.setCellValueFactory(new PropertyValueFactory<>("criadoPor"));
+
         TableColumn<ImplantacaoProcessoEtapaStatus, Number> colunaEditar = new TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapaStatus,Number>(){
@@ -170,6 +175,6 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
         });
         colunaDescricao.setPrefWidth(200);
         tbPrincipal.setFixedCellSize(50);
-        tbPrincipal.getColumns().addAll(colunaData,colunaDescricao,colunaEditar);
+        tbPrincipal.getColumns().addAll(colunaData,colunaDescricao,colunaResponsavel,colunaEditar);
     }
 }
