@@ -38,10 +38,12 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
     private Stage stage;
     private ImplantacaoProcessoEtapa etapa;
     private ImplantacaoProcessoEtapasImpl etapas;
+    private boolean editar;
 
-    public ImplantacaoEtapaStatusController(ImplantacaoProcessoEtapa etapa, Stage stage){
+    public ImplantacaoEtapaStatusController(ImplantacaoProcessoEtapa etapa, Stage stage, boolean editar){
         this.etapa=etapa;
         this.stage=stage;
+        this.editar=editar;
     }
     private void cadastrar(int localizacao,ImplantacaoProcessoEtapaStatus status){
         TextInputDialog dialog = new TextInputDialog(status.getDescricao());
@@ -76,9 +78,8 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
         }
     }
     private void combos(){
-        if(etapa.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO) || etapa.getStatus().equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR)){
+        if(!editar)
             btnCadastrar.setDisable(true);
-        }
         else{
             btnCadastrar.setOnAction(event -> {
                 cadastrar(-1,new ImplantacaoProcessoEtapaStatus());
@@ -168,8 +169,7 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
                         cadastrar(getIndex(),ip);
                     });
                     setGraphic(button);
-                    button.setDisable(etapa.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO)
-                            || etapa.getStatus().equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR));
+                    button.setDisable(!editar);
                 }
             }
         });

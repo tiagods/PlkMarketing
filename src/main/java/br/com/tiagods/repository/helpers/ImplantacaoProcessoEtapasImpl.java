@@ -42,6 +42,8 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         if(etapa!=null){
             criteria.add(Restrictions.eq("etapa.etapa",etapa));
         }
+        criteria.createAlias("processo","pro");
+        criteria.add(Restrictions.eq("pro.finalizado",false));
         return criteria.list();
     }
 }

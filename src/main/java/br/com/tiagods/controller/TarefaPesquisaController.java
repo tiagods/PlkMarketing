@@ -414,7 +414,6 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		}catch (IOException e){
 			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
 		}
-    	
     }
     private List<NegocioTarefa> filtrar(Paginacao paginacao) {
     	tarefas = new NegociosTarefasImpl(getManager());

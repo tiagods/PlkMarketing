@@ -95,6 +95,25 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
         }
     }
+    private void consultarHistorico(ImplantacaoProcessoEtapa etapa, int index,boolean editar){
+        try {
+            loadFactory();
+            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            etapa = etapas.findById(etapa.getId());
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);
+            ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa,stage,editar);
+            loader.setController(controller);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+        } catch (IOException ex) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao localizar o arquivo " + FXMLEnum.IMPLANTACAO_ETAPA_STATUS, ex, true);
+        }catch (Exception e){
+            alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
+        }
+        finally {
+            close();
+        }
+    }
     private void combos(){
         txPacoteNome.setText("");
         btnEtapa.setOnAction(event -> {
@@ -332,7 +351,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("*");
         colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colunaStatus.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,ImplantacaoProcessoEtapa.Status>(){
-            JFXButton button = new JFXButton();//Editar
+            JFXButton button = new JFXButton();
             @Override
             protected void updateItem(ImplantacaoProcessoEtapa.Status item, boolean empty) {
                 super.updateItem(item, empty);
@@ -354,11 +373,37 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
             }
         });
-
+        TableColumn<ImplantacaoProcessoEtapa, Number> colunaHistorico= new  TableColumn<>("Historico");
+        colunaHistorico.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaHistorico.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,Number>(){
+            JFXButton button = new JFXButton();//Editar
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else{
+                    ImplantacaoProcessoEtapa ip = tbEtapa.getItems().get(getIndex());
+                    button.getStyleClass().add("btDefault");
+                    setGraphic(button);
+                    try {
+                        if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO) || ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
+                            buttonTable(button, IconsEnum.BUTTON_VIEW);
+                        else setGraphic(null);
+                    }catch (IOException e) {}
+                    final Tooltip tooltip = new Tooltip("Ver Historico!");
+                    button.setTooltip(tooltip);
+                    button.setOnAction(event -> consultarHistorico(ip,getIndex(),false));
+                }
+            }
+        });
         TableColumn<ImplantacaoProcessoEtapa, Long> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,Long>(){
-            JFXButton button = new JFXButton();//Editar
+            JFXButton button = new JFXButton();
             @Override
             protected void updateItem(Long item, boolean empty) {
                 super.updateItem(item, empty);
@@ -401,6 +446,6 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
             }
         });
-        tbEtapa.getColumns().addAll(colunaStatus,colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaEditar,colunaExcluir);
+        tbEtapa.getColumns().addAll(colunaNome,colunaAtividade,colunaDescricao,colunaDepartamento,colunaTempo,colunaStatus,colunaHistorico,colunaEditar,colunaExcluir);
     }
 }

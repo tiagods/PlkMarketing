@@ -28,7 +28,7 @@ public class ImplantacaoProcessosImpl extends AbstractRepository<ImplantacaoProc
     @Override
     public List<ImplantacaoProcesso> listarAtivos(boolean finalizado){
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcesso.class);
-        if(finalizado)
+        if(!finalizado)
             criteria.add(Restrictions.eq("finalizado",false));
         return criteria.list();
     }

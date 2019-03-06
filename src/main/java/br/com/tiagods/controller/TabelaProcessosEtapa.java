@@ -37,12 +37,12 @@ public class TabelaProcessosEtapa extends UtilsController {
         this.tbPrincipal=tbPrincipal;
     }
 
-        private void cadastrarEtapas(ImplantacaoProcessoEtapa etapa, int index){
+        private void cadastrarEtapas(ImplantacaoProcessoEtapa etapa, int index,boolean editar){
             try {
                 Stage stage = new Stage();
                 FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);
                 ImplantacaoProcessoEtapa etapa2 = recarregar(etapa);
-                ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa2,stage);
+                ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa2,stage,editar);
                 loader.setController(controller);
                 initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
                 stage.setOnHiding(event->{
@@ -201,7 +201,7 @@ public class TabelaProcessosEtapa extends UtilsController {
         TableColumn<ImplantacaoProcessoEtapa, Number> colunaEditar = new  TableColumn<>("Historico");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,Number>(){
-            JFXButton button = new JFXButton();//Editar
+            JFXButton button = new JFXButton();
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -223,13 +223,10 @@ public class TabelaProcessosEtapa extends UtilsController {
                     }catch (IOException e) {}
                     final Tooltip tooltip = new Tooltip("Clique para criar uma nota!");
                     button.setTooltip(tooltip);
-                    button.setOnAction(event -> {
-                        cadastrarEtapas(ip,getIndex());
-                    });
+                    button.setOnAction(event -> cadastrarEtapas(ip,getIndex(),ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO)));
                 }
             }
         });
-
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("Status");
         colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colunaStatus.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,ImplantacaoProcessoEtapa.Status>(){

@@ -10,16 +10,17 @@ import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ClientesImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXRadioButton;
-import com.jfoenix.controls.JFXToggleButton;
+import br.com.tiagods.util.ExcelGenerico;
+import com.jfoenix.controls.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -28,9 +29,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.fxutils.maskedtextfield.MaskTextField;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class ImplantacaoProcessoPesquisaController extends UtilsController implements Initializable {
     @FXML
@@ -107,11 +112,94 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         }
         else return false;
     }
-    void filtrar(Paginacao paginacao){
+    @FXML
+    void exportar(ActionEvent event){
+
+        try {
+            FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+            Alert progress = new Alert(Alert.AlertType.INFORMATION);
+            progress.setHeaderText("");
+            DialogPane dialogPane = new DialogPane();
+            dialogPane.setContent(loader.load());
+            progress.setDialogPane(dialogPane);
+            Stage sta = (Stage) dialogPane.getScene().getWindow();
+
+            Task<Void> run = new Task<Void>() {
+                {
+                    setOnFailed(a ->sta.close());
+                    setOnSucceeded(a ->sta.close());
+                    setOnCancelled(a ->sta.close());
+                }
+                @Override
+                protected Void call() {
+                    File export = salvarTemp("xls");
+                    Platform.runLater(() -> sta.show());
+                    ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+                    Integer[] colunasLenght = new Integer[] { 10, 20,20,10,20,20,10,20,20,20};
+                    String[] cabecalho = new String[] {"Processo","Data","Cliente_Apelido","Cliente_Nome","Cliente_Status",
+                            "Finalizado","Data_Finalizacao","Progresso_Atual","Etapas_Concluidas","Total_Etapas"
+                    };
+                    listaImpressao.add(new ArrayList<>());
+                    for (String c : cabecalho) {
+                        listaImpressao.get(0).add(c);
+                    }
+                    try {
+
+                        loadFactory();
+                        processos = new ImplantacaoProcessosImpl(getManager());
+                        List<ImplantacaoProcesso> list = filtrar(null);
+                        for (int i = 1; i <= list.size(); i++) {
+                            listaImpressao.add(new ArrayList<String>());
+                            ImplantacaoProcesso c = list.get(i-1);
+
+                        }
+                        ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao, colunasLenght);
+                        planilha.gerarExcel();
+                        salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
+                        Platform.runLater(() ->alert(Alert.AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
+                        Desktop.getDesktop().open(export);
+                    } catch (Exception e1) {
+                        Platform.runLater(() ->alert(Alert.AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
+                    } finally {
+                        close();
+                    }
+                    return null;
+                }
+
+            };
+            if (tbPrincipal.getItems().size() >= 1) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Exportação");
+                alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
+                ButtonType ok = new ButtonType("Exportar e Abrir");
+                ButtonType cancelar = new ButtonType("Cancelar");
+                alert.getButtonTypes().clear();
+                alert.getButtonTypes().addAll(ok, cancelar);
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ok) {
+                    Thread thread = new Thread(run);
+                    thread.start();
+                    sta.setOnCloseRequest(ae -> {
+                        try {
+                            thread.interrupt();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            } else {
+                alert(Alert.AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
+            }
+        }catch (IOException e){
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+        }
+    }
+    private List<ImplantacaoProcesso> filtrar(Paginacao paginacao){
         tbPrincipal.getItems().clear();
         List<ImplantacaoProcesso> list = processos.listarAtivos(tggFinalizado.isSelected());
         list.forEach(c-> c=processos.findById(c.getId()));
         tbPrincipal.getItems().addAll(list);
+        return list;
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -163,7 +251,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnId.setPrefWidth(40);
 
-        TableColumn<ImplantacaoProcesso, Calendar> colunaData = new  TableColumn<>("Prazo");
+        TableColumn<ImplantacaoProcesso, Calendar> colunaData = new  TableColumn<>("Data");
         colunaData.setCellValueFactory(new PropertyValueFactory<>("criadoEm"));
         colunaData.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Calendar>(){
             @Override
@@ -181,7 +269,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         });
         colunaData.setPrefWidth(130);
 
-        TableColumn<ImplantacaoProcesso, Cliente> colunaCliente = new  TableColumn<>("Prazo");
+        TableColumn<ImplantacaoProcesso, Cliente> colunaCliente = new  TableColumn<>("Cliente");
         colunaCliente.setCellValueFactory(new PropertyValueFactory<>("cliente"));
         colunaCliente.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Cliente>(){
             @Override
@@ -236,7 +324,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
                             stackPane.getChildren().add(jfxRadioButton);
                             map.put(jfxRadioButton,i==1);
                         }
-                        ButtonType ok = new ButtonType("Alterar");
+                        ButtonType ok = new ButtonType("Salvar");
                         ButtonType cancelar = new ButtonType("Cancelar");
                         dialog.getDialogPane().getButtonTypes().addAll(ok,cancelar);
                         dialog.getDialogPane().setContent(stackPane);
@@ -267,7 +355,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         TableColumn<ImplantacaoProcesso, Number> colunaPendentes = new  TableColumn<>("");
         colunaPendentes.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaPendentes.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
-            JFXButton button = new JFXButton();//Editar
+            JFXSpinner spinner = new JFXSpinner();
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -278,13 +366,18 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
                 }
                 else{
                     Set<ImplantacaoProcessoEtapa> etapaSet = tbPrincipal.getItems().get(getIndex()).getEtapas();
-                    int valor = 0;
-                    int size = etapaSet.size();
+                    double valor = 0;
+                    double size = etapaSet.size();
                     for(ImplantacaoProcessoEtapa e : etapaSet){
                         if(e.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO)) valor++;
                     }
                     if(size==0) setText("Nenhuma Etapa foi Encontrada");
-                    else setText(valor+" de "+size+" Etapas Concluidas");
+                    else {
+                        double percent = valor/size;
+                        spinner.setProgress(percent);
+                        setGraphic(spinner);
+                        setText((int)valor+" de "+(int)size+" Etapas Concluidas");
+                    }
                 }
             }
         });
