@@ -163,6 +163,8 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
         try{
             loadFactory();
             pacotes = new ImplantacaoPacotesImpl(getManager());
+            Set<ImplantacaoPacoteEtapa> pacoteEtapas = tbEtapa.getItems().stream().collect(Collectors.toSet());
+            pacote.setEtapas(pacoteEtapas);
             pacote = pacotes.save(pacote);
             tbEtapa.getItems().clear();
             tbEtapa.getItems().addAll(ordenar(pacote));

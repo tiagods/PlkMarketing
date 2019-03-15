@@ -7,6 +7,7 @@ import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.util.CalculoDePeriodo;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextArea;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -149,6 +150,11 @@ public class TabelaProcessosEtapa extends UtilsController {
                 } else {
                     ImplantacaoProcessoEtapa processoEtapa = tbPrincipal.getItems().get(getIndex());
                     setText(processoEtapa.getStatusVencimento());
+                    if(processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.VENCIDO))
+                        setStyle("-fx-background-color: red; -fx-text-fill: white;");
+                    else if(processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.NO_PRAZO))
+                        setStyle("-fx-background-color: green; -fx-text-fill: white;");
+                    else setStyle("");
                 }
             }
         });
@@ -171,37 +177,44 @@ public class TabelaProcessosEtapa extends UtilsController {
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaAtividade = new TableColumn<>("Atividade");
         colunaAtividade.setCellValueFactory(new PropertyValueFactory<>("etapa"));
         colunaAtividade.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
+            final JFXTextArea area = new JFXTextArea();
             @Override
             protected void updateItem(ImplantacaoEtapa item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
-                    setText(item.getAtividade().toString());
+                    area.setText(item.getAtividade().toString());
+                    setGraphic(area);
                 }
             }
         });
-
-        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaDescricao = new TableColumn<>("Descricao");
+        colunaAtividade.setPrefWidth(150);
+        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaDescricao = new TableColumn<>("O que devo fazer?");
         colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("etapa"));
         colunaDescricao.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
+            final JFXTextArea area = new JFXTextArea();
             @Override
             protected void updateItem(ImplantacaoEtapa item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
-                    setText(item.getDescricao());
+                    area.setText(item.getDescricao());
+                    setGraphic(area);
                 }
             }
         });
+        colunaDescricao.setPrefWidth(150);
 
         TableColumn<ImplantacaoProcessoEtapa, Number> colunaEditar = new  TableColumn<>("Historico");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,Number>(){
-            JFXButton button = new JFXButton();
+            final JFXButton button = new JFXButton();
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -246,10 +259,9 @@ public class TabelaProcessosEtapa extends UtilsController {
                     button.getStyleClass().add("");
                     try {
                         buttonTable(button, item.getIcon());
-                    }catch (IOException e) {
-                    }
+                    }catch (IOException e) {}
                     final Tooltip tooltip = new Tooltip("Clique para encerrar essa etapa");
-                    button.setText(item.toString());
+                    button.setText(item.equals(ImplantacaoProcessoEtapa.Status.ABERTO)?"Baixar":item.toString());
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> {
                         TextInputDialog dialog = new TextInputDialog("");
@@ -259,14 +271,15 @@ public class TabelaProcessosEtapa extends UtilsController {
                         Optional<String> result = dialog.showAndWait();
                         if (result.isPresent()){
                             if(salvarEConcluir(result.get(),ip))
-                                tbPrincipal.getItems().remove(getIndex());
+                                tbPrincipal.getItems().remove(ip);
                         }
                     });
                     setGraphic(button);
                 }
             }
         });
-
+        colunaStatus.setPrefWidth(200);
+        tbPrincipal.setFixedCellSize(70);
         tbPrincipal.getColumns().addAll(colunaId,colunaData,colunaPrazo,colunaEtapa,colunaAtividade,colunaDescricao,colunaEditar,colunaStatus);
     }
 }

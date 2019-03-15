@@ -385,7 +385,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         TableColumn<ImplantacaoProcesso, Number> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
-            JFXButton button = new JFXButton();//Editar
+            JFXButton button = new JFXButton();
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);

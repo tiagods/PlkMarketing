@@ -212,6 +212,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                 else if(res.isEmpty()) {
                     cbEtapa.getItems().clear();
                     cbEtapa.getItems().add(ImplantacaoEtapa.Etapa.PRIMEIRA);
+                    cbEtapa.getSelectionModel().select(ImplantacaoEtapa.Etapa.PRIMEIRA);
                 }
                 else{
                     for(ImplantacaoEtapa.Etapa e : ImplantacaoEtapa.Etapa.values()){
@@ -225,7 +226,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                     }
                 }
             }
-            if(object instanceof ImplantacaoProcesso){
+            else if(object instanceof ImplantacaoProcesso){
                 Set<ImplantacaoProcessoEtapa> etapaSet = ((ImplantacaoProcesso) object).getEtapas();
                 List<ImplantacaoProcessoEtapa> res = etapaSet.stream()
                         .filter(c->c.getEtapa().getAtividade().getId()==newValue.getId()).collect(Collectors.toList());
@@ -237,6 +238,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                 else if(res.isEmpty()) {
                     cbEtapa.getItems().clear();
                     cbEtapa.getItems().add(ImplantacaoEtapa.Etapa.PRIMEIRA);
+                    cbEtapa.setValue(ImplantacaoEtapa.Etapa.PRIMEIRA);
                 }
                 else{
                     for(ImplantacaoEtapa.Etapa e : ImplantacaoEtapa.Etapa.values()){
@@ -250,14 +252,12 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                     }
                 }
             }
-            cbEtapa.getSelectionModel().selectFirst();
-
         });
 
         departamentos = new DepartamentosImpl(getManager());
         cbDepartamento.getItems().addAll(departamentos.getAll());
 
-        for(int i = 1; i<=1000; i++) cbTempo.getItems().add(i);
+        for(int i = 1; i<=365; i++) cbTempo.getItems().add(i);
     }
 
     @Override

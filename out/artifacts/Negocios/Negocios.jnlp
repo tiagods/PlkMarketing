@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Negocios.jar" size="704227" download="eager" />
+    <jar href="Negocios.jar" size="925965" download="eager" />
     <jar href="Negocios_lib\activation-1.1.1.jar" size="69409" download="eager" />
     <jar href="Negocios_lib\antlr-2.7.7.jar" size="445288" download="eager" />
     <jar href="Negocios_lib\aws-java-sdk-core-1.11.289.jar" size="860346" download="eager" />

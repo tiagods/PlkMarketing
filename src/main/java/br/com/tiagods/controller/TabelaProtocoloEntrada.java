@@ -156,7 +156,6 @@ public class TabelaProtocoloEntrada extends UtilsController{
         TableColumn<ProtocoloEntrada, Boolean> colunaStatus = new TableColumn<>("Status");
         colunaStatus.setCellValueFactory(new PropertyValueFactory<>("recebido"));
         colunaStatus.setCellFactory((TableColumn<ProtocoloEntrada, Boolean> param) -> new TableCell<ProtocoloEntrada, Boolean>() {
-            final Label label = new Label();
             @Override
             protected void updateItem(Boolean item, boolean empty) {
                 super.updateItem(item, empty); //To change body of generated methods, choose Tools | Templates.
@@ -167,21 +166,20 @@ public class TabelaProtocoloEntrada extends UtilsController{
                 } else {
                     ProtocoloEntrada p = tbPrincipal.getItems().get(getIndex());
                     if (!p.isRecebido()) {
-                        label.setText("Não recebido");
-                        label.setStyle("-fx-background-color:red;-fx-text-fill: white;");
+                        setText("Não recebido");
+                        setStyle("-fx-background-color:red;-fx-text-fill: white;");
                     } else if (p.isDevolver() && p.isDevolvido()) {
                         if (p.getPrazo().before(Calendar.getInstance())) {
-                            label.setText("Devolução Atrasada");
-                            label.setStyle("-fx-background-color:red;-fx-text-fill: white;");
+                            setText("Devolução Atrasada");
+                            setStyle("-fx-background-color:red;-fx-text-fill: white;");
                         } else {
-                            label.setText("No Prazo");
-                            label.setStyle("-fx-background-color:green;-fx-text-fill: white;");
+                            setText("No Prazo");
+                            setStyle("-fx-background-color:green;-fx-text-fill: white;");
                         }
                     } else {
-                        label.setText("Concluido");
-                        label.setStyle("-fx-background-color:green;-fx-text-fill: white;");
+                        setText("Concluido");
+                        setStyle("-fx-background-color:green;-fx-text-fill: white;");
                     }
-                    setGraphic(label);
                 }
             }
 
