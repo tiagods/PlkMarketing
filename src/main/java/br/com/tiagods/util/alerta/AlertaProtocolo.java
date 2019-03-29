@@ -1,8 +1,9 @@
-package br.com.tiagods.util;
+package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.controller.PersistenciaController;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
+import br.com.tiagods.util.SendEmail;
 
 import javax.swing.*;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.*;
 import java.util.Timer;
 
 public class AlertaProtocolo extends PersistenciaController {
+
     //usando o boolean trySucess, significa tentar enviar o alerta consecutivas vezes ate resultar em sucesso, se não informado a tentativa será única
     public void programarEnvioDocumentoRecebido(ProtocoloEntrada p, boolean trySucess) {
         final Timer timer = new Timer();

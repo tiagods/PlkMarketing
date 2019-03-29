@@ -8,7 +8,7 @@ import br.com.tiagods.repository.helpers.ClientesImpl;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.repository.helpers.DepartamentosImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.AlertaProtocolo;
+import br.com.tiagods.util.alerta.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;

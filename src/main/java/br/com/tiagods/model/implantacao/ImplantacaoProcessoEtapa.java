@@ -67,10 +67,13 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     private Calendar dataAtualizacao;
 
     @Transient
-    private Vencido vencido = Vencido.NO_PRAZO;
+    private Vencido vencido = Vencido.NO_PRAZO; //base de visualização para tabelas
 
     @Transient
     private String statusVencimento="";
+
+    @Transient
+    private boolean acionarChamada = false; //enviar mensagem para responsavel da primeira etapa
 
     public enum Vencido{
         PENDENTE,NO_PRAZO,VENCIDO,VENCE_HOJE
@@ -89,9 +92,16 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
             status = Status.ABERTO;
             setDataLiberacao(Calendar.getInstance());
             setDataAtualizacao(Calendar.getInstance());
+            acionarChamada=true;
         }
         etapa.setCriadoEm(Calendar.getInstance());
         etapa.setCriadoPor(UsuarioLogado.getInstance().getUsuario());
+    }
+    @PostPersist
+    void postPersist(){
+        if(acionarChamada){
+
+        }
     }
     @PostLoad
     void load(){
@@ -114,7 +124,7 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
             vencido = Vencido.VENCIDO;
         }
         else{
-            setStatusVencimento("No prazo ("+dataFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))+")");
+            setStatusVencimento("No prazo ( "+dataFim.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))+" )");
             vencido = Vencido.NO_PRAZO;
         }
     }

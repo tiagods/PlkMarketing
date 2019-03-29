@@ -291,7 +291,7 @@ public class MenuController extends UtilsController implements Initializable{
         miUsuario.setOnAction(this::usuario);
 
         MenuItem miDepartamento = new MenuItem("Departamento");
-        iconMenuItem(miDepartamento,30,30, IconsEnum.MENU_USUARIO);
+        iconMenuItem(miDepartamento,30,30, IconsEnum.MENU_PEOPLE);
         miDepartamento.setOnAction(this::departamento);
 
         cmCadastros.getItems().addAll(miUsuario,miDepartamento);
@@ -331,7 +331,7 @@ public class MenuController extends UtilsController implements Initializable{
 
         final ContextMenu cmImplantacao = new ContextMenu();
         MenuItem miPacote = new MenuItem("Pacotes");
-        iconMenuItem(miPacote,30,30, IconsEnum.MENU_USUARIO);
+        iconMenuItem(miPacote,30,30, IconsEnum.MENU_PACOTE);
         miPacote.setOnAction(event -> {
             try {
                 Stage stage = new Stage();

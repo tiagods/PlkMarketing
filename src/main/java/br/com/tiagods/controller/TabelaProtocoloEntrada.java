@@ -9,7 +9,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
-import br.com.tiagods.util.AlertaProtocolo;
+import br.com.tiagods.util.alerta.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;

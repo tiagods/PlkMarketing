@@ -38,6 +38,9 @@ public enum IconsEnum {
 	MENU_CONTATO("button_people","Abrir Contatos"),
 	MENU_FRANQUIA("menu_franquia","Abrir Franquias"),
 	MENU_NEGOCIO("menu_negocios","Abrir Negocios"),
+	MENU_PACOTE("menu_workflow","Abrir Pacotes"),
+	MENU_PEOPLE("menu_people","Abrir Departamentos"),
+	MENU_PROCESSO("menu_workflow","Abrir Processos"),
 	MENU_TAREFA("menu_task","Abrir Tarefas"),
 	MENU_USUARIO("menu_user","Abrir Usuarios");
 	private String localizacao;
