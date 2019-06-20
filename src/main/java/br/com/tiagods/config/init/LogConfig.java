@@ -23,11 +23,9 @@ public class LogConfig {
             File[] files = log.listFiles();
             for(File f : files){
                 LocalDate date = Instant.ofEpochMilli(f.lastModified()).atZone(ZoneId.systemDefault()).toLocalDate();
-                if(dateIn.isAfter(date))
-                    f.delete();
+                if(dateIn.isAfter(date)) f.delete();
             }
-        }else
-            log.mkdir();
+        }else log.mkdir();
 
     }
 

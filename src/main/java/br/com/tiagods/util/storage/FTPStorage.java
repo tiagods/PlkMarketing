@@ -96,8 +96,7 @@ public class FTPStorage extends Storage{
 	}
 	@Override
 	public void delete(String arquivo) throws AmazonServiceException {
-		// TODO Auto-generated method stub
-		
+		new UnsupportedOperationException("Metodo não implementado");
 	}
 
 }

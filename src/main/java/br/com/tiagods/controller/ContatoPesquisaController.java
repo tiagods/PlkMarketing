@@ -367,7 +367,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 								listaImpressao.get(i).add(c.getComplemento());
 								listaImpressao.get(i).add(c.getCidade());
 								listaImpressao.get(i).add(c.getEstado());
-								listaImpressao.get(i).add(sdfH.format(c.getCriadoEm().getTime()));
+								listaImpressao.get(i).add(c.getCriadoEm()==null?"" : sdfH.format(c.getCriadoEm().getTime()));
 								listaImpressao.get(i).add(c.getAtendente() == null ? "" : c.getAtendente().getNome());
 								listaImpressao.get(i).add(c.getCriadoPor() == null ? "" : c.getCriadoPor().getNome());
 

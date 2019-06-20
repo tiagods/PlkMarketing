@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.tiagods</groupId>
-	<artifactId>Negocios</artifactId>
+	<artifactId>Controle-de-Processos</artifactId>
 	<version>1.0.0</version>
 	<properties>
 		<java.version>1.8</java.version>
@@ -10,8 +10,38 @@
 		<!-- Logging -->
 		<log4j.version>2.6</log4j.version>
 		<jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
+
+		<!-- Databases and ORM -->
+
 		<!-- JPA / Hibernate -->
 		<hibernate.version>5.1.0.Final</hibernate.version>
+		<c3p0.version>0.9.1</c3p0.version>
+		<!-- Databases -->
+		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
+		<mysql.version>5.1.47</mysql.version>
+
+		<!-- View APIs -->
+
+		<!-- JFoenix -->
+		<jfoenix.version>8.0.1</jfoenix.version>
+		<controlsfx.version>8.40.14</controlsfx.version>
+
+		<!--Othes externals APIs-->
+
+		<!--Mail-->
+		<commons-email.version>1.3.2</commons-email.version>
+		<commons-net.version>3.6</commons-net.version>
+		<!--Export excel-->
+		<jxl.version>2.6.12</jxl.version>
+
+		<!--Amazon S3 - File Storage-->
+		<aws-java-sdk-s3.version>1.11.289</aws-java-sdk-s3.version>
+
+		<!--Http Cliente for FTP-->
+		<httpclient.version>4.5.5</httpclient.version>
+		<javassist.version>3.8.0.GA</javassist.version>
+		<!--JSON-->
+		<json.version>20151123</json.version>
 	</properties>
 	<build>
 		<finalName>Negocios</finalName>
@@ -45,27 +75,33 @@
 		<dependency>
 		    <groupId>c3p0</groupId>
 		    <artifactId>c3p0</artifactId>
-		    <version>0.9.1</version>
+		    <version>${c3p0.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.1-901-1.jdbc4</version>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>jxl</artifactId>
-			<version>2.6.12</version>
+			<version>${jxl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-email</artifactId>
-			<version>1.3.2</version>
+			<version>${commons-email.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
-			<version>3.6</version>
+			<version>${commons-net.version}</version>
 		</dependency>
 		<!-- Logging -->
 		<dependency>
@@ -91,7 +127,7 @@
 		<dependency>
 			<groupId>com.jfoenix</groupId>
 			<artifactId>jfoenix</artifactId>
-			<version>8.0.1</version>
+			<version>${jfoenix.version}</version>
 		</dependency>
 		<dependency>
             <groupId>org.fxutil.maskedtextfield</groupId>
@@ -104,34 +140,29 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20151123</version>
+			<version>${json.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.8.0.GA</version>
+			<version>${javassist.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.controlsfx</groupId>
 		    <artifactId>controlsfx</artifactId>
-		    <version>8.40.14</version>
+		    <version>${controlsfx.version}</version>
 		</dependency>
 		<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.5</version>
+            <version>${httpclient.version}</version>
         </dependency>
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.47</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.11.289</version>
+			<version>${aws-java-sdk-s3.version}</version>
 		</dependency>
 	</dependencies>
+
 </project>

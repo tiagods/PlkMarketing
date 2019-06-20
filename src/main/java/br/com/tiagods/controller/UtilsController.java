@@ -59,7 +59,7 @@ import javafx.stage.StageStyle;
 
 public abstract class UtilsController extends PersistenciaController{
 	private boolean habilidarFiltroCidade = true;
-	protected final VersaoSistema sistemaVersao = new VersaoSistema();
+	protected final VersaoSistema sistemaVersao = VersaoSistema.getInstance();
 	
 	protected final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 	//Locale locale = new Locale("pt", "BR");

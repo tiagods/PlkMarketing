@@ -1,11 +1,36 @@
 package br.com.tiagods.config.init;
 
-public class VersaoSistema {
-	private final String nome="Controle de Processos";
-	private final String versao="2.0.10";
-	private final String data="31/01/2019";
-	private final String versaoBanco="1.1.3";
-	private final String detalhes="Versao 2.1";
+import br.com.tiagods.config.PropsConfig;
+import br.com.tiagods.config.enums.PropsEnum;
+import br.com.tiagods.model.VersaoApp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class VersaoSistema extends PropsConfig {
+	private static String nome="";
+	private static String versao="";
+	private static String data="";
+	private static String versaoBanco="";
+	private static String detalhes="";
+
+	Logger log = LoggerFactory.getLogger(VersaoSistema.class);
+	private static VersaoSistema instance;
+
+	public static VersaoSistema getInstance() {
+		if(instance == null)
+			instance = new VersaoSistema(PropsEnum.CONFIG);
+		return instance;
+	}
+
+	public VersaoSistema(PropsEnum propsEnum) {
+		super(propsEnum);
+		this.nome=getValue("sis.nome");
+		this.versao=getValue("sis.versao");
+		this.data=getValue("sis.data");
+		this.versaoBanco=getValue("sis.banco");
+		this.detalhes=getValue("sis.detalhes");
+	}
+
 	/**
 	 * @return the nome
 	 */

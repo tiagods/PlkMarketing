@@ -321,7 +321,11 @@ public class MenuController extends UtilsController implements Initializable{
             new Thread(run).start();
         });
 
-        cmExtras.getItems().addAll(miCheckList);
+        MenuItem miSobre = new MenuItem("Sobre");
+        iconMenuItem(miSobre,30,30,IconsEnum.BUTTON_VIEW);
+        miSobre.setOnAction(this::sobre);
+
+        cmExtras.getItems().addAll(miCheckList,miSobre);
         btnExtras.setContextMenu(cmExtras);
         btnExtras.setOnAction(e->
                 cmExtras.show(btnExtras.getScene().getWindow(),
@@ -507,7 +511,16 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     void sobre(ActionEvent event) {
-
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.SOBRE);
+            loader.setController(new SobreController(stage));
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            onCloseRequest(stage);
+        }catch(IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.SOBRE,e,true);
+        }
     }
     @FXML
     void tarefa(ActionEvent event) {

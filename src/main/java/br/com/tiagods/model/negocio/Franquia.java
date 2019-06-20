@@ -57,7 +57,6 @@ public class Franquia implements AbstractEntity,Serializable{
     	}
     	@Override
     	public String toString() {
-    		// TODO Auto-generated method stub
     		return descricao;
     	}
     }

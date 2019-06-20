@@ -61,6 +61,10 @@ public abstract class AbstractRepository<Entity extends AbstractEntity, PK exten
 		Query query = getEntityManager().createQuery("FROM " + entityClass.getName() + " o order by o.id");
 		return (List<Entity>) query.getResultList();
 	}
+	public List<Entity> getAllDesc() {
+		Query query = getEntityManager().createQuery("FROM " + entityClass.getName() + " o order by o.id desc");
+		return (List<Entity>) query.getResultList();
+	}
 	public List<Entity> getAllByName() {
 		Query query = getEntityManager().createQuery("FROM " + entityClass.getName() + " o order by o.nome");
 		return (List<Entity>) query.getResultList();

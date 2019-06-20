@@ -20,6 +20,7 @@ public enum FXMLEnum {
 	NEGOCIO_CADASTRO("NegocioCadastro"),
 	PROTOCOLO_ENTRADA_CADASTRO("ProtocoloEntradaCadastro"),
 	PROTOCOLO_ENTRADA_PESQUISA("ProtocoloEntradaPesquisa"),
+	SOBRE("Sobre"),
 	USUARIO_PESQUISA("UsuarioPesquisa"),
 	USUARIO_CADASTRO("UsuarioCadastro"),
 	TAREFA_PESQUISA("TarefaPesquisa"),

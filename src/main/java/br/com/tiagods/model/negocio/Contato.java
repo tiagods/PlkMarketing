@@ -430,7 +430,6 @@ public class Contato extends Pessoa implements AbstractEntity,Serializable{
 		String newName = getNome();
 		if(pessoaTipo.equals(PessoaTipo.EMPRESA))
 			newName +=" || "+ juridico.getResponsavel()+" || "+juridico.getRazao();
-		// TODO Auto-generated method stub
 		return newName;
 	}
 }
