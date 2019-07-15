@@ -12,16 +12,22 @@ import java.util.Objects;
 @Embeddable
 public class ImplantacaoEtapa{
     public enum Etapa{
-        PRIMEIRA(1),SEGUNDA(2),TERCEIRA(3);
+        ETAPA(-1,"Todos"),PRIMEIRA(1,"Primeira"),SEGUNDA(2,"Segunda"),TERCEIRA(3,"Terceira");
         //QUARTA(4),QUINTA(5),SEXTA(6),SETIMA(7),OITAVA(8),NONA(9),DECIMA(10)
         private int valor;
-
-        Etapa(Integer valor){
+        private String nome;
+        Etapa(Integer valor,String nome){
             this.valor=valor;
+            this.nome=nome;
         }
 
         public int getValor() {
             return valor;
+        }
+
+        @Override
+        public String toString() {
+            return this.nome;
         }
     }
     @Enumerated(EnumType.STRING)
@@ -48,6 +54,7 @@ public class ImplantacaoEtapa{
     public Etapa getEtapa() {
         return etapa;
     }
+
 
     public void setEtapa(Etapa etapa) {
         this.etapa = etapa;

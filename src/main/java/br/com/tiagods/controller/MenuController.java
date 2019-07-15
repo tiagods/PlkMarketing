@@ -15,6 +15,8 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Departamento;
+import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
+import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta;
@@ -24,6 +26,7 @@ import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
@@ -107,12 +110,19 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private JFXComboBox<Departamento> cbProcessoDepartamento;
 
+    @FXML
+    private JFXComboBox<ImplantacaoAtividade> cbProcessoAtividade;
+
+    @FXML
+    private JFXComboBox<ImplantacaoEtapa.Etapa> cbProcessoEtapa;
+
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
     private NegocioPropostaImpl propostas;
     private ImplantacaoProcessosImpl processos;
     private ImplantacaoProcessoEtapasImpl etapas;
     private DepartamentosImpl departamentos;
+    private ImplantacaoAtividadesImpl atividades;
     private boolean desabilitarAcaoCombos = false;
 
     void atualizar(){
@@ -126,6 +136,7 @@ public class MenuController extends UtilsController implements Initializable{
             processos = new ImplantacaoProcessosImpl(getManager());
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             departamentos = new DepartamentosImpl(getManager());
+            atividades = new ImplantacaoAtividadesImpl(getManager());
 
             preencherNegocios();
             preencherTarefas();
@@ -175,9 +186,7 @@ public class MenuController extends UtilsController implements Initializable{
             try{
                 loadFactory();
                 etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-                tbProcesso.getItems().clear();
-                List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null));
-                tbProcesso.getItems().addAll(list);
+                filtrarProcessos();
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
             }finally {
@@ -186,6 +195,8 @@ public class MenuController extends UtilsController implements Initializable{
         };
         cbProcesso.valueProperty().addListener(processoListener);
         cbProcessoDepartamento.valueProperty().addListener(processoListener);
+        cbProcessoEtapa.valueProperty().addListener(processoListener);
+        cbProcessoAtividade.valueProperty().addListener(processoListener);
     }
     @FXML
     void contato(ActionEvent event) {
@@ -213,6 +224,15 @@ public class MenuController extends UtilsController implements Initializable{
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.DEPARTAMENTO,e,true);
         }
+    }
+
+    private void filtrarProcessos() throws Exception{
+            loadFactory();
+            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            tbProcesso.getItems().clear();
+            List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),cbProcessoEtapa.getValue()));
+            tbProcesso.getItems().addAll(list);
+
     }
     @FXML
     void franquia(ActionEvent event) {
@@ -306,26 +326,18 @@ public class MenuController extends UtilsController implements Initializable{
         MenuItem miCheckList = new MenuItem("CheckList");
         iconMenuItem(miCheckList,30,30, IconsEnum.MENU_CHECKLIST);
         miCheckList.setOnAction(event -> {
-            Path path = Paths.get(System.getProperty("user.dir"),"checklist.jar");
-            Runnable run = () -> {
-                try {
-                    Desktop.getDesktop().open(path.toFile());
-                } catch (IOException e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Erro");
-                    alert.setHeaderText("Não foi possivel iniciar o programa");
-                    alert.setContentText("Falha ao abrir o aplicativo\n"+e);
-                    alert.showAndWait();
-                }
-            };
-            new Thread(run).start();
+            abrirArquivo("checklist.jar");
         });
 
         MenuItem miSobre = new MenuItem("Sobre");
         iconMenuItem(miSobre,30,30,IconsEnum.BUTTON_VIEW);
         miSobre.setOnAction(this::sobre);
 
-        cmExtras.getItems().addAll(miCheckList,miSobre);
+        MenuItem miManual = new MenuItem("Manual do Sistema");
+        iconMenuItem(miManual,30,30, IconsEnum.BUTTON_VIEW);
+        miManual.setOnAction(event -> abrirArquivo("manual.docx"));
+
+        cmExtras.getItems().addAll(miCheckList,miManual,miSobre);
         btnExtras.setContextMenu(cmExtras);
         btnExtras.setOnAction(e->
                 cmExtras.show(btnExtras.getScene().getWindow(),
@@ -371,6 +383,23 @@ public class MenuController extends UtilsController implements Initializable{
                         btnImplantacao.getScene().getWindow().getY()+btnImplantacao.getLayoutY()+100));
         cmImplantacao.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
     }
+
+    private void abrirArquivo(String s) {
+        Path path = Paths.get(System.getProperty("user.dir"),s);
+        Runnable run = () -> {
+            try {
+                Desktop.getDesktop().open(path.toFile());
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Erro");
+                alert.setHeaderText("Não foi possivel iniciar o programa");
+                alert.setContentText("Falha ao abrir o aplicativo\n"+e);
+                alert.showAndWait();
+            }
+        };
+        new Thread(run).start();
+    }
+
     @FXML
     void negocio(ActionEvent event) {
         abrirNegocio(null);
@@ -439,12 +468,21 @@ public class MenuController extends UtilsController implements Initializable{
 
         cbProcessoDepartamento.getItems().addAll(departamentos.getAllByName());
 
+        cbProcessoAtividade.getItems().clear();
+        ImplantacaoAtividade atividade = new ImplantacaoAtividade(-1L,"Todos");
+        cbProcessoAtividade.getItems().add(atividade);
+        cbProcessoAtividade.getItems().addAll(atividades.getAllByName());
+        cbProcessoAtividade.setValue(atividade);
+        new ComboBoxAutoCompleteUtil<>(cbProcessoAtividade);
+
+        cbProcessoEtapa.getItems().clear();
+        cbProcessoEtapa.getItems().addAll(ImplantacaoEtapa.Etapa.values());
+        cbProcessoEtapa.getSelectionModel().selectFirst();
+
         TabelaProcessosEtapa tabelaProcessosEtapa = new TabelaProcessosEtapa(tbProcesso);
         tabelaProcessosEtapa.tabela();
 
-        tbProcesso.getItems().clear();
-        List<ImplantacaoProcessoEtapa> etapaList = etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),null,null);
-        tbProcesso.getItems().addAll(ordenar(etapaList));
+        filtrarProcessos();
     }
     private List<ImplantacaoProcessoEtapa> ordenar(List<ImplantacaoProcessoEtapa> lista){
         Comparator<ImplantacaoProcessoEtapa> comparator = Comparator.comparing(c->c.getEtapa().getAtividade().getNome());

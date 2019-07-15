@@ -24,7 +24,7 @@ public class ImplantacaoProcessoEtapaStatus implements AbstractEntity,Serializab
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "criado_em")
     private Calendar criadoEm;
-    private boolean finalizado = true;
+    private boolean finalizado = false;
     @Column(columnDefinition = "text")
     private String descricao;
 

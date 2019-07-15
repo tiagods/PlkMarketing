@@ -16,6 +16,13 @@ public class ImplantacaoAtividade implements AbstractEntity,Serializable {
     @Column(columnDefinition = "text")
     private String descricao;
 
+    public ImplantacaoAtividade(){}
+
+    public ImplantacaoAtividade(Long id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     @Override
     public Long getId() {
         return id;

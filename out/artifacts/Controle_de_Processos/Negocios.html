@@ -3,7 +3,7 @@
 <script>
     function launchApplication(jnlpfile) {
         dtjava.launch(            {
-                url : 'Controle de Processos.jnlp'
+                url : 'Negocios.jnlp'
             },
             {
                 javafx : '8.0+'
@@ -15,11 +15,11 @@
 </script>
 
 <script>
-    function javafxEmbedControle de Processos_id() {
+    function javafxEmbedNegocios_id() {
         dtjava.embed(
             {
-                id : 'Controle de Processos_id',
-                url : 'Controle de Processos.jnlp',
+                id : 'Negocios_id',
+                url : 'Negocios.jnlp',
                 placeholder : 'javafx-app-placeholder',
                 width : '600',
                 height : '400'
@@ -31,12 +31,12 @@
         );
     }
     <!-- Embed FX application into web page once page is loaded -->
-    dtjava.addOnloadCallback(javafxEmbedControle de Processos_id);
+    dtjava.addOnloadCallback(javafxEmbedNegocios_id);
 </script>
 
 </head><body>
 <h2>Test page for <b>Controle-de-Processos</b></h2>
-  <b>Webstart:</b> <a href='Controle de Processos.jnlp' onclick="return launchApplication('Controle de Processos.jnlp');">click to launch this app as webstart</a><br><hr><br>
+  <b>Webstart:</b> <a href='Negocios.jnlp' onclick="return launchApplication('Negocios.jnlp');">click to launch this app as webstart</a><br><hr><br>
 
   <!-- Applet will be inserted here -->
   <div id='javafx-app-placeholder'></div>

@@ -35,10 +35,10 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
             return icon;
         }
 
-        @Override
-        public String toString() {
-            return this.descricao;
+        public String getDescricao() {
+            return descricao;
         }
+
     }
 
     @Id
@@ -76,7 +76,7 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     private boolean acionarChamada = false; //enviar mensagem para responsavel da primeira etapa
 
     public enum Vencido{
-        PENDENTE,NO_PRAZO,VENCIDO,VENCE_HOJE
+        CONCLUIDO,PENDENTE,NO_PRAZO,VENCIDO,VENCE_HOJE
     }
 
     public ImplantacaoProcessoEtapa(){}
@@ -105,7 +105,11 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
     }
     @PostLoad
     void load(){
-        if(getDataAtualizacao()==null) {
+        if(status == Status.CONCLUIDO || status == Status.AGUARDANDO_ANTERIOR) {
+            vencido = Vencido.CONCLUIDO;
+            return;
+        }
+        else if(getDataAtualizacao()==null){
             vencido = Vencido.PENDENTE;
             return;
         }

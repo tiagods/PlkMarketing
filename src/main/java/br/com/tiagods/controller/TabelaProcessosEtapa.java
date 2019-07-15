@@ -87,25 +87,39 @@ public class TabelaProcessosEtapa extends UtilsController {
             ip.setStatus(ImplantacaoProcessoEtapa.Status.CONCLUIDO);
             ip = etapas.save(ip);
 
+            // metodo de atualização da proxima etapa, remocao por ser menos funcional
+
             ImplantacaoEtapa.Etapa etapa = ip.getEtapa().getEtapa();
             ImplantacaoEtapa.Etapa nextEtapa = null;
-            for(ImplantacaoEtapa.Etapa s : ImplantacaoEtapa.Etapa.values()){
-                if(s.getValor()==etapa.getValor()+1) {
-                    nextEtapa = s;
-                    break;
-                }
+            Optional<ImplantacaoEtapa.Etapa> re = Arrays.asList(ImplantacaoEtapa.Etapa.values()).stream().filter(c->c.getValor() == etapa.getValor()+1).findAny();
+            if(re.isPresent()) {
+                nextEtapa = re.get();
             }
             if(nextEtapa!=null){
-                List<ImplantacaoProcessoEtapa> list =
-                        etapas.filtrar(null,null,ip.getEtapa().getAtividade(),nextEtapa);
-                if(!list.isEmpty()){
+                List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,ip.getProcesso(),ip.getEtapa().getAtividade(),nextEtapa);
+                if(!list.isEmpty() && list.size()==1){
                     ImplantacaoProcessoEtapa processoEtapa = list.get(0);
-                    processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
-                    processoEtapa.setDataLiberacao(Calendar.getInstance());
-                    processoEtapa.setDataAtualizacao(Calendar.getInstance());
-                    etapas.save(processoEtapa);
+                    if(processoEtapa.getStatus().equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR)) {
+                        processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
+                        processoEtapa.setDataLiberacao(Calendar.getInstance());
+                        processoEtapa.setDataAtualizacao(Calendar.getInstance());
+                        final ImplantacaoProcessoEtapa pe = etapas.save(processoEtapa);
+                        Optional<ImplantacaoProcessoEtapa> result = tbPrincipal.getItems().stream().filter(c -> c.getId() == pe.getId()).findAny();
+                        if (result.isPresent()) {
+                            int index = tbPrincipal.getItems().indexOf(result.get());
+                            tbPrincipal.getItems().set(index, pe);
+                        }
+                    }
+                }
+                else if(list.size()>1) {
+                    alert(Alert.AlertType.ERROR,
+                            "Erro",
+                            "",
+                            "Foram encontradas mais etapas para o mesmo processo e atividade! Informe o erro para o administrador do sistema",
+                            new Exception("Foram encontradas mais etapas para o mesmo processo e atividade! Etapa=" + nextEtapa + ";processo=" + ip.getProcesso().getId() + ";atividade=" + ip.getEtapa().getAtividade()), true);
                 }
             }
+
             tbPrincipal.refresh();
             alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!",null,false);
             return true;
