@@ -1,4 +1,4 @@
-package com.prolink.processos.model.implantacao;
+package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Usuario;
