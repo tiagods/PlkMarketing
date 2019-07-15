@@ -1,4 +1,4 @@
-package br.com.tiagods.model.implantacao;
+package com.prolink.processos.model.implantacao;
 
 import br.com.tiagods.model.AbstractEntity;
 
