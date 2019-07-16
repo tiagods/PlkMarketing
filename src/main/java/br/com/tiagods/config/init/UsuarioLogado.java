@@ -14,9 +14,10 @@ public class UsuarioLogado {
     }
     private UsuarioLogado(){
     }
-    public Usuario getUsuario() {
+    public static Usuario getUsuario() {
         return usuario;
     }
+
     public void setUsuario(Usuario usuario) { 
     	this.usuario = usuario;
     	UsuarioCache cache = UsuarioCache.getInstance();

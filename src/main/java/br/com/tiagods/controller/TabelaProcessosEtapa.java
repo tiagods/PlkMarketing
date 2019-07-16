@@ -68,7 +68,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                 close();
             }
         }
-    private boolean salvarEConcluir(String descricao, ImplantacaoProcessoEtapa ip){
+    private boolean salvarEConcluir(String descricao, ImplantacaoProcessoEtapa ip,int index){
         try{
             loadFactory();
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
@@ -87,28 +87,24 @@ public class TabelaProcessosEtapa extends UtilsController {
             ip.setStatus(ImplantacaoProcessoEtapa.Status.CONCLUIDO);
             ip = etapas.save(ip);
 
+            tbPrincipal.getItems().set(index,ip);
+
             // metodo de atualização da proxima etapa, remocao por ser menos funcional
 
             ImplantacaoEtapa.Etapa etapa = ip.getEtapa().getEtapa();
-            ImplantacaoEtapa.Etapa nextEtapa = null;
             Optional<ImplantacaoEtapa.Etapa> re = Arrays.asList(ImplantacaoEtapa.Etapa.values()).stream().filter(c->c.getValor() == etapa.getValor()+1).findAny();
             if(re.isPresent()) {
-                nextEtapa = re.get();
-            }
-            if(nextEtapa!=null){
-                List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,ip.getProcesso(),ip.getEtapa().getAtividade(),nextEtapa);
+                List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,ip.getProcesso(),ip.getEtapa().getAtividade(),re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR);
                 if(!list.isEmpty() && list.size()==1){
                     ImplantacaoProcessoEtapa processoEtapa = list.get(0);
-                    if(processoEtapa.getStatus().equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR)) {
-                        processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
-                        processoEtapa.setDataLiberacao(Calendar.getInstance());
-                        processoEtapa.setDataAtualizacao(Calendar.getInstance());
-                        final ImplantacaoProcessoEtapa pe = etapas.save(processoEtapa);
-                        Optional<ImplantacaoProcessoEtapa> result = tbPrincipal.getItems().stream().filter(c -> c.getId() == pe.getId()).findAny();
-                        if (result.isPresent()) {
-                            int index = tbPrincipal.getItems().indexOf(result.get());
-                            tbPrincipal.getItems().set(index, pe);
-                        }
+                    processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
+                    processoEtapa.setDataLiberacao(Calendar.getInstance());
+                    processoEtapa.setDataAtualizacao(Calendar.getInstance());
+                    final ImplantacaoProcessoEtapa pe = etapas.save(processoEtapa);
+                    Optional<ImplantacaoProcessoEtapa> result = tbPrincipal.getItems().stream().filter(c -> c.getId() == pe.getId()).findAny();
+                    if (result.isPresent()) {
+                        int in = tbPrincipal.getItems().indexOf(result.get());
+                        tbPrincipal.getItems().set(in, pe);
                     }
                 }
                 else if(list.size()>1) {
@@ -116,10 +112,9 @@ public class TabelaProcessosEtapa extends UtilsController {
                             "Erro",
                             "",
                             "Foram encontradas mais etapas para o mesmo processo e atividade! Informe o erro para o administrador do sistema",
-                            new Exception("Foram encontradas mais etapas para o mesmo processo e atividade! Etapa=" + nextEtapa + ";processo=" + ip.getProcesso().getId() + ";atividade=" + ip.getEtapa().getAtividade()), true);
+                            new Exception("Foram encontradas mais etapas para o mesmo processo e atividade! Etapa=" + re.get() + ";processo=" + ip.getProcesso().getId() + ";atividade=" + ip.getEtapa().getAtividade()), true);
                 }
             }
-
             tbPrincipal.refresh();
             alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!",null,false);
             return true;
@@ -157,13 +152,16 @@ public class TabelaProcessosEtapa extends UtilsController {
         colunaPrazo.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, Number> param) -> new TableCell<ImplantacaoProcessoEtapa, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
+                final JFXTextArea area = new JFXTextArea();
                 super.updateItem(item, empty);
                 if (item == null) {
                     setText("");
                     setStyle("");
                 } else {
                     ImplantacaoProcessoEtapa processoEtapa = tbPrincipal.getItems().get(getIndex());
-                    setText(processoEtapa.getStatusVencimento());
+                    area.setText(processoEtapa.getStatusVencimento());
+                    setGraphic(area);
+
                     if(processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.VENCIDO))
                         setStyle("-fx-background-color: red; -fx-text-fill: white;");
                     else if(processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.NO_PRAZO))
@@ -172,7 +170,22 @@ public class TabelaProcessosEtapa extends UtilsController {
                 }
             }
         });
-        colunaPrazo.setPrefWidth(150);
+        colunaPrazo.setPrefWidth(100);
+
+        TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaDepartamento = new TableColumn<>("Responsavel");
+        colunaDepartamento.setCellValueFactory(new PropertyValueFactory<>("etapa"));
+        colunaDepartamento.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
+            @Override
+            protected void updateItem(ImplantacaoEtapa item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item == null) {
+                    setText("");
+                    setStyle("");
+                } else {
+                    setText(item.getDepartamento().toString());
+                }
+            }
+        });
 
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaEtapa = new TableColumn<>("Etapa");
         colunaEtapa.setCellValueFactory(new PropertyValueFactory<>("etapa"));
@@ -284,8 +297,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                         dialog.setContentText("Informe uma observacao:");
                         Optional<String> result = dialog.showAndWait();
                         if (result.isPresent()){
-                            if(salvarEConcluir(result.get(),ip))
-                                tbPrincipal.getItems().remove(ip);
+                            salvarEConcluir(result.get(),ip,getIndex());
                         }
                     });
                     setGraphic(button);
@@ -294,6 +306,6 @@ public class TabelaProcessosEtapa extends UtilsController {
         });
         colunaStatus.setPrefWidth(200);
         tbPrincipal.setFixedCellSize(70);
-        tbPrincipal.getColumns().addAll(colunaId,colunaData,colunaPrazo,colunaEtapa,colunaAtividade,colunaDescricao,colunaEditar,colunaStatus);
+        tbPrincipal.getColumns().addAll(colunaId,colunaData,colunaPrazo,colunaDepartamento,colunaEtapa,colunaAtividade,colunaDescricao,colunaEditar,colunaStatus);
     }
 }

@@ -108,7 +108,7 @@
                                  <content>
                                     <VBox prefHeight="496.0" prefWidth="1022.0">
                                        <children>
-                                          <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="760.0">
+                                          <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="760.0">
                                              <children>
                                                 <Label styleClass="label-card" text="Processo:">
                                                    <HBox.margin>
@@ -147,6 +147,19 @@
                                              </children>
                                              <VBox.margin>
                                                 <Insets bottom="10.0" left="10.0" top="10.0" />
+                                             </VBox.margin>
+                                          </HBox>
+                                          <HBox alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="50.0" prefWidth="760.0">
+                                             <children>
+                                                <Label styleClass="label-card" text="Mostrar:">
+                                                   <HBox.margin>
+                                                      <Insets right="10.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <JFXComboBox fx:id="cbProcessoStatus" prefHeight="25.0" prefWidth="160.0" />
+                                             </children>
+                                             <VBox.margin>
+                                                <Insets left="10.0" />
                                              </VBox.margin>
                                           </HBox>
                                           <HBox prefHeight="372.0" prefWidth="901.0">

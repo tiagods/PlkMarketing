@@ -45,6 +45,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import javafx.util.StringConverter;
 
 public class MenuController extends UtilsController implements Initializable{
     @FXML
@@ -115,6 +116,9 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     private JFXComboBox<ImplantacaoEtapa.Etapa> cbProcessoEtapa;
+
+    @FXML
+    private JFXComboBox<ImplantacaoProcessoEtapa.Status> cbProcessoStatus;
 
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
@@ -197,6 +201,7 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoDepartamento.valueProperty().addListener(processoListener);
         cbProcessoEtapa.valueProperty().addListener(processoListener);
         cbProcessoAtividade.valueProperty().addListener(processoListener);
+        cbProcessoStatus.valueProperty().addListener(processoListener);
     }
     @FXML
     void contato(ActionEvent event) {
@@ -230,9 +235,8 @@ public class MenuController extends UtilsController implements Initializable{
             loadFactory();
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             tbProcesso.getItems().clear();
-            List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),cbProcessoEtapa.getValue()));
+            List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),cbProcessoEtapa.getValue(),cbProcessoStatus.getValue()));
             tbProcesso.getItems().addAll(list);
-
     }
     @FXML
     void franquia(ActionEvent event) {
@@ -479,14 +483,23 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoEtapa.getItems().addAll(ImplantacaoEtapa.Etapa.values());
         cbProcessoEtapa.getSelectionModel().selectFirst();
 
+        cbProcessoStatus.getItems().clear();
+        cbProcessoStatus.getItems().addAll(ImplantacaoProcessoEtapa.Status.values());
+        cbProcessoStatus.setValue(ImplantacaoProcessoEtapa.Status.ABERTO);
+
         TabelaProcessosEtapa tabelaProcessosEtapa = new TabelaProcessosEtapa(tbProcesso);
         tabelaProcessosEtapa.tabela();
 
         filtrarProcessos();
     }
     private List<ImplantacaoProcessoEtapa> ordenar(List<ImplantacaoProcessoEtapa> lista){
-        Comparator<ImplantacaoProcessoEtapa> comparator = Comparator.comparing(c->c.getEtapa().getAtividade().getNome());
-        Collections.sort(lista,comparator.thenComparingInt(c->c.getEtapa().getEtapa().getValor()));
+        Comparator<ImplantacaoProcessoEtapa> comparator =
+                Comparator.comparingLong(c->c.getProcesso().getCliente().getId());
+
+        Collections.sort(lista, comparator
+                        .thenComparing(c->c.getEtapa().getAtividade().getNome())
+                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor())
+        );
         return lista;
     }
     private void preencherProtocolos() throws Exception{

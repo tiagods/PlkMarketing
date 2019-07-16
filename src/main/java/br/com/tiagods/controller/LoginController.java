@@ -53,8 +53,6 @@ public class LoginController extends UtilsController implements Initializable{
     @FXML
     private MediaView mediaView;
 
-    private UsuarioLogado logado = UsuarioLogado.getInstance();
-    
     public LoginController(Stage stage){
         this.stage=stage;
     }
@@ -78,8 +76,8 @@ public class LoginController extends UtilsController implements Initializable{
             cbNome.getItems().addAll(contas);
             
             cbNome.getSelectionModel().selectFirst();
-            if(!logado.lastLogin().equals("")){
-            	Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(logado.lastLogin())).findFirst();
+            if(!UsuarioLogado.getInstance().lastLogin().equals("")){
+            	Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(UsuarioLogado.getInstance().lastLogin())).findFirst();
             	if(result.isPresent()) cbNome.setValue(result.get());
             }
             txSenha.setFocusTraversable(true);

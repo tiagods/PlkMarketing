@@ -21,7 +21,7 @@ public class TesteEtapas extends UtilsController{
         try{
             loadFactory();
             ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-            List<ImplantacaoProcessoEtapa> result = etapas.filtrar(null,null,null,null);
+            List<ImplantacaoProcessoEtapa> result = etapas.filtrar(null,null,null,null, null);
 
             for(ImplantacaoProcessoEtapa ip : result) {
                 ImplantacaoEtapa.Etapa etapa = ip.getEtapa().getEtapa();
@@ -32,7 +32,7 @@ public class TesteEtapas extends UtilsController{
                     nextEtapa = re.get();
                 }
                 if (nextEtapa != null) {
-                    List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), nextEtapa);
+                    List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), nextEtapa,null);
                     if (!list.isEmpty() && list.size() == 1) {
                         ImplantacaoProcessoEtapa processoEtapa = list.get(0);
                         processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);

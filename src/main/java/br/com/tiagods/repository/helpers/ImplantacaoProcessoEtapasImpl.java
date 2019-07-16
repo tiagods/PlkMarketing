@@ -28,7 +28,7 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         return (ImplantacaoProcessoEtapa)query.getSingleResult();
     }
 
-    public List<ImplantacaoProcessoEtapa> filtrar(Departamento departamento, ImplantacaoProcesso processo, ImplantacaoAtividade atividade, ImplantacaoEtapa.Etapa etapa){
+    public List<ImplantacaoProcessoEtapa> filtrar(Departamento departamento, ImplantacaoProcesso processo, ImplantacaoAtividade atividade, ImplantacaoEtapa.Etapa etapa,ImplantacaoProcessoEtapa.Status status){
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcessoEtapa.class);
         if(departamento!=null && departamento.getId()!=-1L){
             criteria.add(Restrictions.eq("etapa.departamento",departamento));
@@ -41,6 +41,9 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         }
         if(etapa!=null && etapa!=ImplantacaoEtapa.Etapa.ETAPA){
             criteria.add(Restrictions.eq("etapa.etapa",etapa));
+        }
+        if(status!=null && status!=ImplantacaoProcessoEtapa.Status.STATUS){
+            criteria.add(Restrictions.eq("status",status));
         }
         criteria.createAlias("processo","pro");
         criteria.add(Restrictions.eq("pro.finalizado",false));

@@ -21,6 +21,7 @@ import java.util.Set;
 public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
 
     public enum Status{
+        STATUS("Todos",IconsEnum.BUTTON_SEARCH),
         ABERTO("Pendente",IconsEnum.BUTTON_DOWNLOAD),
         CONCLUIDO("Concluido",IconsEnum.BUTTON_OK),
         AGUARDANDO_ANTERIOR("Aguardando Liberação",IconsEnum.BUTTON_DEADLINE);
@@ -39,6 +40,10 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
             return descricao;
         }
 
+        @Override
+        public String toString() {
+            return this.descricao;
+        }
     }
 
     @Id
