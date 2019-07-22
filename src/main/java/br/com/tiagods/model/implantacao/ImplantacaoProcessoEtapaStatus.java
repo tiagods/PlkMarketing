@@ -96,4 +96,16 @@ public class ImplantacaoProcessoEtapaStatus implements AbstractEntity,Serializab
 
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "ImplantacaoProcessoEtapaStatus{" +
+                "id=" + id +
+                ", processoEtapa=" + processoEtapa.getId() +
+                ", criadoPor=" + criadoPor +
+                ", criadoEm=" + criadoEm.getTime() +
+                ", finalizado=" + finalizado +
+                ", descricao='" + descricao + '\'' +
+                '}';
+    }
 }

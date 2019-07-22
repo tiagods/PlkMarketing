@@ -2,72 +2,115 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.*;
-import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
-import br.com.tiagods.util.CalculoDePeriodo;
+import br.com.tiagods.util.SendEmail;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TabelaProcessosEtapa extends UtilsController {
 
+    private Logger logger = LoggerFactory.getLogger(TabelaProcessosEtapa.class);
+
     private TableView<ImplantacaoProcessoEtapa> tbPrincipal;
 
-    private CalculoDePeriodo calculo;
     private ImplantacaoProcessoEtapasImpl etapas;
 
     public TabelaProcessosEtapa(TableView<ImplantacaoProcessoEtapa> tbPrincipal){
         this.tbPrincipal=tbPrincipal;
     }
 
-        private void cadastrarEtapas(ImplantacaoProcessoEtapa etapa, int index,boolean editar){
-            try {
-                Stage stage = new Stage();
-                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);
-                ImplantacaoProcessoEtapa etapa2 = recarregar(etapa);
-                ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa2,stage,editar);
-                loader.setController(controller);
-                initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-                stage.setOnHiding(event->{
-                    ImplantacaoProcessoEtapa newEtapa = recarregar(etapa2);
-                    if(newEtapa!=null) tbPrincipal.getItems().set(index,newEtapa);
-                });
-            } catch (IOException ex) {
-                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao localizar o arquivo " + FXMLEnum.IMPLANTACAO_ETAPA_STATUS, ex, true);
-            }
+    private void cadastrarEtapas(ImplantacaoProcessoEtapa etapa, int index, boolean editar) {
+        try {
+            Stage stage = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);
+            ImplantacaoProcessoEtapa etapa2 = recarregar(etapa);
+            ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa2, stage, editar);
+            loader.setController(controller);
+            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            stage.setOnHiding(event -> {
+                ImplantacaoProcessoEtapa newEtapa = recarregar(etapa2);
+                if (newEtapa != null) tbPrincipal.getItems().set(index, newEtapa);
+            });
+        } catch (IOException ex) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao localizar o arquivo " + FXMLEnum.IMPLANTACAO_ETAPA_STATUS, ex, true);
         }
-        private ImplantacaoProcessoEtapa recarregar(ImplantacaoProcessoEtapa etapa){
-            try{
-                loadFactory();
-                etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-                etapa = etapas.findById(etapa.getId());
-                return etapa;
-            } catch (Exception e){
-                alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
-                return null;
-            }
-            finally {
-                close();
-            }
+    }
+
+    private ImplantacaoProcessoEtapa recarregar(ImplantacaoProcessoEtapa etapa) {
+        try {
+            loadFactory();
+            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            etapa = etapas.findById(etapa.getId());
+            return etapa;
+        } catch (Exception e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao carregar os registros", "Ocorreu um erro ao carregar o registro", e, true);
+            return null;
+        } finally {
+            close();
         }
+    }
+
+    private void notificarProximaEtapa(ImplantacaoProcessoEtapa pe){
+        String email = pe.getEtapa().getDepartamento().getEmail().trim();
+        Usuario usuario = UsuarioLogado.getInstance().getUsuario();
+        if(!email.equals("")){
+            StringBuilder builder = new StringBuilder();
+            builder.append("Olá,\n\n")
+                    .append(usuario.getNome())
+                    .append(" acabou de concluir uma Etapa de Implantação do cliente ")
+                    .append(pe.getProcesso().getCliente().getNome())
+                    .append("\n\n")
+                    .append("Você foi designado para concluir a proxima Etapa, abaixo uma descricao:\n\n")
+                    .append("Data Liberação: ").append(pe.getDataLiberacao()!=null?sdf.format(pe.getDataLiberacao().getTime()):"")
+                    .append("Cliente Apelido:").append(pe.getProcesso().getCliente().getId())
+                    .append("Cliente Nome:").append(pe.getProcesso().getCliente().getNome())
+                    .append("Depto Responsavel:").append(pe.getEtapa().getDepartamento())
+                    .append("Etapa:").append(pe.getEtapa().getEtapa())
+                    .append("Atividade:").append(pe.getEtapa().getAtividade().getNome())
+                    .append("O que fazer ? (Descricao da tarefa) :").append(pe.getEtapa().getDescricao())
+                    .append("Historico das atividades anteriores :\n ");
+
+                    List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,pe.getProcesso(),pe.getEtapa().getAtividade(),null,null);
+                    List<ImplantacaoProcessoEtapaStatus> result = list.stream()
+                            .map(ImplantacaoProcessoEtapa::getHistorico)
+                            .flatMap(c->c.stream()).collect(Collectors.toList());
+
+                    Collections.sort(result, Comparator.comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm));
+
+                    result.forEach(c->{
+                        builder.append("Data").append(c.getCriadoEm()==null?"":sdf.format(c.getCriadoEm().getTime())).append("\t")
+                                .append("Autor").append(c.getCriadoPor().getLogin()).append("\t")
+                                .append("Descricao").append(c.getDescricao()).append("\n");
+                    });
+
+                    Calendar data = pe.getDataAtualizacao();
+                    if(data!=null) {
+                        data.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+                        builder.append("Não se esqueça de concluir a tarefa até " + sdf.format(data.getTime()));
+                    }
+                    SendEmail mail = new SendEmail();
+                    mail.enviaAlerta("","",
+                            new ArrayList<>(Arrays.asList(email.split(";"))),"",
+                            builder.toString(),false);
+        }
+
+    }
+
     private boolean salvarEConcluir(String descricao, ImplantacaoProcessoEtapa ip,int index){
         try{
             loadFactory();
@@ -95,12 +138,15 @@ public class TabelaProcessosEtapa extends UtilsController {
             Optional<ImplantacaoEtapa.Etapa> re = Arrays.asList(ImplantacaoEtapa.Etapa.values()).stream().filter(c->c.getValor() == etapa.getValor()+1).findAny();
             if(re.isPresent()) {
                 List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,ip.getProcesso(),ip.getEtapa().getAtividade(),re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR);
-                if(!list.isEmpty() && list.size()==1){
+                if(list.size() == 1){
                     ImplantacaoProcessoEtapa processoEtapa = list.get(0);
                     processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
                     processoEtapa.setDataLiberacao(Calendar.getInstance());
                     processoEtapa.setDataAtualizacao(Calendar.getInstance());
                     final ImplantacaoProcessoEtapa pe = etapas.save(processoEtapa);
+
+                    notificarProximaEtapa(pe);
+
                     Optional<ImplantacaoProcessoEtapa> result = tbPrincipal.getItems().stream().filter(c -> c.getId() == pe.getId()).findAny();
                     if (result.isPresent()) {
                         int in = tbPrincipal.getItems().indexOf(result.get());
@@ -127,6 +173,8 @@ public class TabelaProcessosEtapa extends UtilsController {
     }
 
     void tabela(){
+        final String etapa = "etapa";
+
         tbPrincipal.getColumns().clear();
 
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcesso> colunaId = new TableColumn<>("*");
@@ -173,7 +221,7 @@ public class TabelaProcessosEtapa extends UtilsController {
         colunaPrazo.setPrefWidth(100);
 
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaDepartamento = new TableColumn<>("Responsavel");
-        colunaDepartamento.setCellValueFactory(new PropertyValueFactory<>("etapa"));
+        colunaDepartamento.setCellValueFactory(new PropertyValueFactory<>(etapa));
         colunaDepartamento.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
             @Override
             protected void updateItem(ImplantacaoEtapa item, boolean empty) {
@@ -188,7 +236,7 @@ public class TabelaProcessosEtapa extends UtilsController {
         });
 
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaEtapa = new TableColumn<>("Etapa");
-        colunaEtapa.setCellValueFactory(new PropertyValueFactory<>("etapa"));
+        colunaEtapa.setCellValueFactory(new PropertyValueFactory<>(etapa));
         colunaEtapa.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
             @Override
             protected void updateItem(ImplantacaoEtapa item, boolean empty) {
@@ -202,7 +250,7 @@ public class TabelaProcessosEtapa extends UtilsController {
             }
         });
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaAtividade = new TableColumn<>("Atividade");
-        colunaAtividade.setCellValueFactory(new PropertyValueFactory<>("etapa"));
+        colunaAtividade.setCellValueFactory(new PropertyValueFactory<>(etapa));
         colunaAtividade.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
             final JFXTextArea area = new JFXTextArea();
             @Override
@@ -220,7 +268,7 @@ public class TabelaProcessosEtapa extends UtilsController {
         });
         colunaAtividade.setPrefWidth(150);
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> colunaDescricao = new TableColumn<>("O que devo fazer?");
-        colunaDescricao.setCellValueFactory(new PropertyValueFactory<>("etapa"));
+        colunaDescricao.setCellValueFactory(new PropertyValueFactory<>(etapa));
         colunaDescricao.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
             final JFXTextArea area = new JFXTextArea();
             @Override
@@ -260,7 +308,9 @@ public class TabelaProcessosEtapa extends UtilsController {
                         else if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO))
                             buttonTable(button, IconsEnum.BUTTON_EDIT);
                         else setGraphic(null);
-                    }catch (IOException e) {}
+                    }catch (IOException e) {
+                        logger.error(e.getMessage());
+                    }
                     final Tooltip tooltip = new Tooltip("Clique para criar uma nota!");
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> cadastrarEtapas(ip,getIndex(),ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO)));
@@ -286,7 +336,9 @@ public class TabelaProcessosEtapa extends UtilsController {
                     button.getStyleClass().add("");
                     try {
                         buttonTable(button, item.getIcon());
-                    }catch (IOException e) {}
+                    }catch (IOException e) {
+                        logger.error(e.getMessage());
+                    }
                     final Tooltip tooltip = new Tooltip("Clique para encerrar essa etapa");
                     button.setText(item.equals(ImplantacaoProcessoEtapa.Status.ABERTO)?"Baixar":item.toString());
                     button.setTooltip(tooltip);

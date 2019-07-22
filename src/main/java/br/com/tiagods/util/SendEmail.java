@@ -3,11 +3,13 @@ import br.com.tiagods.config.MailConfig;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.HtmlEmail;
 
+import java.util.List;
+
 public class SendEmail {
 	
 	private String errorMessage="";
 	
-    public boolean enviaAlerta(String from, String fromResume, String conta, String titulo, String mensagem){
+    public boolean enviaAlerta(String fromMail, String fromResume, List<String> conta, String titulo, String mensagem, boolean htmlMsg){
         MailConfig cf = MailConfig.getInstance();
 
         HtmlEmail email = new HtmlEmail();
@@ -15,10 +17,13 @@ public class SendEmail {
         email.setSmtpPort(587);
         email.setAuthenticator( new DefaultAuthenticator(cf.getValue("user"),cf.getValue("password")) );
         try {
-            email.setFrom(from,fromResume);
+            email.setFrom(fromMail,fromResume);
             email.setSubject(titulo);
-            email.setHtmlMsg(mensagem);
-            email.addTo(conta);
+            for(String mail : conta) email.addTo(mail.trim());
+            if(htmlMsg)
+                email.setHtmlMsg(mensagem);
+            else
+                email.setTextMsg(mensagem);
             email.send();
             return true;
         } catch (Exception e) {
