@@ -32,6 +32,14 @@ public class Cliente implements AbstractEntity,Serializable{
         this.id=id;
     }
 
+    public String getIdFormatado(){
+        String valor = String.valueOf(id);
+        String newValor = valor.length()==1?"000"+valor:
+                (valor.length()==2?"00"+valor:
+                    (valor.length()==3?"0"+valor:""));
+        return newValor;
+    }
+
     /**
      * @return the id
      */

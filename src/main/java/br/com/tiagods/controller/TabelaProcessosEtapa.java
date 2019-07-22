@@ -30,8 +30,8 @@ public class TabelaProcessosEtapa extends UtilsController {
 
     private ImplantacaoProcessoEtapasImpl etapas;
 
-    public TabelaProcessosEtapa(TableView<ImplantacaoProcessoEtapa> tbPrincipal){
-        this.tbPrincipal=tbPrincipal;
+    public TabelaProcessosEtapa(TableView<ImplantacaoProcessoEtapa> tbPrincipal) {
+        this.tbPrincipal = tbPrincipal;
     }
 
     private void cadastrarEtapas(ImplantacaoProcessoEtapa etapa, int index, boolean editar) {
@@ -65,54 +65,59 @@ public class TabelaProcessosEtapa extends UtilsController {
         }
     }
 
-    private void notificarProximaEtapa(ImplantacaoProcessoEtapa pe){
+    private void notificarProximaEtapa(ImplantacaoProcessoEtapa pe) {
         String email = pe.getEtapa().getDepartamento().getEmail().trim();
         Usuario usuario = UsuarioLogado.getInstance().getUsuario();
-        if(!email.equals("")){
+        if (!email.equals("")) {
             StringBuilder builder = new StringBuilder();
-            builder.append("Olá,\n\n")
+            builder.append("Sistema Controle de Processos/Implantação \n\n")
+                    .append("Olá,\n\n")
                     .append(usuario.getNome())
                     .append(" acabou de concluir uma Etapa de Implantação do cliente ")
-                    .append(pe.getProcesso().getCliente().getNome())
+                    .append(pe.getProcesso().getCliente().toString())
                     .append("\n\n")
                     .append("Você foi designado para concluir a proxima Etapa, abaixo uma descricao:\n\n")
-                    .append("Data Liberação: ").append(pe.getDataLiberacao()!=null?sdf.format(pe.getDataLiberacao().getTime()):"")
-                    .append("Cliente Apelido:").append(pe.getProcesso().getCliente().getId())
-                    .append("Cliente Nome:").append(pe.getProcesso().getCliente().getNome())
-                    .append("Depto Responsavel:").append(pe.getEtapa().getDepartamento())
-                    .append("Etapa:").append(pe.getEtapa().getEtapa())
-                    .append("Atividade:").append(pe.getEtapa().getAtividade().getNome())
-                    .append("O que fazer ? (Descricao da tarefa) :").append(pe.getEtapa().getDescricao())
-                    .append("Historico das atividades anteriores :\n ");
+                    .append("Data Liberação: ").append(pe.getDataLiberacao() != null ? sdf.format(pe.getDataLiberacao().getTime()) : "").append("\n")
+                    .append("Cliente Apelido:").append(pe.getProcesso().getCliente().getIdFormatado()).append("\n")
+                    .append("Cliente Nome:").append(pe.getProcesso().getCliente().getNome()).append("\n")
+                    .append("Depto Responsavel:").append(pe.getEtapa().getDepartamento()).append("\n")
+                    .append("Etapa:").append(pe.getEtapa().getEtapa()).append("\n")
+                    .append("Atividade:").append(pe.getEtapa().getAtividade().getNome()).append("\n")
+                    .append("O que fazer? (Sua tarefa) :").append(pe.getEtapa().getDescricao()).append("\n\n\n")
+                    .append("Historico das atividades anteriores :\n");
 
-                    List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,pe.getProcesso(),pe.getEtapa().getAtividade(),null,null);
-                    List<ImplantacaoProcessoEtapaStatus> result = list.stream()
-                            .map(ImplantacaoProcessoEtapa::getHistorico)
-                            .flatMap(c->c.stream()).collect(Collectors.toList());
+            //pegando sets dos objetos e reunindo em um unico list
+            List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
+            List<ImplantacaoProcessoEtapaStatus> result = list.stream()
+                    .map(ImplantacaoProcessoEtapa::getHistorico)
+                    .flatMap(c -> c.stream()).collect(Collectors.toList());
 
-                    Collections.sort(result, Comparator.comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm));
 
-                    result.forEach(c->{
-                        builder.append("Data").append(c.getCriadoEm()==null?"":sdf.format(c.getCriadoEm().getTime())).append("\t")
-                                .append("Autor").append(c.getCriadoPor().getLogin()).append("\t")
-                                .append("Descricao").append(c.getDescricao()).append("\n");
-                    });
+            Collections.sort(result, Comparator.comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm));
 
-                    Calendar data = pe.getDataAtualizacao();
-                    if(data!=null) {
-                        data.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
-                        builder.append("Não se esqueça de concluir a tarefa até " + sdf.format(data.getTime()));
-                    }
-                    SendEmail mail = new SendEmail();
-                    mail.enviaAlerta("","",
-                            new ArrayList<>(Arrays.asList(email.split(";"))),"",
-                            builder.toString(),false);
+            result.forEach(c -> {
+                builder.append("Data: ").append(c.getCriadoEm() == null ? "" : sdf.format(c.getCriadoEm().getTime())).append("\t\t")
+                        .append("Autor: ").append(c.getCriadoPor().getLogin()).append("\t\t")
+                        .append("Descricao: ").append(c.getDescricao()).append("\n");
+
+            });
+
+            Calendar data = pe.getDataAtualizacao();
+            if (data != null) {
+                data.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+                builder.append("\n")
+                        .append("Não se esqueça de concluir a tarefa até " + sdf.format(data.getTime()));
+            }
+            SendEmail mail = new SendEmail();
+            mail.enviaAlerta("documentos@prolinkcontabil.com.br", "Implantacao \\ Prolink Contabil",
+                    new ArrayList<>(Arrays.asList(email.split(";"))), pe.getProcesso().getCliente().getIdFormatado() + " - Processo de Implantação, Nova Etapa em Aberto",
+                    builder.toString(), false);
         }
 
     }
 
-    private boolean salvarEConcluir(String descricao, ImplantacaoProcessoEtapa ip,int index){
-        try{
+    private boolean salvarEConcluir(String descricao, ImplantacaoProcessoEtapa ip, int index) {
+        try {
             loadFactory();
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
 
@@ -130,15 +135,15 @@ public class TabelaProcessosEtapa extends UtilsController {
             ip.setStatus(ImplantacaoProcessoEtapa.Status.CONCLUIDO);
             ip = etapas.save(ip);
 
-            tbPrincipal.getItems().set(index,ip);
+            tbPrincipal.getItems().set(index, ip);
 
             // metodo de atualização da proxima etapa, remocao por ser menos funcional
 
             ImplantacaoEtapa.Etapa etapa = ip.getEtapa().getEtapa();
-            Optional<ImplantacaoEtapa.Etapa> re = Arrays.asList(ImplantacaoEtapa.Etapa.values()).stream().filter(c->c.getValor() == etapa.getValor()+1).findAny();
-            if(re.isPresent()) {
-                List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,ip.getProcesso(),ip.getEtapa().getAtividade(),re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR);
-                if(list.size() == 1){
+            Optional<ImplantacaoEtapa.Etapa> re = Arrays.asList(ImplantacaoEtapa.Etapa.values()).stream().filter(c -> c.getValor() == etapa.getValor() + 1).findAny();
+            if (re.isPresent()) {
+                List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR);
+                if (list.size() == 1) {
                     ImplantacaoProcessoEtapa processoEtapa = list.get(0);
                     processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
                     processoEtapa.setDataLiberacao(Calendar.getInstance());
@@ -152,8 +157,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                         int in = tbPrincipal.getItems().indexOf(result.get());
                         tbPrincipal.getItems().set(in, pe);
                     }
-                }
-                else if(list.size()>1) {
+                } else if (list.size() > 1) {
                     alert(Alert.AlertType.ERROR,
                             "Erro",
                             "",
@@ -162,17 +166,17 @@ public class TabelaProcessosEtapa extends UtilsController {
                 }
             }
             tbPrincipal.refresh();
-            alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!",null,false);
+            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Salvo com sucesso!", null, false);
             return true;
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar o registro!",e, true);
+        } catch (Exception e) {
+            alert(Alert.AlertType.ERROR, "Erro", "", "Falha ao tentar salvar o registro!", e, true);
             return false;
-        }finally {
+        } finally {
             close();
         }
     }
 
-    void tabela(){
+    void tabela() {
         final String etapa = "etapa";
 
         tbPrincipal.getColumns().clear();
@@ -210,9 +214,9 @@ public class TabelaProcessosEtapa extends UtilsController {
                     area.setText(processoEtapa.getStatusVencimento());
                     setGraphic(area);
 
-                    if(processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.VENCIDO))
+                    if (processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.VENCIDO))
                         setStyle("-fx-background-color: red; -fx-text-fill: white;");
-                    else if(processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.NO_PRAZO))
+                    else if (processoEtapa.getVencido().equals(ImplantacaoProcessoEtapa.Vencido.NO_PRAZO))
                         setStyle("-fx-background-color: green; -fx-text-fill: white;");
                     else setStyle("");
                 }
@@ -253,6 +257,7 @@ public class TabelaProcessosEtapa extends UtilsController {
         colunaAtividade.setCellValueFactory(new PropertyValueFactory<>(etapa));
         colunaAtividade.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
             final JFXTextArea area = new JFXTextArea();
+
             @Override
             protected void updateItem(ImplantacaoEtapa item, boolean empty) {
                 super.updateItem(item, empty);
@@ -271,6 +276,7 @@ public class TabelaProcessosEtapa extends UtilsController {
         colunaDescricao.setCellValueFactory(new PropertyValueFactory<>(etapa));
         colunaDescricao.setCellFactory((TableColumn<ImplantacaoProcessoEtapa, ImplantacaoEtapa> param) -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoEtapa>() {
             final JFXTextArea area = new JFXTextArea();
+
             @Override
             protected void updateItem(ImplantacaoEtapa item, boolean empty) {
                 super.updateItem(item, empty);
@@ -286,61 +292,61 @@ public class TabelaProcessosEtapa extends UtilsController {
         });
         colunaDescricao.setPrefWidth(150);
 
-        TableColumn<ImplantacaoProcessoEtapa, Number> colunaEditar = new  TableColumn<>("Historico");
+        TableColumn<ImplantacaoProcessoEtapa, Number> colunaEditar = new TableColumn<>("Historico");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,Number>(){
+        colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa, Number>() {
             final JFXButton button = new JFXButton();
+
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
-                if(item==null){
+                if (item == null) {
                     setStyle("");
                     setText("");
                     setGraphic(null);
-                }
-                else{
+                } else {
                     ImplantacaoProcessoEtapa ip = tbPrincipal.getItems().get(getIndex());
                     button.getStyleClass().add("btDefault");
                     setGraphic(button);
                     try {
-                        if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
+                        if (ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
                             buttonTable(button, IconsEnum.BUTTON_VIEW);
-                        else if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO))
+                        else if (ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO))
                             buttonTable(button, IconsEnum.BUTTON_EDIT);
                         else setGraphic(null);
-                    }catch (IOException e) {
+                    } catch (IOException e) {
                         logger.error(e.getMessage());
                     }
                     final Tooltip tooltip = new Tooltip("Clique para criar uma nota!");
                     button.setTooltip(tooltip);
-                    button.setOnAction(event -> cadastrarEtapas(ip,getIndex(),ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO)));
+                    button.setOnAction(event -> cadastrarEtapas(ip, getIndex(), ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO)));
                 }
             }
         });
         TableColumn<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status> colunaStatus = new TableColumn<>("Status");
         colunaStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
-        colunaStatus.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa,ImplantacaoProcessoEtapa.Status>(){
+        colunaStatus.setCellFactory(param -> new TableCell<ImplantacaoProcessoEtapa, ImplantacaoProcessoEtapa.Status>() {
             JFXButton button = new JFXButton();
+
             @Override
             protected void updateItem(ImplantacaoProcessoEtapa.Status item, boolean empty) {
                 super.updateItem(item, empty);
-                if(item==null){
+                if (item == null) {
                     setStyle("");
                     setText("");
                     setGraphic(null);
-                }
-                else{
+                } else {
                     ImplantacaoProcessoEtapa ip = tbPrincipal.getItems().get(getIndex());
                     button.setDisable(item.equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO) ||
                             item.equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR));
                     button.getStyleClass().add("");
                     try {
                         buttonTable(button, item.getIcon());
-                    }catch (IOException e) {
+                    } catch (IOException e) {
                         logger.error(e.getMessage());
                     }
                     final Tooltip tooltip = new Tooltip("Clique para encerrar essa etapa");
-                    button.setText(item.equals(ImplantacaoProcessoEtapa.Status.ABERTO)?"Baixar":item.toString());
+                    button.setText(item.equals(ImplantacaoProcessoEtapa.Status.ABERTO) ? "Baixar" : item.toString());
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> {
                         TextInputDialog dialog = new TextInputDialog("");
@@ -348,8 +354,8 @@ public class TabelaProcessosEtapa extends UtilsController {
                         dialog.setHeaderText("Entre com uma observacao para finalizar essa etapa");
                         dialog.setContentText("Informe uma observacao:");
                         Optional<String> result = dialog.showAndWait();
-                        if (result.isPresent()){
-                            salvarEConcluir(result.get(),ip,getIndex());
+                        if (result.isPresent()) {
+                            salvarEConcluir(result.get(), ip, getIndex());
                         }
                     });
                     setGraphic(button);
@@ -358,6 +364,6 @@ public class TabelaProcessosEtapa extends UtilsController {
         });
         colunaStatus.setPrefWidth(200);
         tbPrincipal.setFixedCellSize(70);
-        tbPrincipal.getColumns().addAll(colunaId,colunaData,colunaPrazo,colunaDepartamento,colunaEtapa,colunaAtividade,colunaDescricao,colunaEditar,colunaStatus);
+        tbPrincipal.getColumns().addAll(colunaId, colunaData, colunaPrazo, colunaDepartamento, colunaEtapa, colunaAtividade, colunaDescricao, colunaEditar, colunaStatus);
     }
 }
