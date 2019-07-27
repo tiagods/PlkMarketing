@@ -107,12 +107,12 @@ public class LoginController extends UtilsController implements Initializable{
     }
     private void logon() {
         if (cbNome.getValue() == null || txSenha.getText().equals("")) {
-            super.alert(Alert.AlertType.ERROR,"Erro",null,"Usuario ou senha em branco!",null,false);
+            alert(Alert.AlertType.ERROR,"Erro",null,"Usuario ou senha em branco!",null,false);
             return;
         } else {
             try {
-                super.loadFactory();
-                usuarios = new UsuariosImpl(super.getManager());
+                loadFactory();
+                usuarios = new UsuariosImpl(getManager());
                 Usuario usuario = usuarios.findByLoginAndSenha(
                         cbNome.getValue().getLogin(),
                         new CriptografiaUtil().criptografar(txSenha.getText().trim())
@@ -126,18 +126,18 @@ public class LoginController extends UtilsController implements Initializable{
 	                    initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
 	                    stage.close();
                 	}catch (IOException ex) {
-                		super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
+                		alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
 					}
                 }
                 else {
-                    super.alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
+                    alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
                     txSenha.setText("");
                 }
             }catch(Exception e) {
                 super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao buscar usuario",e,true);
                 e.printStackTrace();
             }finally {
-                super.close();
+                close();
             }
         }
     }

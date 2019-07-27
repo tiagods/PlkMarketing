@@ -10,7 +10,9 @@ import br.com.tiagods.config.init.JPAConfig;
 public class PersistenciaController {
 	private EntityManager entityManager;
     //private boolean ownsPersistenceContext;
+
     private static Logger log = LoggerFactory.getLogger(PersistenciaController.class);
+
     protected synchronized void loadFactory() {
     	loadFactory(null);
     }
@@ -39,6 +41,7 @@ public class PersistenciaController {
 	        	debug("Fechando Persistencia");
 	        	getManager().close();
 	        }
+	    	else debug("Persistencia ja se encontra fechada");
     	}catch (Exception e) {
     		if(log.isErrorEnabled())
     			debug(e.getMessage());

@@ -62,8 +62,7 @@ public class StartApp extends Application {
 					try {
 						Platform.runLater(()->alert.show());
 						log.debug("Abrindo conexao");
-						JPAConfig jpa = JPAConfig.getInstance();
-						manager = jpa.createManager();
+						manager = JPAConfig.getInstance().createManager();
 						log.debug("Concluindo conexao");
 						log.debug("Invocando login");
 						invocarLogin();
@@ -123,8 +122,7 @@ public class StartApp extends Application {
 		};
 		Platform.runLater(run2);
 	}
-
-	private void alert(String mensagem) {
+ 	private void alert(String mensagem) {
 		log.debug(mensagem);
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.getDialogPane().setExpanded(true);

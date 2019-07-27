@@ -261,6 +261,7 @@ public abstract class UtilsController extends PersistenciaController{
     	final FXMLLoader loader = new FXMLLoader(e.getLocalizacao());
         return loader;
     }
+
 	protected void salvarLog(EntityManager manager,String menu, String acao, String descricao) throws Exception{
 		UsuarioLogImpl logImpl = new UsuarioLogImpl(manager);
 		UsuarioLog log = new UsuarioLog();

@@ -185,6 +185,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 	}
 	@Override
 	public String toString() {
-		return this.login;
+		return getLogin();
 	}
 }

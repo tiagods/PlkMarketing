@@ -22,7 +22,9 @@ public class Atalho extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		try {
 			Usuario u  = new Usuario();
-			u.setId(1L);			
+			u.setId(1L);
+			u.setLogin("dev/admin");
+			u.setNome("dev/admin");
             Departamento departamento = new Departamento();
             departamento.setId(1L);
             departamento.setNome("Tecnologia");
@@ -44,16 +46,6 @@ public class Atalho extends Application {
 		}
 	}
 	public static void main(String[] args) {
-		ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-		Integer[] colunasLenght = new Integer[] 
-				{10,20,20,20,30,20,20,10,10,10,10,10,10,15,15,10,15,10,10,10,15,10,15,15,15,20,10,10,10,15,15,15,15,20,20,20,10,10,20,20,20};
-		String[] cabecalho = new String[] { "Cod", "Periodo", "Empresa/Pessoa", "Tipo", "Nome", "Razao",
-				"Apelido", "Responsavel", "Cnpj", "IM", "IE", "Telefone", "Celular", "E-Mail", "Site",
-				"CEP", "Logradouro", "Nº", "Bairro", "Compl", "Cidade", "UF", "Data Criacao", "Atendente",
-				"Criador", "Mala Direta", "Convite", "Material", "Newsletter", "Categoria", "Nivel",
-				"Servico", "Origem", "Detalhes Origem","Resumo", "Apresentacao","Listas","Qtd Negocios","Status Negocio","Honorário","Servicos Contratados"};
-		System.out.println("1>"+colunasLenght.length+" \t2>"+cabecalho.length);
 		launch(args);
-
 	}
 }

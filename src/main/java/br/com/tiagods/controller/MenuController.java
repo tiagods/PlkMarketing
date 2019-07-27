@@ -231,8 +231,7 @@ public class MenuController extends UtilsController implements Initializable{
         }
     }
 
-    private void filtrarProcessos() throws Exception{
-            loadFactory();
+    private void filtrarProcessos(){
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             tbProcesso.getItems().clear();
             List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),cbProcessoEtapa.getValue(),cbProcessoStatus.getValue()));

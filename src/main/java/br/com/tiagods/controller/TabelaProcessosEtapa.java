@@ -7,6 +7,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.util.SendEmail;
+import br.com.tiagods.util.alerta.AlertaImplantacao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXMLLoader;
@@ -66,52 +67,33 @@ public class TabelaProcessosEtapa extends UtilsController {
     }
 
     private void notificarProximaEtapa(ImplantacaoProcessoEtapa pe) {
-        String email = pe.getEtapa().getDepartamento().getEmail().trim();
         Usuario usuario = UsuarioLogado.getInstance().getUsuario();
+        String email = pe.getEtapa().getDepartamento().getEmail().trim();
+
+        Calendar prazo = pe.getDataAtualizacao();
+        if(prazo== null) prazo = Calendar.getInstance();
+        prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+
         if (!email.equals("")) {
-            StringBuilder builder = new StringBuilder();
-            builder.append("Sistema Controle de Processos/Implantação \n\n")
-                    .append("Olá,\n\n")
-                    .append(usuario.getNome())
-                    .append(" acabou de concluir uma Etapa de Implantação do cliente ")
-                    .append(pe.getProcesso().getCliente().toString())
-                    .append("\n\n")
-                    .append("Você foi designado para concluir a proxima Etapa, abaixo uma descricao:\n\n")
-                    .append("Data Liberação: ").append(pe.getDataLiberacao() != null ? sdf.format(pe.getDataLiberacao().getTime()) : "").append("\n")
-                    .append("Cliente Apelido:").append(pe.getProcesso().getCliente().getIdFormatado()).append("\n")
-                    .append("Cliente Nome:").append(pe.getProcesso().getCliente().getNome()).append("\n")
-                    .append("Depto Responsavel:").append(pe.getEtapa().getDepartamento()).append("\n")
-                    .append("Etapa:").append(pe.getEtapa().getEtapa()).append("\n")
-                    .append("Atividade:").append(pe.getEtapa().getAtividade().getNome()).append("\n")
-                    .append("O que fazer? (Sua tarefa) :").append(pe.getEtapa().getDescricao()).append("\n\n\n")
-                    .append("Historico das atividades anteriores :\n");
-
-            //pegando sets dos objetos e reunindo em um unico list
-            List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
-            List<ImplantacaoProcessoEtapaStatus> result = list.stream()
-                    .map(ImplantacaoProcessoEtapa::getHistorico)
-                    .flatMap(c -> c.stream()).collect(Collectors.toList());
-
-
-            Collections.sort(result, Comparator.comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm));
-
-            result.forEach(c -> {
-                builder.append("Data: ").append(c.getCriadoEm() == null ? "" : sdf.format(c.getCriadoEm().getTime())).append("\t\t")
-                        .append("Autor: ").append(c.getCriadoPor().getLogin()).append("\t\t")
-                        .append("Descricao: ").append(c.getDescricao()).append("\n");
-
-            });
-
-            Calendar data = pe.getDataAtualizacao();
-            if (data != null) {
-                data.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
-                builder.append("\n")
-                        .append("Não se esqueça de concluir a tarefa até " + sdf.format(data.getTime()));
-            }
             SendEmail mail = new SendEmail();
+            AlertaImplantacao alertaImplantacao = new AlertaImplantacao();
+            List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
+            List<ImplantacaoProcessoEtapaStatus> status = alertaImplantacao.organizarLista(list);
+
+            List<String> cabecalho = Arrays.asList("Sistema Controle de Processos/Implanta&ccedil;&atilde;o",
+                    "Ol&aacute;;",
+                    usuario!=null?usuario.getNome():""+" acabou de concluir uma Etapa de Implanta&ccedil;&atilde;o",
+                    "Voc&ecirc; foi designado para concluir a proxima Etapa, abaixo uma descri&ccedil;&atilde;o:");
+
+
+            List<String> rodape = Arrays.asList("N&atilde;o se esque&ccedil;a de concluir a tarefa at&eacute; "+sdf.format(prazo.getTime()));
+
+            Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new HashMap<>();
+            map.put(pe, status);
+            String value = alertaImplantacao.montarMensagem(map,cabecalho,rodape);
             mail.enviaAlerta("documentos@prolinkcontabil.com.br", "Implantacao \\ Prolink Contabil",
                     new ArrayList<>(Arrays.asList(email.split(";"))), pe.getProcesso().getCliente().getIdFormatado() + " - Processo de Implantação, Nova Etapa em Aberto",
-                    builder.toString(), false);
+                    value, true);
         }
 
     }
@@ -144,6 +126,7 @@ public class TabelaProcessosEtapa extends UtilsController {
             if (re.isPresent()) {
                 List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR);
                 if (list.size() == 1) {
+                    logger.debug("Preparanto notificacao de etapa");
                     ImplantacaoProcessoEtapa processoEtapa = list.get(0);
                     processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
                     processoEtapa.setDataLiberacao(Calendar.getInstance());
@@ -165,6 +148,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                             new Exception("Foram encontradas mais etapas para o mesmo processo e atividade! Etapa=" + re.get() + ";processo=" + ip.getProcesso().getId() + ";atividade=" + ip.getEtapa().getAtividade()), true);
                 }
             }
+            else logger.debug("Is empty");
             tbPrincipal.refresh();
             alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Salvo com sucesso!", null, false);
             return true;
@@ -209,6 +193,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                 if (item == null) {
                     setText("");
                     setStyle("");
+                    setGraphic(null);
                 } else {
                     ImplantacaoProcessoEtapa processoEtapa = tbPrincipal.getItems().get(getIndex());
                     area.setText(processoEtapa.getStatusVencimento());

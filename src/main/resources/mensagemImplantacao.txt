@@ -1,0 +1,41 @@
+/*
+StringBuilder builder = new StringBuilder();
+builder.append("Sistema Controle de Processos/Implantação \n\n")
+.append("Olá,\n\n")
+.append(usuario.getNome())
+.append(" acabou de concluir uma Etapa de Implantação do cliente ")
+.append(pe.getProcesso().getCliente().toString())
+.append("\n\n")
+.append("Você foi designado para concluir a proxima Etapa, abaixo uma descricao:\n\n")
+.append("Data Liberação: ").append(pe.getDataLiberacao() != null ? sdf.format(pe.getDataLiberacao().getTime()) : "").append("\n")
+.append("Cliente Apelido:").append(pe.getProcesso().getCliente().getIdFormatado()).append("\n")
+.append("Cliente Nome:").append(pe.getProcesso().getCliente().getNome()).append("\n")
+.append("Depto Responsavel:").append(pe.getEtapa().getDepartamento()).append("\n")
+.append("Etapa:").append(pe.getEtapa().getEtapa()).append("\n")
+.append("Atividade:").append(pe.getEtapa().getAtividade().getNome()).append("\n")
+.append("O que fazer? (Sua tarefa) :").append(pe.getEtapa().getDescricao()).append("\n\n\n")
+.append("Historico das atividades anteriores :\n");
+
+//pegando sets dos objetos e reunindo em um unico list
+List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
+List<ImplantacaoProcessoEtapaStatus> result = list.stream()
+.map(ImplantacaoProcessoEtapa::getHistorico)
+.flatMap(c -> c.stream()).collect(Collectors.toList());
+
+
+Collections.sort(result, Comparator.comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm));
+
+result.forEach(c -> {
+builder.append("Data: ").append(c.getCriadoEm() == null ? "" : sdf.format(c.getCriadoEm().getTime())).append("\t\t")
+.append("Autor: ").append(c.getCriadoPor().getLogin()).append("\t\t")
+.append("Descricao: ").append(c.getDescricao()).append("\n");
+
+});
+
+Calendar data = pe.getDataAtualizacao();
+if (data != null) {
+data.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+builder.append("\n")
+.append("Não se esqueça de concluir a tarefa até " + sdf.format(data.getTime()));
+}
+*/
