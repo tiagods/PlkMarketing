@@ -1,4 +1,4 @@
-package br.com.tiagods.util.alerta;
+﻿package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.config.init.JPAConfig;
 import br.com.tiagods.controller.PersistenciaController;
@@ -61,7 +61,7 @@ public class AlertaProtocolo extends AlertaModel {
                 String email = p.getParaQuem().getEmail();
                 //String email = "tiago.dias@prolinkcontabil.com.br";
 
-                if (aviso.enviaAlerta("documento@prolinkcontabil.com.br","Documentos \\ Prolink Contabil", Arrays.asList(email), novoId+" - Protocolo de Entrada N." +p.getId(), mensagem,true)) {
+                if (aviso.enviaAlerta("recepccao@prolinkcontabil.com.br","Protocolos \\ Prolink Contabil", Arrays.asList(email), novoId+" - Protocolo de Entrada N." +p.getId(), mensagem,true)) {
 //                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 //                    alert.setTitle("Enviado com sucesso!");
 //                    alert.setHeaderText(null);
