@@ -183,7 +183,7 @@ public class MenuController extends UtilsController implements Initializable{
         listViewNegocios.getItems().add(button);
     }
 
-    void combos(){
+    void combos() throws IndexOutOfBoundsException{
         btnProtocolo.setOnAction(this::protocolo);
         ChangeListener processoListener = (observable, oldValue, newValue) -> {
             if(desabilitarAcaoCombos) return;
@@ -193,13 +193,12 @@ public class MenuController extends UtilsController implements Initializable{
                 filtrarProcessos();
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
-            }finally {
+            } finally {
                 close();
             }
         };
         cbProcesso.valueProperty().addListener(processoListener);
         cbProcessoDepartamento.valueProperty().addListener(processoListener);
-        cbProcessoEtapa.valueProperty().addListener(processoListener);
         cbProcessoAtividade.valueProperty().addListener(processoListener);
         cbProcessoStatus.valueProperty().addListener(processoListener);
     }
@@ -234,7 +233,7 @@ public class MenuController extends UtilsController implements Initializable{
     private void filtrarProcessos(){
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             tbProcesso.getItems().clear();
-            List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),cbProcessoEtapa.getValue(),cbProcessoStatus.getValue()));
+            List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),null,cbProcessoStatus.getValue()));
             tbProcesso.getItems().addAll(list);
     }
     @FXML
@@ -251,7 +250,9 @@ public class MenuController extends UtilsController implements Initializable{
         }
     }
     @Override
-	public void initialize(URL location, ResourceBundle resources) {
+	public void initialize(URL location, ResourceBundle resources) throws IndexOutOfBoundsException{
+        cbProcessoEtapa.setVisible(false);
+
         combos();
         atualizar();
         menu();
@@ -477,10 +478,6 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoAtividade.getItems().addAll(atividades.getAllByName());
         cbProcessoAtividade.setValue(atividade);
         new ComboBoxAutoCompleteUtil<>(cbProcessoAtividade);
-
-        cbProcessoEtapa.getItems().clear();
-        cbProcessoEtapa.getItems().addAll(ImplantacaoEtapa.Etapa.values());
-        cbProcessoEtapa.getSelectionModel().selectFirst();
 
         cbProcessoStatus.getItems().clear();
         cbProcessoStatus.getItems().addAll(ImplantacaoProcessoEtapa.Status.values());

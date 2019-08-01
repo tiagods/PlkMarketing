@@ -12,7 +12,8 @@ import java.util.Objects;
 @Embeddable
 public class ImplantacaoEtapa{
     public enum Etapa{
-        ETAPA(-1,"Todos"),PRIMEIRA(1,"Primeira"),SEGUNDA(2,"Segunda"),TERCEIRA(3,"Terceira");
+        //ETAPA(-1,"Todos"),
+        PRIMEIRA(1,"Primeira"),SEGUNDA(2,"Segunda"),TERCEIRA(3,"Terceira");
         //QUARTA(4),QUINTA(5),SEXTA(6),SETIMA(7),OITAVA(8),NONA(9),DECIMA(10)
         private int valor;
         private String nome;

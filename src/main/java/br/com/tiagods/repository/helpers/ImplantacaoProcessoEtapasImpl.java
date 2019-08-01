@@ -39,7 +39,7 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         if(atividade!=null && atividade.getId()!=-1L){
             criteria.add(Restrictions.eq("etapa.atividade",atividade));
         }
-        if(etapa!=null && etapa!=ImplantacaoEtapa.Etapa.ETAPA){
+        if(etapa!=null){
             criteria.add(Restrictions.eq("etapa.etapa",etapa));
         }
         if(status!=null && status!=ImplantacaoProcessoEtapa.Status.STATUS){

@@ -1,4 +1,4 @@
-﻿package br.com.tiagods.util.alerta;
+package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.config.init.JPAConfig;
 import br.com.tiagods.controller.PersistenciaController;
@@ -33,7 +33,7 @@ public class AlertaProtocolo extends AlertaModel {
         p.renderizar(value);
     }
 
-    //usando o boolean trySucess, significa tentar enviar o alerta consecutivas vezes ate resultar em sucesso, se não informado a tentativa será única
+    //usando o boolean trySucess, significa tentar enviar o alerta consecutivas vezes ate resultar em sucesso, se nao informado a tentativa sera unica
     public void programarEnvioDocumentoRecebido(ProtocoloEntrada p, boolean trySucess) {
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
