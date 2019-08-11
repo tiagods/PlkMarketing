@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="450.0" maxWidth="487.0" prefHeight="230.0" prefWidth="477.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="230.0" prefWidth="477.0" styleClass="login--linear-background" stylesheets="@css/estilo.css">
+         <children>
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="414.0" styleClass="label-title2" text="Recuperacao de Senha">
+               <font>
+                  <Font name="System Bold Italic" size="18.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="75.0" layoutX="249.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/theme.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <JFXComboBox fx:id="cbLogin" prefHeight="26.0" prefWidth="430.0">
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </JFXComboBox>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <JFXButton buttonType="RAISED" onAction="#esqueciSenha" prefHeight="38.0" prefWidth="340.0" styleClass="btDefault" text="Esqueci minha senha e quero recuperar o acesso">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_exit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

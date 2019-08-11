@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="450.0" maxWidth="487.0" prefHeight="233.0" prefWidth="400.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="250.0" prefWidth="400.0" styleClass="login--linear-background" stylesheets="@css/estilo.css">
+         <children>
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="414.0" styleClass="label-title2" text="Troca de Senha">
+               <font>
+                  <Font name="System Bold Italic" size="18.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <children>
+                  <ImageView fitHeight="70.0" fitWidth="75.0" layoutX="249.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imagens/theme.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER">
+               <children>
+                  <JFXPasswordField fx:id="txNovaSenha" promptText="Nova Senha" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER">
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+               <children>
+                  <JFXPasswordField fx:id="txRepetir" promptText="Repetir Senha" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="180.0">
+               <children>
+                  <Label fx:id="lbAviso" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <JFXButton buttonType="RAISED" onAction="#salvar" prefHeight="38.0" prefWidth="100.0" styleClass="btDefault" text="Atualizar">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
