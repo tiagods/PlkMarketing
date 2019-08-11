@@ -1,26 +1,19 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
-import com.jfoenix.controls.JFXTextField;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.io.IOException;
 import java.net.URL;

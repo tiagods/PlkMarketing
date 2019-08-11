@@ -1,4 +1,4 @@
-package br.com.tiagods.controller;
+package br.com.tiagods.controller.utils;
 
 import javax.persistence.EntityManager;
 

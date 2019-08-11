@@ -1,20 +1,15 @@
 package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.config.init.JPAConfig;
-import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.SendEmail;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;

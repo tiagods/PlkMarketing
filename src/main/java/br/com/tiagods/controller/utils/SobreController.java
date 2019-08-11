@@ -1,4 +1,4 @@
-package br.com.tiagods.controller;
+package br.com.tiagods.controller.utils;
 
 import br.com.tiagods.model.VersaoApp;
 import br.com.tiagods.repository.helpers.VersaoAppImpl;

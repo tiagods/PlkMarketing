@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.repository.helpers.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -38,7 +39,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.util.ExcelGenerico;
+import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
@@ -419,7 +420,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 								listaImpressao.get(i).add(valorHonorario.toString());//valor do negocio
 								listaImpressao.get(i).add(statusServicosNegocios.toString());//valor do negocio
 							}
-							ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao, colunasLenght);
+							ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
 							planilha.gerarExcel();
 							salvarLog(getManager(), "Contato", "Exportar", "Exportou relatorio xls");
 							Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));

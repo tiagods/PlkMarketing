@@ -1,9 +1,7 @@
 package br.com.tiagods;
 
-import br.com.tiagods.controller.PersistenciaController;
-import br.com.tiagods.controller.UtilsController;
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
-import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import javafx.scene.control.Alert;

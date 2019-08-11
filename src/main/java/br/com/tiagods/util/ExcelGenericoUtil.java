@@ -18,7 +18,7 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
-public class ExcelGenerico {
+public class ExcelGenericoUtil {
 	private WritableCellFormat fontCabecalho;
 	private WritableCellFormat fontPadrao1;
 	private WritableCellFormat fontPadrao2;
@@ -29,7 +29,7 @@ public class ExcelGenerico {
 	private Integer[] larguraColunas;
 	
 	@SuppressWarnings("rawtypes")
-	public ExcelGenerico(String saida, ArrayList<ArrayList> lista, Integer[] larguraColunas){
+	public ExcelGenericoUtil(String saida, ArrayList<ArrayList> lista, Integer[] larguraColunas){
 		this.arquivoSaida=saida;
 		this.lista=lista;
 		this.larguraColunas=larguraColunas;

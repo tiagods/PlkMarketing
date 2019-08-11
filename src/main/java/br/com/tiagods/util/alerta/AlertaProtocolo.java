@@ -1,16 +1,12 @@
 package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.config.init.JPAConfig;
-import br.com.tiagods.controller.PersistenciaController;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
-import br.com.tiagods.util.SendEmail;
+import br.com.tiagods.services.SendEmail;
 
 import javax.persistence.EntityManager;
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.Normalizer;
 import java.text.SimpleDateFormat;

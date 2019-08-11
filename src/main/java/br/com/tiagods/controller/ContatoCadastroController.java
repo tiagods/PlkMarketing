@@ -18,6 +18,7 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.controller.utils.UtilsController;
 import org.controlsfx.control.Rating;
 import org.fxutils.maskedtextfield.MaskedTextField;
 

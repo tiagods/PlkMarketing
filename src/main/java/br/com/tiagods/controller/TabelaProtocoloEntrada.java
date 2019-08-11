@@ -3,6 +3,7 @@ package br.com.tiagods.controller;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
@@ -35,7 +36,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class TabelaProtocoloEntrada extends UtilsController{
+public class TabelaProtocoloEntrada extends UtilsController {
     private TableView<ProtocoloEntrada> tbPrincipal;
     private JFXRadioButton rbAdministrativo, rbComum;
     private ProtocolosEntradasImpl protocolos;

@@ -1,6 +1,7 @@
-package br.com.tiagods.util;
+package br.com.tiagods.services;
 import br.com.tiagods.config.MailConfig;
 import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +14,10 @@ public class SendEmail {
 
 	private String errorMessage="";
 	
-    public boolean enviaAlerta(String fromMail, String fromResume, List<String> conta, String titulo, String mensagem, boolean htmlMsg){
+    public boolean enviaAlerta(String fromMail, String fromResume,
+                               List<String> conta, String titulo, String mensagem,
+                               boolean htmlMsg){
         MailConfig cf = MailConfig.getInstance();
-
         HtmlEmail email = new HtmlEmail();
         email.setHostName(cf.getValue("host"));
         email.setSmtpPort(587);
@@ -31,7 +33,7 @@ public class SendEmail {
             email.send();
             logger.debug("Email enviado com sucesso");
             return true;
-        } catch (Exception e) {
+        } catch (EmailException e) {
             logger.debug("Falha ao enviar e-mail");
             errorMessage =e.getMessage();
             e.printStackTrace();

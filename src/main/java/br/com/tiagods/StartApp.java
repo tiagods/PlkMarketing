@@ -26,16 +26,24 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class StartApp extends Application {
+
+	boolean habilitarVerificacaoAtualizaca = false;
 	private static Logger log = LoggerFactory.getLogger(StartApp.class);
-	Atualizador atualizador = new Atualizador();
+	private Atualizador atualizador = new Atualizador();
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		if (atualizador.atualizacaoPendente()) {
-			log.debug("Sistema desatualizado");
-			atualizador.iniciarAtualizacao();
-		} else {
-			log.debug("Sistema atualizado");
+		if(habilitarVerificacaoAtualizaca){
+			if (atualizador.atualizacaoPendente()) {
+				log.debug("Sistema desatualizado");
+				atualizador.iniciarAtualizacao();
+			} else {
+				log.debug("Sistema atualizado");
+				iniciar();
+			}
+		}
+		else {
+			log.debug("Verificacao de atualizacao foi ignorada");
 			iniciar();
 		}
 	}
@@ -87,7 +95,8 @@ public class StartApp extends Application {
 				}
 			});
 		} catch (IOException e) {
-			alert("Falha ao localizar o arquivo " + FXMLEnum.PROGRESS_SAMPLE);		}
+			alert("Falha ao localizar o arquivo " + FXMLEnum.PROGRESS_SAMPLE);
+		}
 	}
 
 	public static void main(String[] args) {
@@ -99,20 +108,13 @@ public class StartApp extends Application {
 			@Override
 			protected Void call() throws Exception {
 				try {
-					log.debug("Stage");
 					Stage stage = new Stage();
-					log.debug("Abrindo loader");
 					final FXMLLoader loader = new FXMLLoader(FXMLEnum.LOGIN.getLocalizacao());
-					log.debug("Controller");
 					loader.setController(new LoginController(stage));
-					log.debug("Loader");
 					Parent root = loader.load();
-					log.debug("Scene");
 					Scene scene = new Scene(root);
 					stage.setScene(scene);
-					stage.setTitle("Acesso");
 					stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
-					log.debug("show");
 					stage.show();
 				} catch (IOException e) {
 					alert("Falha ao abrir login");

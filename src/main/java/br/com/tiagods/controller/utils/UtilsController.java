@@ -1,4 +1,4 @@
-package br.com.tiagods.controller;
+package br.com.tiagods.controller.utils;
 
 import java.awt.*;
 import java.io.File;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import br.com.tiagods.controller.NegocioCadastroController;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
 import br.com.tiagods.util.storage.Storage;
@@ -31,7 +32,6 @@ import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
-import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.UsuarioLog;
 import br.com.tiagods.repository.helpers.CidadesImpl;
 import br.com.tiagods.repository.helpers.UsuarioLogImpl;
@@ -48,7 +48,6 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -122,6 +121,8 @@ public abstract class UtilsController extends PersistenciaController{
 			expContent.add(textArea, 0, 1);
 			// Set expandable Exception into the dialog pane.
 			alert.getDialogPane().setExpandableContent(expContent);
+
+
 
 			if(print) {
 				try {

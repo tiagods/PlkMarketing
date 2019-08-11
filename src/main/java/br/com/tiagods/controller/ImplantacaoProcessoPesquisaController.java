@@ -2,15 +2,14 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
-import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.ClientesImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
-import br.com.tiagods.util.ExcelGenerico;
+import br.com.tiagods.util.ExcelGenericoUtil;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -27,13 +26,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.fxutils.maskedtextfield.MaskTextField;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -153,7 +150,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
                             ImplantacaoProcesso c = list.get(i-1);
 
                         }
-                        ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao, colunasLenght);
+                        ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
                         planilha.gerarExcel();
                         salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
                         Platform.runLater(() ->alert(Alert.AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));

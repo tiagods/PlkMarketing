@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.util.storage.Storage;
 import br.com.tiagods.util.storage.StorageProducer;
@@ -50,7 +51,7 @@ import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.ExcelGenerico;
+import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
@@ -374,7 +375,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 							listaImpressao.get(i).add(c.getAtendente().getNome());
 							listaImpressao.get(i).add(c.getCriadoPor()!=null?c.getCriadoPor().getNome():"");
 						}
-						ExcelGenerico planilha = new ExcelGenerico(export.getAbsolutePath(), listaImpressao, colunasLenght);
+						ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
 						planilha.gerarExcel();
 						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
 						Platform.runLater(() ->alert(AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));

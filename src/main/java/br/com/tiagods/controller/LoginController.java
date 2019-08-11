@@ -2,12 +2,14 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import br.com.tiagods.controller.acesso.RecuperacaoController;
+import br.com.tiagods.controller.acesso.TrocaSenhaController;
+import br.com.tiagods.controller.utils.UtilsController;
+import com.jfoenix.controls.IFXTextInputControl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
@@ -26,16 +28,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
-import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoginController extends UtilsController implements Initializable{
+
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @FXML
     private JFXPasswordField txSenha;
     @FXML
@@ -48,10 +51,17 @@ public class LoginController extends UtilsController implements Initializable{
     private Label lbBanco;
     @FXML
     private JFXButton btnCancelar;
+    @FXML
+    private JFXButton btnNovoAcesso;
+
     private UsuariosImpl usuarios;
     private Stage stage;
     @FXML
     private MediaView mediaView;
+
+    private List<Usuario> contas;
+
+    private boolean ultimoLogadoEncontrado = false;
 
     public LoginController(Stage stage){
         this.stage=stage;
@@ -59,6 +69,7 @@ public class LoginController extends UtilsController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        btnNovoAcesso.setVisible(false);
         try {
             /*
             Path path = Paths.get("C:\\Users\\Tiago\\Sunday Wordpress theme Video background.mp4");
@@ -72,13 +83,16 @@ public class LoginController extends UtilsController implements Initializable{
             */
             loadFactory();
             usuarios = new UsuariosImpl(getManager());
-            List<Usuario> contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
+            contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
             cbNome.getItems().addAll(contas);
             
             cbNome.getSelectionModel().selectFirst();
             if(!UsuarioLogado.getInstance().lastLogin().equals("")){
             	Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(UsuarioLogado.getInstance().lastLogin())).findFirst();
-            	if(result.isPresent()) cbNome.setValue(result.get());
+            	if(result.isPresent()) {
+            	    this.ultimoLogadoEncontrado = true;
+            	    cbNome.setValue(result.get());
+                }
             }
             txSenha.setFocusTraversable(true);
             txSenha.requestFocus();
@@ -86,7 +100,11 @@ public class LoginController extends UtilsController implements Initializable{
             String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
             lbDetalhes.setText(detalhes);
             lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
-            
+
+            cbNome.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if(newValue!=null) ultimoLogadoEncontrado = true;
+            });
+
         }catch(Exception e) {
             alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
         }finally {
@@ -117,7 +135,21 @@ public class LoginController extends UtilsController implements Initializable{
                         cbNome.getValue().getLogin(),
                         new CriptografiaUtil().criptografar(txSenha.getText().trim())
                 );
-                if (usuario != null) {
+                if (usuario == null){
+                    alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
+                    txSenha.setText("");
+                }
+                else if(usuario.isSenhaResetada()){
+                    try {
+                        Stage stage1 = new Stage();
+                        FXMLLoader loader = loaderFxml(FXMLEnum.TROCA_SENHA);
+                        loader.setController(new TrocaSenhaController(stage1,usuario));
+                        initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
+                    }catch (IOException ex) {
+                        alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
+                    }
+                }
+                else if (!usuario.isSenhaResetada()) {
                 	try {
 	                    UsuarioLogado.getInstance().setUsuario(usuario);
 	                    Stage stage1 = new Stage();
@@ -129,10 +161,7 @@ public class LoginController extends UtilsController implements Initializable{
                 		alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
 					}
                 }
-                else {
-                    alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
-                    txSenha.setText("");
-                }
+
             }catch(Exception e) {
                 super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao buscar usuario",e,true);
                 e.printStackTrace();
@@ -142,6 +171,24 @@ public class LoginController extends UtilsController implements Initializable{
         }
     }
 
+    @FXML
+    void esqueciASenha(ActionEvent event){
+        logger.debug("Esqueci a senha acionado");
+        try {
+            Stage stage1 = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.RECUPERACAO_SENHA);
+            Usuario ultimoUsuario =ultimoLogadoEncontrado? cbNome.getValue():null;
+            loader.setController(new RecuperacaoController(stage1,contas, ultimoUsuario));
+            initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
+        }catch (IOException ex) {
+            alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
+        }
+    }
+    @FXML
+    void novoAcesso(ActionEvent event){
+        logger.debug("Novo acesso acionado");
+
+    }
     @FXML
     void sair(ActionEvent event) {
         System.exit(0);

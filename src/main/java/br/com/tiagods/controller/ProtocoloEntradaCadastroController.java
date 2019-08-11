@@ -1,6 +1,7 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.*;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.protocolo.ProtocoloItem;

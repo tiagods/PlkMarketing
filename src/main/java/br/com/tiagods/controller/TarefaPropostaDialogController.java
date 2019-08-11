@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;

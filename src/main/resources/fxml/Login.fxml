@@ -54,6 +54,38 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </JFXPasswordField>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="235.0">
+               <children>
+                  <JFXButton buttonType="RAISED" onAction="#esqueciASenha" prefHeight="38.0" prefWidth="253.0" styleClass="btDefault" text="Esqueceu sua senha?" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_help.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="229.0">
+               <children>
+                  <JFXButton fx:id="btnNovoAcesso" buttonType="RAISED" onAction="#novoAcesso" prefHeight="38.0" prefWidth="279.0" styleClass="btDefault" text="Novo por aqui? Clique para se cadastrar">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/button_help.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
             <HBox alignment="CENTER">
                <children>
                   <JFXButton fx:id="btnEntrar" buttonType="RAISED" onAction="#entrar" prefHeight="38.0" prefWidth="110.0" styleClass="btDefault" text="Entrar">

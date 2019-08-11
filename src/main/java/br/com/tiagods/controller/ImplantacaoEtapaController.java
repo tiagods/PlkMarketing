@@ -1,5 +1,6 @@
 package br.com.tiagods.controller;
 
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoAtividadesImpl;

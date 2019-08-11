@@ -9,44 +9,48 @@ import javax.persistence.*;
 import br.com.tiagods.config.init.UsuarioLogado;
 
 @Entity
-public class Usuario extends Pessoa implements AbstractEntity,Serializable{
+public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String login="";
-	private String senha="";
-	@Column(name="ultimo_acesso")
+	private String login = "";
+	private String senha = "";
+	@Column(name = "ultimo_acesso")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Calendar ultimoAcesso;
 
 	@ManyToOne
-	@JoinColumn(name="departamento_id")
+	@JoinColumn(name = "departamento_id")
 	private Departamento departamento;
 	@ManyToOne
-	@JoinColumn(name="funcao_id")
+	@JoinColumn(name = "funcao_id")
 	private UsuarioFuncao funcao;
-	@Column(name="total_vendas")
+	@Column(name = "total_vendas")
 	private BigDecimal totalVendas;
-	private int ativo=1;
+	private int ativo = 1;
 	@Embedded
 	private PessoaFisica fisica;
 
-	@Column(name="senha_anterior")
+	@Column(name = "senha_anterior")
 	private String senhaAnterior;
+	@Column(name = "senha_resetada")
+	private boolean senhaResetada = false;
 
-	public Usuario(){}
+	public Usuario() {
+	}
 
 	public String getSenhaAnterior() {
 		return senhaAnterior;
 	}
+
 	public void setSenhaAnterior(String senhaAnterior) {
 		this.senhaAnterior = senhaAnterior;
 	}
 
 	public Usuario(long id, String login) {
-		this.id=id;
-		this.login=login;
+		this.id = id;
+		this.login = login;
 	}
 
 	@PrePersist
@@ -54,106 +58,124 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 		setCriadoPor(UsuarioLogado.getInstance().getUsuario());
 		setCriadoEm(Calendar.getInstance());
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
+
 	/**
 	 * @param id the id to set
 	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	/**
 	 * @return the login
 	 */
 	public String getLogin() {
 		return login;
 	}
+
 	/**
 	 * @param login the login to set
 	 */
 	public void setLogin(String login) {
 		this.login = login;
 	}
+
 	/**
 	 * @return the senha
 	 */
 	public String getSenha() {
 		return senha;
 	}
+
 	/**
 	 * @param senha the senha to set
 	 */
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
+
 	/**
 	 * @return the ultimoAcesso
 	 */
 	public Calendar getUltimoAcesso() {
 		return ultimoAcesso;
 	}
+
 	/**
 	 * @param ultimoAcesso the ultimoAcesso to set
 	 */
 	public void setUltimoAcesso(Calendar ultimoAcesso) {
 		this.ultimoAcesso = ultimoAcesso;
 	}
+
 	/**
 	 * @return the departamento
 	 */
 	public Departamento getDepartamento() {
 		return departamento;
 	}
+
 	/**
 	 * @param departamento the departamento to set
 	 */
 	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
 	}
+
 	/**
 	 * @return the funcao
 	 */
 	public UsuarioFuncao getFuncao() {
 		return funcao;
 	}
+
 	/**
 	 * @param funcao the funcao to set
 	 */
 	public void setFuncao(UsuarioFuncao funcao) {
 		this.funcao = funcao;
 	}
+
 	/**
 	 * @return the totalVendas
 	 */
 	public BigDecimal getTotalVendas() {
 		return totalVendas;
 	}
+
 	/**
 	 * @param totalVendas the totalVendas to set
 	 */
 	public void setTotalVendas(BigDecimal totalVendas) {
 		this.totalVendas = totalVendas;
 	}
+
 	/**
 	 * @return the ativo
 	 */
 	public int getAtivo() {
 		return ativo;
 	}
+
 	/**
 	 * @param ativo the ativo to set
 	 */
 	public void setAtivo(int ativo) {
 		this.ativo = ativo;
 	}
+
 	public PessoaFisica getFisica() {
 		return fisica;
 	}
+
 	public void setFisica(PessoaFisica fisica) {
 		this.fisica = fisica;
 	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -164,6 +186,7 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -183,8 +206,17 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable{
 			return false;
 		return true;
 	}
+
 	@Override
 	public String toString() {
 		return getLogin();
+	}
+
+	public boolean isSenhaResetada() {
+		return senhaResetada;
+	}
+
+	public void setSenhaResetada(boolean senhaResetada) {
+		this.senhaResetada = senhaResetada;
 	}
 }

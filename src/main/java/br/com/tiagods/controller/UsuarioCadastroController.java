@@ -1,11 +1,9 @@
 package br.com.tiagods.controller;
 
 import java.net.URL;
-import java.util.Calendar;
 import java.util.ResourceBundle;
 
-import br.com.tiagods.config.init.UsuarioLogado;
-import javafx.application.Platform;
+import br.com.tiagods.controller.utils.UtilsController;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;

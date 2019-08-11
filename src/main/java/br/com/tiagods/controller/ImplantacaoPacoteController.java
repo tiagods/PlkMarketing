@@ -2,9 +2,7 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.Departamento;
-import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
-import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
+import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.model.implantacao.ImplantacaoPacoteEtapa;
 import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
@@ -29,7 +27,6 @@ import javafx.util.Pair;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ImplantacaoPacoteController extends UtilsController implements Initializable{
     @FXML

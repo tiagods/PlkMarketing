@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.controller.utils.UtilsController;
 import org.fxutils.maskedtextfield.MaskTextField;
 
 import com.jfoenix.controls.JFXButton;
