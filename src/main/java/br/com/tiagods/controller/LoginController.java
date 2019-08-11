@@ -24,6 +24,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -67,10 +69,23 @@ public class LoginController extends UtilsController implements Initializable{
         this.stage=stage;
     }
 
+    private void carregarUsuarios(){
+        try {
+            loadFactory();
+            usuarios = new UsuariosImpl(getManager());
+            contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
+            cbNome.getItems().clear();
+            cbNome.getItems().addAll(contas);
+            cbNome.getSelectionModel().selectFirst();
+        }catch(Exception e) {
+            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
+        }finally {
+            close();
+        }
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnNovoAcesso.setVisible(false);
-        try {
             /*
             Path path = Paths.get("C:\\Users\\Tiago\\Sunday Wordpress theme Video background.mp4");
             MediaPlayer player = new MediaPlayer(new Media(path.toUri().toURL().toExternalForm()));
@@ -81,35 +96,26 @@ public class LoginController extends UtilsController implements Initializable{
             mediaView.setMediaPlayer(player);
             player.play();
             */
-            loadFactory();
-            usuarios = new UsuariosImpl(getManager());
-            contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
-            cbNome.getItems().addAll(contas);
-            
-            cbNome.getSelectionModel().selectFirst();
-            if(!UsuarioLogado.getInstance().lastLogin().equals("")){
-            	Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(UsuarioLogado.getInstance().lastLogin())).findFirst();
-            	if(result.isPresent()) {
-            	    this.ultimoLogadoEncontrado = true;
-            	    cbNome.setValue(result.get());
-                }
+        carregarUsuarios();
+        cbNome.getSelectionModel().selectFirst();
+        if(!UsuarioLogado.getInstance().lastLogin().equals("")){
+            Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(UsuarioLogado.getInstance().lastLogin())).findFirst();
+            if(result.isPresent()) {
+                this.ultimoLogadoEncontrado = true;
+                cbNome.setValue(result.get());
             }
-            txSenha.setFocusTraversable(true);
-            txSenha.requestFocus();
-            
-            String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
-            lbDetalhes.setText(detalhes);
-            lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
-
-            cbNome.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if(newValue!=null) ultimoLogadoEncontrado = true;
-            });
-
-        }catch(Exception e) {
-            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
-        }finally {
-            close();
         }
+        txSenha.setFocusTraversable(true);
+        txSenha.requestFocus();
+
+        String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
+        lbDetalhes.setText(detalhes);
+        lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
+
+        cbNome.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue!=null) ultimoLogadoEncontrado = true;
+        });
+
         txSenha.requestFocus();
     }
 
@@ -187,7 +193,16 @@ public class LoginController extends UtilsController implements Initializable{
     @FXML
     void novoAcesso(ActionEvent event){
         logger.debug("Novo acesso acionado");
-
+        try {
+            Stage stage1 = new Stage();
+            FXMLLoader loader = loaderFxml(FXMLEnum.USUARIO_CADASTRO);
+            loader.setController(new UsuarioCadastroController(null,stage1));
+            initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+            stage1.setOnHiding(e -> carregarUsuarios());
+        }catch(IOException e) {
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+                    "Falha ao localizar o arquivo "+FXMLEnum.USUARIO_CADASTRO,e,true);
+        }
     }
     @FXML
     void sair(ActionEvent event) {

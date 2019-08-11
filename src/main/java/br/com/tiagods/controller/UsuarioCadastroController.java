@@ -1,9 +1,12 @@
 package br.com.tiagods.controller;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.model.Departamento;
+import br.com.tiagods.repository.helpers.DepartamentosImpl;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -86,7 +89,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private JFXPasswordField txConfirmarSenha;
 
     @FXML
-    private JFXComboBox<?> cbNivel;
+    private JFXComboBox<Departamento> cbDepartamento;
 
     @FXML
     private JFXComboBox<String> cbStatus;
@@ -112,12 +115,18 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 		cbStatus.getItems().add("Ativo");
         cbStatus.getItems().add("Inativo");
         cbStatus.getSelectionModel().selectFirst();
+
+        DepartamentosImpl departamentos = new DepartamentosImpl(getManager());
+        List<Departamento> departamentoList = departamentos.getAllByName();
+        cbDepartamento.getItems().clear();
+        cbDepartamento.getItems().addAll(departamentoList);
+        //cbDepartamento.getSelectionModel().selectFirst();
+
         comboRegiao(cbCidade,cbEstado,getManager());
     }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		cbNivel.setDisable(true);
 		try {
 			loadFactory();
             combos();
@@ -144,7 +153,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
         }
         txNome.setText(usuario.getNome());
         cbStatus.setValue(usuario.getAtivo()==1?"Ativo":"Inativo");
-
+        cbDepartamento.setValue(usuario.getDepartamento());
         txEmail.setText(usuario.getEmail());
         txTelefone.setPlainText(usuario.getTelefone());
         txCelular.setPlainText(usuario.getCelular());
@@ -161,6 +170,14 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	void salvar(ActionEvent event) {
         if(txLogin.getText().trim().equals("")){
             alert(Alert.AlertType.ERROR, "Login Invalido", null, "Login não informado",null, false);
+            return;
+        }
+        if(txEmail.getText().trim().equals("")){
+            alert(Alert.AlertType.ERROR, "E-mail Invalido", null, "E-mail não informado",null, false);
+            return;
+        }
+        if(cbDepartamento.getValue()==null){
+            alert(Alert.AlertType.ERROR, "Departamento Invalido", null, "Departamento não informado",null, false);
             return;
         }
         try {
@@ -196,6 +213,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 
                 usuario.setNome(txNome.getText().trim());
                 usuario.setEmail(txEmail.getText().trim());
+                usuario.setDepartamento(cbDepartamento.getValue());
                 usuario.setTelefone(txTelefone.getPlainText());
                 usuario.setCelular(txCelular.getPlainText());
                 usuario.setCep(txCEP.getPlainText());
