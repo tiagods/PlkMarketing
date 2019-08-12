@@ -58,9 +58,9 @@ public class RecuperacaoController extends UtilsController implements Initializa
                     .append("Entre no sistema e redefina uma nova senha");
             email.enviaAlerta("webmaster@prolinkcontabil.com.br","Suporte \\ Prolink Contabil",
                     Arrays.asList(new String[]{usuario.getEmail()}),"Controle de Processos - Redefinição de Senha",builder.toString(),false);
-///
-//            alert(Alert.AlertType.INFORMATION,"Aviso","Verifique sua caixa postal",
-//                    "E-mail com senha foram enviados para a conta: "+usuario.getEmail(),null,false);
+
+            alert(Alert.AlertType.INFORMATION,"Aviso","Verifique sua caixa postal",
+                    "E-mail com senha foram enviados para a conta: "+usuario.getEmail(),null,false);
 
             stage.close();
         }catch (Exception e){

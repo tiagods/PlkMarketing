@@ -233,6 +233,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 txSenha.setText("");
                 txConfirmarSenha.setText("");
                 alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
+                stage.close();
             }
         } catch (Exception e) {
             alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
@@ -268,5 +269,9 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 return false;
             }
         }
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
     }
 }

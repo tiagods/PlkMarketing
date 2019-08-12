@@ -69,14 +69,17 @@ public class LoginController extends UtilsController implements Initializable{
         this.stage=stage;
     }
 
-    private void carregarUsuarios(){
+    private void carregarUsuarios(Usuario usuario){
         try {
             loadFactory();
             usuarios = new UsuariosImpl(getManager());
             contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
             cbNome.getItems().clear();
             cbNome.getItems().addAll(contas);
-            cbNome.getSelectionModel().selectFirst();
+            if(usuario!=null)
+                cbNome.setValue(usuario);
+            else
+                cbNome.getSelectionModel().selectFirst();
         }catch(Exception e) {
             alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
         }finally {
@@ -96,8 +99,7 @@ public class LoginController extends UtilsController implements Initializable{
             mediaView.setMediaPlayer(player);
             player.play();
             */
-        carregarUsuarios();
-        cbNome.getSelectionModel().selectFirst();
+        carregarUsuarios(null);
         if(!UsuarioLogado.getInstance().lastLogin().equals("")){
             Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(UsuarioLogado.getInstance().lastLogin())).findFirst();
             if(result.isPresent()) {
@@ -196,9 +198,10 @@ public class LoginController extends UtilsController implements Initializable{
         try {
             Stage stage1 = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.USUARIO_CADASTRO);
-            loader.setController(new UsuarioCadastroController(null,stage1));
+            UsuarioCadastroController controller = new UsuarioCadastroController(null,stage1);
+            loader.setController(controller);
             initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage1.setOnHiding(e -> carregarUsuarios());
+            stage1.setOnHiding(e -> carregarUsuarios(controller.getUsuario()));
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
                     "Falha ao localizar o arquivo "+FXMLEnum.USUARIO_CADASTRO,e,true);
