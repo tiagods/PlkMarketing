@@ -5,6 +5,7 @@ import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import javafx.scene.control.Alert;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -12,10 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class TesteEtapas extends UtilsController{
-    public static void main(String[] args){
-        new TesteEtapas().chamada();
-    }
-    private void chamada(){
+    @Test
+    public void chamada(){
         try{
             loadFactory();
             ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(getManager());
