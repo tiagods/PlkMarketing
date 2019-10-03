@@ -13,8 +13,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Comparator.comparingLong;
 
 public class AlertaImplantacao extends AlertaModel{
+
+    public void gerarHtml(ImplantacaoProcesso processo){
+
+    }
 
     public static void main(String[] args) throws IOException {
 
@@ -34,19 +41,12 @@ public class AlertaImplantacao extends AlertaModel{
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         List<String> rodape = Arrays.asList("N&atilde;o se esque&ccedil;a de concluir a tarefa at&eacute; " + sdf.format(Calendar.getInstance().getTime()));
 
-        ImplantacaoProcesso processo = new ImplantacaoProcesso(3L);
+        ImplantacaoProcesso processo = new ImplantacaoProcesso(9L);
 
         ImplantacaoProcessoEtapa.Status ieStatus = ImplantacaoProcessoEtapa.Status.ABERTO;
         List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrar(null, processo, null, null, ieStatus);
 
-        Comparator<ImplantacaoProcessoEtapa> comparator =
-                Comparator.comparingLong(c->c.getProcesso().getCliente().getId());
-
-        Collections.sort(etapasDoProcesso, comparator
-                        .thenComparing(c->c.getEtapa().getAtividade().getNome())
-                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor()));
-
-        etapasDoProcesso.forEach(c-> {
+        for(ImplantacaoProcessoEtapa c : etapasDoProcesso){
 
             //ImplantacaoProcessoEtapa pe = etapas.findById(356L);
 
@@ -67,7 +67,22 @@ public class AlertaImplantacao extends AlertaModel{
             prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
 
             map.put(pe, status);
-        });
+        }
+
+        Comparator<ImplantacaoProcessoEtapa> comparator =
+                comparingLong((ImplantacaoProcessoEtapa c) ->c.getProcesso().getCliente().getId())
+                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
+                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor());
+        map = map
+                .entrySet()
+                .stream()
+                .sorted(Comparator.comparing((ImplantacaoProcessoEtapa e)->e.getKey().getEtapa().getAtividade().getNome()).thenComparing(e->e.))
+                .sorted(Comparator.comparingLong((Stream<Map.Entry<ImplantacaoProcessoEtapa,List<ImplantacaoProcessoEtapaStatus>>> c)->c.getProcesso().getCliente().getId())
+                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
+                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor()))
+                .sorted(Comparator.comparing(e->e.getKey().getEtapa().getAtividade().getNome()))
+                .sorted(Comparator.comparingInt(e->e.getKey().getEtapa().getEtapa().getValor()))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (e1, e2) -> e2, HashMap::new));
 
         String value = p.montarMensagem(map,cabecalho,rodape);
 
@@ -140,7 +155,8 @@ public class AlertaImplantacao extends AlertaModel{
             List<ImplantacaoProcessoEtapaStatus> status = pe.getValue();
 
             Calendar prazo = etapa.getDataAtualizacao();
-            prazo.add(Calendar.DAY_OF_MONTH, etapa.getEtapa().getTempo());
+            if(prazo!=null)
+                prazo.add(Calendar.DAY_OF_MONTH, etapa.getEtapa().getTempo());
 
             ImplantacaoProcessoEtapa.Vencido vencido = etapa.getVencido();
 
@@ -149,7 +165,7 @@ public class AlertaImplantacao extends AlertaModel{
             builder.append("	    <tr>")
                     .append("	        <th scope=\"row\" style=\"background-color: rgb(").append(linhasTabelaFundoColor).append(");\">")
                     .append("	            <span style=\"color:rgb(").append(corData).append("); font-size: 14px;\">")
-                    .append(sdf.format(prazo.getTime())).append("</span></th>")
+                    .append(prazo==null?"":sdf.format(prazo.getTime())).append("</span></th>")
 
                     .append("	        <th scope=\"row\" style=\"background-color: rgb(").append(linhasTabelaFundoColor).append(");\">")
                     .append("	            <span style=\"color:rgb(").append(linhasTabelaFonteColor).append("); font-size: 14px;\">")
