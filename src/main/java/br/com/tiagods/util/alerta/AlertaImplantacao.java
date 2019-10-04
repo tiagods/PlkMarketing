@@ -29,7 +29,7 @@ public class AlertaImplantacao extends AlertaModel{
         EntityManager manager = JPAConfig.getInstance().createManager();
         ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(manager);
 
-        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new HashMap<>();
+        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new LinkedHashMap<>();
 
         Usuario usuario = new UsuariosImpl(manager).findById(1L);
 
@@ -43,8 +43,15 @@ public class AlertaImplantacao extends AlertaModel{
 
         ImplantacaoProcesso processo = new ImplantacaoProcesso(9L);
 
-        ImplantacaoProcessoEtapa.Status ieStatus = ImplantacaoProcessoEtapa.Status.ABERTO;
+//        ImplantacaoProcessoEtapa.Status ieStatus = ImplantacaoProcessoEtapa.Status.ABERTO;
+        ImplantacaoProcessoEtapa.Status ieStatus = null;
+
         List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrar(null, processo, null, null, ieStatus);
+        Comparator<ImplantacaoProcessoEtapa> comparator =
+                comparingLong((ImplantacaoProcessoEtapa c) ->c.getProcesso().getCliente().getId())
+                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
+                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor());
+        Collections.sort(etapasDoProcesso,comparator);
 
         for(ImplantacaoProcessoEtapa c : etapasDoProcesso){
 
@@ -68,22 +75,6 @@ public class AlertaImplantacao extends AlertaModel{
 
             map.put(pe, status);
         }
-
-        Comparator<ImplantacaoProcessoEtapa> comparator =
-                comparingLong((ImplantacaoProcessoEtapa c) ->c.getProcesso().getCliente().getId())
-                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
-                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor());
-        map = map
-                .entrySet()
-                .stream()
-                .sorted(Comparator.comparing((ImplantacaoProcessoEtapa e)->e.getKey().getEtapa().getAtividade().getNome()).thenComparing(e->e.))
-                .sorted(Comparator.comparingLong((Stream<Map.Entry<ImplantacaoProcessoEtapa,List<ImplantacaoProcessoEtapaStatus>>> c)->c.getProcesso().getCliente().getId())
-                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
-                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor()))
-                .sorted(Comparator.comparing(e->e.getKey().getEtapa().getAtividade().getNome()))
-                .sorted(Comparator.comparingInt(e->e.getKey().getEtapa().getEtapa().getValor()))
-                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (e1, e2) -> e2, HashMap::new));
-
         String value = p.montarMensagem(map,cabecalho,rodape);
 
         p.renderizar(value);
