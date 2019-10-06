@@ -77,8 +77,9 @@ public class TabelaProcessosEtapa extends UtilsController {
         if (!email.equals("")) {
             SendEmail mail = new SendEmail();
             AlertaImplantacao alertaImplantacao = new AlertaImplantacao();
-            List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
-            List<ImplantacaoProcessoEtapaStatus> status = alertaImplantacao.organizarLista(list);
+            List<ImplantacaoProcessoEtapa> list = etapas
+                    .filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null,true);
+            List<ImplantacaoProcessoEtapaStatus> status = alertaImplantacao.organizarList(list);
 
             List<String> cabecalho = Arrays.asList("Sistema Controle de Processos/Implanta&ccedil;&atilde;o",
                     "Ol&aacute;;",
@@ -90,7 +91,7 @@ public class TabelaProcessosEtapa extends UtilsController {
 
             Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new HashMap<>();
             map.put(pe, status);
-            String value = alertaImplantacao.montarMensagem(map,cabecalho,rodape);
+            String value = alertaImplantacao.montarMensagem(map,cabecalho,rodape,true);
             mail.enviaAlerta("documentos@prolinkcontabil.com.br", "Implantacao \\ Prolink Contabil",
                     new ArrayList<>(Arrays.asList(email.split(";"))), pe.getProcesso().getCliente().getIdFormatado() + " - Processo de Implantação, Nova Etapa em Aberto",
                     value, true);
@@ -124,7 +125,8 @@ public class TabelaProcessosEtapa extends UtilsController {
             ImplantacaoEtapa.Etapa etapa = ip.getEtapa().getEtapa();
             Optional<ImplantacaoEtapa.Etapa> re = Arrays.asList(ImplantacaoEtapa.Etapa.values()).stream().filter(c -> c.getValor() == etapa.getValor() + 1).findAny();
             if (re.isPresent()) {
-                List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR);
+                List<ImplantacaoProcessoEtapa> list = etapas
+                        .filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), re.get(), ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR,true);
                 if (list.size() == 1) {
                     logger.debug("Preparanto notificacao de etapa");
                     ImplantacaoProcessoEtapa processoEtapa = list.get(0);

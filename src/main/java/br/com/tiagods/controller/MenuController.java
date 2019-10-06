@@ -192,7 +192,7 @@ public class MenuController extends UtilsController implements Initializable{
                 etapas = new ImplantacaoProcessoEtapasImpl(getManager());
                 filtrarProcessos();
             }catch (Exception e){
-                alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
+                alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrarMultProcessos","Falha ao filtrarMultProcessos registros da tabela de processos",e,true);
             } finally {
                 close();
             }
@@ -233,7 +233,13 @@ public class MenuController extends UtilsController implements Initializable{
     private void filtrarProcessos(){
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             tbProcesso.getItems().clear();
-            List<ImplantacaoProcessoEtapa> list = ordenar(etapas.filtrar(cbProcessoDepartamento.getValue(),cbProcesso.getValue(),cbProcessoAtividade.getValue(),null,cbProcessoStatus.getValue()));
+            List<ImplantacaoProcessoEtapa> list = ordenar(etapas
+                    .filtrar(cbProcessoDepartamento.getValue(),
+                            cbProcesso.getValue(),
+                            cbProcessoAtividade.getValue(),
+                            null,
+                            cbProcessoStatus.getValue(),
+                            true));
             tbProcesso.getItems().addAll(list);
     }
     @FXML
@@ -403,7 +409,10 @@ public class MenuController extends UtilsController implements Initializable{
         };
         new Thread(run).start();
     }
+    @FXML
+    void exportarImplantacao(ActionEvent event){
 
+    }
     @FXML
     void negocio(ActionEvent event) {
         abrirNegocio(null);
@@ -514,7 +523,8 @@ public class MenuController extends UtilsController implements Initializable{
         protocoloEntradaFilter.setDevolucao(ProtocoloEntrada.StatusDevolucao.DEVOLVIDO);
         protocoloEntradaFilter.setRecebimento(ProtocoloEntrada.StatusRecebimento.STATUS);
         protocoloEntradaFilter.setClassificacao(ProtocoloEntrada.Classificacao.USUARIO);
-        Pair<List<ProtocoloEntrada>,Paginacao> result = protocolosEntradas.filtrar(null,protocoloEntradaFilter);
+        Pair<List<ProtocoloEntrada>,Paginacao> result = protocolosEntradas
+                .filtrar(null,protocoloEntradaFilter);
 
         tbProtocoloEntrada.itemsProperty().addListener(observable -> atualizar());
 

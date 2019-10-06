@@ -16,10 +16,13 @@ public class RandomicoUtil {
 			instance = new RandomicoUtil();
 		return instance;
 	}
+
+    static int tamanho = 64;
+
     public String gerarSerial(String aux){
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy_HH-mm-ss");
         String data = sdf.format(new Date());
-        int tamanhoDefinido = 64-aux.length()-data.length();//10 representa o tamanho da data
+        int tamanhoDefinido = tamanho-aux.length()-data.length();//10 representa o tamanho da data
         String alfabeto = "abcdefghijklmnopqrstuvxiz";
         String maiuscula = alfabeto.toUpperCase();
         String numeros = "0123456789";

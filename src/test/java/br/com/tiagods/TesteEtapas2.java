@@ -46,7 +46,7 @@ public class TesteEtapas2 {
 
         ImplantacaoProcessoEtapa pe = etapas.findById(326L);
 /*
-        List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null,pe.getProcesso(),pe.getEtapa().getAtividade(),null,null);
+        List<ImplantacaoProcessoEtapa> list = etapas.filtrarMultProcessos(null,pe.getProcesso(),pe.getEtapa().getAtividade(),null,null);
 
         List<ImplantacaoProcessoEtapaStatus> result = list.stream()
                 .map(ImplantacaoProcessoEtapa::getHistorico)

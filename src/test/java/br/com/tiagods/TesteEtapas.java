@@ -18,7 +18,7 @@ public class TesteEtapas extends UtilsController{
         try{
             loadFactory();
             ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-            List<ImplantacaoProcessoEtapa> result = etapas.filtrar(null,null,null,null, null);
+            List<ImplantacaoProcessoEtapa> result = etapas.filtrar(null,null,null,null, null,true);
 
             for(ImplantacaoProcessoEtapa ip : result) {
                 ImplantacaoEtapa.Etapa etapa = ip.getEtapa().getEtapa();
@@ -29,7 +29,7 @@ public class TesteEtapas extends UtilsController{
                     nextEtapa = re.get();
                 }
                 if (nextEtapa != null) {
-                    List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), nextEtapa,null);
+                    List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, ip.getProcesso(), ip.getEtapa().getAtividade(), nextEtapa,null,true);
                     if (!list.isEmpty() && list.size() == 1) {
                         ImplantacaoProcessoEtapa processoEtapa = list.get(0);
                         processoEtapa.setStatus(ImplantacaoProcessoEtapa.Status.ABERTO);
@@ -43,7 +43,7 @@ public class TesteEtapas extends UtilsController{
                 }
             }
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrar","Falha ao filtrar registros da tabela de processos",e,true);
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrarMultProcessos","Falha ao filtrarMultProcessos registros da tabela de processos",e,true);
         }finally {
             close();
         }

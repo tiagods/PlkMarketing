@@ -219,4 +219,10 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	public void setSenhaResetada(boolean senhaResetada) {
 		this.senhaResetada = senhaResetada;
 	}
+
+    public String getNomeResumido() {
+		String[] newName = getNome().split(" ");
+		String newName2 = newName.length>=2?newName[0]+" "+newName[1]:getNome();
+		return newName2;
+    }
 }

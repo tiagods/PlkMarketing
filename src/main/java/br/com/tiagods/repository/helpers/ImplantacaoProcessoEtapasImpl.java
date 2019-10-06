@@ -9,11 +9,15 @@ import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.ImplantacaoProcessoEtapaDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<ImplantacaoProcessoEtapa,Long> implements ImplantacaoProcessoEtapaDAO {
     public ImplantacaoProcessoEtapasImpl(EntityManager manager) {
@@ -28,7 +32,12 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         return (ImplantacaoProcessoEtapa)query.getSingleResult();
     }
 
-    public List<ImplantacaoProcessoEtapa> filtrar(Departamento departamento, ImplantacaoProcesso processo, ImplantacaoAtividade atividade, ImplantacaoEtapa.Etapa etapa,ImplantacaoProcessoEtapa.Status status){
+    public List<ImplantacaoProcessoEtapa> filtrar(Departamento departamento,
+                                                  ImplantacaoProcesso processo,
+                                                  ImplantacaoAtividade atividade,
+                                                  ImplantacaoEtapa.Etapa etapa,
+                                                  ImplantacaoProcessoEtapa.Status status,
+                                                  boolean exibirApenasProcessoAberto){
         Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcessoEtapa.class);
         if(departamento!=null && departamento.getId()!=-1L){
             criteria.add(Restrictions.eq("etapa.departamento",departamento));
@@ -45,8 +54,11 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         if(status!=null && status!=ImplantacaoProcessoEtapa.Status.STATUS){
             criteria.add(Restrictions.eq("status",status));
         }
-        criteria.createAlias("processo","pro");
-        criteria.add(Restrictions.eq("pro.finalizado",false));
+        if(exibirApenasProcessoAberto) {
+            criteria.createAlias("processo", "pro");
+            criteria.add(Restrictions.eq("pro.finalizado", false));
+        }
         return criteria.list();
     }
+
 }

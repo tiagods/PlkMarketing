@@ -206,7 +206,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
                 paginacao = new Paginacao(cbLimite.getValue());
                 filtrar(paginacao);
             } catch (Exception e) {
-                alert(AlertType.ERROR, "Erro", null, "Falha ao filtrar os registros", e, true);
+                alert(AlertType.ERROR, "Erro", null, "Falha ao filtrarMultProcessos os registros", e, true);
             } finally {
                 close();
             }
