@@ -4,25 +4,21 @@ import br.com.tiagods.config.init.JPAConfig;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
-import br.com.tiagods.util.alerta.AlertaImplantacao;
+import br.com.tiagods.services.AlertaImplantacaoImpl;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TesteImplantacao {
 
-    static AlertaImplantacao implantacao;
+    static AlertaImplantacaoImpl implantacao;
 
     @Before
     public void init(){
-        implantacao = new AlertaImplantacao();
+        implantacao = new AlertaImplantacaoImpl();
     }
 
     //@Test

@@ -1,10 +1,11 @@
-package br.com.tiagods.util.alerta;
+package br.com.tiagods.services;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
+import br.com.tiagods.util.alerta.AlertaModel;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,7 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -22,131 +24,82 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingLong;
 
-public class AlertaImplantacao extends AlertaModel {
+public class AlertaImplantacaoImpl extends AlertaModel {
 
-    public void excel(){
-        try {
-            FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
-            Alert progress = new Alert(Alert.AlertType.INFORMATION);
-            progress.setHeaderText("");
-            DialogPane dialogPane = new DialogPane();
-            dialogPane.setContent(loader.load());
-            progress.setDialogPane(dialogPane);
-            Stage sta = (Stage) dialogPane.getScene().getWindow();
-            Task<Void> run = new Task<Void>() {
-                {
-                    setOnFailed(a ->sta.close());
-                    setOnSucceeded(a ->sta.close());
-                    setOnCancelled(a ->sta.close());
-                }
-                @Override
-                protected Void call() {
-                    Platform.runLater(() -> sta.show());
-                    try {
-
-                    } catch (Exception e1) {
-                        Platform.runLater(() -> alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
-                    } finally {
-                        close();
-                    }
-                    return null;
-                }
-            };
-            Thread thread = new Thread(run);
-            thread.start();
-            sta.setOnCloseRequest(ae -> {
-                try {
-                    thread.interrupt();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-        }catch (IOException e){
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
-        }
-    }
-
-    public void gerarExcel( ImplantacaoProcesso processo,
+    public File gerarExcel( ImplantacaoProcesso processo,
                             Departamento departamento,
                             ImplantacaoAtividade atividade,
                             ImplantacaoEtapa.Etapa etapa,
                             boolean exibirHistorico) throws Exception{
 
-        try {
-            File export = salvarTemp("xls");
-            Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = montarMap(processo,departamento,atividade,etapa,exibirHistorico);
+        File export = salvarTemp("xls");
+        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = montarMap(processo,departamento,atividade,etapa,exibirHistorico);
 
-            ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-            Integer[] colunasLenght = new Integer[]
-                    {12,10,6,22,15,10,20,20,30};
-            String[] cabecalho = new String[]
-                    {"Prazo","Status","Id Cliente","Nome","Departamento","Etapa","Atividade","O que fazer?",
-                            exibirHistorico?"Historico da Etapa":"Historico das atividades anteriores"};
+        ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+        Integer[] colunasLenght = new Integer[]
+                {12,10,6,22,15,10,20,20,30};
+        String[] cabecalho = new String[]
+                {"Prazo","Status","Id Cliente","Nome","Departamento","Etapa","Atividade","O que fazer?",
+                        exibirHistorico?"Historico da Etapa":"Historico das atividades anteriores"};
 
-            listaImpressao.add(new ArrayList<>());
-            for (String c : cabecalho) {
-                listaImpressao.get(0).add(c);
-            }
-            List<ImplantacaoProcessoEtapa> etapaList = map.keySet().stream().collect(Collectors.toList());
-
-            for (int i = 1; i <= map.size(); i++) {
-                listaImpressao.add(new ArrayList<String>());
-
-                ImplantacaoProcessoEtapa pe = etapaList.get(i - 1);
-
-                if(pe.getDataAtualizacao()!=null) {
-                    Calendar prazo = pe.getDataAtualizacao();
-                    if (prazo == null) prazo = Calendar.getInstance();
-                    prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
-                    listaImpressao.get(i).add(new SimpleDateFormat("dd/MM/yyyy").format(prazo.getTime()));
-                }
-                else
-                    listaImpressao.get(i).add("");
-
-                listaImpressao.get(i).add(pe.getStatus());
-                listaImpressao.get(i).add(pe.getProcesso().getCliente().getId());
-                listaImpressao.get(i).add(pe.getProcesso().getCliente().getNomeFormatado());
-                listaImpressao.get(i).add(pe.getEtapa().getDepartamento());
-                listaImpressao.get(i).add(pe.getEtapa().getEtapa());
-                listaImpressao.get(i).add(pe.getEtapa().getAtividade());
-                listaImpressao.get(i).add(pe.getEtapa().getDescricao());
-
-                Iterator<ImplantacaoProcessoEtapaStatus> iterator = map.get(pe).iterator();
-                StringBuilder builder = new StringBuilder();
-                while(iterator.hasNext()){
-                    ImplantacaoProcessoEtapaStatus status = iterator.next();
-                    builder.append(sdf.format(status.getCriadoEm().getTime()))
-                            .append("-").append(status.getCriadoPor().getNomeResumido())
-                            .append("-").append(status.getDescricao()).append(" \n");
-                }
-                listaImpressao.get(i).add(builder.toString());
-            }
-            ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
-            planilha.gerarExcel();
-            Desktop.getDesktop().open(export);
-            salvarLog(getManager(), "Implantacao - Relatorios", "Exportar", "Exportou relatorio xls");
-            //Platform.runLater(() -> alert(Alert.AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
-        } catch (Exception e) {
-            //Platform.runLater(() -> alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e, true));
+        listaImpressao.add(new ArrayList<>());
+        for (String c : cabecalho) {
+            listaImpressao.get(0).add(c);
         }
+        List<ImplantacaoProcessoEtapa> etapaList = map.keySet().stream().collect(Collectors.toList());
+
+        for (int i = 1; i <= map.size(); i++) {
+            listaImpressao.add(new ArrayList<String>());
+
+            ImplantacaoProcessoEtapa pe = etapaList.get(i - 1);
+
+            if(pe.getDataAtualizacao()!=null) {
+                Calendar prazo = pe.getDataAtualizacao();
+                if (prazo == null) prazo = Calendar.getInstance();
+                prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+                listaImpressao.get(i).add(new SimpleDateFormat("dd/MM/yyyy").format(prazo.getTime()));
+            }
+            else
+                listaImpressao.get(i).add("");
+
+            listaImpressao.get(i).add(pe.getStatus());
+            listaImpressao.get(i).add(pe.getProcesso().getCliente().getId());
+            listaImpressao.get(i).add(pe.getProcesso().getCliente().getNomeFormatado());
+            listaImpressao.get(i).add(pe.getEtapa().getDepartamento());
+            listaImpressao.get(i).add(pe.getEtapa().getEtapa());
+            listaImpressao.get(i).add(pe.getEtapa().getAtividade());
+            listaImpressao.get(i).add(pe.getEtapa().getDescricao());
+
+            Iterator<ImplantacaoProcessoEtapaStatus> iterator = map.get(pe).iterator();
+            StringBuilder builder = new StringBuilder();
+            while(iterator.hasNext()){
+                ImplantacaoProcessoEtapaStatus status = iterator.next();
+                builder.append(sdf.format(status.getCriadoEm().getTime()))
+                        .append("-").append(status.getCriadoPor().getNomeResumido())
+                        .append("-").append(status.getDescricao()).append(" \n");
+            }
+            listaImpressao.get(i).add(builder.toString());
+        }
+        ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
+        planilha.gerarExcel();
+        return export;
     }
 
-    public void gerarHtml(
+    public File gerarHtml(
             ImplantacaoProcesso processo,
             Departamento departamento,
             ImplantacaoAtividade atividade,
             ImplantacaoEtapa.Etapa etapa,
             boolean exibirHistorico) throws Exception{
-        try {
+
             Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map =
                     montarMap(processo,departamento,atividade,etapa,exibirHistorico);
             String value = montarMensagem(map,new ArrayList<>(),new ArrayList<>(),exibirHistorico);
-            renderizar(value);
-        } catch (Exception e) {
-            alert(Alert.AlertType.ERROR,"Erro","","",e,true);
-        } finally {
-            close();
-        }
+            File htmlFile = salvarTemp("html");
+            FileWriter fileWriter = new FileWriter(htmlFile);
+            fileWriter.write(value);
+            fileWriter.close();
+            return htmlFile;
     }
 
     public  Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> montarMap(
@@ -217,7 +170,7 @@ public class AlertaImplantacao extends AlertaModel {
 
     public static void main(String[] args) throws Exception {
 
-        AlertaImplantacao p = new AlertaImplantacao();
+        AlertaImplantacaoImpl p = new AlertaImplantacaoImpl();
         p.gerarHtml(new ImplantacaoProcesso(9L),
                 null,
                 null, null, false);
@@ -391,7 +344,7 @@ public class AlertaImplantacao extends AlertaModel {
             builder.append("	</tr>");
         }
 
-                builder.append("	</tbody>")
+        builder.append("	</tbody>")
                 .append("</table>")
                 //fim da tabela
                 .append("</div>");

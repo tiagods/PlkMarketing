@@ -1,6 +1,7 @@
 package br.com.tiagods.controller;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -28,11 +29,15 @@ import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.services.AlertaImplantacaoImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
+import br.com.tiagods.util.TipoArquivo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -411,7 +416,63 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @FXML
     void exportarImplantacao(ActionEvent event){
+        try {
+            List<TipoArquivo> arquivos = Arrays.asList(new TipoArquivo[]{TipoArquivo.XLS,TipoArquivo.HTML});
+            ChoiceDialog<TipoArquivo> dialog = new ChoiceDialog<>(arquivos.get(0), arquivos);
+            dialog.setTitle("Relatorio");
+            dialog.setHeaderText("Relatorio para formato de arquivo");
+            dialog.setContentText("Escolha uma opção:");
 
+            final Optional<TipoArquivo> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+                Alert progress = new Alert(Alert.AlertType.INFORMATION);
+                progress.setHeaderText("");
+                DialogPane dialogPane = new DialogPane();
+                dialogPane.setContent(loader.load());
+                progress.setDialogPane(dialogPane);
+                Stage sta = (Stage) dialogPane.getScene().getWindow();
+                Task<Void> run = new Task<Void>() {
+                    {
+                        setOnFailed(a -> sta.close());
+                        setOnSucceeded(a -> sta.close());
+                        setOnCancelled(a -> sta.close());
+                    }
+
+                    @Override
+                    protected Void call() {
+                        Platform.runLater(() -> sta.show());
+                        try {
+                            AlertaImplantacaoImpl alertaImplantacao = new AlertaImplantacaoImpl();
+                            File arquivo = null;
+                            if(result.get().equals(TipoArquivo.XLS))
+                                arquivo = alertaImplantacao.gerarExcel(cbProcesso.getValue(),
+                                        cbProcessoDepartamento.getValue(),cbProcessoAtividade.getValue(),
+                                        null,false);
+                            else if(result.get().equals(TipoArquivo.HTML))
+                                arquivo = alertaImplantacao.gerarHtml(cbProcesso.getValue(),
+                                        cbProcessoDepartamento.getValue(),cbProcessoAtividade.getValue(),
+                                        null,false);
+                            Desktop.getDesktop().open(arquivo);
+                        } catch (Exception e1) {
+                            Platform.runLater(() -> alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
+                        }
+                        return null;
+                    }
+                };
+                Thread thread = new Thread(run);
+                thread.start();
+                sta.setOnCloseRequest(ae -> {
+                    try {
+                        thread.interrupt();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }catch (IOException e){
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+        }
     }
     @FXML
     void negocio(ActionEvent event) {

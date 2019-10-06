@@ -13,14 +13,6 @@ import java.util.List;
 
 public abstract class AlertaModel extends UtilsController {
 
-    protected void renderizar(String texto) throws IOException {
-        File htmlFile = salvarTemp("html");
-        FileWriter fileWriter = new FileWriter(htmlFile);
-        fileWriter.write(texto);
-        fileWriter.close();
-        Desktop.getDesktop().open(htmlFile);
-    }
-
     protected String cabecalho(List<String> mensagens){
         StringBuilder builder = new StringBuilder();
         builder.append("<!DOCTYPE html>")

@@ -8,7 +8,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.services.SendEmail;
-import br.com.tiagods.util.alerta.AlertaImplantacao;
+import br.com.tiagods.services.AlertaImplantacaoImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXMLLoader;
@@ -76,7 +76,7 @@ public class TabelaProcessosEtapa extends UtilsController {
 
         if (!email.equals("")) {
             SendEmail mail = new SendEmail();
-            AlertaImplantacao alertaImplantacao = new AlertaImplantacao();
+            AlertaImplantacaoImpl alertaImplantacao = new AlertaImplantacaoImpl();
             List<ImplantacaoProcessoEtapa> list = etapas
                     .filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null,true);
             List<ImplantacaoProcessoEtapaStatus> status = alertaImplantacao.organizarList(list);
