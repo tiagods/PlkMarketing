@@ -26,7 +26,6 @@ public class AlertaProtocolo extends AlertaModel {
                 p.normalizer("TSGD SERVIÇOS MÉDICOS"),
                 Arrays.asList("Certificado Digital A1"),Arrays.asList("9"),
                 Arrays.asList("certificado digital + leitor"),"Tiago Dias");
-        p.renderizar(value);
     }
 
     //usando o boolean trySucess, significa tentar enviar o alerta consecutivas vezes ate resultar em sucesso, se nao informado a tentativa sera unica

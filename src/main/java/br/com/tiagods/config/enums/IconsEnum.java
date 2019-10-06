@@ -10,6 +10,8 @@ public enum IconsEnum {
 	BUTTON_DEADLINE("button_deadline","Aguardando"),
 	BUTTON_DOWNLOAD("button_download","Baixar"),
 	BUTTON_EDIT("button_edit","Editar Registro"),
+	BUTTON_EXCEL("button_excel","Exportar Excel"),
+	BUTTON_EXPORTAR("button_export","Exportar Relatorios"),
 	BUTTON_REMOVE("button_trash","Excluir"),
 	BUTTON_RENAME("button_rename","Renomear"),
 	BUTTON_RETURN("button_return","Voltar"),

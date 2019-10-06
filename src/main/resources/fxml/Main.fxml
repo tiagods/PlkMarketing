@@ -138,25 +138,37 @@
                                                       <Insets right="10.0" />
                                                    </HBox.margin>
                                                 </JFXComboBox>
-                                                <Label layoutX="552.0" layoutY="50.0" styleClass="label-card" text="Etapa:">
+                                                <Label layoutX="552.0" layoutY="50.0" styleClass="label-card" text="Etapa:" visible="false">
                                                    <HBox.margin>
                                                       <Insets right="10.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <JFXComboBox fx:id="cbProcessoEtapa" layoutX="620.0" layoutY="48.0" prefHeight="25.0" prefWidth="160.0" />
+                                                <JFXComboBox fx:id="cbProcessoEtapa" layoutX="620.0" layoutY="48.0" prefHeight="25.0" prefWidth="160.0" visible="false" />
                                              </children>
                                              <VBox.margin>
                                                 <Insets bottom="10.0" left="10.0" top="10.0" />
                                              </VBox.margin>
                                           </HBox>
-                                          <HBox alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="50.0" prefWidth="760.0">
+                                          <HBox alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="50.0" prefWidth="926.0">
                                              <children>
                                                 <Label styleClass="label-card" text="Mostrar:">
                                                    <HBox.margin>
                                                       <Insets right="10.0" />
                                                    </HBox.margin>
                                                 </Label>
-                                                <JFXComboBox fx:id="cbProcessoStatus" prefHeight="25.0" prefWidth="160.0" />
+                                                <JFXComboBox fx:id="cbProcessoStatus" prefHeight="25.0" prefWidth="160.0">
+                                                   <HBox.margin>
+                                                      <Insets right="20.0" />
+                                                   </HBox.margin></JFXComboBox>
+                                                <JFXButton contentDisplay="GRAPHIC_ONLY" onAction="#exportarImplantacao">
+                                                   <graphic>
+                                                      <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                                         <image>
+                                                            <Image url="@imagens/button_excel.png" />
+                                                         </image>
+                                                      </ImageView>
+                                                   </graphic>
+                                                </JFXButton>
                                              </children>
                                              <VBox.margin>
                                                 <Insets left="10.0" />

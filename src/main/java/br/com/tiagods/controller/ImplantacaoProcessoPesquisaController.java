@@ -9,7 +9,9 @@ import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
+import br.com.tiagods.services.AlertaImplantacaoImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
+import br.com.tiagods.util.TipoArquivo;
 import com.jfoenix.controls.*;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -198,6 +200,61 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
         tbPrincipal.getItems().addAll(list);
         return list;
     }
+    private void gerarRelatorio(ImplantacaoProcesso implantacaoProcesso) {
+        try {
+            List<TipoArquivo> arquivos = Arrays.asList(new TipoArquivo[]{TipoArquivo.XLS,TipoArquivo.HTML});
+            ChoiceDialog<TipoArquivo> dialog = new ChoiceDialog<>(arquivos.get(0), arquivos);
+            dialog.setTitle("Relatorio");
+            dialog.setHeaderText("Relatorio para formato de arquivo");
+            dialog.setContentText("Escolha uma opção:");
+
+            final Optional<TipoArquivo> result = dialog.showAndWait();
+            if (result.isPresent()) {
+                FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
+                Alert progress = new Alert(Alert.AlertType.INFORMATION);
+                progress.setHeaderText("");
+                DialogPane dialogPane = new DialogPane();
+                dialogPane.setContent(loader.load());
+                progress.setDialogPane(dialogPane);
+                Stage sta = (Stage) dialogPane.getScene().getWindow();
+                Task<Void> run = new Task<Void>() {
+                    {
+                        setOnFailed(a -> sta.close());
+                        setOnSucceeded(a -> sta.close());
+                        setOnCancelled(a -> sta.close());
+                    }
+
+                    @Override
+                    protected Void call() {
+                        Platform.runLater(() -> sta.show());
+                        try {
+                            AlertaImplantacaoImpl alertaImplantacao = new AlertaImplantacaoImpl();
+                            File arquivo = null;
+                            if(result.get().equals(TipoArquivo.XLS))
+                                arquivo = alertaImplantacao.gerarExcel(implantacaoProcesso,null,null,null,false);
+                            else if(result.get().equals(TipoArquivo.HTML))
+                                arquivo = alertaImplantacao.gerarHtml(implantacaoProcesso,null,null,null,false);
+                            Desktop.getDesktop().open(arquivo);
+                        } catch (Exception e1) {
+                            Platform.runLater(() -> alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
+                        }
+                        return null;
+                    }
+                };
+                Thread thread = new Thread(run);
+                thread.start();
+                sta.setOnCloseRequest(ae -> {
+                    try {
+                        thread.interrupt();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        }catch (IOException e){
+            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+        }
+    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabela();
@@ -379,6 +436,32 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             }
         });
 
+        TableColumn<ImplantacaoProcesso, Number> colunaExportar = new  TableColumn<>("");
+        colunaExportar.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colunaExportar.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
+            JFXButton button = new JFXButton();
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if(item==null){
+                    setStyle("");
+                    setText("");
+                    setGraphic(null);
+                }
+                else{
+                    button.getStyleClass().add("btDefault");
+                    try {
+                        buttonTable(button, IconsEnum.BUTTON_EXCEL);
+                    }catch (IOException e) {}
+                    button.setOnAction(event -> {
+                        gerarRelatorio(tbPrincipal.getItems().get(getIndex()));
+                    });
+                    setGraphic(button);
+                }
+            }
+        });
+        colunaExportar.setMaxWidth(50);
+
         TableColumn<ImplantacaoProcesso, Number> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<ImplantacaoProcesso,Number>(){
@@ -434,7 +517,7 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
             }
         });
         colunaExcluir.setMaxWidth(50);
-        tbPrincipal.getColumns().addAll(colunaData,colunaCliente,colunaStatus,colunaPendentes,colunaEditar,colunaExcluir);
+        tbPrincipal.getColumns().addAll(colunaData,colunaCliente,colunaStatus,colunaPendentes,colunaExportar, colunaEditar,colunaExcluir);
         tbPrincipal.setTableMenuButtonVisible(true);
         tbPrincipal.setFixedCellSize(70);
     }

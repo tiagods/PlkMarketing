@@ -1,20 +1,17 @@
 package br.com.tiagods.util.alerta;
 
+import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.util.RandomicoUtil;
+
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
-public abstract class AlertaModel {
-
-    protected void renderizar(String texto) throws IOException {
-        File htmlFile = new File(System.getProperty("java.io.tmpdir")+"/index.html");
-        FileWriter fileWriter = new FileWriter(htmlFile);
-        fileWriter.write(texto);
-        fileWriter.close();
-        Desktop.getDesktop().open(htmlFile);
-    }
+public abstract class AlertaModel extends UtilsController {
 
     protected String cabecalho(List<String> mensagens){
         StringBuilder builder = new StringBuilder();
@@ -42,7 +39,7 @@ public abstract class AlertaModel {
                     .append("<span style=\"font-size: 18px; text-align: left;\">").append(m).append("</span></div>");
         });
         builder.append("</div>")
-                .append("<p><span style=\"color:#d3d3d3;\">***Esse aviso &eacute; gerado automaticamente, n&atilde;o &eacute; necess&aacute;rio que responda***</span></p>")
+                .append("<p><span style=\"color:#d3d3d3;\">***Esse aviso &eacute; gerado automaticamente***</span></p>")
                 //.append("<p>&nbsp;</p>")
                 //linha assinatura.append("<p><span style=\"color:#d3d3d3;\"><img alt=\"\" src=\"http://prolinkvip.prolinkcontabil.com.br/uploadimages/prolinkvip.prolinkcontabil.com.br/assinatura_email_prolink(1).gif\" style=\"width: 365px; height: 123px; float: left;\" /></span></p>")
                 .append("</body>")

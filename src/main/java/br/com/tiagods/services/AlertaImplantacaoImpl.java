@@ -1,28 +1,184 @@
-package br.com.tiagods.util.alerta;
+package br.com.tiagods.services;
 
-import br.com.tiagods.config.init.JPAConfig;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
-import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
-import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
+import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.model.Departamento;
+import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.util.ExcelGenericoUtil;
+import br.com.tiagods.util.alerta.AlertaModel;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
+import javafx.stage.Stage;
 
-import javax.persistence.EntityManager;
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
-public class AlertaImplantacao extends AlertaModel{
+import static java.util.Comparator.comparingLong;
 
-    public static void main(String[] args) throws IOException {
+public class AlertaImplantacaoImpl extends AlertaModel {
 
-        AlertaImplantacao p = new AlertaImplantacao();
+    public File gerarExcel( ImplantacaoProcesso processo,
+                            Departamento departamento,
+                            ImplantacaoAtividade atividade,
+                            ImplantacaoEtapa.Etapa etapa,
+                            boolean exibirHistorico) throws Exception{
+
+        File export = salvarTemp("xls");
+        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = montarMap(processo,departamento,atividade,etapa,exibirHistorico);
+
+        ArrayList<ArrayList> listaImpressao = new ArrayList<>();
+        Integer[] colunasLenght = new Integer[]
+                {12,10,6,22,15,10,20,20,30};
+        String[] cabecalho = new String[]
+                {"Prazo","Status","Id Cliente","Nome","Departamento","Etapa","Atividade","O que fazer?",
+                        exibirHistorico?"Historico da Etapa":"Historico das atividades anteriores"};
+
+        listaImpressao.add(new ArrayList<>());
+        for (String c : cabecalho) {
+            listaImpressao.get(0).add(c);
+        }
+        List<ImplantacaoProcessoEtapa> etapaList = map.keySet().stream().collect(Collectors.toList());
+
+        for (int i = 1; i <= map.size(); i++) {
+            listaImpressao.add(new ArrayList<String>());
+
+            ImplantacaoProcessoEtapa pe = etapaList.get(i - 1);
+
+            if(pe.getDataAtualizacao()!=null) {
+                Calendar prazo = pe.getDataAtualizacao();
+                if (prazo == null) prazo = Calendar.getInstance();
+                prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+                listaImpressao.get(i).add(new SimpleDateFormat("dd/MM/yyyy").format(prazo.getTime()));
+            }
+            else
+                listaImpressao.get(i).add("");
+
+            listaImpressao.get(i).add(pe.getStatus());
+            listaImpressao.get(i).add(pe.getProcesso().getCliente().getId());
+            listaImpressao.get(i).add(pe.getProcesso().getCliente().getNomeFormatado());
+            listaImpressao.get(i).add(pe.getEtapa().getDepartamento());
+            listaImpressao.get(i).add(pe.getEtapa().getEtapa());
+            listaImpressao.get(i).add(pe.getEtapa().getAtividade());
+            listaImpressao.get(i).add(pe.getEtapa().getDescricao());
+
+            Iterator<ImplantacaoProcessoEtapaStatus> iterator = map.get(pe).iterator();
+            StringBuilder builder = new StringBuilder();
+            while(iterator.hasNext()){
+                ImplantacaoProcessoEtapaStatus status = iterator.next();
+                builder.append(sdf.format(status.getCriadoEm().getTime()))
+                        .append("-").append(status.getCriadoPor().getNomeResumido())
+                        .append("-").append(status.getDescricao()).append(" \n");
+            }
+            listaImpressao.get(i).add(builder.toString());
+        }
+        ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
+        planilha.gerarExcel();
+        return export;
+    }
+
+    public File gerarHtml(
+            ImplantacaoProcesso processo,
+            Departamento departamento,
+            ImplantacaoAtividade atividade,
+            ImplantacaoEtapa.Etapa etapa,
+            boolean exibirHistorico) throws Exception{
+
+            Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map =
+                    montarMap(processo,departamento,atividade,etapa,exibirHistorico);
+            String value = montarMensagem(map,new ArrayList<>(),new ArrayList<>(),exibirHistorico);
+            File htmlFile = salvarTemp("html");
+            FileWriter fileWriter = new FileWriter(htmlFile);
+            fileWriter.write(value);
+            fileWriter.close();
+            return htmlFile;
+    }
+
+    public  Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> montarMap(
+            ImplantacaoProcesso processo,
+            Departamento departamento,
+            ImplantacaoAtividade atividade,
+            ImplantacaoEtapa.Etapa etapa,
+            boolean exibirHistorico){
+
+        try {
+            loadFactory();
+            ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new LinkedHashMap<>();
+            ImplantacaoProcessoEtapa.Status ieStatus = null;
+            List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrar(
+                    departamento,
+                    processo,
+                    atividade,
+                    etapa,
+                    ieStatus,
+                    exibirHistorico);
+            Comparator<ImplantacaoProcessoEtapa> comparator =
+                    comparingLong((ImplantacaoProcessoEtapa c) ->c.getProcesso().getCliente().getId())
+                            .thenComparing(d->d.getEtapa().getAtividade().getNome())
+                            .thenComparingInt(c->c.getEtapa().getEtapa().getValor());
+            Collections.sort(etapasDoProcesso,comparator);
+
+            for(ImplantacaoProcessoEtapa c : etapasDoProcesso){
+                ImplantacaoProcessoEtapa pe = c;
+
+                List<ImplantacaoProcessoEtapaStatus> status = new ArrayList<>();
+                List<ImplantacaoProcessoEtapa> etapaList = new ArrayList<>();
+                if(exibirHistorico) {
+                    etapaList = etapas.filtrar(null,
+                            pe.getProcesso(),
+                            pe.getEtapa().getAtividade(),
+                            null, null,false);
+                    status = organizarList(etapaList);
+                }
+                else{
+                    pe = etapas.findById(pe.getId());
+                    etapaList.add(pe);
+                    status.addAll(organizarList(etapaList));
+                }
+                Calendar prazo = pe.getDataAtualizacao();
+                if (prazo == null) prazo = Calendar.getInstance();
+                prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
+                map.put(pe, status);
+            }
+            return map;
+        } catch (Exception e) {
+            alert(Alert.AlertType.ERROR,"Erro","","",e,true);
+            return null;
+        } finally {
+            close();
+        }
+    }
+
+    public List<ImplantacaoProcessoEtapaStatus> organizarList(List<ImplantacaoProcessoEtapa> list){
+        return list.stream()
+                .map(ImplantacaoProcessoEtapa::getHistorico)
+                .flatMap(a -> a.stream()
+                        .sorted(Comparator
+                                .comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm)))
+                .collect(Collectors.toList());
+    }
+
+
+    public static void main(String[] args) throws Exception {
+
+        AlertaImplantacaoImpl p = new AlertaImplantacaoImpl();
+        p.gerarHtml(new ImplantacaoProcesso(9L),
+                null,
+                null, null, false);
+        /*
         EntityManager manager = JPAConfig.getInstance().createManager();
         ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(manager);
 
-        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new HashMap<>();
+        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new LinkedHashMap<>();
 
         Usuario usuario = new UsuariosImpl(manager).findById(1L);
 
@@ -34,46 +190,33 @@ public class AlertaImplantacao extends AlertaModel{
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         List<String> rodape = Arrays.asList("N&atilde;o se esque&ccedil;a de concluir a tarefa at&eacute; " + sdf.format(Calendar.getInstance().getTime()));
 
-        ImplantacaoProcesso processo = new ImplantacaoProcesso(3L);
+        ImplantacaoProcesso processo = new ImplantacaoProcesso(9L);
 
-        ImplantacaoProcessoEtapa.Status ieStatus = ImplantacaoProcessoEtapa.Status.ABERTO;
-        List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrar(null, processo, null, null, ieStatus);
+        ImplantacaoProcessoEtapa.Status ieStatus = null;
 
+        List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrarMultProcessos(null, processo, null, null, ieStatus);
         Comparator<ImplantacaoProcessoEtapa> comparator =
-                Comparator.comparingLong(c->c.getProcesso().getCliente().getId());
+                comparingLong((ImplantacaoProcessoEtapa c) ->c.getProcesso().getCliente().getId())
+                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
+                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor());
+        Collections.sort(etapasDoProcesso,comparator);
 
-        Collections.sort(etapasDoProcesso, comparator
-                        .thenComparing(c->c.getEtapa().getAtividade().getNome())
-                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor()));
-
-        etapasDoProcesso.forEach(c-> {
-
-            //ImplantacaoProcessoEtapa pe = etapas.findById(356L);
-
+        for(ImplantacaoProcessoEtapa c : etapasDoProcesso){
             ImplantacaoProcessoEtapa pe = c;
 
-            List<ImplantacaoProcessoEtapa> list = etapas.filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
-
-            /*
-            Comparator<ImplantacaoProcessoEtapa> compare2 =
-                    Comparator.comparing(c2->c2.getEtapa().getAtividade().getNome());
-            Collections.sort(list, compare2
-                    .thenComparingInt(c3->c3.getEtapa().getEtapa().getValor()));
-            */
-            List<ImplantacaoProcessoEtapaStatus> status = p.organizarLista(list);
+            List<ImplantacaoProcessoEtapa> list = etapas.filtrarMultProcessos(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
+            List<ImplantacaoProcessoEtapaStatus> status = organizarList(list);
 
             Calendar prazo = pe.getDataAtualizacao();
             if (prazo == null) prazo = Calendar.getInstance();
             prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
 
             map.put(pe, status);
-        });
-
+        }
         String value = p.montarMensagem(map,cabecalho,rodape);
-
         p.renderizar(value);
-
         manager.close();
+        */
     }
 
 
@@ -86,17 +229,11 @@ public class AlertaImplantacao extends AlertaModel{
 
     private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    public List<ImplantacaoProcessoEtapaStatus> organizarLista(List<ImplantacaoProcessoEtapa> list){
-        //pegando sets dos objetos e reunindo em um unico list
-        List<ImplantacaoProcessoEtapaStatus> result = list.stream()
-                .map(ImplantacaoProcessoEtapa::getHistorico)
-                .flatMap(c -> c.stream()).collect(Collectors.toList());
-
-        Collections.sort(result, Comparator.comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm));
-        return result;
-    }
-
-    public String montarMensagem(Map<ImplantacaoProcessoEtapa,List<ImplantacaoProcessoEtapaStatus>> map,List<String> msgCabecalho, List<String> msgRodape) {
+    public String montarMensagem(Map<ImplantacaoProcessoEtapa
+            ,List<ImplantacaoProcessoEtapaStatus>> map,
+                                 List<String> msgCabecalho,
+                                 List<String> msgRodape,
+                                 boolean exibirHistoricoAnterior) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(cabecalho(msgCabecalho));
@@ -128,7 +265,7 @@ public class AlertaImplantacao extends AlertaModel{
                 .append("               <span style=\"color:#ffffff;\">O que fazer? (Sua tarefa)</span></th>")
 
                 .append("           <th colspan=\"3\" scope=\"row\" style=\"background-color: rgb(").append(cabecalhoFundoColor).append(");\">")
-                .append("               <span style=\"color:#ffffff;\">Historico das atividades anteriores</span></th>")
+                .append("               <span style=\"color:#ffffff;\">").append(exibirHistoricoAnterior?"Historico das atividades anteriores":"Historico da Etapa").append("</span></th>")
                 .append("	        </tr>")
                 .append("       </thead>")
 
@@ -140,7 +277,8 @@ public class AlertaImplantacao extends AlertaModel{
             List<ImplantacaoProcessoEtapaStatus> status = pe.getValue();
 
             Calendar prazo = etapa.getDataAtualizacao();
-            prazo.add(Calendar.DAY_OF_MONTH, etapa.getEtapa().getTempo());
+            if(prazo!=null)
+                prazo.add(Calendar.DAY_OF_MONTH, etapa.getEtapa().getTempo());
 
             ImplantacaoProcessoEtapa.Vencido vencido = etapa.getVencido();
 
@@ -149,7 +287,7 @@ public class AlertaImplantacao extends AlertaModel{
             builder.append("	    <tr>")
                     .append("	        <th scope=\"row\" style=\"background-color: rgb(").append(linhasTabelaFundoColor).append(");\">")
                     .append("	            <span style=\"color:rgb(").append(corData).append("); font-size: 14px;\">")
-                    .append(sdf.format(prazo.getTime())).append("</span></th>")
+                    .append(prazo==null?"":sdf.format(prazo.getTime())).append("</span></th>")
 
                     .append("	        <th scope=\"row\" style=\"background-color: rgb(").append(linhasTabelaFundoColor).append(");\">")
                     .append("	            <span style=\"color:rgb(").append(linhasTabelaFonteColor).append("); font-size: 14px;\">")
@@ -206,7 +344,7 @@ public class AlertaImplantacao extends AlertaModel{
             builder.append("	</tr>");
         }
 
-                builder.append("	</tbody>")
+        builder.append("	</tbody>")
                 .append("</table>")
                 //fim da tabela
                 .append("</div>");
