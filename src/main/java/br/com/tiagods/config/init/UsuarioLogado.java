@@ -22,7 +22,7 @@ public class UsuarioLogado {
     	this.usuario = usuario;
     	UsuarioCache cache = UsuarioCache.getInstance();
     	try {
-    		cache.save(usuario.getLogin());
+    		cache.save(usuario.getEmail());
     	}catch(IOException e) {    		
     	}
     }

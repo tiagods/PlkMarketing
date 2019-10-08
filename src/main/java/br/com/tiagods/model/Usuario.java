@@ -7,6 +7,7 @@ import java.util.Calendar;
 import javax.persistence.*;
 
 import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.util.AbreviacaoNome;
 
 @Entity
 public class Usuario extends Pessoa implements AbstractEntity,Serializable {
@@ -14,7 +15,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String login = "";
 	private String senha = "";
 	@Column(name = "ultimo_acesso")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -26,31 +26,29 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	@ManyToOne
 	@JoinColumn(name = "funcao_id")
 	private UsuarioFuncao funcao;
-	@Column(name = "total_vendas")
-	private BigDecimal totalVendas;
 	private int ativo = 1;
 	@Embedded
 	private PessoaFisica fisica;
 
-	@Column(name = "senha_anterior")
-	private String senhaAnterior;
 	@Column(name = "senha_resetada")
 	private boolean senhaResetada = false;
+
+	@Transient
+	private String nomeResumido;
 
 	public Usuario() {
 	}
 
-	public String getSenhaAnterior() {
-		return senhaAnterior;
-	}
-
-	public void setSenhaAnterior(String senhaAnterior) {
-		this.senhaAnterior = senhaAnterior;
-	}
-
-	public Usuario(long id, String login) {
+	public Usuario(long id,String nomeResumido) {
 		this.id = id;
-		this.login = login;
+		this.nomeResumido = nomeResumido;
+	}
+	@PostLoad
+	void onLoad(){
+		String[] newName = getNome().split(" ");
+		String newName2 = newName.length>=2?newName[0]+" "+newName[1]:getNome();
+		if(newName.length>2 && AbreviacaoNome.onList(newName[1])) newName2+=" "+newName[2];
+		this.nomeResumido=newName2;
 	}
 
 	@PrePersist
@@ -68,20 +66,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	/**
-	 * @return the login
-	 */
-	public String getLogin() {
-		return login;
-	}
-
-	/**
-	 * @param login the login to set
-	 */
-	public void setLogin(String login) {
-		this.login = login;
 	}
 
 	/**
@@ -141,20 +125,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	}
 
 	/**
-	 * @return the totalVendas
-	 */
-	public BigDecimal getTotalVendas() {
-		return totalVendas;
-	}
-
-	/**
-	 * @param totalVendas the totalVendas to set
-	 */
-	public void setTotalVendas(BigDecimal totalVendas) {
-		this.totalVendas = totalVendas;
-	}
-
-	/**
 	 * @return the ativo
 	 */
 	public int getAtivo() {
@@ -209,7 +179,7 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 
 	@Override
 	public String toString() {
-		return getLogin();
+		return getNomeResumido();
 	}
 
 	public boolean isSenhaResetada() {
@@ -221,8 +191,6 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	}
 
     public String getNomeResumido() {
-		String[] newName = getNome().split(" ");
-		String newName2 = newName.length>=2?newName[0]+" "+newName[1]:getNome();
-		return newName2;
+		return nomeResumido;
     }
 }

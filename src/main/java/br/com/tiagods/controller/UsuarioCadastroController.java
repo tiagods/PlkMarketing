@@ -80,9 +80,6 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private JFXTextField txNumero;
 
     @FXML
-    private JFXTextField txLogin;
-
-    @FXML
     private JFXPasswordField txSenha;
 
     @FXML
@@ -143,8 +140,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     }
 	void preencherFormulario(Usuario usuario) {
         txCodigo.setText(String.valueOf(usuario.getId()));
-        txLogin.setText(usuario.getLogin());
-        txLogin.setEditable(false);
+        txEmail.setEditable(false);
         PessoaFisica fisica = usuario.getFisica();
         if(fisica!=null) {
 	        txRG.setText(fisica.getRg()==null?"":fisica.getRg());
@@ -168,10 +164,6 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	}
 	@FXML
 	void salvar(ActionEvent event) {
-        if(txLogin.getText().trim().equals("")){
-            alert(Alert.AlertType.ERROR, "Login Invalido", null, "Login não informado",null, false);
-            return;
-        }
         if(txEmail.getText().trim().equals("")){
             alert(Alert.AlertType.ERROR, "E-mail Invalido", null, "E-mail não informado",null, false);
             return;
@@ -186,14 +178,13 @@ public class UsuarioCadastroController extends UtilsController implements Initia
             usuarios = new UsuariosImpl(getManager());
             if(txCodigo.getText().equals("")) {
                 usuario = new Usuario();
-                validarLogin = validarLogin(txLogin.getText());
+                validarLogin = validarLogin(txEmail.getText());
                 if (!validarLogin)
                     return;
                 else
                     validarLogin = validarSenha();
             } else {
                 usuario.setId(Long.parseLong(txCodigo.getText()));
-                //pessoa = usuario.getPessoa();
                 if (txSenha.getText().trim().equals(""))
                     validarLogin = true;
                 else
@@ -210,7 +201,6 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 pessoaFisica.setCpf(txCPF.getPlainText());
                 pessoaFisica.setAniversario(txDataNascimento.getPlainText());
                 usuario.setFisica(pessoaFisica);
-
                 usuario.setNome(txNome.getText().trim());
                 usuario.setEmail(txEmail.getText().trim());
                 usuario.setDepartamento(cbDepartamento.getValue());
@@ -223,7 +213,6 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 usuario.setComplemento(txComplemento.getText());
                 usuario.setEstado(cbEstado.getValue());
                 usuario.setCidade(cbCidade.getValue());
-                usuario.setLogin(txLogin.getText());
                 if(cbStatus.getValue().equalsIgnoreCase("Ativo"))
                     usuario.setAtivo(1);
                 else
@@ -245,8 +234,8 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     void sair(ActionEvent event){
 	    stage.close();
     }
-    private boolean validarLogin(String login){
-        Usuario u = usuarios.findByLogin(login);
+    private boolean validarLogin(String email){
+        Usuario u = usuarios.findByEmail(email);
         if(u!=null) {
             alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
                     u.getNome()+" já esta usando esse login",null,false);

@@ -321,7 +321,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 					setGraphic(null);
 				}
 				else{
-					setText(item.getLogin());
+					setText(item.getNomeResumido());
 				}
 			}
 		});
