@@ -316,7 +316,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 					setGraphic(null);
 				}
 				else{
-					setText(item.getLogin());
+					setText(item.toString());
 				}
 			}
 		});

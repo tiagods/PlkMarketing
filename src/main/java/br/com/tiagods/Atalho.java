@@ -23,7 +23,7 @@ public class Atalho extends Application {
 		try {
 			Usuario u  = new Usuario();
 			u.setId(1L);
-			u.setLogin("dev/admin");
+			u.setEmail("dev/admin");
 			u.setNome("dev/admin");
             Departamento departamento = new Departamento();
             departamento.setId(1L);

@@ -1055,7 +1055,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
-					setText(item.getLogin());
+					setText(item.toString());
 				}
 			}
 		});

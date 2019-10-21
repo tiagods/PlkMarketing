@@ -716,7 +716,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					setGraphic(null);
 				}
 				else{
-					setText(item.getLogin());
+					setText(item.toString());
 				}
 			}
 		});

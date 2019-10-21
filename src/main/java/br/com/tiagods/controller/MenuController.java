@@ -174,7 +174,7 @@ public class MenuController extends UtilsController implements Initializable{
     }
     void botaoNegocios(NegocioProposta c, String style){
         JFXButton button = new JFXButton();
-        button.setText(c.getId()+"-"+c.getNome()+"=>Responsavel: "+c.getAtendente().getLogin()+"=>"+(c.getTarefas().size())+" Tarefa(s)"+(c.getDataFim()!=null?"=>Prazo limite: "+sdf.format(c.getDataFim().getTime()):""));
+        button.setText(c.getId()+"-"+c.getNome()+"=>Responsavel: "+c.getAtendente().getNomeResumido()+"=>"+(c.getTarefas().size())+" Tarefa(s)"+(c.getDataFim()!=null?"=>Prazo limite: "+sdf.format(c.getDataFim().getTime()):""));
         button.getStyleClass().add(style);
         try {
             buttonMin(button, c.getTipoEtapa().getIco());
@@ -268,7 +268,7 @@ public class MenuController extends UtilsController implements Initializable{
         atualizar();
         menu();
 
-        lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getLogin().toUpperCase():"{usuario}");
+        lbUsuarioNome.setText(UsuarioLogado.getInstance().getUsuario()!=null?UsuarioLogado.getInstance().getUsuario().getNomeResumido().toUpperCase():"{usuario}");
         lbUsuarioNome2.setText(lbUsuarioNome.getText());
         pnCalendario.setVgap(6);
         pnCalendario.setHgap(6);

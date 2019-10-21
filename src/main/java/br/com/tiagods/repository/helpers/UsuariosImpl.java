@@ -44,16 +44,10 @@ public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements U
 	}
 
 	@Override
-	public Usuario findByLoginAndSenha(String login, String senha) {
+	public Usuario findByEmailAndSenha(String login, String senha) {
 		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
-		criteria.add(Restrictions.ilike("login", login));
+		criteria.add(Restrictions.ilike("email", login));
 		criteria.add(Restrictions.ilike("senha", senha));
-		return (Usuario) criteria.uniqueResult();
-	}
-
-	public Usuario findByLogin(String login) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
-		criteria.add(Restrictions.ilike("login", login));
 		return (Usuario) criteria.uniqueResult();
 	}
 

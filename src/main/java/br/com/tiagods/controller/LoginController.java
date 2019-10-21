@@ -2,6 +2,10 @@ package br.com.tiagods.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -9,7 +13,7 @@ import java.util.ResourceBundle;
 import br.com.tiagods.controller.acesso.RecuperacaoController;
 import br.com.tiagods.controller.acesso.TrocaSenhaController;
 import br.com.tiagods.controller.utils.UtilsController;
-import com.jfoenix.controls.IFXTextInputControl;
+import br.com.tiagods.factory.ConnectionFactory;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
@@ -24,8 +28,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -100,8 +102,26 @@ public class LoginController extends UtilsController implements Initializable{
             player.play();
             */
         carregarUsuarios(null);
-        if(!UsuarioLogado.getInstance().lastLogin().equals("")){
-            Optional<Usuario> result = contas.stream().filter(c->c.getLogin().equals(UsuarioLogado.getInstance().lastLogin())).findFirst();
+        String ultimoLogin = UsuarioLogado.getInstance().lastLogin();
+        if(!ultimoLogin.equals("")){
+            String email = "";
+
+            if(ultimoLogin.contains("@")){
+                email = ultimoLogin;
+            }
+            else {
+                try {
+                    Connection con = new ConnectionFactory().getConnection();
+                    PreparedStatement ps = con.prepareStatement("select email from usuario where login ilike ?");
+                    ps.setString(1, ultimoLogin);
+                    ResultSet rs = ps.executeQuery();
+                    if (rs.next()) email = rs.getString("email");
+                }catch (SQLException e){
+                    alert(Alert.AlertType.ERROR,"Erro","","Falha ao listar login pelo jdbc",e,true);
+                }
+            }
+            final String mailFim = email;
+            Optional<Usuario> result = contas.stream().filter(c->c.getEmail().equals(mailFim)).findFirst();
             if(result.isPresent()) {
                 this.ultimoLogadoEncontrado = true;
                 cbNome.setValue(result.get());
@@ -139,8 +159,8 @@ public class LoginController extends UtilsController implements Initializable{
             try {
                 loadFactory();
                 usuarios = new UsuariosImpl(getManager());
-                Usuario usuario = usuarios.findByLoginAndSenha(
-                        cbNome.getValue().getLogin(),
+                Usuario usuario = usuarios.findByEmailAndSenha(
+                        cbNome.getValue().getEmail(),
                         new CriptografiaUtil().criptografar(txSenha.getText().trim())
                 );
                 if (usuario == null){

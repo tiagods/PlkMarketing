@@ -828,7 +828,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
-					setText(item.getLogin());
+					setText(item.toString());
 				}
 			}
 		});

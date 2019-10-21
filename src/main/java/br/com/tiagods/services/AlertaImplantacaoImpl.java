@@ -331,7 +331,7 @@ public class AlertaImplantacaoImpl extends AlertaModel {
 
             builder.append("       <th style=\"background-color: rgb(").append(linhasTabelaFundoColor).append(");\">");
             status.forEach(c -> {
-                builder.append("       <p><span style=\"color:").append(linhasTabelaFonteColor).append(";font-size:12px;\">").append(c.getCriadoPor().getLogin()).append("</span><p>");
+                builder.append("       <p><span style=\"color:").append(linhasTabelaFonteColor).append(";font-size:12px;\">").append(c.getCriadoPor().getNomeResumido()).append("</span><p>");
             });
             builder.append("       </th>");
 
