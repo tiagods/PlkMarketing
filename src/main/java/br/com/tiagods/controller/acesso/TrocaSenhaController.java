@@ -6,6 +6,7 @@ import br.com.tiagods.controller.MenuController;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.repository.interfaces.StageController;
 import br.com.tiagods.services.SendEmail;
 import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXPasswordField;
@@ -21,11 +22,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+@Controller
 public class TrocaSenhaController extends UtilsController implements Initializable {
 
     Logger logger =LoggerFactory.getLogger(getClass());
@@ -45,7 +48,7 @@ public class TrocaSenhaController extends UtilsController implements Initializab
     private String GREEN="-fx-border-color:green;";
     private String RED="-fx-border-color:green;";
 
-    public TrocaSenhaController(Stage stage, Usuario usuario){
+    public void setPropriedades(Stage stage, Usuario usuario){
         this.stage=stage;
         this.usuario=usuario;
     }
@@ -97,7 +100,7 @@ public class TrocaSenhaController extends UtilsController implements Initializab
                         builder.append("Prezado ").append(usuario.getNome()).append(";").append("\n\n")
                                 .append("Uma alteração de senha foi realizada no sistema Controle de Processos,").append("\n\n")
                                 .append("Para logar no sistema informe a seguinte senha:\n\n").append(txNovaSenha.getText()).append("\n\n")
-                                .append("A senha é sua segurança pessoal e instransferível!");
+                                .append("A senha é de sua segurança pessoal e instransferível!");
                         email.enviaAlerta("webmaster@prolinkcontabil.com.br","Suporte \\ Prolink Contabil", Arrays.asList(new String[]{usuario.getEmail()}),"Controle de Processos - Redefinição de Senha",builder.toString(),false);
                         return null;
                     }

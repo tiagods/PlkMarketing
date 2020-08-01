@@ -57,9 +57,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public abstract class UtilsController extends PersistenciaController{
+
 	private boolean habilidarFiltroCidade = true;
-	protected final VersaoSistema sistemaVersao = VersaoSistema.getInstance();
-	
+
+	Stage stage;
+
 	protected final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 	//Locale locale = new Locale("pt", "BR");
 	protected final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -121,8 +123,6 @@ public abstract class UtilsController extends PersistenciaController{
 			expContent.add(textArea, 0, 1);
 			// Set expandable Exception into the dialog pane.
 			alert.getDialogPane().setExpandableContent(expContent);
-
-
 
 			if(print) {
 				try {
@@ -219,12 +219,17 @@ public abstract class UtilsController extends PersistenciaController{
 			close();
 		}
 	}
-	protected void buttonTable(JFXButton btn,IconsEnum icon) throws IOException{
+	protected void buttonTable(JFXButton btn, IconsEnum icon) throws IOException{
 		buttonIcon(btn,icon,30);
 	}
-	protected void buttonMin(JFXButton btn,IconsEnum icon) throws IOException{
+	private void buttonMin(JFXButton btn,IconsEnum icon) throws IOException{
 		buttonIcon(btn,icon,22);
 	}
+
+	static  int BUTTON_TABLE = 30;
+	static int BUTTON_TABLE_MIN = 22;
+
+
 	private void buttonIcon(JFXButton btn,IconsEnum icon,int size){
 		ImageView imageview = createImage(size,size,icon);
 		btn.setGraphic(imageview);
@@ -288,7 +293,12 @@ public abstract class UtilsController extends PersistenciaController{
 			return null;
 		}
 	}
-	public class BuscaCep implements ChangeListener<Cidade.Estado>{
+
+    protected void setPropriedades(Stage stage) {
+		this.stage = stage;
+    }
+
+    public class BuscaCep implements ChangeListener<Cidade.Estado>{
 		private JFXComboBox<Cidade> cbCidade;
 		public BuscaCep(JFXComboBox<Cidade> cbCidade){
 			this.cbCidade=cbCidade;

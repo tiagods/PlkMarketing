@@ -1,21 +1,26 @@
 package br.com.tiagods.controller.utils;
 
+import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.model.VersaoApp;
-import br.com.tiagods.repository.helpers.VersaoAppImpl;
+import br.com.tiagods.repository.VersaoAppRepository;
+import br.com.tiagods.repository.interfaces.StageController;
+import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class SobreController extends UtilsController implements Initializable{
+@Controller
+public class SobreController implements Initializable, StageController {
 
     @FXML
     private Label lbBanco;
@@ -28,14 +33,13 @@ public class SobreController extends UtilsController implements Initializable{
 
     private Stage stage;
 
-    private VersaoAppImpl app;
-
     @FXML
     private JFXComboBox<VersaoApp> cbVersao;
 
-    public SobreController(Stage stage){
-        this.stage=stage;
-    }
+    VersaoSistema versaoSistema = VersaoSistema.getInstance();
+
+    @Autowired
+    VersaoAppRepository repository;
 
     private void atualizarDetalhes(VersaoApp versao){
         StringBuilder builder = new StringBuilder();
@@ -43,41 +47,34 @@ public class SobreController extends UtilsController implements Initializable{
                 .append(versao.getVersao())
                 .append("\n")
                 .append("Data: ")
-                .append(sdfH.format(versao.getHistorico().getTime()))
+                .append(DateUtil.parse(versao.getHistorico().getTime(), DateUtil.SDF))
                 .append("\n\n").append(versao.getDetalhes());
         txDescricao.setText(builder.toString().toUpperCase());
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            loadFactory();
+        List<VersaoApp> versaoList = repository.findAllByOrderByIdDesc();
+        cbVersao.getItems().clear();
+        cbVersao.getItems().addAll(versaoList);
 
-            app = new VersaoAppImpl(getManager());
-            List<VersaoApp> versaoList = app.getAllDesc();
+        cbVersao.getSelectionModel().selectFirst();
 
-            cbVersao.getItems().clear();
-            cbVersao.getItems().addAll(versaoList);
+        atualizarDetalhes(cbVersao.getValue());
 
-            cbVersao.getSelectionModel().selectFirst();
+        cbVersao.valueProperty().addListener((observable, oldValue, newValue) -> { if(newValue!=null) atualizarDetalhes(newValue);});
 
-            atualizarDetalhes(cbVersao.getValue());
-
-            cbVersao.valueProperty().addListener((observable, oldValue, newValue) -> { if(newValue!=null) atualizarDetalhes(newValue);});
-
-            String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
-            lbDetalhes.setText(detalhes);
-            lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
-
-        }catch(Exception e) {
-            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Versoes",e,true);
-        }finally {
-            close();
-        }
+        String detalhes = "Versão do Sistema: "+versaoSistema.getVersao()+" de "+versaoSistema.getDate();
+        lbDetalhes.setText(detalhes);
+        lbBanco.setText("Versao do Banco:" +versaoSistema.getVersaoBanco());
     }
     @FXML
     void sair(ActionEvent event) {
         this.stage.close();
     }
 
+    @Override
+    public void setPropriedades(Stage stage) {
+        this.stage = stage;
+    }
 }

@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 
 import java.util.LinkedHashMap;
@@ -17,12 +18,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 /**
  * Manages switching Scenes on the Primary Stage
  */
+@Slf4j
 public class StageManager {
 
-    private static final Logger LOG = getLogger(StageManager.class);
     private final Stage primaryStage;
     private SpringFXMLLoader springFXMLLoader;
-
 
     public StageManager(SpringFXMLLoader springFXMLLoader, Stage stage) {
         this.springFXMLLoader = springFXMLLoader;
@@ -31,15 +31,17 @@ public class StageManager {
 
     public Stage switchScene(final FxmlView view, Stage stage) {
         Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
-        show(viewRootNodeHierarchy, view.getTitle(), view.getModality(), stage!=null? stage : primaryStage);
+        if(stage != null) {
+            stage.initModality(view.getModality());
+        }
+        show(viewRootNodeHierarchy, view.getTitle(), stage!=null ? stage : primaryStage);
         return stage;
     }
 
-    private Stage show(final Parent rootnode, String title, Modality modality, Stage stage) {
+    private Stage show(final Parent rootnode, String title, Stage stage) {
         Scene scene = prepareScene(rootnode, stage);
         //scene.getStylesheets().add("/styles/Styles.css");
         //primaryStage.initStyle(StageStyle.TRANSPARENT);
-        stage.initModality(modality);
         stage.setTitle(title);
         stage.setScene(scene);
         stage.sizeToScene();
@@ -74,7 +76,7 @@ public class StageManager {
     }
 
     private void logAndExit(String errorMsg, Exception exception) {
-        LOG.error(errorMsg, exception, exception.getCause());
+        log.error(errorMsg, exception, exception.getCause());
         Platform.exit();
     }
 }

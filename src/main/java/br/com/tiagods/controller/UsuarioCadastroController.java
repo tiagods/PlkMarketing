@@ -1,24 +1,19 @@
 package br.com.tiagods.controller;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Departamento;
-import br.com.tiagods.repository.helpers.DepartamentosImpl;
-import org.fxutils.maskedtextfield.MaskedTextField;
-
+import br.com.tiagods.model.PessoaFisica;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.repository.Departamentos;
+import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.util.AlertUtil;
+import br.com.tiagods.util.CepUtil;
+import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-
-import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.PessoaFisica;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.CriptografiaUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,8 +21,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.fxutils.maskedtextfield.MaskedTextField;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-public class UsuarioCadastroController extends UtilsController implements Initializable {
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+@Controller
+public class UsuarioCadastroController  implements Initializable {
     @FXML
     private AnchorPane pnCadastro;
 
@@ -97,48 +102,50 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     private JFXButton btnSair;
 
 	private Usuario usuario;
-	private Stage stage;
-	private UsuariosImpl usuarios;
 
-	public UsuarioCadastroController(Usuario usuario, Stage stage) {
-		this.stage = stage;
-		this.usuario=usuario;
-	}
+	private Stage stage;
+
+	@Autowired
+	private Usuarios usuarios;
+
+	@Autowired
+    private Departamentos departamentos;
+
+    @Autowired
+    CepUtil cep;
+
     @FXML
     void bucarCep(ActionEvent event){
-        bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
+        cep.bucarCep(txCEP,txLogradouro,txNumero,txComplemento,txBairro,cbCidade,cbEstado);
     }
+
 	private void combos(){
 		cbStatus.getItems().add("Ativo");
         cbStatus.getItems().add("Inativo");
         cbStatus.getSelectionModel().selectFirst();
 
-        DepartamentosImpl departamentos = new DepartamentosImpl(getManager());
-        List<Departamento> departamentoList = departamentos.getAllByName();
+        List<Departamento> departamentoList = departamentos.findAllByOrderByName();
         cbDepartamento.getItems().clear();
         cbDepartamento.getItems().addAll(departamentoList);
         //cbDepartamento.getSelectionModel().selectFirst();
 
-        comboRegiao(cbCidade,cbEstado,getManager());
+        cep.comboRegiao(cbCidade,cbEstado);
+    }
+
+    public void setPropriedades(Stage stage, Usuario usuario) {
+        this.stage = stage;
+        this.usuario = usuario;
+        if(usuario!=null) {
+            preencherFormulario(usuario);
+        }
     }
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			loadFactory();
-            combos();
-            if(usuario!=null) {
-                preencherFormulario(usuario);
-            }
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR, "Erro", null,
-                    "Falha ao getAllFetchJoin os registros", e,true);
-            e.printStackTrace();
-        }finally {
-		    close();
-        }
+        combos();
     }
-	void preencherFormulario(Usuario usuario) {
+
+    void preencherFormulario(Usuario usuario) {
         txCodigo.setText(String.valueOf(usuario.getId()));
         txEmail.setEditable(false);
         PessoaFisica fisica = usuario.getFisica();
@@ -164,18 +171,17 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	}
 	@FXML
 	void salvar(ActionEvent event) {
+
         if(txEmail.getText().trim().equals("")){
-            alert(Alert.AlertType.ERROR, "E-mail Invalido", null, "E-mail não informado",null, false);
+            AlertUtil.alert(Alert.AlertType.ERROR, "E-mail Invalido", null, "E-mail não informado",null, false);
             return;
         }
         if(cbDepartamento.getValue()==null){
-            alert(Alert.AlertType.ERROR, "Departamento Invalido", null, "Departamento não informado",null, false);
+            AlertUtil.alert(Alert.AlertType.ERROR, "Departamento Invalido", null, "Departamento não informado",null, false);
             return;
         }
         try {
             boolean validarLogin = false;
-            loadFactory();
-            usuarios = new UsuariosImpl(getManager());
             if(txCodigo.getText().equals("")) {
                 usuario = new Usuario();
                 validarLogin = validarLogin(txEmail.getText());
@@ -221,13 +227,11 @@ public class UsuarioCadastroController extends UtilsController implements Initia
                 preencherFormulario(usuario);
                 txSenha.setText("");
                 txConfirmarSenha.setText("");
-                alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
+                AlertUtil.alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
                 stage.close();
             }
         } catch (Exception e) {
-            alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
-        } finally {
-            close();
+            AlertUtil.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
         }
 	}
 	@FXML
@@ -235,10 +239,10 @@ public class UsuarioCadastroController extends UtilsController implements Initia
 	    stage.close();
     }
     private boolean validarLogin(String email){
-        Usuario u = usuarios.findByEmail(email);
-        if(u!=null) {
-            alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
-                    u.getNome()+" já esta usando esse login",null,false);
+        Optional<Usuario> optional = usuarios.findByEmail(email);
+        if(optional.isPresent()) {
+            AlertUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
+                    optional.get().getNome()+" já esta usando esse login",null,false);
             return false;
         }
         else
@@ -246,14 +250,14 @@ public class UsuarioCadastroController extends UtilsController implements Initia
     }
     private boolean validarSenha() {
         if (txSenha.getText().trim().equals("")) {
-            alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+            AlertUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
                     "Por favor verifique se a senha esta correta",null,false);
             return false;
         } else {
             if (txSenha.getText().trim().equals(txConfirmarSenha.getText().trim()))
                 return true;
             else {
-                alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+                AlertUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
                         "Por favor verifique se a senha esta correta",null,false);
                 return false;
             }

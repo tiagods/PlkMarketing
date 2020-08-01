@@ -3,7 +3,10 @@ package br.com.tiagods.controller;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
+import br.com.tiagods.repository.Departamentos;
 import br.com.tiagods.repository.helpers.DepartamentosImpl;
+import br.com.tiagods.repository.interfaces.StageController;
+import br.com.tiagods.util.AlertUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -18,23 +21,28 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class DepartamentoController extends UtilsController implements Initializable {
+@Controller
+public class DepartamentoController extends UtilsController implements Initializable, StageController {
 
     @FXML
     private TableView<Departamento> tbPrincipal;
 
-    private DepartamentosImpl departamentos;
+    @Autowired
+    private Departamentos departamentos;
 
     private Stage stage;
 
-    public DepartamentoController(Stage stage) {
-        this.stage = stage;
+    @Override
+    public void setPropriedades(Stage stage) {
+        this.stage=stage;
     }
 
     private void cadastrarDepartamento(int tableLocation, Departamento departamento) {
@@ -100,18 +108,19 @@ public class DepartamentoController extends UtilsController implements Initializ
         Optional<Pair<String, String>> result = dialog.showAndWait();
         result.ifPresent(pair -> {
             try {
-                loadFactory();
-                departamentos = new DepartamentosImpl(getManager());
                 departamento.setNome(pair.getKey());
                 departamento.setEmail(pair.getValue());
-                Departamento novoDepartamento = departamentos.save(departamento);
-                if(tableLocation==-1) tbPrincipal.getItems().addAll(novoDepartamento);
-                else
-                    tbPrincipal.getItems().set(tableLocation, novoDepartamento);
+                if(departamento.getNome().trim().equals("")){
+                    AlertUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Nome é obrigatorio",null,false);
+                }
+                else {
+                    Departamento novoDepartamento = departamentos.save(departamento);
+                    if (tableLocation == -1) tbPrincipal.getItems().addAll(novoDepartamento);
+                    else
+                        tbPrincipal.getItems().set(tableLocation, novoDepartamento);
+                }
             }catch (Exception e){
-                alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Ocorreu um erro ao tentar salvar o registro",e,true);
-            }finally {
-                close();
+                AlertUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Ocorreu um erro ao tentar salvar o registro",e,true);
             }
         });
     }
@@ -119,18 +128,11 @@ public class DepartamentoController extends UtilsController implements Initializ
     void exportar(ActionEvent event) {
 
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try{
-            tabela();
-            loadFactory();
-            departamentos = new DepartamentosImpl(getManager());
-            tbPrincipal.getItems().addAll(departamentos.getAllByName());
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","",e,true);
-        }finally {
-            close();
-        }
+        tabela();
+        tbPrincipal.getItems().addAll(departamentos.findAllByOrderByName());
     }
 
     @FXML

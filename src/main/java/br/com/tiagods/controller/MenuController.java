@@ -1,17 +1,7 @@
 package br.com.tiagods.controller;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
-import java.util.List;
-
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
@@ -24,11 +14,13 @@ import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
+import br.com.tiagods.repository.Departamentos;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.interfaces.StageController;
 import br.com.tiagods.services.AlertaImplantacaoImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import br.com.tiagods.util.TipoArquivo;
@@ -42,16 +34,30 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.*;
 
 @Controller
 public class MenuController extends UtilsController implements Initializable{
@@ -127,14 +133,34 @@ public class MenuController extends UtilsController implements Initializable{
     @FXML
     private JFXComboBox<ImplantacaoProcessoEtapa.Status> cbProcessoStatus;
 
+    @Lazy
+    @Autowired
+    private StageManager stageManager;
+
+    @Autowired
+    SobreController sobreController;
+    @Autowired
+    DepartamentoController departamentoController;
+    @Autowired
+    UsuarioPesquisaController usuarioPesquisaController;
+
+    @Autowired
+    Departamentos departamentos;
+
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
     private NegocioPropostaImpl propostas;
     private ImplantacaoProcessosImpl processos;
     private ImplantacaoProcessoEtapasImpl etapas;
-    private DepartamentosImpl departamentos;
     private ImplantacaoAtividadesImpl atividades;
     private boolean desabilitarAcaoCombos = false;
+
+    void openViewDefault(FxmlView view, StageController controller){
+        Stage stage = new Stage();
+        stageManager.switchScene(view, stage);
+        controller.setPropriedades(stage);
+        onCloseRequest(stage);
+    }
 
     void atualizar(){
         try{
@@ -146,7 +172,6 @@ public class MenuController extends UtilsController implements Initializable{
             contatos = new ContatosImpl(getManager());
             processos = new ImplantacaoProcessosImpl(getManager());
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-            departamentos = new DepartamentosImpl(getManager());
             atividades = new ImplantacaoAtividadesImpl(getManager());
 
             preencherNegocios();
@@ -225,16 +250,7 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @FXML
     void departamento(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.DEPARTAMENTO);
-            loader.setController(new DepartamentoController(stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.DEPARTAMENTO,e,true);
-        }
+        openViewDefault(FxmlView.DEPARTAMENTO, departamentoController);
     }
 
     private void filtrarProcessos(){
@@ -542,7 +558,7 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoDepartamento.getItems().add(departamento);
         cbProcessoDepartamento.setValue(UsuarioLogado.getInstance().getUsuario().getDepartamento());
 
-        cbProcessoDepartamento.getItems().addAll(departamentos.getAllByName());
+        cbProcessoDepartamento.getItems().addAll(departamentos.findAllByOrderByName());
 
         cbProcessoAtividade.getItems().clear();
         ImplantacaoAtividade atividade = new ImplantacaoAtividade(-1L,"Todos");
@@ -631,17 +647,9 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     void sobre(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.SOBRE);
-            loader.setController(new SobreController(stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.SOBRE,e,true);
-        }
+        openViewDefault(FxmlView.SOBRE, sobreController);
     }
+
     @FXML
     void tarefa(ActionEvent event) {
     	try {
@@ -658,16 +666,7 @@ public class MenuController extends UtilsController implements Initializable{
 
     @FXML
     void usuario(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.USUARIO_PESQUISA);
-            loader.setController(new UsuarioPesquisaController(stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-        	 alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                     "Falha ao localizar o arquivo "+FXMLEnum.USUARIO_PESQUISA,e,true);
-        }
+        openViewDefault(FxmlView.USUARIO_PESQUISA, usuarioPesquisaController);
     }
 
 }
