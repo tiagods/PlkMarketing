@@ -1,18 +1,16 @@
 package br.com.tiagods.config;
 
+import br.com.tiagods.config.enums.PropsEnum;
+import br.com.tiagods.config.enums.PropsInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.swing.JOptionPane;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import br.com.tiagods.config.enums.PropsEnum;
-import br.com.tiagods.config.enums.PropsInterface;
 
 public abstract class PropsConfig implements PropsInterface{
 	private Logger log = LoggerFactory.getLogger(PropsConfig.class);

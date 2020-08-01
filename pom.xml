@@ -4,10 +4,17 @@
 	<groupId>br.com.tiagods</groupId>
 	<artifactId>Controle-de-Processos</artifactId>
 	<version>1.0.0</version>
-	<profiles>
 
+	<name>Controle-de-Processos</name>
+	<description>Sistema Controle de Processos</description>
 
-	</profiles>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.2.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
 	<properties>
 		<java.version>1.8</java.version>
 		<maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
@@ -21,7 +28,6 @@
 		<hibernate.version>5.1.0.Final</hibernate.version>
 		<c3p0.version>0.9.1</c3p0.version>
 		<!-- Databases -->
-		<postgresql.version>9.1-901-1.jdbc4</postgresql.version>
 		<mysql.version>5.1.47</mysql.version>
 
 		<!-- View APIs -->
@@ -49,20 +55,34 @@
 
 		<junit.version>4.12</junit.version>
 	</properties>
-	<build>
-		<finalName>Negocios</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
-				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+
 	<dependencies>
+		<dependency>
+			<groupId>io.reactivex.rxjava3</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.8</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.11</version>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- JPA / Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -82,17 +102,6 @@
 		    <groupId>c3p0</groupId>
 		    <artifactId>c3p0</artifactId>
 		    <version>${c3p0.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
@@ -159,6 +168,11 @@
 		    <version>${controlsfx.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>11</version>
+		</dependency>
+		<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpclient.version}</version>
@@ -178,4 +192,19 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

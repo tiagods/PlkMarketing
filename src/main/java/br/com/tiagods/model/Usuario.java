@@ -10,7 +10,7 @@ import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.util.AbreviacaoNome;
 
 @Entity
-public class Usuario extends Pessoa implements AbstractEntity,Serializable {
+public class Usuario extends Pessoa implements Serializable, AbstractEntity {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

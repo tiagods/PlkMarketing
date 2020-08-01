@@ -51,7 +51,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class MenuController extends UtilsController implements Initializable{
     @FXML
     private Pane pnCenter;

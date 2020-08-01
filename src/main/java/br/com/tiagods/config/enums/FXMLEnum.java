@@ -31,10 +31,13 @@ public enum FXMLEnum {
 	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta"),
 	TROCA_SENHA("TrocaSenha");
 	private String localizacao;
-	private FXMLEnum(String localizacao) {
+	FXMLEnum(String localizacao) {
 		this.localizacao=localizacao;
 	}
 	public URL getLocalizacao() {
 		return getClass().getResource("/fxml/"+localizacao+".fxml");
+	}
+	public String getFile() {
+		return "/fxml/"+localizacao+".fxml";
 	}
 }

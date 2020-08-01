@@ -1,18 +1,11 @@
 package br.com.tiagods;
 
-import java.io.IOException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
-import org.hibernate.exception.JDBCConnectionException;
-import org.hibernate.service.spi.ServiceException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import br.com.tiagods.config.init.JPAConfig;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.init.JPAConfig;
 import br.com.tiagods.controller.LoginController;
+import br.com.tiagods.repository.Registers;
 import br.com.tiagods.util.Atualizador;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,15 +17,42 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.service.spi.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.io.IOException;
+import java.util.Date;
+
+@Slf4j
+@SpringBootApplication
 public class StartApp extends Application {
 
 	boolean habilitarVerificacaoAtualizaca = false;
-	private static Logger log = LoggerFactory.getLogger(StartApp.class);
 	private Atualizador atualizador = new Atualizador();
 
+	protected ConfigurableApplicationContext springContext;
+	protected StageManager stageManager;
+
+	public static void main(final String[] args) {
+		Application.launch(args);
+	}
+
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void init() throws Exception {
+		springContext = springBootApplicationContext();
+	}
+
+	@Override
+	public void start(Stage stage) throws Exception {
+		stageManager = springContext.getBean(StageManager.class, stage);
+
 		if(habilitarVerificacaoAtualizaca){
 			if (atualizador.atualizacaoPendente()) {
 				log.debug("Sistema desatualizado");
@@ -44,8 +64,28 @@ public class StartApp extends Application {
 		}
 		else {
 			log.debug("Verificacao de atualizacao foi ignorada");
-			iniciar();
+			displayInitialScene();
 		}
+	}
+
+	@Override
+	public void stop() throws Exception {
+		springContext.close();
+	}
+
+	/**
+	 * Useful to override this method by sub-classes wishing to change the first
+	 * Scene to be displayed on startup. Example: Functional tests on main
+	 * window.
+	 */
+	protected void displayInitialScene() {
+		stageManager.switchScene(FxmlView.LOGIN, null);
+	}
+
+	private ConfigurableApplicationContext springBootApplicationContext() {
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(StartApp.class);
+		String[] args = getParameters().getRaw().stream().toArray(String[]::new);
+		return builder.run(args);
 	}
 
 	private void iniciar() {
@@ -71,9 +111,9 @@ public class StartApp extends Application {
 						Platform.runLater(()->alert.show());
 						log.debug("Abrindo conexao");
 						manager = JPAConfig.getInstance().createManager();
-						log.debug("Concluindo conexao");
+						log.debug("Concluindo conexao "+new Date());
 						log.debug("Invocando login");
-						invocarLogin();
+						//invocarLogin();
 					} catch (ExceptionInInitializerError | PersistenceException | ServiceException
 							| JDBCConnectionException e) {
 						alert("Falha ao estabelecer conexao com o banco de dados, verifique sua conexao com a internet\n"
@@ -99,32 +139,7 @@ public class StartApp extends Application {
 		}
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
-
-	private void invocarLogin() {
-		Task<Void> run2 = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				try {
-					Stage stage = new Stage();
-					final FXMLLoader loader = new FXMLLoader(FXMLEnum.LOGIN.getLocalizacao());
-					loader.setController(new LoginController(stage));
-					Parent root = loader.load();
-					Scene scene = new Scene(root);
-					stage.setScene(scene);
-					stage.getIcons().add(new Image(getClass().getResource("/fxml/imagens/theme.png").toString()));
-					stage.show();
-				} catch (IOException e) {
-					alert("Falha ao abrir login");
-				}
-				return null;
-			}
-		};
-		Platform.runLater(run2);
-	}
- 	private void alert(String mensagem) {
+	private void alert(String mensagem) {
 		log.debug(mensagem);
 		Alert alert = new Alert(Alert.AlertType.ERROR);
 		alert.getDialogPane().setExpanded(true);
@@ -133,4 +148,5 @@ public class StartApp extends Application {
 		alert.setContentText(mensagem);
 		alert.showAndWait();
 	}
+
 }
