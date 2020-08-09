@@ -57,14 +57,7 @@ import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegocioServicoAgregadoImpl;
-import br.com.tiagods.repository.helpers.NegocioServicoContratadoImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -217,13 +210,13 @@ public class NegocioCadastroController extends UtilsController implements Initia
 
 	private NegocioPropostaImpl propostas;
 	private NegociosTarefasPropostasImpl tarefas;
-	private NegocioNiveisImpl niveis;
+	private NegociosNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
+	private NegociosOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	private UsuariosImpl usuarios;
-	private NegocioServicoContratadoImpl contratados;
-	private NegocioServicoAgregadoImpl agregados;
+	private NegociosServicosContratadosImpl contratados;
+	private NegociosServicosAgregadosImpl agregados;
 
 	Storage storage = StorageProducer.newConfig();
 
@@ -312,11 +305,11 @@ public class NegocioCadastroController extends UtilsController implements Initia
     	group2.getToggles().addAll(rbAndamento,rbGanho,rbPerdido,rbSemMovimento);
     	    	
     	categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
+		niveis = new NegociosNiveisImpl(getManager());
+		origens = new NegociosOrigensImpl(getManager());
 		servicos = new NegocioServicosImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());
-		agregados = new NegocioServicoAgregadoImpl(getManager());
+		agregados = new NegociosServicosAgregadosImpl(getManager());
 		
 		cbCategoria.getItems().add(null);
 		cbNivel.getItems().add(null);
@@ -372,7 +365,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		if (optional.get() == ButtonType.OK) {
 			try{
 				loadFactory();
-				contratados = new NegocioServicoContratadoImpl(getManager());
+				contratados = new NegociosServicosContratadosImpl(getManager());
 				ServicoContratado t = contratados.findById(n.getId());
 				contratados.remove(t);
 				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);

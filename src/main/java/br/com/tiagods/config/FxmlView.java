@@ -7,7 +7,7 @@ import java.util.ResourceBundle;
 
 public enum FxmlView {
 
-    USER("user", FXMLEnum.USUARIO_PESQUISA.getFile(),  Modality.WINDOW_MODAL),
+    USER("user", FXMLEnum.USUARIO_PESQUISA.getFile(),  Modality.APPLICATION_MODAL),
     LOGIN("login", FXMLEnum.LOGIN.getFile(), Modality.WINDOW_MODAL),
     MENU("login", FXMLEnum.MAIN.getFile(), Modality.WINDOW_MODAL),
     TROCASENHA("login", FXMLEnum.TROCA_SENHA.getFile(), Modality.WINDOW_MODAL),
@@ -15,7 +15,10 @@ public enum FxmlView {
     RECUPERACAO_SENHA("login", FXMLEnum.RECUPERACAO_SENHA.getFile(), Modality.APPLICATION_MODAL),
     SOBRE("login", FXMLEnum.SOBRE.getFile(), Modality.APPLICATION_MODAL),
     USUARIO_PESQUISA("login", FXMLEnum.USUARIO_PESQUISA.getFile(), Modality.APPLICATION_MODAL),
-    DEPARTAMENTO("login", FXMLEnum.DEPARTAMENTO.getFile(), Modality.APPLICATION_MODAL);
+    DEPARTAMENTO("login", FXMLEnum.DEPARTAMENTO.getFile(), Modality.APPLICATION_MODAL),
+    CONTATO_PESQUISA("longin", FXMLEnum.CONTATO_PESQUISA.getFile(), Modality.WINDOW_MODAL);
+
+
 
     String value;
     String file;

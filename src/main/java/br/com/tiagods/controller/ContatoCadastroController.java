@@ -16,9 +16,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.persistence.PersistenceException;
-
 import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.repository.*;
 import org.controlsfx.control.Rating;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -49,15 +48,6 @@ import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.NegociosListasImpl;
-import br.com.tiagods.repository.helpers.NegociosMalaDiretaImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -81,8 +71,11 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-public class ContatoCadastroController extends UtilsController implements Initializable{
+@Controller
+public class ContatoCadastroController extends UtilsController implements Initializable, StageController{
 	@FXML
 	private Label lbrating;
 	
@@ -214,42 +207,36 @@ public class ContatoCadastroController extends UtilsController implements Initia
     
     @FXML
     private TableView<NegocioLista> tbListas;
-    
-    private Stage stage;
+
+	@Autowired Contatos contatos;
+
+
+	@Autowired NegociosNiveis niveis;
+	@Autowired NegociosCategorias categorias;
+	@Autowired NegociosOrigens origens;
+	@Autowired NegociosServicos servicos;
+	@Autowired NegociosListas listas;
+	@Autowired Usuarios usuarios;
+	@Autowired NegociosMalaDiretas malasDiretas;
+	@Autowired NegociosTarefasContatos tarefas;
+
+
+	private Stage stage;
 	private Contato contato;
-	private ContatosImpl contatos;
-	private NegocioNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private NegociosListasImpl listas;
-	private UsuariosImpl usuarios;
-	private NegociosMalaDiretaImpl malasDiretas;
-	private NegociosTarefasContatosImpl tarefas;
-	
-    public ContatoCadastroController(Stage stage, Contato contato) {
-		this.stage=stage;;
-		this.contato=contato;
-	}
-    private void abrirTarefa(NegocioTarefaContato t) {
+
+
+	private void abrirTarefa(NegocioTarefaContato t) {
 		try {
 			Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
             loader.setController(new TarefaCadastroController(stage,t,contato));
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
             stage.setOnHiding(event -> {
-            	try {
-        			loadFactory();
-        			contatos = new ContatosImpl(getManager());
-        			contato = contatos.findById(contato.getId());
-        			tbTarefas.getItems().clear();
-        			tbTarefas.getItems().addAll(contato.getTarefas());
-        			tbTarefas.refresh();
-        		}catch(Exception e) {
-        			e.printStackTrace();
-        		}finally {
-        			close();
-        		}
+            	contatos.findById(contato.getId()).ifPresent(contato1 -> {
+					tbTarefas.getItems().clear();
+					tbTarefas.getItems().addAll(contato1.getTarefas());
+					tbTarefas.refresh();
+				});
             });
         }catch(IOException e) {
             alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
@@ -292,22 +279,13 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		cbOrigem.getItems().add(null);
 		cbServico.getItems().add(null);
 		
-		contatos = new ContatosImpl(getManager());
-		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		listas = new NegociosListasImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
-		malasDiretas = new NegociosMalaDiretaImpl(getManager());
-		
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-		cbLista.getItems().addAll(listas.getAll());
-		cbMalaDireta.getItems().addAll(malasDiretas.getAll());
+		cbLista.getItems().addAll(listas.findAll());
+		cbMalaDireta.getItems().addAll(malasDiretas.findAll());
 		
 		cbCategoria.getSelectionModel().selectFirst();
 		cbNivel.getSelectionModel().selectFirst();
@@ -367,21 +345,12 @@ public class ContatoCadastroController extends UtilsController implements Initia
 	}
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			tabelaListas();
-			tabelaTarefa();
-			loadFactory();
-			combos();
-			if(contato!=null) {
-				contatos = new ContatosImpl(getManager());
-				this.contato = contatos.findById(this.contato.getId());
-				preencherFormulario(this.contato);
-			}
-		}catch(PersistenceException e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
-		}	
+		tabelaListas();
+		tabelaTarefa();
+		combos();
+		if(contato!=null) {
+			contatos.findById(this.contato.getId()).ifPresent(cons->preencherFormulario(this.contato));
+		}
 	}
     @FXML
     private void incluirLista(ActionEvent event) {
@@ -593,20 +562,10 @@ public class ContatoCadastroController extends UtilsController implements Initia
     	contato.setComplemento(txComplemento.getText());
     	contato.setEstado(cbEstado.getValue());
     	contato.setCidade(cbCidade.getValue());
-    	try {
-	        loadFactory();
-	        contatos = new ContatosImpl(getManager());
-	        this.contato = contatos.save(contato);
-	        preencherFormulario(contato);
-	        alert(Alert.AlertType.INFORMATION,"Sucesso",null,
-	                "Salvo com sucesso",null,false);
-	        return true;
-	    } catch (PersistenceException e) {
-	        alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
-	        return false;
-	    }finally {
-			close();
-		}
+
+		this.contato = contatos.save(contato);
+		preencherFormulario(contato);
+		return contato != null;
     }
     
     private boolean salvarStatus(NegocioTarefaContato tarefa,int status){
@@ -889,8 +848,10 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		tbTarefas.setTableMenuButtonVisible(true);
 		tbTarefas.setFixedCellSize(50);
 	}
-	
-	
-	
-	
+
+
+	@Override
+	public void setPropriedades(Stage stage) {
+
+	}
 }

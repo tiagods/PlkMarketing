@@ -3,8 +3,7 @@ package br.com.tiagods.controller;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
-import br.com.tiagods.repository.Departamentos;
-import br.com.tiagods.repository.interfaces.StageController;
+import br.com.tiagods.repository.UsuariosDepartamentos;
 import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -35,7 +34,7 @@ public class DepartamentoController extends UtilsController implements Initializ
     private TableView<Departamento> tbPrincipal;
 
     @Autowired
-    private Departamentos departamentos;
+    private UsuariosDepartamentos usuariosDepartamentos;
 
     private Stage stage;
 
@@ -113,7 +112,7 @@ public class DepartamentoController extends UtilsController implements Initializ
                     JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Nome é obrigatorio",null,false);
                 }
                 else {
-                    Departamento novoDepartamento = departamentos.save(departamento);
+                    Departamento novoDepartamento = usuariosDepartamentos.save(departamento);
                     if (tableLocation == -1) tbPrincipal.getItems().addAll(novoDepartamento);
                     else
                         tbPrincipal.getItems().set(tableLocation, novoDepartamento);
@@ -131,7 +130,7 @@ public class DepartamentoController extends UtilsController implements Initializ
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabela();
-        tbPrincipal.getItems().addAll(departamentos.findAllByOrderByNome());
+        tbPrincipal.getItems().addAll(usuariosDepartamentos.findAllByOrderByNome());
     }
 
     @FXML

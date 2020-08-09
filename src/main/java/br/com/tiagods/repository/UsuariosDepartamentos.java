@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface Departamentos extends JpaRepository<Departamento, Long> {
+public interface UsuariosDepartamentos extends JpaRepository<Departamento, Long> {
     List<Departamento> findAllByOrderByNome();
 }

@@ -17,7 +17,7 @@ import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.AbstractRepository;
 import br.com.tiagods.repository.interfaces.UsuarioDAO;
 
-public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements UsuarioDAO{
+public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements UsuarioDAO {
 	public UsuariosImpl(EntityManager manager) {
 		super(manager);
 	}

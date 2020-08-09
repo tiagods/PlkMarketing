@@ -4,7 +4,7 @@ import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.Departamentos;
+import br.com.tiagods.repository.UsuariosDepartamentos;
 import br.com.tiagods.repository.Usuarios;
 import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.CepUtil;
@@ -107,7 +107,7 @@ public class UsuarioCadastroController  implements Initializable {
 	private Usuarios usuarios;
 
 	@Autowired
-    private Departamentos departamentos;
+    private UsuariosDepartamentos usuariosDepartamentos;
 
     @Autowired
     CepUtil cep;
@@ -122,7 +122,7 @@ public class UsuarioCadastroController  implements Initializable {
         cbStatus.getItems().add("Inativo");
         cbStatus.getSelectionModel().selectFirst();
 
-        List<Departamento> departamentoList = departamentos.findAllByOrderByNome();
+        List<Departamento> departamentoList = usuariosDepartamentos.findAllByOrderByNome();
         cbDepartamento.getItems().clear();
         cbDepartamento.getItems().addAll(departamentoList);
         //cbDepartamento.getSelectionModel().selectFirst();

@@ -23,7 +23,6 @@ import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.negocio.Franquia;
 import br.com.tiagods.model.negocio.Franquia.Tipo;
 import br.com.tiagods.model.negocio.FranquiaPacote;
-import br.com.tiagods.repository.helpers.FranquiasImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

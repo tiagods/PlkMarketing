@@ -5,7 +5,6 @@ import br.com.tiagods.config.StageManager;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.Usuarios;
-import br.com.tiagods.repository.interfaces.StageController;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;

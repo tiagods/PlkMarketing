@@ -28,11 +28,7 @@ import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
 import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
@@ -103,9 +99,9 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 	private Paginacao paginacao;
 	private Stage stage;
-	private NegocioNiveisImpl niveis;
+	private NegociosNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
+	private NegociosOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	private NegocioPropostaImpl propostas;
 	private UsuariosImpl usuarios;
@@ -164,8 +160,8 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		cbPesquisaData.getSelectionModel().selectFirst();
 
 		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
+		niveis = new NegociosNiveisImpl(getManager());
+		origens = new NegociosOrigensImpl(getManager());
 		servicos = new NegocioServicosImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());
 		propostas = new NegocioPropostaImpl(getManager());

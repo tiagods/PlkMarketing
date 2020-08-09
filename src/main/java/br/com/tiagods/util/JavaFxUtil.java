@@ -1,8 +1,13 @@
 package br.com.tiagods.util;
 
+import br.com.tiagods.config.enums.IconsEnum;
+import com.jfoenix.controls.JFXButton;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -13,6 +18,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class JavaFxUtil {
+    public static void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
+        item.setGraphic(createImage(x,y,icon));
+    }
+
+    public static ImageView createImage(int x, int y, IconsEnum icon) {
+        Image image = new Image(icon.getLocalizacao().toString());
+        ImageView imageview = new ImageView(image);
+        imageview.setFitHeight(x);
+        imageview.setFitWidth(y);
+        imageview.setPreserveRatio(true);
+        return imageview;
+    }
+
+    public static void buttonTable(JFXButton btn, IconsEnum icon) throws IOException{
+        buttonIcon(btn,icon,30);
+    }
+
+    public static void buttonMin(JFXButton btn, IconsEnum icon) throws IOException{
+        buttonIcon(btn,icon,22);
+    }
+
+    static  int BUTTON_TABLE = 30;
+    static int BUTTON_TABLE_MIN = 22;
+
+    public static void buttonIcon(JFXButton btn,IconsEnum icon,int size){
+        ImageView imageview = createImage(size,size,icon);
+        btn.setGraphic(imageview);
+        btn.setTooltip(icon.getTooltip());
+    }
+
     private static Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -20,6 +55,7 @@ public class JavaFxUtil {
         alert.setContentText(contentText);
         return alert;
     }
+
     public static void alert(Alert.AlertType alertType, String title, String header, String contentText, Exception ex, boolean print) {
         Alert alert = alert(alertType,title,header,contentText);
         alert.getDialogPane().setExpanded(true);
@@ -43,7 +79,6 @@ public class JavaFxUtil {
             expContent.setMaxWidth(Double.MAX_VALUE);
             expContent.add(label, 0, 0);
             expContent.add(textArea, 0, 1);
-            // Set expandable Exception into the dialog pane.
             alert.getDialogPane().setExpandableContent(expContent);
 
             if(print) {

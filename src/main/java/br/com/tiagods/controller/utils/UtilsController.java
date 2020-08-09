@@ -28,12 +28,8 @@ import com.jfoenix.controls.JFXTextField;
 
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
-import br.com.tiagods.model.UsuarioLog;
-import br.com.tiagods.repository.helpers.CidadesImpl;
-import br.com.tiagods.repository.helpers.UsuarioLogImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import br.com.tiagods.util.EnderecoUtil;
 import javafx.beans.value.ChangeListener;
@@ -233,6 +229,7 @@ public abstract class UtilsController extends PersistenciaController{
 		btn.setGraphic(imageview);
 		btn.setTooltip(icon.getTooltip());
 	}
+
 	protected Optional<String> cadastroRapido(){
 		TextInputDialog dialog = new TextInputDialog("");
 		dialog.setTitle("Cadastro rapido");
@@ -240,6 +237,7 @@ public abstract class UtilsController extends PersistenciaController{
 		dialog.setContentText("Por favor entre com um novo nome");
 		return dialog.showAndWait();
 	}
+
 	protected void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
 		item.setGraphic(createImage(x,y,icon));
 	}
@@ -266,16 +264,6 @@ public abstract class UtilsController extends PersistenciaController{
         return loader;
     }
 
-	protected void salvarLog(EntityManager manager,String menu, String acao, String descricao) throws Exception{
-		UsuarioLogImpl logImpl = new UsuarioLogImpl(manager);
-		UsuarioLog log = new UsuarioLog();
-		log.setData(Calendar.getInstance());
-		log.setUsuario(UsuarioLogado.getInstance().getUsuario());
-		log.setMenu(menu);
-		log.setAcao(acao);
-		log.setDescricao(descricao);
-		logImpl.save(log);
-	}
 	protected Stage startProgress(){
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());

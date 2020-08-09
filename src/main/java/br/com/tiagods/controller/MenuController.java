@@ -5,7 +5,6 @@ import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.controller.utils.SobreController;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
@@ -14,14 +13,13 @@ import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
-import br.com.tiagods.repository.Departamentos;
+import br.com.tiagods.repository.UsuariosDepartamentos;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.Usuarios;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
-import br.com.tiagods.repository.interfaces.StageController;
 import br.com.tiagods.services.AlertaImplantacaoImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
 import br.com.tiagods.util.MyFileUtil;
@@ -143,13 +141,16 @@ public class MenuController extends UtilsController implements Initializable{
     DepartamentoController departamentoController;
     @Autowired
     UsuarioPesquisaController usuarioPesquisaController;
+    @Autowired
+    ContatoPesquisaController contatoPesquisaController;
 
     @Autowired
-    Departamentos departamentos;
+    UsuariosDepartamentos usuariosDepartamentos;
     @Autowired
     Usuarios usuarios;
+    //@Autowired
+    //Contatos contatos;
 
-    private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
     private NegocioPropostaImpl propostas;
     private ImplantacaoProcessosImpl processos;
@@ -158,8 +159,7 @@ public class MenuController extends UtilsController implements Initializable{
     private boolean desabilitarAcaoCombos = false;
 
     void openViewDefault(FxmlView view, StageController controller){
-        Stage stage = new Stage();
-        stageManager.switchScene(view, stage);
+        Stage stage = stageManager.switchScene(view, new Stage());
         controller.setPropriedades(stage);
         onCloseRequest(stage);
     }
@@ -171,7 +171,6 @@ public class MenuController extends UtilsController implements Initializable{
             loadFactory();
             propostas = new NegocioPropostaImpl(getManager());
             tarefas = new NegociosTarefasImpl(getManager());
-            contatos = new ContatosImpl(getManager());
             processos = new ImplantacaoProcessosImpl(getManager());
             etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             atividades = new ImplantacaoAtividadesImpl(getManager());
@@ -238,17 +237,7 @@ public class MenuController extends UtilsController implements Initializable{
     }
     @FXML
     void contato(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_PESQUISA);
-            loader.setController(new ContatoPesquisaController(stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_PESQUISA,e,true);
-        }
-
+        openViewDefault(FxmlView.CONTATO_PESQUISA, contatoPesquisaController);
     }
     @FXML
     void departamento(ActionEvent event) {
@@ -547,7 +536,7 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoDepartamento.getItems().add(departamento);
         cbProcessoDepartamento.setValue(UsuarioLogado.getInstance().getUsuario().getDepartamento());
 
-        cbProcessoDepartamento.getItems().addAll(departamentos.findAllByOrderByNome());
+        cbProcessoDepartamento.getItems().addAll(usuariosDepartamentos.findAllByOrderByNome());
 
         cbProcessoAtividade.getItems().clear();
         ImplantacaoAtividade atividade = new ImplantacaoAtividade(-1L,"Todos");

@@ -4,7 +4,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -21,8 +20,11 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import br.com.tiagods.services.UsuarioLogService;
+import br.com.tiagods.util.DateUtil;
+import br.com.tiagods.util.JavaFxUtil;
+import br.com.tiagods.util.MyFileUtil;
 import br.com.tiagods.util.storage.Storage;
 import br.com.tiagods.util.storage.StorageProducer;
 import com.jfoenix.controls.JFXButton;
@@ -47,9 +49,7 @@ import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.repository.helpers.ContatosImpl;
 import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
@@ -71,8 +71,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public class TarefaPesquisaController extends UtilsController implements Initializable{
+public class TarefaPesquisaController implements Initializable {
 
     @FXML
     private JFXCheckBox ckEmail;
@@ -131,8 +132,11 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	@FXML
 	private JFXComboBox<Integer> cbLimite;
 
+	@Autowired
+	UsuarioLogService usuarioLogService;
+
 	private Paginacao paginacao;
-    
+
     private Stage stage;
 	private UsuariosImpl usuarios;
 	private NegociosTarefasImpl tarefas;
@@ -284,24 +288,21 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
 			try{
-				loadFactory();
 				tarefas = new NegociosTarefasImpl(getManager());
 				NegocioTarefa t = tarefas.findById(n.getId());
 				tarefas.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+				JavaFxUtil.alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
 				return true;
 			}catch(Exception e){
-				super.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
+				JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
 				return false;
-			}finally{
-				super.close();
 			}
 		}
 		else return false;
 	}
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@FXML
-    void exportar(ActionEvent event) {
+	void exportar(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
 			Alert progress = new Alert(Alert.AlertType.INFORMATION);
@@ -313,58 +314,55 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 
 			Task<Void> run = new Task<Void>() {
 				{
-					setOnFailed(a ->sta.close());
-					setOnSucceeded(a ->sta.close());
-					setOnCancelled(a ->sta.close());
+					setOnFailed(a -> sta.close());
+					setOnSucceeded(a -> sta.close());
+					setOnCancelled(a -> sta.close());
 				}
+
 				@Override
 				protected Void call() {
 
-					File export = salvarTemp("xls");
+					File export = MyFileUtil.salvarTemp("xls");
 					Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-					Integer[] colunasLenght = new Integer[] { 10, 18, 18, 14, 10, 30, 10, 10, 10, 10,20, 15, 15 };
-					String[] cabecalho = new String[] { "Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
-							"Registro", "Nome", "Ultimo Negocio","Status Negocio / Ultimo Negocio", "Atendente", "Criado_Por" };
+					Integer[] colunasLenght = new Integer[]{10, 18, 18, 14, 10, 30, 10, 10, 10, 10, 20, 15, 15};
+					String[] cabecalho = new String[]{"Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
+							"Registro", "Nome", "Ultimo Negocio", "Status Negocio / Ultimo Negocio", "Atendente", "Criado_Por"};
 					listaImpressao.add(new ArrayList<>());
 					for (String c : cabecalho) {
 						listaImpressao.get(0).add(c);
 					}
 					try {
-
-						loadFactory();
 						List<NegocioTarefa> finalList = filtrar(null);
-
 						for (int i = 1; i <= finalList.size(); i++) {
 							listaImpressao.add(new ArrayList<String>());
-							NegocioTarefa c = finalList.get(i-1);
+							NegocioTarefa c = finalList.get(i - 1);
 							listaImpressao.get(i).add(c.getId());
-							listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getDataEvento().getTime()));
-							listaImpressao.get(i).add(sdfH.format(c.getDataEvento().getTime()));
+							listaImpressao.get(i).add(DateUtil.parse(c.getDataEvento().getTime(), DateUtil.SDFM));
+							listaImpressao.get(i).add(DateUtil.parse(c.getDataEvento().getTime(), DateUtil.SDFH));
 							listaImpressao.get(i).add(c.getTipoTarefa().getDescricao());
-							listaImpressao.get(i).add(c.getFinalizado()==0?"Pendente":"Finalizado");
-							
+							listaImpressao.get(i).add(c.getFinalizado() == 0 ? "Pendente" : "Finalizado");
+
 							listaImpressao.get(i).add(c.getDescricao());
 							String classe = "Contato";
 							long id = 0;
-							String nome="";
+							String nome = "";
 							String ultimoNegocio = "";
-							String statusUltimoNegocio= "";
-							
-							if(c instanceof NegocioTarefaProposta) {
+							String statusUltimoNegocio = "";
+
+							if (c instanceof NegocioTarefaProposta) {
 								classe = "Proposta";
-								id = ((NegocioTarefaProposta)c).getProposta().getId();
-								nome = ((NegocioTarefaProposta)c).getProposta().getNome();
-								statusUltimoNegocio = ((NegocioTarefaProposta)c).getProposta().getTipoStatus().toString();
-							}
-							else if(c instanceof NegocioTarefaContato) {
+								id = ((NegocioTarefaProposta) c).getProposta().getId();
+								nome = ((NegocioTarefaProposta) c).getProposta().getNome();
+								statusUltimoNegocio = ((NegocioTarefaProposta) c).getProposta().getTipoStatus().toString();
+							} else if (c instanceof NegocioTarefaContato) {
 								classe = "Contato";
-								id = ((NegocioTarefaContato)c).getContato().getId();
-								nome = ((NegocioTarefaContato)c).getContato().getNome();
-								NegocioProposta p = ((NegocioTarefaContato)c).getContato().getUltimoNegocio();
-								if(p!=null) {
+								id = ((NegocioTarefaContato) c).getContato().getId();
+								nome = ((NegocioTarefaContato) c).getContato().getNome();
+								NegocioProposta p = ((NegocioTarefaContato) c).getContato().getUltimoNegocio();
+								if (p != null) {
 									statusUltimoNegocio = p.getTipoStatus().getDescricao();
-									ultimoNegocio = ""+p.getId();
+									ultimoNegocio = "" + p.getId();
 								}
 							}
 							listaImpressao.get(i).add(classe);
@@ -373,49 +371,47 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 							listaImpressao.get(i).add(ultimoNegocio);
 							listaImpressao.get(i).add(statusUltimoNegocio);
 							listaImpressao.get(i).add(c.getAtendente().getNome());
-							listaImpressao.get(i).add(c.getCriadoPor()!=null?c.getCriadoPor().getNome():"");
+							listaImpressao.get(i).add(c.getCriadoPor() != null ? c.getCriadoPor().getNome() : "");
 						}
 						ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
 						planilha.gerarExcel();
-						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
-						Platform.runLater(() ->alert(AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
+						usuarioLogService.salvarLog("Negocio", "Exportar", "Exportou relatorio xls");
+						Platform.runLater(() -> JavaFxUtil.alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
 						Desktop.getDesktop().open(export);
 					} catch (Exception e1) {
-						Platform.runLater(() ->alert(AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
-					} finally {
-						close();
+						Platform.runLater(() -> JavaFxUtil.alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
 					}
 					return null;
+				}
+
+			};
+			if (tbPrincipal.getItems().size() >= 1) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Exportação");
+				alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
+				ButtonType ok = new ButtonType("Exportar e Abrir");
+				ButtonType cancelar = new ButtonType("Cancelar");
+				alert.getButtonTypes().clear();
+				alert.getButtonTypes().addAll(ok, cancelar);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ok) {
+					Thread thread = new Thread(run);
+					thread.start();
+					sta.setOnCloseRequest(ae -> {
+						try {
+							thread.interrupt();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					});
+				}
+			} else {
+				JavaFxUtil.alert(AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato", null, false);
 			}
-    		
-    	};
-    	if (tbPrincipal.getItems().size() >= 1) {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Exportação");
-			alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
-			ButtonType ok = new ButtonType("Exportar e Abrir");
-			ButtonType cancelar = new ButtonType("Cancelar");
-			alert.getButtonTypes().clear();
-			alert.getButtonTypes().addAll(ok, cancelar);
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ok) {
-				Thread thread = new Thread(run);
-				thread.start();
-				sta.setOnCloseRequest(ae -> {
-					try {
-						thread.interrupt();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-			}
-		} else {
-			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
+		} catch (IOException e) {
+			JavaFxUtil.alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado", null, false);
 		}
-		}catch (IOException e){
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
-		}
-    }
+	}
     private List<NegocioTarefa> filtrar(Paginacao paginacao) {
     	tarefas = new NegociosTarefasImpl(getManager());
 		Calendar dataEventoInicial = Calendar.getInstance();
@@ -470,7 +466,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		else if(item.equals(TipoTarefa.REUNIAO)) icon= IconsEnum.BUTTON_TAREFA_REUNIAO;
 		else if(item.equals(TipoTarefa.TELEFONE)) icon= IconsEnum.BUTTON_TAREFA_FONE;
 		else if(item.equals(TipoTarefa.WHATSAPP)) icon= IconsEnum.BUTTON_TAREFA_WHATSAPP;
-		ImageView image =  createImage(30,30,icon);
+		ImageView image = JavaFxUtil.createImage(30,30,icon);
 		Label label = new Label();
 		label.setGraphic(image);
 		label.setTooltip(new Tooltip(item.getDescricao()));
@@ -481,13 +477,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
-			loadFactory();
 			combos();
 			filtrar(paginacao);
 		}catch(Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
+			JavaFxUtil.alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
 		}
 	}
 	@FXML
@@ -549,10 +542,8 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 			}
 			return false;
 		}catch (Exception e){
-			alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
 			return false;
-		}finally {
-			close();
 		}
 	}
     @SuppressWarnings("unchecked")
@@ -573,7 +564,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					setGraphic(null);
 				}
 				else{
-					setText(sdfH.format(item.getTime()));
+					setText(DateUtil.parse(item.getTime(), DateUtil.SDFH));
 				}
 			}
 		});
@@ -736,11 +727,11 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					button.getStyleClass().add("btDefault");
 					try {
 						IconsEnum ic = IconsEnum.BUTTON_CLIP;
-						buttonTable(button, ic);
+						JavaFxUtil.buttonTable(button, ic);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
-						visualizarDocumento(item, storage);
+						MyFileUtil.visualizarDocumento(item, storage);
 					});
 					setGraphic(button);
 				}
@@ -766,7 +757,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 						IconsEnum ic = IconsEnum.BUTTON_PROPOSTA;
 						if(tbPrincipal.getItems().get(getIndex()) instanceof NegocioTarefaContato) 
 							ic = IconsEnum.BUTTON_CONTATO;
-						buttonTable(button, ic);
+						JavaFxUtil.buttonTable(button, ic);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
@@ -793,7 +784,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
+						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
@@ -819,7 +810,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
+						JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					}catch (IOException e) {
 					}
 					final Tooltip tooltip = new Tooltip("Clique para remover o registro!");

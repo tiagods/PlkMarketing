@@ -20,7 +20,6 @@ import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.negocio.Franquia;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.FranquiasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

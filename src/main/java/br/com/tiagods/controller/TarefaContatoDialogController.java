@@ -21,12 +21,6 @@ import br.com.tiagods.model.negocio.NegocioServico;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -70,9 +64,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	private Contato contato;
 	
 	private ContatosImpl contatos;
-	private NegocioNiveisImpl niveis;
+	private NegociosNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
+	private NegociosOrigensImpl origens;
 	private NegocioServicosImpl servicos;
 	private UsuariosImpl usuarios;
 	
@@ -92,10 +86,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbServico.getItems().add(servico);
 		cbAtendente.getItems().add(atendente);
 		
-		
 		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
+		niveis = new NegociosNiveisImpl(getManager());
+		origens = new NegociosOrigensImpl(getManager());
 		servicos = new NegocioServicosImpl(getManager());
 		contatos = new ContatosImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());

@@ -1,4 +1,4 @@
-package br.com.tiagods.repository.interfaces;
+package br.com.tiagods.controller;
 
 import javafx.stage.Stage;
 

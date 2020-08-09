@@ -31,8 +31,6 @@ import br.com.tiagods.model.negocio.NegocioTarefaContato;
 import br.com.tiagods.model.negocio.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;

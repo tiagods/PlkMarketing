@@ -1,56 +1,52 @@
 package br.com.tiagods.repository.helpers;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.negocio.*;
+import br.com.tiagods.model.negocio.Contato.ContatoTipo;
+import br.com.tiagods.model.negocio.Contato.PessoaTipo;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
+import br.com.tiagods.repository.Contatos;
+import br.com.tiagods.repository.Paginacao;
+import javafx.util.Pair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import br.com.tiagods.model.negocio.Contato;
-import br.com.tiagods.model.negocio.Contato.ContatoTipo;
-import br.com.tiagods.model.negocio.Contato.PessoaTipo;
-import br.com.tiagods.model.negocio.NegocioCategoria;
-import br.com.tiagods.model.negocio.NegocioLista;
-import br.com.tiagods.model.negocio.NegocioNivel;
-import br.com.tiagods.model.negocio.NegocioOrigem;
-import br.com.tiagods.model.negocio.NegocioServico;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.interfaces.ContatoDAO;
-import javafx.util.Pair;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Optional;
 
-public class ContatosImpl extends AbstractRepository<Contato, Long> implements ContatoDAO{
+@Service
+public class ContatosImpl {
 	
-	
-	public ContatosImpl(EntityManager manager) {
-		super(manager);
-	}
-	
-	@Override
-	public Contato findById(Long id) {
-		Query query = getEntityManager().createQuery("from Contato as a "
-	                + "LEFT JOIN FETCH a.tarefas LEFT JOIN FETCH a.negocios LEFT JOIN FETCH a.listas "
-	                + "where a.id=:id");
+	@PersistenceContext
+	EntityManager manager;
+	@Autowired
+	AbstractRepositoryImpl abstractRepository;
+
+	public Optional<Contato> findById(Long id) {
+		Query query = manager.createQuery("SELECT a FROM Contato as a "
+				+ "LEFT JOIN FETCH a.tarefas "
+				+"LEFT JOIN FETCH a.negocios LEFT JOIN FETCH a.listas "
+				+ "WHERE a.id=:id");
 	        query.setParameter("id", id);
 	        Contato a = (Contato)query.getSingleResult();
-		return a;
+		return Optional.ofNullable(a);
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
+
 	public List<Contato> filtrar(String nome, NegocioCategoria categoria, NegocioNivel nivel, NegocioOrigem origem,NegocioServico servico) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Contato.class);
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Contato.class);
 		if(nome.length()>0) criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
 		if(categoria!=null && categoria.getId()!=-1L) criteria.add(Restrictions.eq("categoria", categoria));
 		if(nivel!=null && nivel.getId()!=-1L) criteria.add(Restrictions.eq("nivel", nivel));
@@ -59,13 +55,11 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 		criteria.addOrder(Order.desc("criadoEm"));
 		return criteria.list();
 	}
-	@SuppressWarnings("unchecked")
-	@Override
+
 	public Pair<List<Contato>,Paginacao> filtrar(Paginacao pagination, PessoaTipo pessoaTipo, ContatoTipo contatoTipo, NegocioLista lista, NegocioCategoria categoria,
 			NegocioNivel nivel, NegocioOrigem origem, NegocioServico servico, Usuario usuario, String malaDireta, LocalDate inicio, LocalDate fim, String nome) {
-		
 		List<Criterion> criterios = new ArrayList<>();
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Contato.class);
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(Contato.class);
 		if(!pessoaTipo.equals(PessoaTipo.CONTATO)) criterios.add(Restrictions.eq("pessoaTipo", pessoaTipo));
 		if(!contatoTipo.equals(ContatoTipo.CONTATO)) criterios.add(Restrictions.eq("contatoTipo", contatoTipo));
 		//if(lista!=null && lista.getId()!=-1L) criteria.add(Restrictions.eq("lista", lista));
@@ -88,8 +82,7 @@ public class ContatosImpl extends AbstractRepository<Contato, Long> implements C
 		if(nome.length()>0) criterios.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
 		criterios.forEach(c-> criteria.add(c));
 		criteria.addOrder(Order.desc("criadoEm"));
-
-		return super.filterWithPagination(pagination, criteria, criterios);
+		Pair<List, Paginacao> listPaginacaoPair = abstractRepository.filterWithPagination(Contato.class, pagination, criteria, criterios);
+		return new Pair<>(listPaginacaoPair.getKey(), listPaginacaoPair.getValue());
 	}
-	
 }

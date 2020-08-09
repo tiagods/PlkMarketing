@@ -3,8 +3,6 @@ package br.com.tiagods.controller;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
-import br.com.tiagods.repository.helpers.ImplantacaoAtividadesImpl;
-import br.com.tiagods.repository.helpers.DepartamentosImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;

@@ -1,9 +1,9 @@
-package br.com.tiagods.controller.utils;
+package br.com.tiagods.controller;
 
 import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.model.VersaoApp;
 import br.com.tiagods.repository.VersaoAppRepository;
-import br.com.tiagods.repository.interfaces.StageController;
+import br.com.tiagods.controller.StageController;
 import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;

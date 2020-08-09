@@ -85,7 +85,6 @@ public class ProtocolosEntradasImpl extends AbstractRepository<ProtocoloEntrada,
             }catch (Exception e){
             }
         }
-
         criterios.forEach(c-> criteria.add(c));
         criteria.addOrder(Order.desc("id"));
         return super.filterWithPagination(paginacao, criteria, criterios);
