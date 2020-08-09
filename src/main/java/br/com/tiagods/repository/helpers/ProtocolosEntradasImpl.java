@@ -8,7 +8,10 @@ import br.com.tiagods.repository.interfaces.ProtocoloEntradaDAO;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -18,6 +21,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ProtocolosEntradasImpl extends AbstractRepository<ProtocoloEntrada,Long> implements ProtocoloEntradaDAO {
+
     public ProtocolosEntradasImpl(EntityManager manager) {
         super(manager);
     }

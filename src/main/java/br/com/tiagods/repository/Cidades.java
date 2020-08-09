@@ -10,6 +10,5 @@ import java.util.Optional;
 @Repository
 public interface Cidades extends JpaRepository<Cidade, Long> {
     Optional<Cidade> findByNome(String localidade);
-
     List<Cidade> findAllByEstado(Cidade.Estado uf);
 }

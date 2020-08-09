@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-public class AlertUtil {
+public class JavaFxUtil {
     private static Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

@@ -7,7 +7,7 @@ import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
-import br.com.tiagods.services.SendEmail;
+import br.com.tiagods.util.SendEmail;
 import br.com.tiagods.services.AlertaImplantacaoImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;

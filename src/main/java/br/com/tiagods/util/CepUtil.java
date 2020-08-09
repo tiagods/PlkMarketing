@@ -1,10 +1,8 @@
 package br.com.tiagods.util;
 
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.repository.Cidades;
-import br.com.tiagods.repository.helpers.CidadesImpl;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import javafx.beans.value.ChangeListener;
@@ -14,7 +12,6 @@ import org.fxutils.maskedtextfield.MaskedTextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,13 +60,14 @@ public class CepUtil {
                 habilidarFiltroCidade = true;
             }
             else
-                AlertUtil.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
+                JavaFxUtil.alert(Alert.AlertType.WARNING,"CEP Invalido",null,
                         "Verifique se o cep informado é valido ou se existe uma conexão com a internet",null, false);
         }
         else{
-            AlertUtil.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null, false);
+            JavaFxUtil.alert(Alert.AlertType.WARNING,"CEP Invalido",null,"Verifique o cep informado",null, false);
         }
     }
+
     public class BuscaCep implements ChangeListener<Cidade.Estado> {
         private JFXComboBox<Cidade> cbCidade;
         public BuscaCep(JFXComboBox<Cidade> cbCidade){

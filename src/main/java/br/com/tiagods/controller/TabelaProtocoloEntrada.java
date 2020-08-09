@@ -131,7 +131,7 @@ public class TabelaProtocoloEntrada extends UtilsController {
         }
         return list;
     }
-    void tabela(){
+    public void tabela(){
         tbPrincipal.getColumns().clear();
 
         TableColumn<ProtocoloEntrada, Number> colunaId = new TableColumn<>("*");

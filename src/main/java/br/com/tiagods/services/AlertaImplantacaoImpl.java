@@ -1,25 +1,16 @@
 package br.com.tiagods.services;
 
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
 import br.com.tiagods.util.alerta.AlertaModel;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
-import javafx.scene.control.DialogPane;
-import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingLong;

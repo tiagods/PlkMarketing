@@ -185,7 +185,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
             	contatos = new ContatosImpl(getManager());
             	c = contatos.findById(c.getId());
             	loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
-            	loader.setController(new ContatoCadastroController(stage,c));	
+            	loader.setController(new ContatoCadastroController(stage,c));
             }
             else if(t instanceof NegocioTarefaProposta) {
             	NegocioProposta p = ((NegocioTarefaProposta)t).getProposta();

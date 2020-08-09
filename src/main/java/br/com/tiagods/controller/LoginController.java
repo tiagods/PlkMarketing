@@ -7,7 +7,7 @@ import br.com.tiagods.controller.acesso.RecuperacaoController;
 import br.com.tiagods.controller.acesso.TrocaSenhaController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Usuarios;
-import br.com.tiagods.util.AlertUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -58,6 +58,7 @@ public class LoginController implements Initializable {
     private Usuarios usuarios;
 
     private Stage stage;
+
     @FXML
     private MediaView mediaView;
 
@@ -135,7 +136,7 @@ public class LoginController implements Initializable {
                     } else
                         stageManager.switchScene(FxmlView.MENU, null);
                     }, tr ->
-                        AlertUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", tr.getMessage(), null, false)
+                        JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", tr.getMessage(), null, false)
                 );
     }
 

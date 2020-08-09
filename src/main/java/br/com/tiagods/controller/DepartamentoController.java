@@ -4,9 +4,8 @@ import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.repository.Departamentos;
-import br.com.tiagods.repository.helpers.DepartamentosImpl;
 import br.com.tiagods.repository.interfaces.StageController;
-import br.com.tiagods.util.AlertUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -111,7 +110,7 @@ public class DepartamentoController extends UtilsController implements Initializ
                 departamento.setNome(pair.getKey());
                 departamento.setEmail(pair.getValue());
                 if(departamento.getNome().trim().equals("")){
-                    AlertUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Nome é obrigatorio",null,false);
+                    JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Nome é obrigatorio",null,false);
                 }
                 else {
                     Departamento novoDepartamento = departamentos.save(departamento);
@@ -120,7 +119,7 @@ public class DepartamentoController extends UtilsController implements Initializ
                         tbPrincipal.getItems().set(tableLocation, novoDepartamento);
                 }
             }catch (Exception e){
-                AlertUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Ocorreu um erro ao tentar salvar o registro",e,true);
+                JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Ocorreu um erro ao tentar salvar o registro",e,true);
             }
         });
     }
@@ -132,7 +131,7 @@ public class DepartamentoController extends UtilsController implements Initializ
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabela();
-        tbPrincipal.getItems().addAll(departamentos.findAllByOrderByName());
+        tbPrincipal.getItems().addAll(departamentos.findAllByOrderByNome());
     }
 
     @FXML

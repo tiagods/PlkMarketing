@@ -1,13 +1,12 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.config.StageManager;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Departamentos;
 import br.com.tiagods.repository.Usuarios;
-import br.com.tiagods.util.AlertUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.CepUtil;
 import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXButton;
@@ -23,7 +22,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.fxutils.maskedtextfield.MaskedTextField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
@@ -124,7 +122,7 @@ public class UsuarioCadastroController  implements Initializable {
         cbStatus.getItems().add("Inativo");
         cbStatus.getSelectionModel().selectFirst();
 
-        List<Departamento> departamentoList = departamentos.findAllByOrderByName();
+        List<Departamento> departamentoList = departamentos.findAllByOrderByNome();
         cbDepartamento.getItems().clear();
         cbDepartamento.getItems().addAll(departamentoList);
         //cbDepartamento.getSelectionModel().selectFirst();
@@ -173,11 +171,11 @@ public class UsuarioCadastroController  implements Initializable {
 	void salvar(ActionEvent event) {
 
         if(txEmail.getText().trim().equals("")){
-            AlertUtil.alert(Alert.AlertType.ERROR, "E-mail Invalido", null, "E-mail não informado",null, false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR, "E-mail Invalido", null, "E-mail não informado",null, false);
             return;
         }
         if(cbDepartamento.getValue()==null){
-            AlertUtil.alert(Alert.AlertType.ERROR, "Departamento Invalido", null, "Departamento não informado",null, false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR, "Departamento Invalido", null, "Departamento não informado",null, false);
             return;
         }
         try {
@@ -227,11 +225,11 @@ public class UsuarioCadastroController  implements Initializable {
                 preencherFormulario(usuario);
                 txSenha.setText("");
                 txConfirmarSenha.setText("");
-                AlertUtil.alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
+                JavaFxUtil.alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
                 stage.close();
             }
         } catch (Exception e) {
-            AlertUtil.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro do Usuario",e,true);
         }
 	}
 	@FXML
@@ -241,7 +239,7 @@ public class UsuarioCadastroController  implements Initializable {
     private boolean validarLogin(String email){
         Optional<Usuario> optional = usuarios.findByEmail(email);
         if(optional.isPresent()) {
-            AlertUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Login inválido!",
                     optional.get().getNome()+" já esta usando esse login",null,false);
             return false;
         }
@@ -250,14 +248,14 @@ public class UsuarioCadastroController  implements Initializable {
     }
     private boolean validarSenha() {
         if (txSenha.getText().trim().equals("")) {
-            AlertUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
                     "Por favor verifique se a senha esta correta",null,false);
             return false;
         } else {
             if (txSenha.getText().trim().equals(txConfirmarSenha.getText().trim()))
                 return true;
             else {
-                AlertUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
+                JavaFxUtil.alert(Alert.AlertType.ERROR,"Informação incompleta!","Senhas em branco ou não conferem",
                         "Por favor verifique se a senha esta correta",null,false);
                 return false;
             }

@@ -16,6 +16,7 @@ import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.Departamentos;
 import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.Usuarios;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
@@ -23,6 +24,7 @@ import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import br.com.tiagods.repository.interfaces.StageController;
 import br.com.tiagods.services.AlertaImplantacaoImpl;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
+import br.com.tiagods.util.MyFileUtil;
 import br.com.tiagods.util.TipoArquivo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -51,8 +53,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -146,6 +146,8 @@ public class MenuController extends UtilsController implements Initializable{
 
     @Autowired
     Departamentos departamentos;
+    @Autowired
+    Usuarios usuarios;
 
     private ContatosImpl contatos;
     private NegociosTarefasImpl tarefas;
@@ -359,7 +361,7 @@ public class MenuController extends UtilsController implements Initializable{
         MenuItem miCheckList = new MenuItem("CheckList");
         iconMenuItem(miCheckList,30,30, IconsEnum.MENU_CHECKLIST);
         miCheckList.setOnAction(event -> {
-            abrirArquivo("checklist.jar");
+            MyFileUtil.abrirArquivo("checklist.jar");
         });
 
         MenuItem miSobre = new MenuItem("Sobre");
@@ -368,10 +370,11 @@ public class MenuController extends UtilsController implements Initializable{
 
         MenuItem miManual = new MenuItem("Manual do Sistema");
         iconMenuItem(miManual,30,30, IconsEnum.BUTTON_VIEW);
-        miManual.setOnAction(event -> abrirArquivo("manual.docx"));
+        miManual.setOnAction(event -> MyFileUtil.abrirArquivo("manual.docx"));
 
         cmExtras.getItems().addAll(miCheckList,miManual,miSobre);
         btnExtras.setContextMenu(cmExtras);
+
         btnExtras.setOnAction(e->
                 cmExtras.show(btnExtras.getScene().getWindow(),
                         btnExtras.getScene().getWindow().getX()+50,
@@ -417,21 +420,6 @@ public class MenuController extends UtilsController implements Initializable{
         cmImplantacao.getItems().forEach(c->c.setStyle("-fx-text-fill: #000000;"));
     }
 
-    private void abrirArquivo(String s) {
-        Path path = Paths.get(System.getProperty("user.dir"),s);
-        Runnable run = () -> {
-            try {
-                Desktop.getDesktop().open(path.toFile());
-            } catch (IOException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Erro");
-                alert.setHeaderText("Não foi possivel iniciar o programa");
-                alert.setContentText("Falha ao abrir o aplicativo\n"+e);
-                alert.showAndWait();
-            }
-        };
-        new Thread(run).start();
-    }
     @FXML
     void exportarImplantacao(ActionEvent event){
         try {
@@ -545,7 +533,8 @@ public class MenuController extends UtilsController implements Initializable{
         txNegociosPerfil.setText(String.valueOf(n2));
         txNegociosPerfil.setOnMouseClicked(event -> abrirNegocio(propostaFilter));
     }
-    private void preencherProcessos() throws Exception{
+
+    private void preencherProcessos() throws Exception {
         cbProcesso.getItems().clear();
         ImplantacaoProcesso pro = new ImplantacaoProcesso(-1L);
         cbProcesso.getItems().add(pro);
@@ -558,7 +547,7 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoDepartamento.getItems().add(departamento);
         cbProcessoDepartamento.setValue(UsuarioLogado.getInstance().getUsuario().getDepartamento());
 
-        cbProcessoDepartamento.getItems().addAll(departamentos.findAllByOrderByName());
+        cbProcessoDepartamento.getItems().addAll(departamentos.findAllByOrderByNome());
 
         cbProcessoAtividade.getItems().clear();
         ImplantacaoAtividade atividade = new ImplantacaoAtividade(-1L,"Todos");
@@ -586,16 +575,15 @@ public class MenuController extends UtilsController implements Initializable{
         );
         return lista;
     }
-    private void preencherProtocolos() throws Exception{
+    private void preencherProtocolos() throws Exception {
         JFXRadioButton rbComum = new JFXRadioButton();
         rbComum.setSelected(true);
 
-        UsuariosImpl usuarios = new UsuariosImpl(getManager());
         ProtocolosEntradasImpl protocolosEntradas = new ProtocolosEntradasImpl(getManager());
         TabelaProtocoloEntrada protocoloEntrada = new TabelaProtocoloEntrada(null,tbProtocoloEntrada,new JFXRadioButton(),rbComum);
         protocoloEntrada.tabela();
 
-        protocoloEntrada.setUsuarioAtivos(usuarios.listarAtivos());
+        protocoloEntrada.setUsuarioAtivos(usuarios.findAllByAtivoOrderByNome(1));
         List<ProtocoloEntrada> list = protocoloEntrada.filtrar(null,getManager());
 
         ProtocoloEntradaFilter protocoloEntradaFilter = new ProtocoloEntradaFilter();
@@ -604,18 +592,14 @@ public class MenuController extends UtilsController implements Initializable{
         protocoloEntradaFilter.setClassificacao(ProtocoloEntrada.Classificacao.USUARIO);
         Pair<List<ProtocoloEntrada>,Paginacao> result = protocolosEntradas
                 .filtrar(null,protocoloEntradaFilter);
-
         tbProtocoloEntrada.itemsProperty().addListener(observable -> atualizar());
-
         txProtocoloPerfil.setText(""+list.size());
         txProtocoloTodos.setText(""+result.getKey().size());
     }
-    private void preencherTarefas() throws Exception{
+    private void preencherTarefas() throws Exception {
         LocalDate localDate = LocalDate.now();
-
         LocalDateTime inicio = localDate.withDayOfMonth(1).atTime(0,0,0);
         LocalDateTime fim = localDate.withDayOfMonth(localDate.lengthOfMonth()).atTime(23,59,59);
-
         NegocioTarefaFilter tarefaFilter = new NegocioTarefaFilter();
         tarefaFilter.setAtendente(UsuarioLogado.getInstance().getUsuario());
         tarefaFilter.setFinalizado(0);

@@ -68,7 +68,6 @@ public class UsuarioPesquisaController implements Initializable, StageController
 
 	private void filtrar() {
 		tbPrincipal.getItems().clear();
-		//List<Usuario> usuarioList = usuarios.findAllByNomeContainingIgnoreCaseAndAtivoOrderByNome(txPesquisa.getText().trim(), 1);
 		List<Usuario> usuarioList = usuarios.findAllByNomeContainingIgnoreCaseOrderByNome(txPesquisa.getText().trim());
 		tbPrincipal.getItems().addAll(usuarioList);
 	}

@@ -1,27 +1,25 @@
 package br.com.tiagods.controller.acesso;
 
-import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.controller.MenuController;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.repository.interfaces.StageController;
-import br.com.tiagods.services.SendEmail;
+import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.util.SendEmail;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXPasswordField;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
@@ -29,7 +27,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 
 @Controller
-public class TrocaSenhaController extends UtilsController implements Initializable {
+public class TrocaSenhaController implements Initializable {
 
     Logger logger =LoggerFactory.getLogger(getClass());
 
@@ -45,8 +43,15 @@ public class TrocaSenhaController extends UtilsController implements Initializab
     private Stage stage;
     private Usuario usuario;
 
+    @Autowired
+    Usuarios usuarios;
+
     private String GREEN="-fx-border-color:green;";
     private String RED="-fx-border-color:green;";
+
+    @Lazy
+    @Autowired
+    private StageManager stageManager;
 
     public void setPropriedades(Stage stage, Usuario usuario){
         this.stage=stage;
@@ -72,11 +77,11 @@ public class TrocaSenhaController extends UtilsController implements Initializab
     private void salvar(ActionEvent event){
         CriptografiaUtil cripto = new CriptografiaUtil();
         if (!txRepetir.getText().equals(txNovaSenha.getText())) {
-            alert(Alert.AlertType.ERROR,"Erro","Senhas não conferem","As senhas digitadas não conferem, tente novamente",null,false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Senhas não conferem","As senhas digitadas não conferem, tente novamente",null,false);
         }
         else if(usuario.getSenha().equals(cripto.criptografar(txNovaSenha.getText()))){
             logger.debug("Senha é a mesma da anterior "+txRepetir.getText()+":"+txNovaSenha.getText());
-            alert(Alert.AlertType.ERROR,"Erro","Senhas não permitida",
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Senhas não permitida",
                     "A senha informada é igual a senha anterior, tente novamente",null,false);
 
         }
@@ -85,9 +90,7 @@ public class TrocaSenhaController extends UtilsController implements Initializab
             cripto = new CriptografiaUtil();
             String senhaCriptografada = cripto.criptografar(txNovaSenha.getText());
             try{
-                loadFactory();
-                UsuariosImpl usuarios = new UsuariosImpl(getManager());
-                usuario = usuarios.findById(usuario.getId());
+                usuarios.getOne(usuario.getId());
                 usuario.setSenha(senhaCriptografada);
                 usuario.setSenhaResetada(false);
                 usuario = usuarios.save(usuario);
@@ -105,18 +108,13 @@ public class TrocaSenhaController extends UtilsController implements Initializab
                         return null;
                     }
                 };
-                new Thread(task).start();
 
+                new Thread(task).start();
                 UsuarioLogado.getInstance().setUsuario(usuario);
-                Stage stage1 = new Stage();
-                FXMLLoader loader = loaderFxml(FXMLEnum.MAIN);
-                loader.setController(new MenuController());
-                initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
+                stageManager.switchScene(FxmlView.MENU, null);
                 stage.close();
             }catch (Exception e){
-                alert(Alert.AlertType.ERROR,"Erro","Tente novamente","Falha ao solicitar recuperacao de senha",e,true);
-            }finally {
-                close();
+                JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Tente novamente","Falha ao solicitar recuperacao de senha",e,true);
             }
         }
     }

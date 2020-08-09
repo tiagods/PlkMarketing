@@ -29,7 +29,6 @@ import com.jfoenix.controls.JFXTextField;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Endereco;
 import br.com.tiagods.model.UsuarioLog;
@@ -63,7 +62,6 @@ public abstract class UtilsController extends PersistenciaController{
 	Stage stage;
 
 	protected final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-	//Locale locale = new Locale("pt", "BR");
 	protected final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	protected final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	protected final Integer[] limiteTabela = new Integer[] {50,100,200};
@@ -222,7 +220,7 @@ public abstract class UtilsController extends PersistenciaController{
 	protected void buttonTable(JFXButton btn, IconsEnum icon) throws IOException{
 		buttonIcon(btn,icon,30);
 	}
-	private void buttonMin(JFXButton btn,IconsEnum icon) throws IOException{
+	protected void buttonMin(JFXButton btn, IconsEnum icon) throws IOException{
 		buttonIcon(btn,icon,22);
 	}
 

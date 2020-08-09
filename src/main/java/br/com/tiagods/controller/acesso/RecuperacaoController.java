@@ -1,27 +1,24 @@
 package br.com.tiagods.controller.acesso;
 
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.Usuarios;
-import br.com.tiagods.services.SendEmail;
+import br.com.tiagods.util.SendEmail;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXComboBox;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 @Controller
-public class RecuperacaoController extends UtilsController implements Initializable {
+public class RecuperacaoController {
 
     private List<Usuario> contas;
     private Stage stage;
@@ -30,7 +27,8 @@ public class RecuperacaoController extends UtilsController implements Initializa
 
     private Usuario usuario;
 
-    @Autowired Usuarios usuarios;
+    @Autowired
+    Usuarios usuarios;
 
     public void setPropriedades(Stage stage, List<Usuario> contas, Usuario usuario){
         this.usuario = usuario;
@@ -38,10 +36,6 @@ public class RecuperacaoController extends UtilsController implements Initializa
         this.stage=stage;
         cbLogin.getItems().addAll(contas);
         if(usuario!=null) cbLogin.setValue(usuario);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
     }
 
     @FXML
@@ -62,7 +56,7 @@ public class RecuperacaoController extends UtilsController implements Initializa
                     .append("Entre no sistema e redefina uma nova senha");
             email.enviaAlerta("webmaster@prolinkcontabil.com.br", "Suporte \\ Prolink Contabil",
                     Arrays.asList(new String[]{usuario.getEmail()}), "Controle de Processos - Redefinição de Senha", builder.toString(), false);
-            alert(Alert.AlertType.INFORMATION, "Aviso", "Verifique sua caixa postal",
+            JavaFxUtil.alert(Alert.AlertType.INFORMATION, "Aviso", "Verifique sua caixa postal",
                     "E-mail com senha foram enviados para a conta: " + usuario.getEmail(), null, false);
             stage.close();
         }

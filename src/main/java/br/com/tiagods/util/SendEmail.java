@@ -1,4 +1,4 @@
-package br.com.tiagods.services;
+package br.com.tiagods.util;
 import br.com.tiagods.config.MailConfig;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
