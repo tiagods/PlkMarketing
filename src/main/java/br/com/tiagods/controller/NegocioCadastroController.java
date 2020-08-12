@@ -71,8 +71,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.stereotype.Controller;
 
-public class NegocioCadastroController extends UtilsController implements Initializable{
+@Controller
+public class NegocioCadastroController implements Initializable {
 	@FXML
     private JFXRadioButton rbContato;
 
@@ -220,11 +222,12 @@ public class NegocioCadastroController extends UtilsController implements Initia
 
 	Storage storage = StorageProducer.newConfig();
 
-	public NegocioCadastroController(Stage stage, NegocioProposta proposta, Contato contato) {
-		this.stage = stage;
+	public void setPropriedades(Stage stage1, NegocioProposta proposta, Contato contato) {
+		this.stage = stage1;
 		this.proposta = proposta;
 		this.contato = contato;
 	}
+
 	private void abrirTarefa(NegocioTarefaProposta t) {
 		try {
 			Stage stage = new Stage();
@@ -1109,5 +1112,4 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		tbTarefas.setTableMenuButtonVisible(true);
 		tbTarefas.setFixedCellSize(50);
 	}
-
 }

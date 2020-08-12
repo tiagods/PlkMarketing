@@ -5,6 +5,7 @@ import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.model.implantacao.ImplantacaoPacoteEtapa;
+import br.com.tiagods.repository.ImplantacaoPacotes;
 import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -23,12 +24,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class ImplantacaoPacoteController extends UtilsController implements Initializable{
+@Controller
+public class ImplantacaoPacoteController implements Initializable, StageController{
     @FXML
     private JFXButton btnCadastrarPacote;
 
@@ -40,16 +45,16 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
 
     private Stage stage;
 
-    private ImplantacaoPacotesImpl pacotes;
+    @Autowired
+    private ImplantacaoPacotes pacotes;
 
-    public ImplantacaoPacoteController(Stage stage) {
+    @Override
+    public void setPropriedades(Stage stage) {
         this.stage=stage;
     }
 
     private void cadastrarEtapas(ImplantacaoPacote pck){
         try {
-            loadFactory();
-            pacotes = new ImplantacaoPacotesImpl(getManager());
             pck = pacotes.findById(pck.getId());
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE_CADASTRO);
@@ -57,11 +62,6 @@ public class ImplantacaoPacoteController extends UtilsController implements Init
             loader.setController(controller);
             initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
         } catch (IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE_CADASTRO,ex,true);
-        } catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
-        } finally {
-            close();
         }
     }
 

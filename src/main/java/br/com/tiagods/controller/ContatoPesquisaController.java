@@ -15,13 +15,13 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.repository.*;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.services.UsuarioLogService;
-import br.com.tiagods.util.DateUtil;
-import br.com.tiagods.util.JavaFxUtil;
-import br.com.tiagods.util.MyFileUtil;
+import br.com.tiagods.util.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -41,7 +41,6 @@ import br.com.tiagods.model.negocio.ServicoContratado;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
@@ -65,6 +64,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
@@ -131,6 +131,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 	private JFXComboBox<Integer> cbLimite;
 
 	private Stage stage;
+
 	@Autowired
 	private Contatos contatos;
 	@Autowired
@@ -150,38 +151,35 @@ public class ContatoPesquisaController implements StageController,Initializable 
 
 	@Autowired
 	UsuarioLogService usuarioLogService;
+	@Lazy
+	@Autowired
+	StageManager stageManager;
+	@Autowired
+	ContatoCadastroController cadastroController;
+	@Autowired
+	NegocioCadastroController negocioCadastroController;
 
 	private Paginacao paginacao;
 
+	@Override
+	public void setPropriedades(Stage stage) {
+		this.stage=stage;
+	}
+
 	private void abrirCadastro(Contato t) {
-		try {
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
-			loader.setController(new ContatoCadastroController(stage, t));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-			stage.setOnHiding(event -> filtrar(this.paginacao));
-		} catch (IOException e) {
-			JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.CONTATO_CADASTRO, e, true);
-		}
+		Stage stage1 = stageManager.switchScene(FxmlView.CONTATO_CADASTRO, true);
+		cadastroController.setPropriedades(stage1,t);
+		stage1.setOnHiding(e -> filtrar(this.paginacao));
 	}
 
 	void abrirCadastroNegocio(NegocioProposta proposta,Contato contato) {
-		try {
-			loadFactory();
-			if (proposta != null) {
-				propostas = new NegociosPropostasImpl(getManager());
-				proposta = propostas.findById(proposta.getId());
-			}
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-			loader.setController(new NegocioCadastroController(stage, proposta,contato));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-			stage.setOnHiding(event -> filtrar(this.paginacao));
-		} catch (IOException e) {
-			JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
+		if (proposta != null) {
+			Optional<NegocioProposta> opt = propostas.findById(proposta.getId());
+			if(opt.isPresent()) proposta = opt.get();
 		}
+		Stage stage1 = stageManager.switchScene(FxmlView.NEGOCIO_CADASTRO, true);
+		negocioCadastroController.setPropriedades(stage1, proposta, contato);
+		stage1.setOnHiding(event -> filtrar(this.paginacao));
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	void combos() {
@@ -200,12 +198,12 @@ public class ContatoPesquisaController implements StageController,Initializable 
 		cbAtendente.getItems().add(usuario);
 		cbLista.getItems().add(lista);
 
-		cbLimite.getItems().addAll(limiteTabela);
+		cbLimite.getItems().addAll(JavaFxUtil.getLimiteTabela());
 		cbCategoria.getItems().addAll(categorias.findAll());
 		cbNivel.getItems().addAll(niveis.findAll());
 		cbOrigem.getItems().addAll(origens.findAll());
 		cbServico.getItems().addAll(servicos.findAll());
-		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
+		cbAtendente.getItems().addAll(usuarios.findAllByAtivoOrderByNome(1));
 		cbLista.getItems().addAll(listas.findAll(Sort.by(Sort.Order.asc("nome"))));
 		cbMalaDireta.getItems().addAll(malaDireta);
 
@@ -289,7 +287,8 @@ public class ContatoPesquisaController implements StageController,Initializable 
 							for (int i = 1; i <= finalList.size(); i++) {
 								listaImpressao.add(new ArrayList<String>());
 								Long newId = finalList.get(i - 1).getId();
-								Contato c = contatos.findById(newId);
+								Optional<Contato> result = contatos.findById(newId);
+								Contato c = result.get();
 								listaImpressao.get(i).add(c.getId());
 								listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getCriadoEm().getTime()));
 								listaImpressao.get(i).add(c.getPessoaTipo().getDescricao());
@@ -335,7 +334,8 @@ public class ContatoPesquisaController implements StageController,Initializable 
 								listaImpressao.get(i).add(c.getComplemento());
 								listaImpressao.get(i).add(c.getCidade());
 								listaImpressao.get(i).add(c.getEstado());
-								listaImpressao.get(i).add(c.getCriadoEm()==null?"" : sdfH.format(c.getCriadoEm().getTime()));
+								listaImpressao.get(i).add(c.getCriadoEm()==null? "" :
+										DateUtil.parse(c.getCriadoEm().getTime(), DateUtil.SDFH));
 								listaImpressao.get(i).add(c.getAtendente() == null ? "" : c.getAtendente().getNome());
 								listaImpressao.get(i).add(c.getCriadoPor() == null ? "" : c.getCriadoPor().getNome());
 
@@ -365,7 +365,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 									valorHonorario.append(negocio.getId());
 									valorHonorario.append("-");
 									valorHonorario
-											.append(nf.format(negocio.getHonorario()));
+											.append(MoedaUtil.format(negocio.getHonorario()));
 									valorHonorario.append("\n ");
 									statusNegocio.append(negocio.getId());
 									statusNegocio.append("-");
@@ -379,7 +379,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 										statusServicosNegocios.append(sc.getServicosAgregados().getNome());
 										statusServicosNegocios.append(" - ");
 										statusServicosNegocios
-												.append(nf.format(sc.getValor()));
+												.append(MoedaUtil.format(sc.getValor()));
 										statusServicosNegocios.append("\n ");
 									}
 								}
@@ -443,7 +443,6 @@ public class ContatoPesquisaController implements StageController,Initializable 
 	}
 
 	private List<Contato> filtrar(Paginacao paginacao) {
-		contatos = new ContatosImpl(getManager());
 		Pair<List<Contato>, Paginacao> list = contatos.filtrar(paginacao, cbTipo.getValue(), cbContatoTipo.getValue(),
 				cbLista.getValue(), cbCategoria.getValue(), cbNivel.getValue(), cbOrigem.getValue(),
 				cbServico.getValue(), cbAtendente.getValue(), cbMalaDireta.getValue(), dataInicial.getValue(),
@@ -550,7 +549,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 							} catch (IOException e) {}
 						});
 						setGraphic(button);
-					} catch (URISyntaxException | IOException e) {}
+					} catch (URISyntaxException e) {}
 				}
 			}
 		});
@@ -583,20 +582,17 @@ public class ContatoPesquisaController implements StageController,Initializable 
 			@Override
 			protected void updateItem(NegocioProposta item, boolean empty) {
 				super.updateItem(item, empty);
-				button.getStyleClass().add("btDefault");
-				try {
-					if (empty) {
-						setStyle("");
-						setText("");
-						setGraphic(null);
-					}
-					else {
-						IconsEnum en = item==null?IconsEnum.BUTTON_ADD:IconsEnum.BUTTON_PROPOSTA;
-						JavaFxUtil.buttonTable(button, en);
-						setGraphic(button);
-					}
+				if (empty) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					button.getStyleClass().add("btDefault");
+					IconsEnum en = (item == null) ? IconsEnum.BUTTON_ADD : IconsEnum.BUTTON_PROPOSTA;
+					JavaFxUtil.buttonTable(button, en);
 					button.setOnAction(event -> abrirCadastroNegocio(item, tbPrincipal.getItems().get(getIndex())));
-				}catch (IOException e){}
+					setGraphic(button);
+				}
 			}
 		});
 		TableColumn<Contato, Number> colunaEditar = new TableColumn<>("");
@@ -612,10 +608,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -637,10 +630,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_REMOVE);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if (removed)
@@ -653,10 +643,5 @@ public class ContatoPesquisaController implements StageController,Initializable 
 		tbPrincipal.getColumns().addAll(colunaCriadoEm, colunaNome, colunaTelefone, colunaEmail, colunaOrigem,
 				colunaServico, colunaCategoria, colunaNivel, colunaAtendente, colunaUtimoNegocio, colunaEditar,
 				colunaExcluir);
-	}
-
-	@Override
-	public void setPropriedades(Stage stage) {
-		this.stage=stage;
 	}
 }

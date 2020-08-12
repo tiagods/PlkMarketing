@@ -16,8 +16,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.repository.*;
+import br.com.tiagods.util.CepUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import org.controlsfx.control.Rating;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -28,7 +31,6 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Cidade;
@@ -47,12 +49,9 @@ import br.com.tiagods.model.negocio.NegocioTarefaContato;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -72,10 +71,15 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+
 @Controller
-public class ContatoCadastroController implements Initializable, StageController{
+public class ContatoCadastroController implements Initializable {
+
 	@FXML
 	private Label lbrating;
 	
@@ -217,33 +221,27 @@ public class ContatoCadastroController implements Initializable, StageController
 	@Autowired Usuarios usuarios;
 	@Autowired NegociosMalaDiretas malasDiretas;
 	@Autowired NegociosTarefasContatos tarefas;
-
+	@Autowired CepUtil cepUtil;
+	@Lazy @Autowired StageManager stageManager;
+	@Autowired TarefaCadastroController tarefaCadastroController;
 
 	private Stage stage;
 	private Contato contato;
 
-
 	private void abrirTarefa(NegocioTarefaContato t) {
-		try {
-			Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
-            loader.setController(new TarefaCadastroController(stage,t,contato));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-            	contatos.findById(contato.getId()).ifPresent(contato1 -> {
-					tbTarefas.getItems().clear();
-					tbTarefas.getItems().addAll(contato1.getTarefas());
-					tbTarefas.refresh();
-				});
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_CADASTRO,e,true);
-        }
+		Stage stage1 = stageManager.switchScene(FxmlView.TAREFA_CADASTRO, true);
+		tarefaCadastroController.setPropriedades(stage1, t, contato);
+		stage1.setOnHiding(event -> {
+			contatos.findById(contato.getId()).ifPresent(contato1 -> {
+				tbTarefas.getItems().clear();
+				tbTarefas.getItems().addAll(contato1.getTarefas());
+				tbTarefas.refresh();
+			});
+		});
 	}
     @FXML
     void buscarCep(ActionEvent event) {
-    	bucarCep(txCEP, txLogradouro, txNumero, txComplemento, txBairro, cbCidade, cbEstado);
+    	cepUtil.bucarCep(txCEP, txLogradouro, txNumero, txComplemento, txBairro, cbCidade, cbEstado);
     }
     
     void combos() {
@@ -278,7 +276,7 @@ public class ContatoCadastroController implements Initializable, StageController
 		cbNivel.getItems().addAll(niveis.findAll());
 		cbOrigem.getItems().addAll(origens.findAll());
 		cbServico.getItems().addAll(servicos.findAll());
-		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
+		cbAtendente.getItems().addAll(usuarios.findAllByAtivoOrderByNome(1));
 		cbLista.getItems().addAll(listas.findAll());
 		cbMalaDireta.getItems().addAll(malasDiretas.findAll());
 		
@@ -293,14 +291,8 @@ public class ContatoCadastroController implements Initializable, StageController
 		rating.setPartialRating(true);
 		rating.setUpdateOnHover(true);
 		rating.setRating(0);
-		rating.hoverProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				lbrating.setText(String.format("%.2f",rating.getRating()));
-				
-			}
-		});
-		comboRegiao(cbCidade,cbEstado,getManager());
+		rating.hoverProperty().addListener((observable, oldValue, newValue) -> lbrating.setText(String.format("%.2f",rating.getRating())));
+		cepUtil.comboRegiao(cbCidade,cbEstado);
     }
     boolean excluirTarefa(NegocioTarefaContato n) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -310,19 +302,13 @@ public class ContatoCadastroController implements Initializable, StageController
 		alert.setContentText("Tem certeza disso?");
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
-			try{
-				loadFactory();
-				tarefas = new NegociosTarefasContatosImpl(getManager());
-				NegocioTarefaContato t = tarefas.findById(n.getId());
-				tarefas.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+			Optional<NegocioTarefaContato> t = tarefas.findById(n.getId());
+			if(t.isPresent()) {
+				tarefas.delete(t.get());
+				JavaFxUtil.alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
 				return true;
-			}catch(Exception e){
-				super.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
-				return false;
-			}finally{
-				super.close();
 			}
+			return false;
 		}
 		else return false;
 	}
@@ -343,10 +329,8 @@ public class ContatoCadastroController implements Initializable, StageController
 		tabelaListas();
 		tabelaTarefa();
 		combos();
-		if(contato!=null) {
-			contatos.findById(this.contato.getId()).ifPresent(cons->preencherFormulario(this.contato));
-		}
 	}
+
     @FXML
     private void incluirLista(ActionEvent event) {
     	if(cbLista.getValue()!=null && !tbListas.getItems().contains(cbLista.getValue())) {
@@ -373,9 +357,7 @@ public class ContatoCadastroController implements Initializable, StageController
     void novaTarefa(ActionEvent event) {
     	if(contato==null) {
     		this.contato = new Contato();
-    		if(salvar()) 
-    			abrirTarefa(null);
-    		
+    		if(salvar()) abrirTarefa(null);
     	}
     	else
     		abrirTarefa(null);
@@ -564,19 +546,10 @@ public class ContatoCadastroController implements Initializable, StageController
     }
     
     private boolean salvarStatus(NegocioTarefaContato tarefa,int status){
-		try{
-			loadFactory();
-			tarefas = new NegociosTarefasContatosImpl(getManager());
-			NegocioTarefaContato t = tarefas.findById(tarefa.getId());
-			t.setFinalizado(status);
-			tarefas.save(t);
-			return true;
-		}catch (Exception e){
-			alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
-			return false;
-		}finally {
-			close();
-		}
+		NegocioTarefaContato t = tarefas.getOne(tarefa.getId());
+		t.setFinalizado(status);
+		tarefas.save(t);
+		return true;
 	}
 	@SuppressWarnings("unchecked")
 	void tabelaListas() {
@@ -597,10 +570,7 @@ public class ContatoCadastroController implements Initializable, StageController
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluirLista(tbListas.getItems().get(getIndex()));
 						if(removed) tbListas.getItems().remove(getIndex());
@@ -801,10 +771,7 @@ public class ContatoCadastroController implements Initializable, StageController
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						abrirTarefa(tbTarefas.getItems().get(getIndex()));
 					});
@@ -826,10 +793,7 @@ public class ContatoCadastroController implements Initializable, StageController
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluirTarefa(tbTarefas.getItems().get(getIndex()));
 						if(removed) tbTarefas.getItems().remove(getIndex());
@@ -844,9 +808,11 @@ public class ContatoCadastroController implements Initializable, StageController
 		tbTarefas.setFixedCellSize(50);
 	}
 
-
-	@Override
-	public void setPropriedades(Stage stage) {
-
+	public void setPropriedades(Stage stage, Contato contato) {
+		this.stage = stage;
+		this.contato = contato;
+		if(this.contato!=null) {
+			contatos.findById(this.contato.getId()).ifPresent(cons->preencherFormulario(this.contato));
+		}
 	}
 }

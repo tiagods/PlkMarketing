@@ -413,8 +413,7 @@ public class TarefaPesquisaController implements Initializable {
 		}
 	}
     private List<NegocioTarefa> filtrar(Paginacao paginacao) {
-    	tarefas = new NegociosTarefasImpl(getManager());
-		Calendar dataEventoInicial = Calendar.getInstance();
+    	Calendar dataEventoInicial = Calendar.getInstance();
     	Calendar dataEventoFinal = Calendar.getInstance();
     	
     	Set<TipoTarefa> tipoTarefas = new HashSet<>();
@@ -523,18 +522,15 @@ public class TarefaPesquisaController implements Initializable {
     void sair(ActionEvent event) {
     	stage.close();
     }	
-    private boolean salvarStatus(NegocioTarefa tarefa,int status){
+    private boolean salvarStatus(NegocioTarefa tarefa, int status){
 		try{
-			loadFactory();
 			if(tarefa instanceof NegocioTarefaContato) {
-				tarefasContatos = new NegociosTarefasContatosImpl(getManager());
 				NegocioTarefaContato t = tarefasContatos.findById(tarefa.getId());
 				t.setFinalizado(status);
 				tarefasContatos.save(t);
 				return true;
 			}
 			else if(tarefa instanceof NegocioTarefaProposta) {
-				tarefasPropostas = new NegociosTarefasPropostasImpl(getManager());
 				NegocioTarefaProposta t = tarefasPropostas.findById(tarefa.getId());
 				t.setFinalizado(status);
 				tarefasPropostas.save(t);

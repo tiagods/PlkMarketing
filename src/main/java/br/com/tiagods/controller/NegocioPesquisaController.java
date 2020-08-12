@@ -16,7 +16,11 @@ import javax.persistence.PersistenceException;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.*;
 import br.com.tiagods.model.negocio.*;
+import br.com.tiagods.repository.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
+import br.com.tiagods.util.DateUtil;
+import br.com.tiagods.util.JavaFxUtil;
+import br.com.tiagods.util.MyFileUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -47,8 +51,12 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.apache.tools.ant.taskdefs.Java;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-public class NegocioPesquisaController extends UtilsController implements Initializable {
+@Controller
+public class NegocioPesquisaController implements Initializable {
 	@FXML
 	private HBox pnCheckBox;
 
@@ -99,18 +107,26 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 	private Paginacao paginacao;
 	private Stage stage;
-	private NegociosNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegociosOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private NegociosPropostasImpl propostas;
-	private UsuariosImpl usuarios;
+	@Autowired
+	private NegociosNiveis niveis;
+	@Autowired
+	private NegociosCategorias categorias;
+	@Autowired
+	private NegociosOrigens origens;
+	@Autowired
+	private NegociosServicos servicos;
+	@Autowired
+	private NegociosPropostas propostas;
+	@Autowired
+	private Usuarios usuarios;
+
 	private NegocioPropostaFilter filter;
 
-	public NegocioPesquisaController(NegocioPropostaFilter filter, Stage stage) {
+	public void setPropriedades(NegocioPropostaFilter filter, Stage stage) {
 		this.filter = filter;
 		this.stage = stage;
 	}
+
 	void abrirCadastro(NegocioProposta proposta) {
 		try {
 			loadFactory();
@@ -245,21 +261,14 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		alert.setContentText("Tem certeza disso?");
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
-			try {
-				loadFactory();
-				propostas = new NegociosPropostasImpl(getManager());
-				NegocioProposta t = propostas.findById(proposta.getId());
-				propostas.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
+			Optional<NegocioProposta> opt = propostas.findById(proposta.getId());
+			if(opt.isPresent()){
+				NegocioProposta t = opt.get();
+				propostas.delete(t);
 				return true;
-			} catch (Exception e) {
-				alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao excluir o registro", e, true);
-				return false;
-			} finally {
-				super.close();
 			}
-		} else
-			return false;
+		}
+		return false;
 	}
 	@FXML
 	void exportar(ActionEvent event) {
@@ -280,7 +289,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 				}
 				@Override
 				protected Void call() {
-					File export = salvarTemp("xls");
+					File export = MyFileUtil.salvarTemp("xls");
 					Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
 					Integer[] colunasLenght = new Integer[] { 8, 26, 11, 11, 8, 14, 16, 14, 17, 9, 12, 19,
@@ -295,7 +304,6 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 						listaImpressao.get(0).add(c);
 					}
 					try {
-						loadFactory();
 						List<NegocioProposta> lista = filtrar(null);
 						for (int i = 1; i <= lista.size(); i++) {
 							listaImpressao.add(new ArrayList());
@@ -374,15 +382,14 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 				});
 			}
 		} else {
-			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
 		}
-	}catch (IOException e){
-		alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
-	}
+		}catch (IOException e){
+				JavaFxUtil.alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+		}
 	}
 
 	private List<NegocioProposta> filtrar(Paginacao paginacao) {
-		propostas = new NegociosPropostasImpl(getManager());
 		if(this.filter==null) filter = new NegocioPropostaFilter();
 		filter.setStatus(cbStatus.getValue());
 		filter.setEtapa(cbEtapa.getValue());
@@ -407,16 +414,9 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			tabela();
-			loadFactory();
-			combos();
-			filtrar(paginacao);
-		} catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario", "Erro ao realizar consulta", e, true);
-		} finally {
-			close();
-		}
+		tabela();
+		combos();
+		filtrar(paginacao);
 	}
 
 	@FXML
@@ -426,14 +426,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 
 	@FXML
 	void pesquisar(KeyEvent event) {
-		try {
-			loadFactory();
-			filtrar(paginacao);
-		} catch (Exception e) {
-			alert(AlertType.ERROR, "Error", "", "Erro ao getAllFetchJoin registros", e, true);
-		} finally {
-			close();
-		}
+		filtrar(paginacao);
 	}
 
 	@FXML
@@ -467,10 +460,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, item.getIco());
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, item.getIco());
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -503,7 +493,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(sdf.format(item.getTime()));
+					setText(DateUtil.parse(item.getTime(), DateUtil.SDF));
 				}
 			}
 		});
@@ -519,7 +509,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(sdf.format(item.getTime()));
+					setText(DateUtil.parse(item.getTime(), DateUtil.SDF));
 				}
 			}
 		});
@@ -534,7 +524,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(sdf.format(item.getTime()));
+					setText(DateUtil.parse(item.getTime(), DateUtil.SDF));
 				}
 			}
 		});
@@ -555,10 +545,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -579,10 +566,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_CONTATO);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_CONTATO);
 					button.setOnAction(event -> abrirContato(tbPrincipal.getItems().get(getIndex()).getNegocioContato()));
 					setGraphic(button);
 				}
@@ -601,10 +585,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_REMOVE);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if (removed)

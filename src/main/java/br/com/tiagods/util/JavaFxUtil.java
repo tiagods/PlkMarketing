@@ -20,11 +20,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-@Getter
 @Slf4j
 public class JavaFxUtil {
 
     static final Integer[] limiteTabela = new Integer[] {50,100,200};
+
+    public static Integer[] getLimiteTabela() {
+        return limiteTabela;
+    }
 
     public static void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
         item.setGraphic(createImage(x,y,icon));
@@ -47,7 +50,7 @@ public class JavaFxUtil {
         }
     }
 
-    public static void buttonMin(JFXButton btn, IconsEnum icon) throws IOException{
+    public static void buttonMin(JFXButton btn, IconsEnum icon) {
         try {
             buttonIcon(btn,icon,22);
         }catch (IOException ex){

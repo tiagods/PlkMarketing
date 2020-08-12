@@ -10,6 +10,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.alerta.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -57,7 +58,8 @@ public class TabelaProtocoloEntrada extends UtilsController {
         this.usuarioAtivos = usuarioAtivos;
     }
 
-    public TabelaProtocoloEntrada(ProtocoloEntradaPesquisaController controller, TableView tbPrincipal, JFXRadioButton rbAdministrativo, JFXRadioButton rbComum){
+    public TabelaProtocoloEntrada(ProtocoloEntradaPesquisaController controller, TableView tbPrincipal,
+                                  JFXRadioButton rbAdministrativo, JFXRadioButton rbComum){
         this.tbPrincipal = tbPrincipal;
         this.rbAdministrativo= rbAdministrativo;
         this.rbComum = rbComum;
@@ -268,18 +270,13 @@ public class TabelaProtocoloEntrada extends UtilsController {
                     } else {
                         button.getStyleClass().add("btDefaultText");
                         if(rbAdministrativo.isSelected()){
-                            try {
-                                button.setText("Editar");
-                                buttonTable(button, IconsEnum.BUTTON_EDIT);
-                            } catch (IOException e) {
-                            }
+                            button.setText("Editar");
+                            JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
                             button.setOnAction(event ->abrirCadastro(tbPrincipal.getItems().get(getIndex())));
                         }
                         else {
-                            try {
-                                buttonTable(button, IconsEnum.BUTTON_RETUITAR);
-                                setGraphic(button);
-                            } catch (IOException e) {}
+                            JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_RETUITAR);
+                            setGraphic(button);
                             ProtocoloEntrada prot = tbPrincipal.getItems().get(getIndex());
                             if (prot.isRecebido()
                                     && prot.isDevolver()

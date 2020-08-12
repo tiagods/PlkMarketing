@@ -170,7 +170,7 @@ public class DepartamentoController extends UtilsController implements Initializ
         TableColumn<Departamento, Number> colunaEditar = new  TableColumn<>("");
         colunaEditar.setCellValueFactory(new PropertyValueFactory<>("id"));
         colunaEditar.setCellFactory(param -> new TableCell<Departamento,Number>(){
-            JFXButton button = new JFXButton();//Editar
+            JFXButton button = new JFXButton();
             @Override
             protected void updateItem(Number item, boolean empty) {
                 super.updateItem(item, empty);
@@ -181,9 +181,7 @@ public class DepartamentoController extends UtilsController implements Initializ
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {}
+                    JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
                     button.setOnAction(event -> cadastrarDepartamento(getIndex(),tbPrincipal.getItems().get(getIndex())));
                     setGraphic(button);
                 }

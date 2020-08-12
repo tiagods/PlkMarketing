@@ -20,10 +20,7 @@ import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import br.com.tiagods.services.AlertaImplantacao;
-import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
-import br.com.tiagods.util.JavaFxUtil;
-import br.com.tiagods.util.MyFileUtil;
-import br.com.tiagods.util.TipoArquivo;
+import br.com.tiagods.util.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
@@ -143,6 +140,14 @@ public class MenuController implements Initializable {
     UsuarioPesquisaController usuarioPesquisaController;
     @Autowired
     ContatoPesquisaController contatoPesquisaController;
+    @Autowired
+    NegocioPesquisaController negocioPesquisaController;
+    @Autowired
+    ProtocoloEntradaPesquisaController protocoloEntradaPesquisaController;
+    @Autowired
+    FranquiaPesquisaController franquiaPesquisaController;
+    @Autowired
+    ImplantacaoPacoteController implantacaoPacoteController;
 
     @Autowired
     UsuariosDepartamentos usuariosDepartamentos;
@@ -181,24 +186,18 @@ public class MenuController implements Initializable {
     }
 
     void abrirNegocio(NegocioPropostaFilter filter){
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_PESQUISA);
-            loader.setController(new NegocioPesquisaController(filter,stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
-        }
+        Stage stage1 =stageManager.switchScene(FxmlView.NEGOCIO_PESQUISA, true);
+        negocioPesquisaController.setPropriedades(filter, stage1);
+        onCloseRequest(stage1);
     }
+
     void botaoNegocios(NegocioProposta c, String style){
         JFXButton button = new JFXButton();
-        button.setText(c.getId()+"-"+c.getNome()+"=>Responsavel: "+c.getAtendente().getNomeResumido()+"=>"+(c.getTarefas().size())+" Tarefa(s)"+(c.getDataFim()!=null?"=>Prazo limite: "+sdf.format(c.getDataFim().getTime()):""));
+        button.setText(c.getId()+"-"+c.getNome()+"=>Responsavel: "+c.getAtendente().getNomeResumido()
+                +"=>"+(c.getTarefas().size())+" Tarefa(s)"+(c.getDataFim()!=null?"=>Prazo limite: "
+                + DateUtil.parse(c.getDataFim().getTime(), DateUtil.SDF):""));
         button.getStyleClass().add(style);
-        try {
-            buttonMin(button, c.getTipoEtapa().getIco());
-        } catch (IOException e) {}
+        JavaFxUtil.buttonMin(button, c.getTipoEtapa().getIco());
         Tooltip tooltip = new Tooltip(button.getText());
         button.setTooltip(tooltip);
         button.setOnAction(event -> {
@@ -206,6 +205,19 @@ public class MenuController implements Initializable {
             stage1.setOnHiding(e -> atualizar());
         });
         listViewNegocios.getItems().add(button);
+    }
+
+    @Autowired
+    NegocioCadastroController negocioCadastroController;
+
+    protected Stage abrirNegocioProposta(NegocioProposta proposta) {
+        if (proposta != null) {
+            Optional<NegocioProposta> opt = propostas.findById(proposta.getId());
+            proposta = opt.get();
+        }
+        Stage stage1 = stageManager.switchScene(FxmlView.NEGOCIO_CADASTRO, true);
+        negocioCadastroController.setPropriedades(stage1, proposta, null);
+        return stage1;
     }
 
     void combos() throws IndexOutOfBoundsException{
@@ -239,18 +251,10 @@ public class MenuController implements Initializable {
                             true));
             tbProcesso.getItems().addAll(list);
     }
+
     @FXML
     void franquia(ActionEvent event) {
-    	try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.FRANQUIA_PESQUISA);
-            loader.setController(new FranquiaPesquisaController(stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.FRANQUIA_PESQUISA,e,true);
-        }
+        openViewDefault(FxmlView.FRANQUIA_PESQUISA, franquiaPesquisaController);
     }
     @Override
 	public void initialize(URL location, ResourceBundle resources) throws IndexOutOfBoundsException{
@@ -356,18 +360,10 @@ public class MenuController implements Initializable {
         final ContextMenu cmImplantacao = new ContextMenu();
         MenuItem miPacote = new MenuItem("Pacotes");
         JavaFxUtil.iconMenuItem(miPacote,30,30, IconsEnum.MENU_PACOTE);
-        miPacote.setOnAction(event -> {
-            try {
-                Stage stage = new Stage();
-                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE_PESQUISA);
-                loader.setController(new ImplantacaoPacoteController(stage));
-                initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-                onCloseRequest(stage);
-            }catch(IOException e) {
-                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                        "Falha ao localizar o arquivo "+FXMLEnum.IMPLATACAO_PACOTE_PESQUISA,e,true);
-            }
-        });
+        miPacote.setOnAction(e ->
+            openViewDefault(FxmlView.IMPLATACAO_PACOTE_PESQUISA, implantacaoPacoteController)
+        );
+
         MenuItem miProcessos = new MenuItem("Processos");
         JavaFxUtil.iconMenuItem(miProcessos,30,30,IconsEnum.MENU_USUARIO);
         miProcessos.setOnAction(event -> {
@@ -433,7 +429,7 @@ public class MenuController implements Initializable {
                                         null,false);
                             Desktop.getDesktop().open(arquivo);
                         } catch (Exception e1) {
-                            Platform.runLater(() -> alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
+                            Platform.runLater(() -> JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
                         }
                         return null;
                     }
@@ -449,7 +445,7 @@ public class MenuController implements Initializable {
                 });
             }
         }catch (IOException e){
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
         }
     }
     @FXML
@@ -457,7 +453,7 @@ public class MenuController implements Initializable {
         abrirNegocio(null);
     }
 
-    private void preencherNegocios() throws Exception {
+    private void preencherNegocios() {
         listViewNegocios.getItems().clear();
         NegocioPropostaFilter propostaFilter = new NegocioPropostaFilter();
         propostaFilter.setStatus(NegocioProposta.TipoStatus.ANDAMENTO);
@@ -506,7 +502,7 @@ public class MenuController implements Initializable {
         txNegociosPerfil.setOnMouseClicked(event -> abrirNegocio(propostaFilter));
     }
 
-    private void preencherProcessos() throws Exception {
+    private void preencherProcessos() {
         cbProcesso.getItems().clear();
         ImplantacaoProcesso pro = new ImplantacaoProcesso(-1L);
         cbProcesso.getItems().add(pro);
@@ -547,7 +543,7 @@ public class MenuController implements Initializable {
         );
         return lista;
     }
-    private void preencherProtocolos() throws Exception {
+    private void preencherProtocolos() {
         JFXRadioButton rbComum = new JFXRadioButton();
         rbComum.setSelected(true);
 
@@ -567,7 +563,7 @@ public class MenuController implements Initializable {
         txProtocoloPerfil.setText(""+list.size());
         txProtocoloTodos.setText(""+result.getKey().size());
     }
-    private void preencherTarefas() throws Exception {
+    private void preencherTarefas() {
         LocalDate localDate = LocalDate.now();
         LocalDateTime inicio = localDate.withDayOfMonth(1).atTime(0,0,0);
         LocalDateTime fim = localDate.withDayOfMonth(localDate.lengthOfMonth()).atTime(23,59,59);
@@ -582,18 +578,13 @@ public class MenuController implements Initializable {
         txTarefasMes.setText(String.valueOf(t1));
         txTarefasTodos.setText(String.valueOf(t2));
     }
+
     @FXML
     void protocolo(ActionEvent event) {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.PROTOCOLO_ENTRADA_PESQUISA);
-            loader.setController(new ProtocoloEntradaPesquisaController(stage, new ProtocoloEntradaFilter()));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        } catch (IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo " + FXMLEnum.PROTOCOLO_ENTRADA_PESQUISA, e, true);
-        }
+        Stage stage1 = stageManager.switchScene(FxmlView.PROTOCOLO_ENTRADA_PESQUISA, true);
+        protocoloEntradaPesquisaController.setPropriedades(stage1, new ProtocoloEntradaFilter());
+        onCloseRequest(stage1);
+
     }
     @FXML
     void sair(ActionEvent event) {

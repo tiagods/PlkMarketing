@@ -55,8 +55,8 @@ public class UsuarioPesquisaController implements Initializable, StageController
 	}
 	
 	private	void abrirCadastro(Usuario usuario){
-		Stage stage = stageManager.switchScene(FxmlView.USUARIO_CADASTRO,  true);
-		usuarioCadastroController.setPropriedades(stage,usuario);
+		Stage stage1 = stageManager.switchScene(FxmlView.USUARIO_CADASTRO,  true);
+		usuarioCadastroController.setPropriedades(stage1,usuario);
 		stage.setOnHiding(event -> filtrar());
 	}
 	@FXML

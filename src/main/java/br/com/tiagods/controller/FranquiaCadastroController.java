@@ -1,44 +1,32 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.repository.Franquias;
-import br.com.tiagods.util.JavaFxUtil;
-import org.fxutils.maskedtextfield.MaskTextField;
-
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXRadioButton;
-import com.jfoenix.controls.JFXTextField;
-
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.negocio.Franquia;
 import br.com.tiagods.model.negocio.Franquia.Tipo;
 import br.com.tiagods.model.negocio.FranquiaPacote;
+import br.com.tiagods.repository.Franquias;
+import br.com.tiagods.util.JavaFxUtil;
+import br.com.tiagods.util.MoedaUtil;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.fxutils.maskedtextfield.MaskTextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 @Controller
 public class FranquiaCadastroController implements Initializable {
@@ -81,12 +69,13 @@ public class FranquiaCadastroController implements Initializable {
 	private Franquias franquias;
     private Franquia franquia;
 	private Stage stage;
-	
-	NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt","BR"));
 
 	public void setPropriedades(Stage stage, Franquia franquia) {
 		this.franquia=franquia;
 		this.stage=stage;
+		if(franquia!=null) {
+			preencherFormulario(franquia);
+		}
 	}
 
 	void combos() {
@@ -162,7 +151,6 @@ public class FranquiaCadastroController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
     	combos();
     	tabela();
-		if(franquia!=null) preencherFormulario(franquia);
     }
     private void preencherFormulario(Franquia franquia) {
     	txNome.setText(franquia.getNome());
@@ -234,7 +222,7 @@ public class FranquiaCadastroController implements Initializable {
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item.doubleValue()));
+					setText(MoedaUtil.format(item));
 				}
 			}
 		});
@@ -255,7 +243,7 @@ public class FranquiaCadastroController implements Initializable {
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item.doubleValue()));
+					setText(MoedaUtil.format(item));
 				}
 			}
 		});
@@ -274,10 +262,7 @@ public class FranquiaCadastroController implements Initializable {
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						FranquiaPacote pacote = tbPacote.getItems().get(getIndex());
 						txNomePacote.setText(pacote.getNome());
@@ -296,7 +281,7 @@ public class FranquiaCadastroController implements Initializable {
 		TableColumn<FranquiaPacote, String> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaExcluir.setCellFactory(param -> new TableCell<FranquiaPacote,String>(){
-			JFXButton button = new JFXButton();//Editar
+			JFXButton button = new JFXButton();
 			@Override
 			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
@@ -307,10 +292,7 @@ public class FranquiaCadastroController implements Initializable {
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						tbPacote.getItems().remove(getIndex());
 					});

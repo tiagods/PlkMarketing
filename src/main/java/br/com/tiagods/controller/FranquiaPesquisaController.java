@@ -15,6 +15,7 @@ import br.com.tiagods.config.StageManager;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.repository.Franquias;
 import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.util.DateUtil;
 import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -83,16 +84,18 @@ public class FranquiaPesquisaController implements Initializable, StageControlle
 	@Autowired
 	StageManager stageManager;
 
+	@Autowired
+	FranquiaCadastroController franquiaCadastroController;
+
 	@Override
 	public void setPropriedades(Stage stage) {
 		this.stage = stage;
 	}
 
 	private void abrirCadastro(Franquia t) {
-		franquias.findById(t.getId()).ifPresent(it->{
-			Stage stage = stageManager.switchScene(FxmlView.FRANQUIA_CADASTRO, true);
-			stage.setOnHiding(event -> filtrar());
-		});
+        Stage stage1 = stageManager.switchScene(FxmlView.FRANQUIA_CADASTRO, true);
+        franquiaCadastroController.setPropriedades(stage1, t);
+        stage1.setOnHiding(event -> filtrar());
     }
 
     void combos() {
@@ -151,10 +154,8 @@ public class FranquiaPesquisaController implements Initializable, StageControlle
             t.setLastUpdate(Calendar.getInstance());
             franquias.save(t);
             return true;
-        } else {
-			JavaFxUtil.alert(AlertType.ERROR, "Erro", null, "Erro ao salvar", e, true);
-			return false;
-		}
+        }
+        return false;
     }
 
     void tabela() {
@@ -190,7 +191,7 @@ public class FranquiaPesquisaController implements Initializable, StageControlle
                     setText("");
                     setGraphic(null);
                 } else {
-                    setText(sdfH.format(item.getTime()));
+                    setText(DateUtil.parse(item.getTime(), DateUtil.SDFH));
                 }
             }
         });
@@ -276,10 +277,7 @@ public class FranquiaPesquisaController implements Initializable, StageControlle
                     setGraphic(null);
                 } else {
                     button.getStyleClass().add("btDefault");
-                    try {
-						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    } catch (IOException e) {
-                    }
+                    JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
                     button.setOnAction(event -> {
                         abrirCadastro(tbPrincipal.getItems().get(getIndex()));
                     });

@@ -46,7 +46,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class TarefaCadastroController extends UtilsController implements Initializable{
 
     @FXML
@@ -111,7 +113,7 @@ public class TarefaCadastroController extends UtilsController implements Initial
 	private NegociosTarefasPropostasImpl propostas;
     private Storage storage = StorageProducer.newConfig();
 
-	public TarefaCadastroController(Stage stage, NegocioTarefa tarefa,Object entidade) {
+	public void setPropriedades(Stage stage, NegocioTarefa tarefa, Object entidade) {
 		this.stage = stage;
 		this.entidade = entidade;
 		this.tarefa = tarefa;
