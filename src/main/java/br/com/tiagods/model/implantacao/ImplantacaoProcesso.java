@@ -1,7 +1,6 @@
 package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.Usuario;
 
@@ -13,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "imp_processo")
-public class ImplantacaoProcesso implements AbstractEntity, Serializable {
+public class ImplantacaoProcesso implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -62,7 +61,6 @@ public class ImplantacaoProcesso implements AbstractEntity, Serializable {
         this.id = id;
     }
 
-    @Override
     public Long getId() {
         return id;
     }

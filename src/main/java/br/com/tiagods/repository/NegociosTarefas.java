@@ -2,6 +2,7 @@ package br.com.tiagods.repository;
 
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import javafx.util.Pair;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

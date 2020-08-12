@@ -13,6 +13,8 @@ import java.util.Set;
 import javax.persistence.PersistenceException;
 
 import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.repository.Franquias;
+import br.com.tiagods.util.JavaFxUtil;
 import org.fxutils.maskedtextfield.MaskTextField;
 
 import com.jfoenix.controls.JFXButton;
@@ -35,8 +37,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-public class FranquiaCadastroController extends UtilsController implements Initializable{
+@Controller
+public class FranquiaCadastroController implements Initializable {
 	@FXML
     private JFXRadioButton rbComercio;
 
@@ -71,18 +76,19 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 	private Label franquiaCodigo;
 	@FXML
 	private Label franquiaTb;
-	
-	private FranquiasImpl franquias;
+
+	@Autowired
+	private Franquias franquias;
     private Franquia franquia;
 	private Stage stage;
 	
 	NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt","BR"));
-	
-	public FranquiaCadastroController(Stage stage, Franquia franquia) {
+
+	public void setPropriedades(Stage stage, Franquia franquia) {
 		this.franquia=franquia;
 		this.stage=stage;
-
 	}
+
 	void combos() {
 		ToggleGroup group1 = new ToggleGroup();
 		group1.getToggles().addAll(rbAtivo,rbInativo);
@@ -95,23 +101,23 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 	@FXML
     void incluirPacote(ActionEvent event) {
 		if(franquia==null) {
-			alert(AlertType.ERROR,"Erro","","Salve antes de continuar",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Salve antes de continuar",null,false);
     		return;
 		}
 		if(txNomePacote.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
     		return;
     	}
 		if(txInvestimento.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Investimento obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Investimento obrigatório",null,false);
     		return;
     	}
 		if(txRetorno.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Retorno obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Retorno obrigatório",null,false);
     		return;
     	}
 		if(txFaturamento.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Fatumento obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Fatumento obrigatório",null,false);
     		return;
     	}
 		else {
@@ -147,11 +153,11 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				franquiaCodigo.setText("");
 				franquiaTb.setText("");				
 			}catch(Exception e) {
-				alert(AlertType.ERROR,"Erro","","Falha ao incluir registro",e,true);	
+				JavaFxUtil.alert(AlertType.ERROR,"Erro","","Falha ao incluir registro",e,true);
 			}
-			
 		}
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     	combos();
@@ -185,13 +191,13 @@ public class FranquiaCadastroController extends UtilsController implements Initi
     @FXML
     void salvar(ActionEvent event) {
     	if(txNome.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
     		return;
     	}
     	else salvar();
 
     }
-    private boolean salvar() {
+    private void salvar() {
 		if(franquia==null) {
 			franquia = new Franquia();
 			franquia.setCriadoEm(Calendar.getInstance());
@@ -204,19 +210,10 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 		pacotes.addAll(tbPacote.getItems());
 		pacotes.forEach(c->c.setFranquia(franquia));
 		franquia.setPacotes(pacotes);
-		try {
-	        loadFactory();
-	        franquias = new FranquiasImpl(getManager());
-	        this.franquia = franquias.save(franquia);
-	        preencherFormulario(franquia);
-	        alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
-	        return true;
-	    } catch (PersistenceException e) {
-	        alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
-	        return false;
-	    }finally {
-			close();
-		}    	
+
+		this.franquia = franquias.save(franquia);
+		preencherFormulario(franquia);
+		JavaFxUtil.alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
     }
     private void tabela() {
     	TableColumn<FranquiaPacote, Number> colunaid = new  TableColumn<>("*");
@@ -278,7 +275,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
+						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {
@@ -311,7 +308,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				else{
 					button.getStyleClass().add("btDefault");
 					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
+						JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					}catch (IOException e) {
 					}
 					button.setOnAction(event -> {

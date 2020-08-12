@@ -20,8 +20,8 @@ import br.com.tiagods.model.negocio.NegocioServico;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.repository.helpers.NegociosPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -65,7 +65,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
     
     private Stage stage;
 	private NegocioProposta proposta;
-	private NegocioPropostaImpl propostas;
+	private NegociosPropostasImpl propostas;
 	private NegociosNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
 	private NegociosOrigensImpl origens;
@@ -91,7 +91,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		niveis = new NegociosNiveisImpl(getManager());
 		origens = new NegociosOrigensImpl(getManager());
 		servicos = new NegocioServicosImpl(getManager());
-		propostas = new NegocioPropostaImpl(getManager());
+		propostas = new NegociosPropostasImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());
 				
 		cbCategoria.getItems().addAll(categorias.getAll());
@@ -126,7 +126,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		cbAtendente.valueProperty().addListener(change);
 	}
 	void filtrar() {
-		propostas = new NegocioPropostaImpl(getManager());
+		propostas = new NegociosPropostasImpl(getManager());
 
 		NegocioPropostaFilter filter = new NegocioPropostaFilter();
 		filter.setCategoria(cbCategoria.getValue());

@@ -5,7 +5,7 @@ import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.event.ActionEvent;
@@ -30,7 +30,7 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
 
     private Stage stage;
     private ImplantacaoProcessoEtapa etapa;
-    private ImplantacaoProcessoEtapasImpl etapas;
+    private ImplantacaoProcessosEtapasImpl etapas;
     private boolean editar;
 
     public ImplantacaoEtapaStatusController(ImplantacaoProcessoEtapa etapa, Stage stage, boolean editar){
@@ -49,7 +49,7 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
             try {
                 status.setDescricao(result.get());
                 loadFactory();
-                etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+                etapas = new ImplantacaoProcessosEtapasImpl(getManager());
                 if (localizacao==-1) {
                     etapa.setDataAtualizacao(Calendar.getInstance());
                     status.setProcessoEtapa(etapa);

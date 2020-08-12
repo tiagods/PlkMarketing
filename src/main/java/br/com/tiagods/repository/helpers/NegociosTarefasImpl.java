@@ -1,8 +1,8 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.NegocioTarefa;
-import br.com.tiagods.repository.AbstractRepositoryImpl;
-import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import javafx.util.Pair;
 import org.hibernate.Criteria;

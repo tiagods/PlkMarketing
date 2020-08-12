@@ -1,33 +1,33 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.interfaces.ImplantacaoProcessoDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 
-public class ImplantacaoProcessosImpl extends AbstractRepository<ImplantacaoProcesso,Long> implements ImplantacaoProcessoDAO {
-    public ImplantacaoProcessosImpl(EntityManager manager) {
-        super(manager);
-    }
+@Service
+public class ImplantacaoProcessosImpl  {
+    @PersistenceContext
+    EntityManager manager;
 
-    @Override
-    public ImplantacaoProcesso findById(Long id) {
-        Query query = getEntityManager().createQuery("from ImplantacaoProcesso as a "
+    public Optional<ImplantacaoProcesso> findById(Long id) {
+        Query query = manager.createQuery("" +
+                "SELECT a FROM ImplantacaoProcesso as a "
                 + "LEFT JOIN FETCH a.etapas "
                 + "where a.id=:id");
         query.setParameter("id", id);
-        return (ImplantacaoProcesso) query.getSingleResult();
+        return Optional.ofNullable((ImplantacaoProcesso) query.getSingleResult());
     }
 
-    @Override
     public List<ImplantacaoProcesso> listarAtivos(boolean finalizado){
-        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcesso.class);
+        Criteria criteria = manager.unwrap(Session.class).createCriteria(ImplantacaoProcesso.class);
         if(!finalizado)
             criteria.add(Restrictions.eq("finalizado",false));
         return criteria.list();

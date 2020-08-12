@@ -10,6 +10,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import lombok.Data;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -17,7 +20,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@Getter
+@Slf4j
 public class JavaFxUtil {
+
+    static final Integer[] limiteTabela = new Integer[] {50,100,200};
+
     public static void iconMenuItem(MenuItem item, int x, int y, IconsEnum icon){
         item.setGraphic(createImage(x,y,icon));
     }
@@ -31,24 +39,32 @@ public class JavaFxUtil {
         return imageview;
     }
 
-    public static void buttonTable(JFXButton btn, IconsEnum icon) throws IOException{
-        buttonIcon(btn,icon,30);
+    public static void buttonTable(JFXButton btn, IconsEnum icon) {
+        try {
+            buttonIcon(btn,icon,30);
+        }catch (IOException ex){
+            log.error(ex.getMessage());
+        }
     }
 
     public static void buttonMin(JFXButton btn, IconsEnum icon) throws IOException{
-        buttonIcon(btn,icon,22);
+        try {
+            buttonIcon(btn,icon,22);
+        }catch (IOException ex){
+            log.error(ex.getMessage());
+        }
     }
 
     static  int BUTTON_TABLE = 30;
     static int BUTTON_TABLE_MIN = 22;
 
-    public static void buttonIcon(JFXButton btn,IconsEnum icon,int size){
+    public static void buttonIcon(JFXButton btn,IconsEnum icon,int size) throws IOException{
         ImageView imageview = createImage(size,size,icon);
         btn.setGraphic(imageview);
         btn.setTooltip(icon.getTooltip());
     }
 
-    private static Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
+    public static Alert alert(Alert.AlertType alertType, String title, String header, String contentText) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(header);

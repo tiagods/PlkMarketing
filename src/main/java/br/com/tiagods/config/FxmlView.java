@@ -16,7 +16,9 @@ public enum FxmlView {
     SOBRE("login", FXMLEnum.SOBRE.getFile(), Modality.APPLICATION_MODAL),
     USUARIO_PESQUISA("login", FXMLEnum.USUARIO_PESQUISA.getFile(), Modality.APPLICATION_MODAL),
     DEPARTAMENTO("login", FXMLEnum.DEPARTAMENTO.getFile(), Modality.APPLICATION_MODAL),
-    CONTATO_PESQUISA("longin", FXMLEnum.CONTATO_PESQUISA.getFile(), Modality.WINDOW_MODAL);
+    CONTATO_PESQUISA("longin", FXMLEnum.CONTATO_PESQUISA.getFile(), Modality.WINDOW_MODAL),
+    FRANQUIA_CADASTRO("longin", FXMLEnum.FRANQUIA_CADASTRO.getFile(), Modality.APPLICATION_MODAL)
+    ;
 
 
 

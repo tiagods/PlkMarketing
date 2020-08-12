@@ -6,9 +6,11 @@ import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.*;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.ImplantacaoProcessosEtapas;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.SendEmail;
-import br.com.tiagods.services.AlertaImplantacaoImpl;
+import br.com.tiagods.services.AlertaImplantacao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.fxml.FXMLLoader;
@@ -19,19 +21,24 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
 
-public class TabelaProcessosEtapa extends UtilsController {
-
+@Service
+public class TabelaProcessosEtapa {
     private Logger logger = LoggerFactory.getLogger(TabelaProcessosEtapa.class);
+
+    @Autowired
+    AlertaImplantacao alertaImplantacao;
+    @Autowired
+    ImplantacaoProcessosEtapas etapas;
 
     private TableView<ImplantacaoProcessoEtapa> tbPrincipal;
 
-    private ImplantacaoProcessoEtapasImpl etapas;
-
-    public TabelaProcessosEtapa(TableView<ImplantacaoProcessoEtapa> tbPrincipal) {
+    public void setPropriedades(TableView<ImplantacaoProcessoEtapa> tbPrincipal) {
         this.tbPrincipal = tbPrincipal;
     }
 
@@ -53,17 +60,7 @@ public class TabelaProcessosEtapa extends UtilsController {
     }
 
     private ImplantacaoProcessoEtapa recarregar(ImplantacaoProcessoEtapa etapa) {
-        try {
-            loadFactory();
-            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-            etapa = etapas.findById(etapa.getId());
-            return etapa;
-        } catch (Exception e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao carregar os registros", "Ocorreu um erro ao carregar o registro", e, true);
-            return null;
-        } finally {
-            close();
-        }
+        return etapas.getOne(etapa.getId());
     }
 
     private void notificarProximaEtapa(ImplantacaoProcessoEtapa pe) {
@@ -76,7 +73,6 @@ public class TabelaProcessosEtapa extends UtilsController {
 
         if (!email.equals("")) {
             SendEmail mail = new SendEmail();
-            AlertaImplantacaoImpl alertaImplantacao = new AlertaImplantacaoImpl();
             List<ImplantacaoProcessoEtapa> list = etapas
                     .filtrar(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null,true);
             List<ImplantacaoProcessoEtapaStatus> status = alertaImplantacao.organizarList(list);
@@ -101,10 +97,7 @@ public class TabelaProcessosEtapa extends UtilsController {
 
     private boolean salvarEConcluir(String descricao, ImplantacaoProcessoEtapa ip, int index) {
         try {
-            loadFactory();
-            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-
-            ip = etapas.findById(ip.getId());
+            ip = etapas.getOne(ip.getId());
 
             ImplantacaoProcessoEtapaStatus status = new ImplantacaoProcessoEtapaStatus();
             status.setDescricao(descricao);
@@ -143,7 +136,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                         tbPrincipal.getItems().set(in, pe);
                     }
                 } else if (list.size() > 1) {
-                    alert(Alert.AlertType.ERROR,
+                    JavaFxUtil.alert(Alert.AlertType.ERROR,
                             "Erro",
                             "",
                             "Foram encontradas mais etapas para o mesmo processo e atividade! Informe o erro para o administrador do sistema",
@@ -152,13 +145,11 @@ public class TabelaProcessosEtapa extends UtilsController {
             }
             else logger.debug("Is empty");
             tbPrincipal.refresh();
-            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Salvo com sucesso!", null, false);
+            JavaFxUtil.alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Salvo com sucesso!", null, false);
             return true;
         } catch (Exception e) {
-            alert(Alert.AlertType.ERROR, "Erro", "", "Falha ao tentar salvar o registro!", e, true);
+            JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "", "Falha ao tentar salvar o registro!", e, true);
             return false;
-        } finally {
-            close();
         }
     }
 
@@ -327,11 +318,7 @@ public class TabelaProcessosEtapa extends UtilsController {
                     button.setDisable(item.equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO) ||
                             item.equals(ImplantacaoProcessoEtapa.Status.AGUARDANDO_ANTERIOR));
                     button.getStyleClass().add("");
-                    try {
-                        buttonTable(button, item.getIcon());
-                    } catch (IOException e) {
-                        logger.error(e.getMessage());
-                    }
+                    JavaFxUtil.buttonTable(button, item.getIcon());
                     final Tooltip tooltip = new Tooltip("Clique para encerrar essa etapa");
                     button.setText(item.equals(ImplantacaoProcessoEtapa.Status.ABERTO) ? "Baixar" : item.toString());
                     button.setTooltip(tooltip);

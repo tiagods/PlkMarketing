@@ -2,10 +2,15 @@ package br.com.tiagods.services;
 
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.ImplantacaoProcessosEtapas;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
+import br.com.tiagods.util.JavaFxUtil;
+import br.com.tiagods.util.MyFileUtil;
 import br.com.tiagods.util.alerta.AlertaModel;
 import javafx.scene.control.Alert;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -15,7 +20,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingLong;
 
-public class AlertaImplantacaoImpl extends AlertaModel {
+@Service
+public class AlertaImplantacao extends AlertaModel {
+
+    @Autowired
+    ImplantacaoProcessosEtapas etapas;
 
     public File gerarExcel( ImplantacaoProcesso processo,
                             Departamento departamento,
@@ -23,7 +32,7 @@ public class AlertaImplantacaoImpl extends AlertaModel {
                             ImplantacaoEtapa.Etapa etapa,
                             boolean exibirHistorico) throws Exception{
 
-        File export = salvarTemp("xls");
+        File export = MyFileUtil.salvarTemp("xls");
         Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = montarMap(processo,departamento,atividade,etapa,exibirHistorico);
 
         ArrayList<ArrayList> listaImpressao = new ArrayList<>();
@@ -86,7 +95,7 @@ public class AlertaImplantacaoImpl extends AlertaModel {
             Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map =
                     montarMap(processo,departamento,atividade,etapa,exibirHistorico);
             String value = montarMensagem(map,new ArrayList<>(),new ArrayList<>(),exibirHistorico);
-            File htmlFile = salvarTemp("html");
+            File htmlFile = MyFileUtil.salvarTemp("html");
             FileWriter fileWriter = new FileWriter(htmlFile);
             fileWriter.write(value);
             fileWriter.close();
@@ -101,8 +110,6 @@ public class AlertaImplantacaoImpl extends AlertaModel {
             boolean exibirHistorico){
 
         try {
-            loadFactory();
-            ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new LinkedHashMap<>();
             ImplantacaoProcessoEtapa.Status ieStatus = null;
             List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrar(
@@ -131,7 +138,7 @@ public class AlertaImplantacaoImpl extends AlertaModel {
                     status = organizarList(etapaList);
                 }
                 else{
-                    pe = etapas.findById(pe.getId());
+                    pe = etapas.getOne(pe.getId());
                     etapaList.add(pe);
                     status.addAll(organizarList(etapaList));
                 }
@@ -142,10 +149,8 @@ public class AlertaImplantacaoImpl extends AlertaModel {
             }
             return map;
         } catch (Exception e) {
-            alert(Alert.AlertType.ERROR,"Erro","","",e,true);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","","",e,true);
             return null;
-        } finally {
-            close();
         }
     }
 
@@ -157,59 +162,6 @@ public class AlertaImplantacaoImpl extends AlertaModel {
                                 .comparing(ImplantacaoProcessoEtapaStatus::getCriadoEm)))
                 .collect(Collectors.toList());
     }
-
-
-    public static void main(String[] args) throws Exception {
-
-        AlertaImplantacaoImpl p = new AlertaImplantacaoImpl();
-        p.gerarHtml(new ImplantacaoProcesso(9L),
-                null,
-                null, null, false);
-        /*
-        EntityManager manager = JPAConfig.getInstance().createManager();
-        ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(manager);
-
-        Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new LinkedHashMap<>();
-
-        Usuario usuario = new UsuariosImpl(manager).findById(1L);
-
-        List<String> cabecalho = Arrays.asList("Sistema Controle de Processos/Implanta&ccedil;&atilde;o",
-                "Ol&aacute;;",
-                usuario != null ? usuario.getNome() : "" + " acabou de concluir uma Etapa de Implanta&ccedil;&atilde;o",
-                "Voc&ecirc; foi designado para concluir a proxima Etapa, abaixo uma descri&ccedil;&atilde;o:");
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        List<String> rodape = Arrays.asList("N&atilde;o se esque&ccedil;a de concluir a tarefa at&eacute; " + sdf.format(Calendar.getInstance().getTime()));
-
-        ImplantacaoProcesso processo = new ImplantacaoProcesso(9L);
-
-        ImplantacaoProcessoEtapa.Status ieStatus = null;
-
-        List<ImplantacaoProcessoEtapa> etapasDoProcesso = etapas.filtrarMultProcessos(null, processo, null, null, ieStatus);
-        Comparator<ImplantacaoProcessoEtapa> comparator =
-                comparingLong((ImplantacaoProcessoEtapa c) ->c.getProcesso().getCliente().getId())
-                        .thenComparing(d->d.getEtapa().getAtividade().getNome())
-                        .thenComparingInt(c->c.getEtapa().getEtapa().getValor());
-        Collections.sort(etapasDoProcesso,comparator);
-
-        for(ImplantacaoProcessoEtapa c : etapasDoProcesso){
-            ImplantacaoProcessoEtapa pe = c;
-
-            List<ImplantacaoProcessoEtapa> list = etapas.filtrarMultProcessos(null, pe.getProcesso(), pe.getEtapa().getAtividade(), null, null);
-            List<ImplantacaoProcessoEtapaStatus> status = organizarList(list);
-
-            Calendar prazo = pe.getDataAtualizacao();
-            if (prazo == null) prazo = Calendar.getInstance();
-            prazo.add(Calendar.DAY_OF_MONTH, pe.getEtapa().getTempo());
-
-            map.put(pe, status);
-        }
-        String value = p.montarMensagem(map,cabecalho,rodape);
-        p.renderizar(value);
-        manager.close();
-        */
-    }
-
 
     private String cabecalhoFundoColor = "35, 14, 153";
     private String linhasTabelaFundoColor= "255, 255, 255";

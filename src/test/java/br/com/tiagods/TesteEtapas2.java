@@ -1,19 +1,13 @@
 package br.com.tiagods;
 
-import br.com.tiagods.config.init.JPAConfig;
-import br.com.tiagods.controller.utils.PersistenciaController;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
-import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class TesteEtapas2 {
 
@@ -33,14 +27,14 @@ public class TesteEtapas2 {
 
     @Test
     public void teste1(){
-        ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(manager);
+        ImplantacaoProcessosEtapasImpl etapas = new ImplantacaoProcessosEtapasImpl(manager);
         List<ImplantacaoProcessoEtapa> lista = etapas.getAll();
         Assert.assertEquals(false,lista.isEmpty());
     }
 
     @Test
     public void teste2() throws  Exception{
-        ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(manager);
+        ImplantacaoProcessosEtapasImpl etapas = new ImplantacaoProcessosEtapasImpl(manager);
 
         erro.expect(NoResultException.class);
 

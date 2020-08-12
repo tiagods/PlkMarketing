@@ -1,6 +1,5 @@
 package br.com.tiagods.util.alerta;
 
-import br.com.tiagods.config.init.JPAConfig;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.util.SendEmail;

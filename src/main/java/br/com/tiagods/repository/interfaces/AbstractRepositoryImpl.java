@@ -1,6 +1,5 @@
-package br.com.tiagods.repository;
+package br.com.tiagods.repository.interfaces;
 
-import br.com.tiagods.model.AbstractEntity;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -18,7 +17,7 @@ public class AbstractRepositoryImpl {
     @PersistenceContext
     EntityManager manager;
 
-    public Pair<List,Paginacao> filterWithPagination(Class<?> entityClass, Paginacao page, Criteria criteria, List<Criterion> criterios) {
+    public Pair<List, Paginacao> filterWithPagination(Class<?> entityClass, Paginacao page, Criteria criteria, List<Criterion> criterios) {
         if(page!=null) {
             criteria.setFirstResult(page.getPrimeiroRegistro());
             criteria.setMaxResults(page.getLimitePorPagina());

@@ -1,7 +1,5 @@
 package br.com.tiagods.model.negocio;
 
-import br.com.tiagods.model.AbstractEntity;
-
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -17,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="SERVICO_AGREGADO")
-public class ServicoAgregado implements AbstractEntity,Serializable{
+public class ServicoAgregado implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

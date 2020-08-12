@@ -7,7 +7,7 @@ import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import br.com.tiagods.util.alerta.AlertaProtocolo;
@@ -116,7 +116,7 @@ public class TabelaProtocoloEntrada extends UtilsController {
         } else
             return false;
     }
-    public List<ProtocoloEntrada> filtrar(Paginacao paginacao, EntityManager manager){
+    public List<ProtocoloEntrada> filtrar(Paginacao paginacao){
         List<ProtocoloEntrada> list;
         if(controller!=null) {
             list = controller.filtrar(paginacao,manager);

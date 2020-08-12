@@ -6,10 +6,10 @@ import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
-import br.com.tiagods.services.AlertaImplantacaoImpl;
+import br.com.tiagods.services.AlertaImplantacao;
 import br.com.tiagods.util.ExcelGenericoUtil;
 import br.com.tiagods.util.TipoArquivo;
 import com.jfoenix.controls.*;
@@ -28,6 +28,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.*;
 import java.io.File;
@@ -53,9 +54,13 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
 
     private ImplantacaoProcessosImpl processos;
 
-    private ImplantacaoProcessoEtapasImpl etapas;
+    private ImplantacaoProcessosEtapasImpl etapas;
 
     private Stage stage;
+
+    @Autowired
+    AlertaImplantacao alertaImplantacao;
+
 
     public ImplantacaoProcessoPesquisaController(Stage stage){
         this.stage = stage;
@@ -228,7 +233,6 @@ public class ImplantacaoProcessoPesquisaController extends UtilsController imple
                     protected Void call() {
                         Platform.runLater(() -> sta.show());
                         try {
-                            AlertaImplantacaoImpl alertaImplantacao = new AlertaImplantacaoImpl();
                             File arquivo = null;
                             if(result.get().equals(TipoArquivo.XLS))
                                 arquivo = alertaImplantacao.gerarExcel(implantacaoProcesso,null,null,null,false);

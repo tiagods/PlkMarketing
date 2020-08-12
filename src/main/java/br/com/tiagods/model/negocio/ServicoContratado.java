@@ -1,7 +1,5 @@
 package br.com.tiagods.model.negocio;
 
-import br.com.tiagods.model.AbstractEntity;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -16,7 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="SERVICO_CONTRATADO")
-public class ServicoContratado implements AbstractEntity,Serializable{
+public class ServicoContratado implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

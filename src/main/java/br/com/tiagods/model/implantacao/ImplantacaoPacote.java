@@ -1,7 +1,6 @@
 package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "imp_pacote")
-public class ImplantacaoPacote implements AbstractEntity,Serializable {
+public class ImplantacaoPacote implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +39,6 @@ public class ImplantacaoPacote implements AbstractEntity,Serializable {
         setCriadoPor(UsuarioLogado.getInstance().getUsuario());
     }
 
-    @Override
     public Long getId() {
         return id;
     }

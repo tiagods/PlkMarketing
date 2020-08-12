@@ -5,31 +5,30 @@ import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.interfaces.ImplantacaoProcessoEtapaDAO;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
-public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<ImplantacaoProcessoEtapa,Long> implements ImplantacaoProcessoEtapaDAO {
-    public ImplantacaoProcessoEtapasImpl(EntityManager manager) {
-        super(manager);
-    }
-    @Override
-    public ImplantacaoProcessoEtapa findById(Long id) {
-        Query query = getEntityManager().createQuery("from ImplantacaoProcessoEtapa as a "
+@Service
+public class ImplantacaoProcessosEtapasImpl {
+
+    @PersistenceContext
+    EntityManager manager;
+
+    public Optional<ImplantacaoProcessoEtapa> findById(Long id) {
+        Query query = manager.createQuery(
+                "SELECT a from ImplantacaoProcessoEtapa as a "
                 + "LEFT JOIN FETCH a.historico "
                 + "where a.id=:id");
         query.setParameter("id", id);
-        return (ImplantacaoProcessoEtapa)query.getSingleResult();
+        return Optional.ofNullable((ImplantacaoProcessoEtapa)query.getSingleResult());
     }
 
     public List<ImplantacaoProcessoEtapa> filtrar(Departamento departamento,
@@ -38,7 +37,7 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
                                                   ImplantacaoEtapa.Etapa etapa,
                                                   ImplantacaoProcessoEtapa.Status status,
                                                   boolean exibirApenasProcessoAberto){
-        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoProcessoEtapa.class);
+        Criteria criteria = manager.unwrap(Session.class).createCriteria(ImplantacaoProcessoEtapa.class);
         if(departamento!=null && departamento.getId()!=-1L){
             criteria.add(Restrictions.eq("etapa.departamento",departamento));
         }
@@ -60,5 +59,4 @@ public class ImplantacaoProcessoEtapasImpl extends AbstractRepository<Implantaca
         }
         return criteria.list();
     }
-
 }

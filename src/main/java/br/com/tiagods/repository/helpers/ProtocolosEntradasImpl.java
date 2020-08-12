@@ -1,10 +1,9 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
-import br.com.tiagods.repository.interfaces.ProtocoloEntradaDAO;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -12,34 +11,39 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 
-public class ProtocolosEntradasImpl extends AbstractRepository<ProtocoloEntrada,Long> implements ProtocoloEntradaDAO {
+@Service
+public class ProtocolosEntradasImpl {
 
-    public ProtocolosEntradasImpl(EntityManager manager) {
-        super(manager);
-    }
+    @PersistenceContext
+    EntityManager manager;
+    @Autowired
+    AbstractRepositoryImpl abstractRepository;
 
-    @Override
-    public ProtocoloEntrada findById(Long id) {
-        Query query = getEntityManager().createQuery("from ProtocoloEntrada as a "
+    public Optional<ProtocoloEntrada> findById(Long id) {
+        Query query = manager.createQuery(
+                "SELECT a FROM ProtocoloEntrada as a "
                 + "LEFT JOIN FETCH a.items "
                 + "where a.id=:id");
         query.setParameter("id", id);
         ProtocoloEntrada a = (ProtocoloEntrada)query.getSingleResult();
-        return a;
+        return Optional.ofNullable(a);
     }
 
-    @Override
     public Pair<List<ProtocoloEntrada>,Paginacao> filtrar(Paginacao paginacao, ProtocoloEntradaFilter filter) {
         List<Criterion> criterios = new ArrayList<>();
-        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ProtocoloEntrada.class);
+        Criteria criteria = manager.unwrap(Session.class).createCriteria(ProtocoloEntrada.class);
 
         if(filter.getRecebimento().equals(ProtocoloEntrada.StatusRecebimento.ABERTO) && filter.getDevolucao().equals(ProtocoloEntrada.StatusDevolucao.NAO)){
             Criterion c1 = Restrictions.eq("recebido",false);
@@ -87,6 +91,7 @@ public class ProtocolosEntradasImpl extends AbstractRepository<ProtocoloEntrada,
         }
         criterios.forEach(c-> criteria.add(c));
         criteria.addOrder(Order.desc("id"));
-        return super.filterWithPagination(paginacao, criteria, criterios);
+        Pair<List, Paginacao> pair = abstractRepository.filterWithPagination(ProtocoloEntrada.class, paginacao, criteria, criterios);
+        return new Pair<>(pair.getKey(), pair.getValue());
     }
 }

@@ -57,7 +57,7 @@ import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
+import br.com.tiagods.repository.helpers.NegociosPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -208,7 +208,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 	private Stage stage;
 	private Contato contato;
 
-	private NegocioPropostaImpl propostas;
+	private NegociosPropostasImpl propostas;
 	private NegociosTarefasPropostasImpl tarefas;
 	private NegociosNiveisImpl niveis;
 	private NegocioCategoriasImpl categorias;
@@ -234,7 +234,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
             stage.setOnHiding(event -> {
             	try {
         			loadFactory();
-        			propostas = new NegocioPropostaImpl(getManager());
+        			propostas = new NegociosPropostasImpl(getManager());
         			proposta = propostas.findById(proposta.getId());
         			tbTarefas.getItems().clear();
         			tbTarefas.getItems().addAll(proposta.getTarefas());
@@ -573,7 +573,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
     		Contato contato = new Contato(Long.parseLong(txIdPesquisa.getText()));
     		proposta.setNegocioContato(contato);
     		loadFactory();
-    		propostas = new NegocioPropostaImpl(getManager());
+    		propostas = new NegociosPropostasImpl(getManager());
     		this.proposta = propostas.save(proposta);
     		preencherFormulario(proposta);
     		alert(AlertType.INFORMATION,"Sucesso","", "Salvo com sucesso!",null,false);

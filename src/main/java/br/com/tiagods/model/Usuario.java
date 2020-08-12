@@ -9,7 +9,7 @@ import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.util.MyStringUtil;
 
 @Entity
-public class Usuario extends Pessoa implements Serializable, AbstractEntity {
+public class Usuario extends Pessoa implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,10 +1,9 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.controller.TabelaProtocoloEntrada;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.*;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
-import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
 import com.jfoenix.controls.*;

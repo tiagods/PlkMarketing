@@ -111,7 +111,7 @@ public class TrocaSenhaController implements Initializable {
 
                 new Thread(task).start();
                 UsuarioLogado.getInstance().setUsuario(usuario);
-                stageManager.switchScene(FxmlView.MENU, null);
+                stageManager.switchScene(FxmlView.MENU, false);
                 stage.close();
             }catch (Exception e){
                 JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Tente novamente","Falha ao solicitar recuperacao de senha",e,true);

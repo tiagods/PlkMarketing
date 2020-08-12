@@ -75,7 +75,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class ContatoCadastroController extends UtilsController implements Initializable, StageController{
+public class ContatoCadastroController implements Initializable, StageController{
 	@FXML
 	private Label lbrating;
 	
@@ -209,8 +209,6 @@ public class ContatoCadastroController extends UtilsController implements Initia
     private TableView<NegocioLista> tbListas;
 
 	@Autowired Contatos contatos;
-
-
 	@Autowired NegociosNiveis niveis;
 	@Autowired NegociosCategorias categorias;
 	@Autowired NegociosOrigens origens;
@@ -252,17 +250,14 @@ public class ContatoCadastroController extends UtilsController implements Initia
     	ToggleGroup group1 = new ToggleGroup();
     	group1.getToggles().addAll(rbEmpresa,rbPessoa);
     	
-    	ChangeListener<Boolean> change = new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(rbEmpresa.isSelected()) {
-					pnPessoaJuridica.setVisible(true);
-					pnPessoaFisica.setVisible(false);
-				}
-				else if(rbPessoa.isSelected()) {
-					pnPessoaFisica.setVisible(true);
-					pnPessoaJuridica.setVisible(false);
-				}
+    	ChangeListener<Boolean> change = (observable, oldValue, newValue) -> {
+			if(rbEmpresa.isSelected()) {
+				pnPessoaJuridica.setVisible(true);
+				pnPessoaFisica.setVisible(false);
+			}
+			else if(rbPessoa.isSelected()) {
+				pnPessoaFisica.setVisible(true);
+				pnPessoaJuridica.setVisible(false);
 			}
 		};
 		rbEmpresa.selectedProperty().addListener(change);

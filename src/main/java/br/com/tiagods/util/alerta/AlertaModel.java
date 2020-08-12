@@ -1,10 +1,8 @@
 package br.com.tiagods.util.alerta;
 
-import br.com.tiagods.controller.utils.UtilsController;
-
 import java.util.List;
 
-public abstract class AlertaModel extends UtilsController {
+public abstract class AlertaModel {
 
     protected String cabecalho(List<String> mensagens){
         StringBuilder builder = new StringBuilder();

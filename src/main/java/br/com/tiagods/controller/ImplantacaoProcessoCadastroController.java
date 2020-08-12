@@ -6,7 +6,7 @@ import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -57,7 +57,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
     private ImplantacaoProcesso processo;
     private ImplantacaoProcessosImpl processos;
     private ImplantacaoPacotesImpl pacotes;
-    private ImplantacaoProcessoEtapasImpl etapas;
+    private ImplantacaoProcessosEtapasImpl etapas;
 
     public ImplantacaoProcessoCadastroController(Stage stage, ImplantacaoProcesso processo){
         this.stage=stage;
@@ -98,7 +98,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
     private void consultarHistorico(ImplantacaoProcessoEtapa etapa, int index,boolean editar){
         try {
             loadFactory();
-            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            etapas = new ImplantacaoProcessosEtapasImpl(getManager());
             etapa = etapas.findById(etapa.getId());
             Stage stage = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);

@@ -27,8 +27,8 @@ import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.repository.helpers.NegociosPropostasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
@@ -103,7 +103,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 	private NegocioCategoriasImpl categorias;
 	private NegociosOrigensImpl origens;
 	private NegocioServicosImpl servicos;
-	private NegocioPropostaImpl propostas;
+	private NegociosPropostasImpl propostas;
 	private UsuariosImpl usuarios;
 	private NegocioPropostaFilter filter;
 
@@ -112,8 +112,17 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		this.stage = stage;
 	}
 	void abrirCadastro(NegocioProposta proposta) {
-			Stage stage1 = abrirNegocioProposta(proposta);
-			stage1.setOnHiding(event -> {
+		try {
+			loadFactory();
+			if (proposta != null) {
+				propostas = new NegociosPropostasImpl(getManager());
+				proposta = propostas.findById(proposta.getId());
+			}
+			Stage stage = new Stage();
+			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
+			loader.setController(new NegocioCadastroController(stage, proposta,null));
+			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
+			stage.setOnHiding(event -> {
 				try {
 					loadFactory();
 					filtrar(this.paginacao);
@@ -123,6 +132,13 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 					close();
 				}
 			});
+		} catch (IOException e) {
+			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
+					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
+			return null;
+		} finally {
+			close();
+		}
 	}
 	private void abrirContato(Contato t) {
 		try {
@@ -164,7 +180,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		origens = new NegociosOrigensImpl(getManager());
 		servicos = new NegocioServicosImpl(getManager());
 		usuarios = new UsuariosImpl(getManager());
-		propostas = new NegocioPropostaImpl(getManager());
+		propostas = new NegociosPropostasImpl(getManager());
 
 		cbCategoria.getItems().addAll(categorias.getAll());
 		cbNivel.getItems().addAll(niveis.getAll());
@@ -231,7 +247,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 		if (optional.get() == ButtonType.OK) {
 			try {
 				loadFactory();
-				propostas = new NegocioPropostaImpl(getManager());
+				propostas = new NegociosPropostasImpl(getManager());
 				NegocioProposta t = propostas.findById(proposta.getId());
 				propostas.remove(t);
 				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
@@ -366,7 +382,7 @@ public class NegocioPesquisaController extends UtilsController implements Initia
 	}
 
 	private List<NegocioProposta> filtrar(Paginacao paginacao) {
-		propostas = new NegocioPropostaImpl(getManager());
+		propostas = new NegociosPropostasImpl(getManager());
 		if(this.filter==null) filter = new NegocioPropostaFilter();
 		filter.setStatus(cbStatus.getValue());
 		filter.setEtapa(cbEtapa.getValue());

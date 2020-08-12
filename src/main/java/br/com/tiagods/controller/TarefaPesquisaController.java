@@ -46,9 +46,9 @@ import br.com.tiagods.model.negocio.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.Paginacao;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
+import br.com.tiagods.repository.helpers.NegociosPropostasImpl;
 import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
 import br.com.tiagods.util.ExcelGenericoUtil;
@@ -142,7 +142,7 @@ public class TarefaPesquisaController implements Initializable {
 	private NegociosTarefasImpl tarefas;
 	private NegociosTarefasContatosImpl tarefasContatos;
 	private NegociosTarefasPropostasImpl tarefasPropostas;
-	private NegocioPropostaImpl propostas;
+	private NegociosPropostasImpl propostas;
 	private ContatosImpl contatos;
 	private Storage storage = StorageProducer.newConfig();
 	private NegocioTarefaFilter filter;
@@ -193,7 +193,7 @@ public class TarefaPesquisaController implements Initializable {
             }
             else if(t instanceof NegocioTarefaProposta) {
             	NegocioProposta p = ((NegocioTarefaProposta)t).getProposta();
-            	propostas = new NegocioPropostaImpl(getManager());
+            	propostas = new NegociosPropostasImpl(getManager());
             	p = propostas.findById(p.getId());
             	loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
             	loader.setController(new NegocioCadastroController(stage,p,null));

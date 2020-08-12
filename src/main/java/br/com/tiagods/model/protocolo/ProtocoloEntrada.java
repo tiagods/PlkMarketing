@@ -1,6 +1,5 @@
 package br.com.tiagods.model.protocolo;
 
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.Usuario;
 
@@ -10,7 +9,7 @@ import java.util.*;
 
 @Entity
 @Table(name="protocolo_entrada")
-public class ProtocoloEntrada implements AbstractEntity,Serializable {
+public class ProtocoloEntrada implements Serializable {
 
     public enum StatusRecebimento{
         STATUS("Status do Recebimento"),ABERTO("Não Recebido"),FECHADO("Entregue");
@@ -108,7 +107,7 @@ public class ProtocoloEntrada implements AbstractEntity,Serializable {
     public int hashCode() {
         return Objects.hash(id);
     }
-    @Override
+
     public Long getId() {
         return id;
     }

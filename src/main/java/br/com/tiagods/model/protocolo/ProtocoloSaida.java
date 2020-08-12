@@ -1,13 +1,11 @@
 package br.com.tiagods.model.protocolo;
 
-import br.com.tiagods.model.AbstractEntity;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ProtocoloSaida implements AbstractEntity,Serializable{
+public class ProtocoloSaida implements Serializable{
     private Long id;
     private String empresaNome;
     private int cliente;
@@ -19,7 +17,7 @@ public class ProtocoloSaida implements AbstractEntity,Serializable{
     private String comprovante;
     private int protocoloEntradaId;
     private Set<ProtocoloItem> items = new HashSet();
-    @Override
+
     public Long getId() {
         return id;
     }

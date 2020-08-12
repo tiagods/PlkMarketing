@@ -128,13 +128,12 @@ public class LoginController implements Initializable {
         Observable.just(cbNome.getValue())
                 .flatMap(u -> validar(u, txSenha.getText()))
                 .flatMap(c -> c.isPresent() ? Observable.just(c.get()) : Observable.error(new Exception("Usuario e senha invalidos")))
-                .subscribe(on ->{
+                .subscribe(on -> {
                     if(on.isSenhaResetada()) {
-                        Stage stage = new Stage();
-                        stageManager.switchScene(FxmlView.TROCASENHA, stage);
+                        Stage stage = stageManager.switchScene(FxmlView.TROCASENHA, true);
                         trocaSenhaController.setPropriedades(stage, on);
                     } else
-                        stageManager.switchScene(FxmlView.MENU, null);
+                        stageManager.switchScene(FxmlView.MENU, false);
                     }, tr ->
                         JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", tr.getMessage(), null, false)
                 );
@@ -158,15 +157,15 @@ public class LoginController implements Initializable {
     void esqueciASenha(ActionEvent event){
         logger.debug("Esqueci a senha acionado");
         Usuario ultimoUsuario =ultimoLogadoEncontrado ? cbNome.getValue() : null;
-        Stage stage = stageManager.switchScene(FxmlView.RECUPERACAO_SENHA, new Stage());
+        Stage stage = stageManager.switchScene(FxmlView.RECUPERACAO_SENHA, true);
         recuperacaoController.setPropriedades(stage, contas, ultimoUsuario);
     }
     @FXML
     void novoAcesso(ActionEvent event){
         logger.debug("Novo acesso acionado");
-        Stage stage1 = stageManager.switchScene(FxmlView.USUARIO_CADASTRO, new Stage());
-        usuarioCadastroController.setPropriedades(stage1, null);
-        stage1.setOnHiding(e -> carregarUsuarios(usuarioCadastroController.getUsuario()));
+        Stage stage = stageManager.switchScene(FxmlView.USUARIO_CADASTRO, true);
+        usuarioCadastroController.setPropriedades(stage, null);
+        stage.setOnHiding(e -> carregarUsuarios(usuarioCadastroController.getUsuario()));
     }
     @FXML
     void sair(ActionEvent event) {

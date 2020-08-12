@@ -15,12 +15,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.repository.Contatos;
-import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.repository.*;
 import br.com.tiagods.repository.helpers.*;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.services.UsuarioLogService;
 import br.com.tiagods.util.DateUtil;
 import br.com.tiagods.util.JavaFxUtil;
@@ -44,7 +41,6 @@ import br.com.tiagods.model.negocio.ServicoContratado;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.Paginacao;
 import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -53,7 +49,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -69,8 +64,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
-import org.apache.tools.ant.taskdefs.Java;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -141,11 +136,11 @@ public class ContatoPesquisaController implements StageController,Initializable 
 	@Autowired
 	private NegociosNiveis niveis;
 	@Autowired
-	private NegocioCategorias categorias;
+	private NegociosCategorias categorias;
 	@Autowired
-	private NegocioOrigens origens;
+	private NegociosOrigens origens;
 	@Autowired
-	private NegocioServicos servicos;
+	private NegociosServicos servicos;
 	@Autowired
 	private NegociosListas listas;
 	@Autowired
@@ -175,7 +170,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 		try {
 			loadFactory();
 			if (proposta != null) {
-				propostas = new NegocioPropostaImpl(getManager());
+				propostas = new NegociosPropostasImpl(getManager());
 				proposta = propostas.findById(proposta.getId());
 			}
 			Stage stage = new Stage();
@@ -206,12 +201,12 @@ public class ContatoPesquisaController implements StageController,Initializable 
 		cbLista.getItems().add(lista);
 
 		cbLimite.getItems().addAll(limiteTabela);
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-		cbLista.getItems().addAll(listas.getAll());
+		cbLista.getItems().addAll(listas.findAll(Sort.by(Sort.Order.asc("nome"))));
 		cbMalaDireta.getItems().addAll(malaDireta);
 
 		cbTipo.getItems().addAll(PessoaTipo.values());
@@ -290,8 +285,6 @@ public class ContatoPesquisaController implements StageController,Initializable 
 							listaImpressao.get(0).add(c);
 						}
 						try {
-							loadFactory();
-							propostas = new NegocioPropostaImpl(getManager());
 							List<Contato> finalList = filtrar(null);
 							for (int i = 1; i <= finalList.size(); i++) {
 								listaImpressao.add(new ArrayList<String>());

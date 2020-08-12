@@ -1,6 +1,5 @@
 package br.com.tiagods.model.negocio;
 
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
 import java.io.Serializable;
@@ -17,7 +16,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="lista")
-public class NegocioLista implements AbstractEntity,Serializable{
+public class NegocioLista implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

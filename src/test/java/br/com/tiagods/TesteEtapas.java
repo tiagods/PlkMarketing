@@ -3,7 +3,7 @@ package br.com.tiagods;
 import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import javafx.scene.control.Alert;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class TesteEtapas extends UtilsController{
     public void chamada(){
         try{
             loadFactory();
-            ImplantacaoProcessoEtapasImpl etapas = new ImplantacaoProcessoEtapasImpl(getManager());
+            ImplantacaoProcessosEtapasImpl etapas = new ImplantacaoProcessosEtapasImpl(getManager());
             List<ImplantacaoProcessoEtapa> result = etapas.filtrar(null,null,null,null, null,true);
 
             for(ImplantacaoProcessoEtapa ip : result) {

@@ -13,15 +13,15 @@ import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
-import br.com.tiagods.repository.UsuariosDepartamentos;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
-import br.com.tiagods.services.AlertaImplantacaoImpl;
+import br.com.tiagods.services.AlertaImplantacao;
 import br.com.tiagods.util.ComboBoxAutoCompleteUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.MyFileUtil;
 import br.com.tiagods.util.TipoArquivo;
 import com.jfoenix.controls.JFXButton;
@@ -58,7 +58,7 @@ import java.util.List;
 import java.util.*;
 
 @Controller
-public class MenuController extends UtilsController implements Initializable{
+public class MenuController implements Initializable {
     @FXML
     private Pane pnCenter;
     @FXML
@@ -148,44 +148,36 @@ public class MenuController extends UtilsController implements Initializable{
     UsuariosDepartamentos usuariosDepartamentos;
     @Autowired
     Usuarios usuarios;
-    //@Autowired
-    //Contatos contatos;
+    @Autowired
+    Contatos contatos;
+    @Autowired
+    AlertaImplantacao alertaImplantacao;
+    @Autowired
+    private NegociosTarefas tarefas;
+    @Autowired
+    private NegociosPropostas propostas;
+    @Autowired
+    private ImplantacaoProcessos processos;
+    @Autowired
+    private ImplantacaoProcessosEtapas etapas;
+    @Autowired
+    private ImplantacaoAtividades atividades;
 
-    private NegociosTarefasImpl tarefas;
-    private NegocioPropostaImpl propostas;
-    private ImplantacaoProcessosImpl processos;
-    private ImplantacaoProcessoEtapasImpl etapas;
-    private ImplantacaoAtividadesImpl atividades;
     private boolean desabilitarAcaoCombos = false;
 
     void openViewDefault(FxmlView view, StageController controller){
-        Stage stage = stageManager.switchScene(view, new Stage());
+        Stage stage = stageManager.switchScene(view, true);
         controller.setPropriedades(stage);
         onCloseRequest(stage);
     }
 
     void atualizar(){
-        try{
-            desabilitarAcaoCombos = true;
-
-            loadFactory();
-            propostas = new NegocioPropostaImpl(getManager());
-            tarefas = new NegociosTarefasImpl(getManager());
-            processos = new ImplantacaoProcessosImpl(getManager());
-            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-            atividades = new ImplantacaoAtividadesImpl(getManager());
-
-            preencherNegocios();
-            preencherTarefas();
-            preencherProtocolos();
-            preencherProcessos();
-
-            desabilitarAcaoCombos = false;
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao atualizar","Falha ao atualizar registros do menu",e,true);
-        }finally {
-            close();
-        }
+        desabilitarAcaoCombos = true;
+        preencherNegocios();
+        preencherTarefas();
+        preencherProtocolos();
+        preencherProcessos();
+        desabilitarAcaoCombos = false;
     }
 
     void abrirNegocio(NegocioPropostaFilter filter){
@@ -220,15 +212,7 @@ public class MenuController extends UtilsController implements Initializable{
         btnProtocolo.setOnAction(this::protocolo);
         ChangeListener processoListener = (observable, oldValue, newValue) -> {
             if(desabilitarAcaoCombos) return;
-            try{
-                loadFactory();
-                etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-                filtrarProcessos();
-            }catch (Exception e){
-                alert(Alert.AlertType.ERROR, "Erro", "Erro ao filtrarMultProcessos","Falha ao filtrarMultProcessos registros da tabela de processos",e,true);
-            } finally {
-                close();
-            }
+            filtrarProcessos();
         };
         cbProcesso.valueProperty().addListener(processoListener);
         cbProcessoDepartamento.valueProperty().addListener(processoListener);
@@ -245,7 +229,6 @@ public class MenuController extends UtilsController implements Initializable{
     }
 
     private void filtrarProcessos(){
-            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
             tbProcesso.getItems().clear();
             List<ImplantacaoProcessoEtapa> list = ordenar(etapas
                     .filtrar(cbProcessoDepartamento.getValue(),
@@ -306,19 +289,19 @@ public class MenuController extends UtilsController implements Initializable{
 	private void menu(){
         final ContextMenu cmNegocios = new ContextMenu();
         MenuItem miContato = new MenuItem("Contato");
-        iconMenuItem(miContato,30,30, IconsEnum.MENU_CONTATO);
+        JavaFxUtil.iconMenuItem(miContato,30,30, IconsEnum.MENU_CONTATO);
         miContato.setOnAction(this::contato);
 
         MenuItem miFranquia = new MenuItem("Franquia");
-        iconMenuItem(miFranquia,30,30,IconsEnum.MENU_FRANQUIA);
+        JavaFxUtil.iconMenuItem(miFranquia,30,30,IconsEnum.MENU_FRANQUIA);
         miFranquia.setOnAction(this::franquia);
 
         MenuItem miNegocio = new MenuItem("Negocios");
-        iconMenuItem(miNegocio,30,30,IconsEnum.MENU_NEGOCIO);
+        JavaFxUtil.iconMenuItem(miNegocio,30,30,IconsEnum.MENU_NEGOCIO);
         miNegocio.setOnAction(this::negocio);
 
         MenuItem miTarefa = new MenuItem("Tarefas");
-        iconMenuItem(miTarefa,30,30,IconsEnum.MENU_TAREFA);
+        JavaFxUtil.iconMenuItem(miTarefa,30,30,IconsEnum.MENU_TAREFA);
         miTarefa.setOnAction(this::tarefa);
 
         cmNegocios.getItems().addAll(miContato, miFranquia, miNegocio,miTarefa);
@@ -331,11 +314,11 @@ public class MenuController extends UtilsController implements Initializable{
 
         final ContextMenu cmCadastros = new ContextMenu();
         MenuItem miUsuario = new MenuItem("Usuarios");
-        iconMenuItem(miUsuario,30,30, IconsEnum.MENU_USUARIO);
+        JavaFxUtil.iconMenuItem(miUsuario,30,30, IconsEnum.MENU_USUARIO);
         miUsuario.setOnAction(this::usuario);
 
         MenuItem miDepartamento = new MenuItem("Departamento");
-        iconMenuItem(miDepartamento,30,30, IconsEnum.MENU_PEOPLE);
+        JavaFxUtil.iconMenuItem(miDepartamento,30,30, IconsEnum.MENU_PEOPLE);
         miDepartamento.setOnAction(this::departamento);
 
         cmCadastros.getItems().addAll(miUsuario,miDepartamento);
@@ -348,17 +331,17 @@ public class MenuController extends UtilsController implements Initializable{
 
         final ContextMenu cmExtras = new ContextMenu();
         MenuItem miCheckList = new MenuItem("CheckList");
-        iconMenuItem(miCheckList,30,30, IconsEnum.MENU_CHECKLIST);
+        JavaFxUtil.iconMenuItem(miCheckList,30,30, IconsEnum.MENU_CHECKLIST);
         miCheckList.setOnAction(event -> {
             MyFileUtil.abrirArquivo("checklist.jar");
         });
 
         MenuItem miSobre = new MenuItem("Sobre");
-        iconMenuItem(miSobre,30,30,IconsEnum.BUTTON_VIEW);
+        JavaFxUtil.iconMenuItem(miSobre,30,30,IconsEnum.BUTTON_VIEW);
         miSobre.setOnAction(this::sobre);
 
         MenuItem miManual = new MenuItem("Manual do Sistema");
-        iconMenuItem(miManual,30,30, IconsEnum.BUTTON_VIEW);
+        JavaFxUtil.iconMenuItem(miManual,30,30, IconsEnum.BUTTON_VIEW);
         miManual.setOnAction(event -> MyFileUtil.abrirArquivo("manual.docx"));
 
         cmExtras.getItems().addAll(miCheckList,miManual,miSobre);
@@ -372,7 +355,7 @@ public class MenuController extends UtilsController implements Initializable{
 
         final ContextMenu cmImplantacao = new ContextMenu();
         MenuItem miPacote = new MenuItem("Pacotes");
-        iconMenuItem(miPacote,30,30, IconsEnum.MENU_PACOTE);
+        JavaFxUtil.iconMenuItem(miPacote,30,30, IconsEnum.MENU_PACOTE);
         miPacote.setOnAction(event -> {
             try {
                 Stage stage = new Stage();
@@ -386,7 +369,7 @@ public class MenuController extends UtilsController implements Initializable{
             }
         });
         MenuItem miProcessos = new MenuItem("Processos");
-        iconMenuItem(miProcessos,30,30,IconsEnum.MENU_USUARIO);
+        JavaFxUtil.iconMenuItem(miProcessos,30,30,IconsEnum.MENU_USUARIO);
         miProcessos.setOnAction(event -> {
             try {
                 Stage stage = new Stage();
@@ -399,6 +382,7 @@ public class MenuController extends UtilsController implements Initializable{
                         "Falha ao localizar o arquivo "+FXMLEnum.IMPLANTACAO_PROCESSO_PESQUISA,e,true);
             }
         });
+
         cmImplantacao.getItems().addAll(miPacote,miProcessos);
         btnImplantacao.setContextMenu(cmImplantacao);
 
@@ -438,7 +422,6 @@ public class MenuController extends UtilsController implements Initializable{
                     protected Void call() {
                         Platform.runLater(() -> sta.show());
                         try {
-                            AlertaImplantacaoImpl alertaImplantacao = new AlertaImplantacaoImpl();
                             File arquivo = null;
                             if(result.get().equals(TipoArquivo.XLS))
                                 arquivo = alertaImplantacao.gerarExcel(cbProcesso.getValue(),
@@ -474,7 +457,7 @@ public class MenuController extends UtilsController implements Initializable{
         abrirNegocio(null);
     }
 
-    private void preencherNegocios() throws Exception{
+    private void preencherNegocios() throws Exception {
         listViewNegocios.getItems().clear();
         NegocioPropostaFilter propostaFilter = new NegocioPropostaFilter();
         propostaFilter.setStatus(NegocioProposta.TipoStatus.ANDAMENTO);
@@ -541,7 +524,7 @@ public class MenuController extends UtilsController implements Initializable{
         cbProcessoAtividade.getItems().clear();
         ImplantacaoAtividade atividade = new ImplantacaoAtividade(-1L,"Todos");
         cbProcessoAtividade.getItems().add(atividade);
-        cbProcessoAtividade.getItems().addAll(atividades.getAllByName());
+        cbProcessoAtividade.getItems().addAll(atividades.findAll());
         cbProcessoAtividade.setValue(atividade);
         new ComboBoxAutoCompleteUtil<>(cbProcessoAtividade);
 
@@ -568,12 +551,11 @@ public class MenuController extends UtilsController implements Initializable{
         JFXRadioButton rbComum = new JFXRadioButton();
         rbComum.setSelected(true);
 
-        ProtocolosEntradasImpl protocolosEntradas = new ProtocolosEntradasImpl(getManager());
         TabelaProtocoloEntrada protocoloEntrada = new TabelaProtocoloEntrada(null,tbProtocoloEntrada,new JFXRadioButton(),rbComum);
         protocoloEntrada.tabela();
 
         protocoloEntrada.setUsuarioAtivos(usuarios.findAllByAtivoOrderByNome(1));
-        List<ProtocoloEntrada> list = protocoloEntrada.filtrar(null,getManager());
+        List<ProtocoloEntrada> list = protocoloEntrada.filtrar(null);
 
         ProtocoloEntradaFilter protocoloEntradaFilter = new ProtocoloEntradaFilter();
         protocoloEntradaFilter.setDevolucao(ProtocoloEntrada.StatusDevolucao.DEVOLVIDO);

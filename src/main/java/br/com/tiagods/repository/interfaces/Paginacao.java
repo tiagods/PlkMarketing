@@ -1,4 +1,4 @@
-package br.com.tiagods.repository;
+package br.com.tiagods.repository.interfaces;
 
 public class Paginacao {
 	int totalPaginas = 0;

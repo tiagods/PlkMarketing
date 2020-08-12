@@ -2,14 +2,9 @@ package br.com.tiagods.repository.helpers.filters;
 
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.Paginacao;
-import javafx.util.Pair;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
 
 import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class NegocioTarefaFilter {

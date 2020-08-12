@@ -1,56 +1,60 @@
 package br.com.tiagods.repository.helpers;
 
+import br.com.tiagods.model.negocio.NegocioProposta;
+import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
+import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
+import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
+import javafx.util.Pair;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+@Service
+public class NegociosPropostasImpl {
 
-import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.*;
+	@PersistenceContext
+	EntityManager manager;
 
-import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
-import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.interfaces.NegocioPropostaDAO;
-import javafx.util.Pair;
+	@Autowired
+	AbstractRepositoryImpl abstractRepository;
 
-
-public class NegocioPropostaImpl extends AbstractRepository<NegocioProposta, Long> implements NegocioPropostaDAO{
-	public NegocioPropostaImpl(EntityManager manager) {
-		super(manager);
-	}
-	@Override
 	public NegocioProposta findById(Long id) {
-		Query query = getEntityManager().createQuery("from NegocioProposta as a "
+		Query query = manager.createQuery(
+				"SELECT a FROM NegocioProposta as a "
                 + "LEFT JOIN FETCH a.tarefas LEFT JOIN FETCH a.servicosContratados LEFT JOIN FETCH a.documentos "
                 + "where a.id=:id");
         query.setParameter("id", id);
         return (NegocioProposta)query.getSingleResult();
 	}
 
-	@Override
 	public long count(NegocioPropostaFilter filter){
 		List<Criterion> criterios = new ArrayList<>();
 		Criteria criteria = filtrar(filter,criterios);
 		criteria.setProjection(Projections.rowCount());
 		return (long)criteria.uniqueResult();
 	}
-	@Override
-	public Pair<List<NegocioProposta>,Paginacao> filtrar(Paginacao paginacao,NegocioPropostaFilter filter) {
+
+	public Pair<List<NegocioProposta>,Paginacao> filtrar(Paginacao paginacao, NegocioPropostaFilter filter) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criteria criteria = filtrar(filter, criterios);
-		return super.filterWithPagination(paginacao, criteria, criterios);
+		Pair<List, Paginacao> pair = abstractRepository.filterWithPagination(NegocioProposta.class, paginacao, criteria, criterios);
+		return new Pair<>(pair.getKey(), pair.getValue());
 	}
-	@Override
+
 	public Criteria filtrar(NegocioPropostaFilter f, List<Criterion> criterios){
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(NegocioProposta.class);
+		Criteria criteria = manager.unwrap(Session.class).createCriteria(NegocioProposta.class);
 		if(!f.getStatus().equals(TipoStatus.STATUS)) criterios.add(Restrictions.eq("tipoStatus",f.getStatus()));
 		if(!f.getEtapa().equals(TipoEtapa.ETAPA)) criterios.add(Restrictions.eq("tipoEtapa", f.getEtapa()));
 		if(f.getCategoria()!=null && f.getCategoria().getId()!=-1L) criterios.add(Restrictions.eq("categoria",f.getCategoria()));

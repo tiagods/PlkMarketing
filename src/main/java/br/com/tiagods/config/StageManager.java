@@ -29,12 +29,13 @@ public class StageManager {
         this.primaryStage = stage;
     }
 
-    public Stage switchScene(final FxmlView view, Stage stage) {
+    public Stage switchScene(final FxmlView view, boolean createStage) {
         Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
-        if(stage != null) {
+        Stage stage =createStage ? new Stage() : primaryStage;
+        if(createStage) {
             stage.initModality(view.getModality());
         }
-        show(viewRootNodeHierarchy, view.getTitle(), stage!=null ? stage : primaryStage);
+        show(viewRootNodeHierarchy, view.getTitle(), stage);
         return stage;
     }
 
