@@ -13,7 +13,9 @@
 <?import javafx.scene.media.MediaView?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="268.0" maxWidth="477.0" prefHeight="268.0" prefWidth="476.0" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.tiagods.controller.LoginController">
+<AnchorPane maxHeight="268.0" maxWidth="477.0" prefHeight="268.0" prefWidth="476.0" stylesheets="@css/estilo.css"
+            xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.com.tiagods.controller.LoginController">
    <children>
       <AnchorPane prefHeight="268.0" prefWidth="477.0">
          <children>
