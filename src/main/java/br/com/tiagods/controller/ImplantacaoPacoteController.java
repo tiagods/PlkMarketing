@@ -1,12 +1,16 @@
 package br.com.tiagods.controller;
 
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.controller.ImplantacaoPacoteEtapaController;
+import br.com.tiagods.controller.StageController;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.model.implantacao.ImplantacaoPacoteEtapa;
 import br.com.tiagods.repository.ImplantacaoPacotes;
 import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
+import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
@@ -25,15 +29,18 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+
 @Controller
-public class ImplantacaoPacoteController implements Initializable, StageController{
+public class ImplantacaoPacoteController implements Initializable, StageController {
     @FXML
     private JFXButton btnCadastrarPacote;
 
@@ -47,6 +54,11 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
 
     @Autowired
     private ImplantacaoPacotes pacotes;
+    @Lazy
+    @Autowired
+    StageManager stageManager;
+    @Autowired
+    ImplantacaoPacoteEtapaController implantacaoPacoteEtapaController;
 
     @Override
     public void setPropriedades(Stage stage) {
@@ -54,14 +66,11 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
     }
 
     private void cadastrarEtapas(ImplantacaoPacote pck){
-        try {
-            pck = pacotes.findById(pck.getId());
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_PACOTE_CADASTRO);
-            ImplantacaoPacoteEtapaController controller = new ImplantacaoPacoteEtapaController(pck,stage);
-            loader.setController(controller);
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-        } catch (IOException ex) {
+        Optional<ImplantacaoPacote> result = pacotes.findById(pck.getId());
+        if(result.isPresent()) {
+            pck = result.get();
+            stageManager.switchScene(FxmlView.IMPLATACAO_PACOTE_CADASTRO, true);
+            implantacaoPacoteEtapaController.setPropriedades(pck, stage);
         }
     }
 
@@ -140,7 +149,7 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
 
     private void combos(){
         btnCadastrarPacote.setOnAction(event -> cadastrarPacote(-1,new ImplantacaoPacote()));
-        tbPacote.getItems().addAll(pacotes.getAll());
+        tbPacote.getItems().addAll(pacotes.findAll());
 
         btnCopiaDePacote.setVisible(false);
         btnCopiaDePacote.setOnAction(event->{
@@ -155,16 +164,16 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
                     ImplantacaoPacote destino = Pacote1(items,"Agora selecione o destino");
                     if(destino!=null){
                         try{
-                            loadFactory();
-                            pacotes = new ImplantacaoPacotesImpl(getManager());
+/*
                             origem = pacotes.findById(origem.getId());
+
                             destino = pacotes.findById(destino.getId());
                             Set<ImplantacaoPacoteEtapa> copiaOrigem = origem.getEtapas();
                             Set<ImplantacaoPacoteEtapa> copiaDestino = new HashSet<>();
+
+ */
                         }catch (Exception e){
                             alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
-                        } finally {
-                            close();
                         }
                     }
                 }
@@ -187,16 +196,9 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         tabelaPacote();
-        try {
-            loadFactory();
-            pacotes = new ImplantacaoPacotesImpl(getManager());
-            combos();
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","Ocorreu um erro ao getAllFetchJoin os registros",e,true);
-        }finally {
-            close();
-        }
+        combos();
     }
+
     void tabelaPacote(){
         TableColumn<ImplantacaoPacote, String> colunaNome = new TableColumn<>("Nome");
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -235,7 +237,7 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
                     setText("");
                     setGraphic(null);
                 } else {
-                    setText(sdf.format(item.getTime()));
+                    setText(DateUtil.format(item.getTime()));
                 }
             }
         });
@@ -255,10 +257,7 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_RENAME);
-                    }catch (IOException e) {
-                    }
+                    buttonTable(button, IconsEnum.BUTTON_RENAME);
                     button.setOnAction(event -> cadastrarPacote(getIndex(),tbPacote.getItems().get(getIndex())));
                     setGraphic(button);
                 }
@@ -278,10 +277,7 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {
-                    }
+                    buttonTable(button, IconsEnum.BUTTON_EDIT);
                     button.setOnAction(event -> {
                         ImplantacaoPacote pck = tbPacote.getItems().get(getIndex());
                         cadastrarEtapas(pck);
@@ -295,15 +291,11 @@ public class ImplantacaoPacoteController implements Initializable, StageControll
     }
     private ImplantacaoPacote salvar(ImplantacaoPacote pacote){
         try{
-            loadFactory();
-            pacotes = new ImplantacaoPacotesImpl(getManager());
             ImplantacaoPacote pck = pacotes.save(pacote);
             return pck;
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
             return null;
-        }finally {
-            close();
         }
     }
     @FXML

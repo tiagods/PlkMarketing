@@ -34,6 +34,8 @@ public class ContatosImpl {
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
 
+	private ContatosImpl() {}
+
 	public Optional<Contato> findById(Long id) {
 		Query query = manager.createQuery("SELECT a FROM Contato as a "
 				+ "LEFT JOIN FETCH a.tarefas "

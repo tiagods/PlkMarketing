@@ -30,6 +30,8 @@ public class NegociosPropostasImpl {
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
 
+	private NegociosPropostasImpl(){}
+
 	public NegocioProposta findById(Long id) {
 		Query query = manager.createQuery(
 				"SELECT a FROM NegocioProposta as a "

@@ -1,40 +1,25 @@
 package br.com.tiagods.controller;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.model.*;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.controller.ContatoCadastroController;
+import br.com.tiagods.controller.NegocioCadastroController;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.negocio.*;
+import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
+import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
-import br.com.tiagods.util.DateUtil;
-import br.com.tiagods.util.JavaFxUtil;
-import br.com.tiagods.util.MyFileUtil;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.services.UsuarioLogService;
+import br.com.tiagods.util.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTextField;
-
-import br.com.tiagods.config.enums.FXMLEnum;
-import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
-import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.NegociosPropostasImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
@@ -47,16 +32,23 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
-import org.apache.tools.ant.taskdefs.Java;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.List;
+import java.util.*;
 
 @Controller
 public class NegocioPesquisaController implements Initializable {
+
 	@FXML
 	private HBox pnCheckBox;
 
@@ -119,6 +111,16 @@ public class NegocioPesquisaController implements Initializable {
 	private NegociosPropostas propostas;
 	@Autowired
 	private Usuarios usuarios;
+	@Autowired
+	private UsuarioLogService usuarioLogService;
+
+	@Lazy
+	@Autowired
+	private StageManager stageManager;
+	@Autowired
+	private NegocioCadastroController negocioCadastroController;
+	@Autowired
+	ContatoCadastroController contatoCadastroController;
 
 	private NegocioPropostaFilter filter;
 
@@ -128,47 +130,19 @@ public class NegocioPesquisaController implements Initializable {
 	}
 
 	void abrirCadastro(NegocioProposta proposta) {
-		try {
-			loadFactory();
-			if (proposta != null) {
-				propostas = new NegociosPropostasImpl(getManager());
-				proposta = propostas.findById(proposta.getId());
+		if (proposta != null) {
+			Optional<NegocioProposta> result = propostas.findById(proposta.getId());
+			if(result.isPresent()) {
+				proposta = result.get();
 			}
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-			loader.setController(new NegocioCadastroController(stage, proposta,null));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-			stage.setOnHiding(event -> {
-				try {
-					loadFactory();
-					filtrar(this.paginacao);
-				} catch (Exception e) {
-					alert(AlertType.ERROR, "Error", "", "Erro ao abrir cadastro", e, true);
-				} finally {
-					close();
-				}
-			});
-		} catch (IOException e) {
-			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
-			return null;
-		} finally {
-			close();
 		}
+		Stage stage = stageManager.switchScene(FxmlView.NEGOCIO_CADASTRO, true);
+		negocioCadastroController.setPropriedades(stage, proposta, null);
+		stage.setOnHiding(event -> filtrar(this.paginacao));
 	}
 	private void abrirContato(Contato t) {
-		try {
-			loadFactory();
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
-			loader.setController(new ContatoCadastroController(stage, t));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-		} catch (IOException e) {
-			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.CONTATO_CADASTRO, e, true);
-		} finally {
-			close();
-		}
+			Stage stage = stageManager.switchScene(FxmlView.CONTATO_CADASTRO, true);
+			contatoCadastroController.setPropriedades(stage, t);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -186,22 +160,15 @@ public class NegocioPesquisaController implements Initializable {
 		cbAtendente.getItems().add(usuario);
 		cbEtapa.getItems().addAll(TipoEtapa.values());
 		cbStatus.getItems().addAll(TipoStatus.values());
-		cbLimite.getItems().addAll(limiteTabela);
+		cbLimite.getItems().addAll(PaginacaoUtils.limiteTabela);
 
 		cbPesquisaData.getItems().add("Criado em");
 		cbPesquisaData.getSelectionModel().selectFirst();
 
-		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegociosNiveisImpl(getManager());
-		origens = new NegociosOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
-		propostas = new NegociosPropostasImpl(getManager());
-
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
 
 		cbCategoria.getSelectionModel().selectFirst();
@@ -219,25 +186,11 @@ public class NegocioPesquisaController implements Initializable {
 
 		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
             paginacao.setPaginaAtual(newValue.intValue());
-            try {
-                loadFactory();
-                filtrar(paginacao);
-            } catch (PersistenceException e) {
-                alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-            } finally {
-                close();
-            }
+			filtrar(paginacao);
         });
 		ChangeListener change = (ChangeListener<Object>) (observable, oldValue, newValue) -> {
-            try {
-                loadFactory();
-                paginacao = new Paginacao(cbLimite.getValue());
-                filtrar(paginacao);
-            } catch (Exception e) {
-                alert(AlertType.ERROR, "Erro", null, "Falha ao filtrarMultProcessos os registros", e, true);
-            } finally {
-                close();
-            }
+			paginacao = new Paginacao(cbLimite.getValue());
+			filtrar(paginacao);
         };
 		cbStatus.valueProperty().addListener(change);
 		cbEtapa.valueProperty().addListener(change);
@@ -308,8 +261,8 @@ public class NegocioPesquisaController implements Initializable {
 						for (int i = 1; i <= lista.size(); i++) {
 							listaImpressao.add(new ArrayList());
 							Long newId = lista.get(i-1).getId();
-							NegocioProposta n = propostas.findById(newId);
-							
+							NegocioProposta n = propostas.getOne(newId);
+
 							listaImpressao.get(i).add(n.getId());
 							listaImpressao.get(i).add(n.getNome());
 							
@@ -323,8 +276,8 @@ public class NegocioPesquisaController implements Initializable {
 							listaImpressao.get(i).add(param[1]);
 							listaImpressao.get(i).add(param[2]);
 							
-							listaImpressao.get(i).add(n.getDataInicio() == null?"": sdf.format(n.getDataInicio().getTime()));
-							listaImpressao.get(i).add(n.getDataFim() == null ? "" : sdf.format(n.getDataFim().getTime()));
+							listaImpressao.get(i).add(n.getDataInicio() == null?"": DateUtil.format(n.getDataInicio().getTime(), DateUtil.SDF));
+							listaImpressao.get(i).add(n.getDataFim() == null ? "" : DateUtil.format(n.getDataFim().getTime(), DateUtil.SDF));
 							listaImpressao.get(i).add(n.getCriadoPor()!=null?n.getCriadoPor().getNome():"");
 							listaImpressao.get(i).add(n.getTipoEtapa().getDescricao());
 							listaImpressao.get(i).add(n.getTipoStatus().getDescricao());
@@ -335,28 +288,26 @@ public class NegocioPesquisaController implements Initializable {
 							listaImpressao.get(i).add(n.getServico() == null ? "": n.getServico());
 							listaImpressao.get(i).add(n.getDescricao());
 							listaImpressao.get(i)
-									.add(nf.format(n.getHonorario()));
+									.add(MoedaUtil.format(n.getHonorario()));
 							double vlrServicos = 0.00;
 							Iterator<ServicoContratado> iterator = n.getServicosContratados().iterator();
 							while (iterator.hasNext()) {
 								ServicoContratado sc = iterator.next();
 								vlrServicos += sc.getValor().doubleValue();
 							}
-							listaImpressao.get(i).add(nf.format(vlrServicos));
+							listaImpressao.get(i).add(MoedaUtil.format(new BigDecimal(vlrServicos)));
 							listaImpressao.get(i).add(n.getMotivoPerda());
 							listaImpressao.get(i).add(n.getDetalhesPerda());
-							listaImpressao.get(i).add(n.getDataPerda() == null ? "" : sdf.format(n.getDataPerda().getTime()));
-							listaImpressao.get(i).add(n.getDataFinalizacao() == null ? "" : sdf.format(n.getDataFinalizacao().getTime()));
+							listaImpressao.get(i).add(n.getDataPerda() == null ? "" : DateUtil.format(n.getDataPerda().getTime()));
+							listaImpressao.get(i).add(n.getDataFinalizacao() == null ? "" : DateUtil.format(n.getDataFinalizacao().getTime()));
 						}
 						ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao,colunasLenght);
 						planilha.gerarExcel();
-						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
-						Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null,false));
+						usuarioLogService.salvarLog("Negocio","Exportar","Exportou relatorio xls");
+						Platform.runLater(() -> JavaFxUtil.alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null,false));
 						Desktop.getDesktop().open(export);
 					} catch (Exception e1) {
-						Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
-					} finally {
-						close();
+						Platform.runLater(() -> JavaFxUtil.alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
 					}
 				return null;
 			}
@@ -493,7 +444,7 @@ public class NegocioPesquisaController implements Initializable {
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(DateUtil.parse(item.getTime(), DateUtil.SDF));
+					setText(DateUtil.format(item.getTime()));
 				}
 			}
 		});
@@ -509,7 +460,7 @@ public class NegocioPesquisaController implements Initializable {
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(DateUtil.parse(item.getTime(), DateUtil.SDF));
+					setText(DateUtil.format(item.getTime()));
 				}
 			}
 		});
@@ -524,7 +475,7 @@ public class NegocioPesquisaController implements Initializable {
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(DateUtil.parse(item.getTime(), DateUtil.SDF));
+					setText(DateUtil.format(item.getTime()));
 				}
 			}
 		});

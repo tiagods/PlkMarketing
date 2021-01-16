@@ -1,18 +1,10 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import javax.persistence.PersistenceException;
-
 import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.negocio.Franquia;
 import br.com.tiagods.repository.Franquias;
 import br.com.tiagods.repository.Usuarios;
 import br.com.tiagods.util.DateUtil;
@@ -21,27 +13,12 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
-
-import br.com.tiagods.config.enums.FXMLEnum;
-import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.negocio.Franquia;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -54,7 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
-import static br.com.tiagods.util.JavaFxUtil.alert;
+import java.net.URL;
+import java.util.*;
 
 @Controller
 public class FranquiaPesquisaController implements Initializable, StageController {
@@ -191,7 +169,7 @@ public class FranquiaPesquisaController implements Initializable, StageControlle
                     setText("");
                     setGraphic(null);
                 } else {
-                    setText(DateUtil.parse(item.getTime(), DateUtil.SDFH));
+                    setText(DateUtil.format(item.getTime(), DateUtil.SDFH));
                 }
             }
         });

@@ -10,7 +10,13 @@ import java.util.*;
 
 import javax.persistence.PersistenceException;
 
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.repository.NegociosTarefasContatos;
+import br.com.tiagods.repository.NegociosTarefasPropostas;
+import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.util.MyFileUtil;
 import br.com.tiagods.util.storage.PathStorageEnum;
 import br.com.tiagods.util.storage.Storage;
 import br.com.tiagods.util.storage.StorageProducer;
@@ -46,7 +52,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+
+import static br.com.tiagods.util.JavaFxUtil.alert;
 
 @Controller
 public class TarefaCadastroController extends UtilsController implements Initializable{
@@ -102,63 +112,71 @@ public class TarefaCadastroController extends UtilsController implements Initial
 	private JFXTextField txFormulario;
 	
     private Stage stage;
-    
-    private UsuariosImpl usuarios;
+
+    @Autowired
+    private Usuarios usuarios;
     
     private NegocioTarefa tarefa;
     
     private Object entidade;
 
-	private NegociosTarefasContatosImpl contatos;
-	private NegociosTarefasPropostasImpl propostas;
-    private Storage storage = StorageProducer.newConfig();
+    @Autowired
+	private NegociosTarefasContatos contatos;
+	@Autowired
+    private NegociosTarefasPropostas propostas;
+	@Autowired
+	private TarefaContatoDialogController tarefaContatoDialogController;
+	@Autowired
+	private TarefaPropostaDialogController tarefaPropostaDialogController;
+	@Lazy
+	@Autowired
+	private StageManager stageManager;
+
+
+	private Storage storage = StorageProducer.newConfig();
 
 	public void setPropriedades(Stage stage, NegocioTarefa tarefa, Object entidade) {
 		this.stage = stage;
 		this.entidade = entidade;
 		this.tarefa = tarefa;
 	}
+
 	@FXML
     void buscar(ActionEvent event) {
 		Object controller = null;
-		FXMLEnum fxmlEnum = null;
-	    Stage stage = new Stage();
-		
-		if(rbNegocioContato.isSelected()){
-			fxmlEnum = FXMLEnum.TAREFA_DIALOG_CONTATO;
-			controller = new TarefaContatoDialogController(stage);
+		Stage stage = new Stage();
+		FxmlView fxmlView = null;
+
+		if(rbNegocioContato.isSelected()) {
+			controller = tarefaContatoDialogController;
+			tarefaContatoDialogController.setPropriedades(stage);
+			fxmlView = FxmlView.TAREFA_DIALOG_CONTATO;
+			stage = stageManager.switchScene(FxmlView.TAREFA_DIALOG_CONTATO, true);
 		}
 		else if(rbNegocioProposta.isSelected()) {
-			fxmlEnum = FXMLEnum.TAREFA_DIALOG_PROPOSTA;
-			controller = new TarefaPropostaDialogController(stage);
+			controller = tarefaPropostaDialogController;
+			tarefaPropostaDialogController.setPropriedades(stage);
+			stage = stageManager.switchScene(FxmlView.TAREFA_DIALOG_PROPOSTA, true);
 		}
-		
-		try {
-            FXMLLoader loader = loaderFxml(fxmlEnum);
-            loader.setController(controller);
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            final Object controlador = controller;
-            stage.setOnHiding(e -> {
-            		if(controlador instanceof TarefaContatoDialogController) {
-            			Contato contato = ((TarefaContatoDialogController)controlador).getContato();
-            			if(contato!=null) {
-            				txIdPesquisa.setText(String.valueOf(contato.getId()));
-            				txNomePesquisa.setText(contato.getNome());
-            			}
-            		}
-            		else if(controlador instanceof TarefaPropostaDialogController) {
-            			NegocioProposta proposta = ((TarefaPropostaDialogController)controlador).getProposta();
-            			if(proposta!=null) {
-            				txIdPesquisa.setText(String.valueOf(proposta.getId()));
-            				txNomePesquisa.setText(proposta.getNome());
-            			}
-            		}
-            });
-        }catch(IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo"+fxmlEnum,ex,true);
-        }
-    }	
+
+		final Object controlador = controller;
+		stage.setOnHiding(e -> {
+				if(controlador instanceof TarefaContatoDialogController) {
+					Contato contato = ((TarefaContatoDialogController)controlador).getContato();
+					if(contato!=null) {
+						txIdPesquisa.setText(String.valueOf(contato.getId()));
+						txNomePesquisa.setText(contato.getNome());
+					}
+				}
+				else if(controlador instanceof TarefaPropostaDialogController) {
+					NegocioProposta proposta = ((TarefaPropostaDialogController)controlador).getProposta();
+					if(proposta!=null) {
+						txIdPesquisa.setText(String.valueOf(proposta.getId()));
+						txNomePesquisa.setText(proposta.getNome());
+					}
+				}
+		});
+	}
 	void combos() {
 		ToggleGroup group1 = new ToggleGroup();
 		group1.getToggles().addAll(rbEmail,rbProposta,rbReuniao,rbTelefone,rbWhatsApp);
@@ -168,7 +186,6 @@ public class TarefaCadastroController extends UtilsController implements Initial
 		group2.getToggles().addAll(rbNegocioContato,rbNegocioProposta);
 		rbNegocioContato.setSelected(true);
 		
-		usuarios = new UsuariosImpl(getManager());
 		cbResponsavel.getItems().addAll(usuarios.filtrar("", 1, "login"));
 		cbResponsavel.getSelectionModel().select(UsuarioLogado.getInstance().getUsuario());
 		
@@ -212,13 +229,10 @@ public class TarefaCadastroController extends UtilsController implements Initial
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		try {
-			loadFactory();
 			combos();
 			if(tarefa!=null) preencherFormulario(tarefa);
 		}catch (PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
-		}finally {
-			close();
 		}
 	}
 	@FXML
@@ -260,29 +274,24 @@ public class TarefaCadastroController extends UtilsController implements Initial
 				try {
 					if(tarefa!=null){
 						try {
-							loadFactory();
 							storage.delete(txFormulario.getText());
 							txFormulario.setText("");
 							tarefa.setFormulario("");
 							if(tarefa instanceof NegocioTarefaContato) {
-								contatos = new NegociosTarefasContatosImpl(getManager());
 								this.tarefa = contatos.save((NegocioTarefaContato)tarefa);
 							}
 							else if(tarefa instanceof NegocioTarefaProposta) {
-								propostas = new NegociosTarefasPropostasImpl(getManager());
 								this.tarefa = propostas.save((NegocioTarefaProposta)tarefa);
 							}
 						}catch (Exception e) {
 							alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
-						}finally {
-							close();
 						}
 					}
 
 				} catch (Exception e) {
 				}
 			} else if (result.get().equals(visualizar)) {
-				visualizarDocumento(txFormulario.getText(), storage);
+				MyFileUtil.visualizarDocumento(txFormulario.getText(), storage);
 			}
 		}
 	}
@@ -375,21 +384,16 @@ public class TarefaCadastroController extends UtilsController implements Initial
 			tarefa.setFormulario(txFormulario.getText());
 		*/
     	try {
-    		loadFactory();
     		if(tarefa instanceof NegocioTarefaContato) {
-    			contatos = new NegociosTarefasContatosImpl(getManager());
     			this.tarefa = contatos.save((NegocioTarefaContato)tarefa);
     		}
     		else if(tarefa instanceof NegocioTarefaProposta) {
-    			propostas = new NegociosTarefasPropostasImpl(getManager());
     			this.tarefa = propostas.save((NegocioTarefaProposta)tarefa);
     		}
     		alert(Alert.AlertType.INFORMATION,"Sucesso",null,
 	                "Salvo com sucesso",null,false);
     	}catch (PersistenceException e) {
     		alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
-		}finally {
-			close();
 		}
     }
 	

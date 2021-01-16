@@ -14,8 +14,11 @@ import java.util.Optional;
 
 @Service
 public class ImplantacaoProcessosImpl  {
+
     @PersistenceContext
     EntityManager manager;
+
+    private ImplantacaoProcessosImpl(){}
 
     public Optional<ImplantacaoProcesso> findById(Long id) {
         Query query = manager.createQuery("" +

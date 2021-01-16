@@ -1,8 +1,10 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.*;
+import br.com.tiagods.repository.ImplantacaoAtividades;
+import br.com.tiagods.repository.UsuariosDepartamentos;
+import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
@@ -16,6 +18,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import java.net.URL;
 import java.util.List;
@@ -24,7 +28,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ImplantacaoEtapaController extends UtilsController implements Initializable {
+@Controller
+public class ImplantacaoEtapaController implements Initializable {
     @FXML
     private JFXComboBox<ImplantacaoEtapa.Etapa> cbEtapa;
 
@@ -43,15 +48,18 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
     @FXML
     private JFXButton btnHelp;
 
+    @Autowired
+    private ImplantacaoAtividades atividades;
+    @Autowired
+    private UsuariosDepartamentos departamentos;
+
     private ImplantacaoEtapa etapa;
     private Stage stage;
-    private ImplantacaoAtividadesImpl atividades;
-    private DepartamentosImpl departamentos;
     private Object object;
     private boolean valida = false;
     private boolean edicao = false;
 
-    public ImplantacaoEtapaController(boolean edicao, ImplantacaoEtapa etapa, Object object, Stage stage) {
+    public void setPropriedades(boolean edicao, ImplantacaoEtapa etapa, Object object, Stage stage) {
         this.edicao=edicao;
         this.etapa=etapa;
         this.stage=stage;
@@ -61,19 +69,19 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
     @FXML
     private void aplicar(ActionEvent event){
         if(cbAtividade.getValue()==null){
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Atividades/Documentos é obrigatório",null,false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Atividades/Documentos é obrigatório",null,false);
             return;
         }
         if(cbEtapa.getValue()==null){
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Etapa é obrigatório",null,false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Etapa é obrigatório",null,false);
             return;
         }
         if(cbDepartamento.getValue()==null){
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Departamento é obrigatório",null,false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Departamento é obrigatório",null,false);
             return;
         }
         if(txDescricao.getText().trim().equals("")) {
-            alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Descrição",null,false);
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Campo Vázio é Obrigatório","Campo Descrição",null,false);
             return;
         }
         else {
@@ -84,7 +92,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                         .findFirst();
                 if(result.isPresent()){
                     if(result.get().getId() == ((ImplantacaoPacoteEtapa) etapa).getId() && edicao) aplicarESair();
-                    else alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
+                    else JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
                             "Já foi informado um processo para Atividade:"+result.get().getAtividade()+"\n e Etapa:"+result.get().getEtapa()+"\nMude alguns dos parametros e tente novamente",null,false);
                 }
                 else aplicarESair();
@@ -96,7 +104,7 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
                         .findFirst();
                 if(result.isPresent()){
                     if(edicao) aplicarESair();
-                    else alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
+                    else JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Valor duplicado",
                             "Já foi informado um processo para Atividade:"+result.get().getEtapa().getAtividade()+"\n e Etapa:"+result.get().getEtapa()+"\nMude alguns dos parametros e tente novamente",null,false);
                 }
                 else aplicarESair();
@@ -176,26 +184,21 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
         result.ifPresent(pair -> {
 
             try{
-                loadFactory();
-                atividades = new ImplantacaoAtividadesImpl(getManager());
                 ImplantacaoAtividade atividade = new ImplantacaoAtividade();
                 atividade.setNome(pair.getKey());
                 atividade.setDescricao(pair.getValue());
                 atividades.save(atividade);
                 cbAtividade.getItems().clear();
-                cbAtividade.getItems().addAll(atividades.getAll());
+                cbAtividade.getItems().addAll(atividades.findAll());
             }catch (Exception e){
-                alert(Alert.AlertType.ERROR,"Erro","Não foi possivel salvar","Falha ao tentar salvar o registro",e,true);
-            }finally {
-                close();
+                JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","Não foi possivel salvar","Falha ao tentar salvar o registro",e,true);
             }
 
         });
     }
 
     private void combos(){
-        atividades = new ImplantacaoAtividadesImpl(getManager());
-        cbAtividade.getItems().addAll(atividades.getAll());
+        cbAtividade.getItems().addAll(atividades.findAll());
 
         cbAtividade.valueProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue==null) return;
@@ -253,23 +256,15 @@ public class ImplantacaoEtapaController extends UtilsController implements Initi
             }
         });
 
-        departamentos = new DepartamentosImpl(getManager());
-        cbDepartamento.getItems().addAll(departamentos.getAll());
+        cbDepartamento.getItems().addAll(departamentos.findAll());
 
         for(int i = 1; i<=365; i++) cbTempo.getItems().add(i);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try{
-            loadFactory();
-            combos();
-            if(etapa!=null) preencherFormulario(etapa);
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","",e,true);
-        }finally {
-            close();
-        }
+        combos();
+        if(etapa!=null) preencherFormulario(etapa);
     }
 
     private void preencherFormulario(ImplantacaoEtapa etapa){

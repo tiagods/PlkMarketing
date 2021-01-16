@@ -3,7 +3,6 @@ package br.com.tiagods.controller;
 import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.model.VersaoApp;
 import br.com.tiagods.repository.VersaoAppRepository;
-import br.com.tiagods.controller.StageController;
 import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
@@ -47,7 +46,7 @@ public class SobreController implements Initializable, StageController {
                 .append(versao.getVersao())
                 .append("\n")
                 .append("Data: ")
-                .append(DateUtil.parse(versao.getHistorico().getTime(), DateUtil.SDF))
+                .append(DateUtil.format(versao.getHistorico().getTime(), DateUtil.SDF))
                 .append("\n\n").append(versao.getDetalhes());
         txDescricao.setText(builder.toString().toUpperCase());
     }

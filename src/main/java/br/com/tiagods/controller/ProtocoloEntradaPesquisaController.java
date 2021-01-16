@@ -23,6 +23,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.net.URL;
@@ -77,6 +78,8 @@ public class ProtocoloEntradaPesquisaController implements Initializable {
 	private ProtocoloEntradaFilter filter;
 	private UsuariosImpl usuarios;
 	private ProtocolosEntradasImpl protocolos;
+
+	@Autowired
 	private TabelaProtocoloEntrada auxProtocolo;
 
 	public void setPropriedades(Stage stage, ProtocoloEntradaFilter filter) {
@@ -187,8 +190,7 @@ public class ProtocoloEntradaPesquisaController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		transaformarEm servico
-		auxProtocolo = new TabelaProtocoloEntrada(this,tbPrincipal,rbAdministrativo,rbComum);
+		auxProtocolo.setPropriedades(tbPrincipal, rbAdministrativo, rbComum);
 		combos();
 		auxProtocolo.tabela();
 		filtrar(auxProtocolo.getPaginacao());

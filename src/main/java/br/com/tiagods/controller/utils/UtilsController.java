@@ -23,7 +23,7 @@ public abstract class UtilsController {
 	protected final NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 	protected final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	protected final SimpleDateFormat sdfH = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-	protected final Integer[] limiteTabela = new Integer[] {50,100,200};
+
 
 	private NegociosPropostasImpl propostas;
 

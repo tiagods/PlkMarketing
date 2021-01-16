@@ -38,9 +38,8 @@ public class AppJavaConfig {
     }
     
     @Bean
-    @Lazy(value = true) //Stage only created after Spring context bootstap
+    @Lazy //Stage only created after Spring context bootstap
     public StageManager stageManager(Stage stage) throws IOException {
         return new StageManager(springFXMLLoader, stage);
     }
-
 }

@@ -1,7 +1,6 @@
 package br.com.tiagods;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.controller.MenuController;

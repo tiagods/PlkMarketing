@@ -1,33 +1,32 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.*;
 import br.com.tiagods.repository.ImplantacaoProcessosEtapas;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
+import br.com.tiagods.util.DateUtil;
 import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.SendEmail;
 import br.com.tiagods.services.AlertaImplantacao;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.*;
 
-@Service
+import static br.com.tiagods.util.JavaFxUtil.alert;
+
+@Component
 public class TabelaProcessosEtapa {
     private Logger logger = LoggerFactory.getLogger(TabelaProcessosEtapa.class);
 
@@ -36,6 +35,11 @@ public class TabelaProcessosEtapa {
     @Autowired
     ImplantacaoProcessosEtapas etapas;
 
+    @Lazy
+    @Autowired
+    StageManager stageManager;
+    ImplantacaoEtapaStatusController implantacaoEtapaStatusController;
+
     private TableView<ImplantacaoProcessoEtapa> tbPrincipal;
 
     public void setPropriedades(TableView<ImplantacaoProcessoEtapa> tbPrincipal) {
@@ -43,20 +47,13 @@ public class TabelaProcessosEtapa {
     }
 
     private void cadastrarEtapas(ImplantacaoProcessoEtapa etapa, int index, boolean editar) {
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);
-            ImplantacaoProcessoEtapa etapa2 = recarregar(etapa);
-            ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa2, stage, editar);
-            loader.setController(controller);
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-                ImplantacaoProcessoEtapa newEtapa = recarregar(etapa2);
-                if (newEtapa != null) tbPrincipal.getItems().set(index, newEtapa);
-            });
-        } catch (IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao localizar o arquivo " + FXMLEnum.IMPLANTACAO_ETAPA_STATUS, ex, true);
-        }
+        Stage stage = stageManager.switchScene(FxmlView.IMPLANTACAO_ETAPA_STATUS, true);
+        ImplantacaoProcessoEtapa etapa2 = recarregar(etapa);
+        implantacaoEtapaStatusController.setPropriedades(etapa2, stage, editar);
+        stage.setOnHiding(event -> {
+            ImplantacaoProcessoEtapa newEtapa = recarregar(etapa2);
+            if (newEtapa != null) tbPrincipal.getItems().set(index, newEtapa);
+        });
     }
 
     private ImplantacaoProcessoEtapa recarregar(ImplantacaoProcessoEtapa etapa) {
@@ -83,7 +80,7 @@ public class TabelaProcessosEtapa {
                     "Voc&ecirc; foi designado para concluir a proxima Etapa, abaixo uma descri&ccedil;&atilde;o:");
 
 
-            List<String> rodape = Arrays.asList("N&atilde;o se esque&ccedil;a de concluir a tarefa at&eacute; "+sdf.format(prazo.getTime()));
+            List<String> rodape = Arrays.asList("N&atilde;o se esque&ccedil;a de concluir a tarefa at&eacute; "+ DateUtil.format(prazo.getTime()));
 
             Map<ImplantacaoProcessoEtapa, List<ImplantacaoProcessoEtapaStatus>> map = new HashMap<>();
             map.put(pe, status);
@@ -136,7 +133,7 @@ public class TabelaProcessosEtapa {
                         tbPrincipal.getItems().set(in, pe);
                     }
                 } else if (list.size() > 1) {
-                    JavaFxUtil.alert(Alert.AlertType.ERROR,
+                    alert(Alert.AlertType.ERROR,
                             "Erro",
                             "",
                             "Foram encontradas mais etapas para o mesmo processo e atividade! Informe o erro para o administrador do sistema",
@@ -145,15 +142,15 @@ public class TabelaProcessosEtapa {
             }
             else logger.debug("Is empty");
             tbPrincipal.refresh();
-            JavaFxUtil.alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Salvo com sucesso!", null, false);
+            alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Salvo com sucesso!", null, false);
             return true;
         } catch (Exception e) {
-            JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "", "Falha ao tentar salvar o registro!", e, true);
+            alert(Alert.AlertType.ERROR, "Erro", "", "Falha ao tentar salvar o registro!", e, true);
             return false;
         }
     }
 
-    void tabela() {
+    public void tabela() {
         final String etapa = "etapa";
 
         tbPrincipal.getColumns().clear();
@@ -171,7 +168,7 @@ public class TabelaProcessosEtapa {
                     setText("");
                     setStyle("");
                 } else {
-                    setText(sdf.format(item.getTime()));
+                    setText(DateUtil.format(item.getTime()));
                 }
             }
         });
@@ -286,15 +283,11 @@ public class TabelaProcessosEtapa {
                     ImplantacaoProcessoEtapa ip = tbPrincipal.getItems().get(getIndex());
                     button.getStyleClass().add("btDefault");
                     setGraphic(button);
-                    try {
-                        if (ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
-                            buttonTable(button, IconsEnum.BUTTON_VIEW);
-                        else if (ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO))
-                            buttonTable(button, IconsEnum.BUTTON_EDIT);
-                        else setGraphic(null);
-                    } catch (IOException e) {
-                        logger.error(e.getMessage());
-                    }
+                    if (ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
+                        JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_VIEW);
+                    else if (ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO))
+                        JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
+                    else setGraphic(null);
                     final Tooltip tooltip = new Tooltip("Clique para criar uma nota!");
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> cadastrarEtapas(ip, getIndex(), ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO)));

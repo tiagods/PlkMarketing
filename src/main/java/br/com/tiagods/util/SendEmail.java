@@ -31,10 +31,10 @@ public class SendEmail {
             else
                 email.setTextMsg(mensagem);
             email.send();
-            logger.debug("Email enviado com sucesso");
+            logger.info("Email enviado com sucesso");
             return true;
         } catch (EmailException e) {
-            logger.debug("Falha ao enviar e-mail");
+            logger.error("Falha ao enviar e-mail");
             errorMessage =e.getMessage();
             e.printStackTrace();
             return false;

@@ -29,9 +29,13 @@ public class StageManager {
         this.primaryStage = stage;
     }
 
+    /*
+    createStage deve ser true quando for necessario abrir uma nova tela (ex: subtelas)
+    quando for false vai eliminar a tela atual e a proxima sera a principal (ex: tela de login abrindo o menu)
+     */
     public Stage switchScene(final FxmlView view, boolean createStage) {
         Parent viewRootNodeHierarchy = loadViewNodeHierarchy(view.getFxmlFile());
-        Stage stage =createStage ? new Stage() : primaryStage;
+        Stage stage = createStage ? new Stage() : primaryStage;
         if(createStage) {
             stage.initModality(view.getModality());
         }

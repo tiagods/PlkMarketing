@@ -8,7 +8,7 @@ public enum FXMLEnum {
 	DEPARTAMENTO("Departamento"),
 	FRANQUIA_PESQUISA("FranquiaPesquisa"),
 	FRANQUIA_CADASTRO("FranquiaCadastro"),
-	IMPLATACAO_ETAPA("ImplantacaoEtapa"),
+	IMPLANTACAO_ETAPA("ImplantacaoEtapa"),
 	IMPLANTACAO_ETAPA_STATUS("ImplantacaoEtapaStatus"),
 	IMPLATACAO_PACOTE_CADASTRO("ImplantacaoPacoteCadastro"),
 	IMPLATACAO_PACOTE_PESQUISA("ImplantacaoPacotePesquisa"),

@@ -26,6 +26,8 @@ public class NegociosTarefasImpl {
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
 
+	private NegociosTarefasImpl(){}
+
 	public long getQuantidade(NegocioTarefaFilter filter) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criteria criteria = filtrar(filter,criterios);

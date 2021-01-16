@@ -17,6 +17,8 @@ public class ImplantacaoPacotesImpl {
     @PersistenceContext
     EntityManager manager;
 
+    private ImplantacaoPacotesImpl(){}
+
     public Optional<ImplantacaoPacote> findById(Long id) {
         Query query = manager.createQuery(
                 "SELECT a FROM ImplantacaoPacote as a "

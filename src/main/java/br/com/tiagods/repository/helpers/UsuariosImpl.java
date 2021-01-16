@@ -19,10 +19,14 @@ import java.util.List;
 
 @Service
 public class UsuariosImpl {
+
 	@PersistenceContext
 	EntityManager manager;
+
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
+
+	private UsuariosImpl() {}
 
 	public List<Usuario> filtrar(String nome, int ativo, String ordem) {
 		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);

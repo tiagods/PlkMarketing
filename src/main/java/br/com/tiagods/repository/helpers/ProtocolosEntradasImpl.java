@@ -31,6 +31,8 @@ public class ProtocolosEntradasImpl {
     @Autowired
     AbstractRepositoryImpl abstractRepository;
 
+    private ProtocolosEntradasImpl(){}
+
     public Optional<ProtocoloEntrada> findById(Long id) {
         Query query = manager.createQuery(
                 "SELECT a FROM ProtocoloEntrada as a "

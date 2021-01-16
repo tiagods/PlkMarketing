@@ -1,8 +1,11 @@
 package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
+import br.com.tiagods.repository.ProtocolosEntradas;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.util.SendEmail;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.swing.*;
@@ -13,7 +16,12 @@ import java.util.*;
 import java.util.List;
 import java.util.Timer;
 
+@Component
 public class AlertaProtocolo extends AlertaModel {
+
+    @Autowired
+    ProtocolosEntradas protocolosEntradas;
+
     private String normalizer(String valor){
         return Normalizer.normalize(valor, Normalizer.Form.NFD)
             .replaceAll("[^\\p{ASCII}]", "");
@@ -67,10 +75,8 @@ public class AlertaProtocolo extends AlertaModel {
                     if(enviar) {
                         EntityManager manager = null;
                         try {
-                            manager = JPAConfig.getInstance().createManager();
-                            ProtocolosEntradasImpl impl = new ProtocolosEntradasImpl(manager);
                             p.setAlerta(true);
-                            impl.save(p);
+                            protocolosEntradas.save(p);
                         } catch (Exception e) {
                         } finally {
                             if(manager!=null) manager.close();

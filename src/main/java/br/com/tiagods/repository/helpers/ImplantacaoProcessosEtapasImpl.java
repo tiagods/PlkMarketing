@@ -22,6 +22,8 @@ public class ImplantacaoProcessosEtapasImpl {
     @PersistenceContext
     EntityManager manager;
 
+    private ImplantacaoProcessosEtapasImpl(){}
+
     public Optional<ImplantacaoProcessoEtapa> findById(Long id) {
         Query query = manager.createQuery(
                 "SELECT a from ImplantacaoProcessoEtapa as a "

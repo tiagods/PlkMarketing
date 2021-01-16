@@ -18,6 +18,8 @@ public class FranquiasImpl {
     @PersistenceContext
     EntityManager manager;
 
+    private FranquiasImpl(){}
+
     public List<Franquia> filtrar(String nome, Franquia.Tipo tipo, Usuario atendente) {
         Criteria criteria = manager.unwrap(Session.class).createCriteria(Franquia.class);
         if(nome!=null && nome.trim().length()>0) {

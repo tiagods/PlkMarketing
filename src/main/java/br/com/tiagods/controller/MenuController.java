@@ -5,7 +5,6 @@ import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
@@ -15,7 +14,6 @@ import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.*;
 import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
 import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
@@ -36,9 +34,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -148,6 +144,10 @@ public class MenuController implements Initializable {
     FranquiaPesquisaController franquiaPesquisaController;
     @Autowired
     ImplantacaoPacoteController implantacaoPacoteController;
+    @Autowired
+    TarefaPesquisaController tarefaPesquisaController;
+    @Autowired
+    ImplantacaoProcessoPesquisaController implantacaoProcessoPesquisaController;
 
     @Autowired
     UsuariosDepartamentos usuariosDepartamentos;
@@ -167,6 +167,13 @@ public class MenuController implements Initializable {
     private ImplantacaoProcessosEtapas etapas;
     @Autowired
     private ImplantacaoAtividades atividades;
+    @Autowired
+    ProtocolosEntradas protocolosEntradas;
+
+    @Autowired
+    TabelaProtocoloEntrada tabelaProtocoloEntrada;
+    @Autowired
+    TabelaProcessosEtapa tabelaProcessosEtapa;
 
     private boolean desabilitarAcaoCombos = false;
 
@@ -195,7 +202,7 @@ public class MenuController implements Initializable {
         JFXButton button = new JFXButton();
         button.setText(c.getId()+"-"+c.getNome()+"=>Responsavel: "+c.getAtendente().getNomeResumido()
                 +"=>"+(c.getTarefas().size())+" Tarefa(s)"+(c.getDataFim()!=null?"=>Prazo limite: "
-                + DateUtil.parse(c.getDataFim().getTime(), DateUtil.SDF):""));
+                + DateUtil.format(c.getDataFim().getTime(), DateUtil.SDF):""));
         button.getStyleClass().add(style);
         JavaFxUtil.buttonMin(button, c.getTipoEtapa().getIco());
         Tooltip tooltip = new Tooltip(button.getText());
@@ -367,16 +374,9 @@ public class MenuController implements Initializable {
         MenuItem miProcessos = new MenuItem("Processos");
         JavaFxUtil.iconMenuItem(miProcessos,30,30,IconsEnum.MENU_USUARIO);
         miProcessos.setOnAction(event -> {
-            try {
-                Stage stage = new Stage();
-                FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_PROCESSO_PESQUISA);
-                loader.setController(new ImplantacaoProcessoPesquisaController(stage));
-                initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-                onCloseRequest(stage);
-            }catch(IOException e) {
-                alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                        "Falha ao localizar o arquivo "+FXMLEnum.IMPLANTACAO_PROCESSO_PESQUISA,e,true);
-            }
+            Stage stage = stageManager.switchScene(FxmlView.IMPLANTACAO_PROCESSO_PESQUISA, true);
+            implantacaoProcessoPesquisaController.setPropriedades(stage);
+            onCloseRequest(stage);
         });
 
         cmImplantacao.getItems().addAll(miPacote,miProcessos);
@@ -528,7 +528,7 @@ public class MenuController implements Initializable {
         cbProcessoStatus.getItems().addAll(ImplantacaoProcessoEtapa.Status.values());
         cbProcessoStatus.setValue(ImplantacaoProcessoEtapa.Status.ABERTO);
 
-        TabelaProcessosEtapa tabelaProcessosEtapa = new TabelaProcessosEtapa(tbProcesso);
+        tabelaProcessosEtapa.setPropriedades(tbProcesso);
         tabelaProcessosEtapa.tabela();
 
         filtrarProcessos();
@@ -543,22 +543,23 @@ public class MenuController implements Initializable {
         );
         return lista;
     }
+
     private void preencherProtocolos() {
         JFXRadioButton rbComum = new JFXRadioButton();
         rbComum.setSelected(true);
 
-        TabelaProtocoloEntrada protocoloEntrada = new TabelaProtocoloEntrada(null,tbProtocoloEntrada,new JFXRadioButton(),rbComum);
-        protocoloEntrada.tabela();
+        tabelaProtocoloEntrada.setPropriedades(tbProtocoloEntrada, new JFXRadioButton(),rbComum);
+        tabelaProtocoloEntrada.tabela();
 
-        protocoloEntrada.setUsuarioAtivos(usuarios.findAllByAtivoOrderByNome(1));
-        List<ProtocoloEntrada> list = protocoloEntrada.filtrar(null);
+        tabelaProtocoloEntrada.setUsuarioAtivos(usuarios.findAllByAtivoOrderByNome(1));
+        List<ProtocoloEntrada> list = tabelaProtocoloEntrada.filtrar(null);
 
         ProtocoloEntradaFilter protocoloEntradaFilter = new ProtocoloEntradaFilter();
         protocoloEntradaFilter.setDevolucao(ProtocoloEntrada.StatusDevolucao.DEVOLVIDO);
         protocoloEntradaFilter.setRecebimento(ProtocoloEntrada.StatusRecebimento.STATUS);
         protocoloEntradaFilter.setClassificacao(ProtocoloEntrada.Classificacao.USUARIO);
         Pair<List<ProtocoloEntrada>,Paginacao> result = protocolosEntradas
-                .filtrar(null,protocoloEntradaFilter);
+                .filtrar(null, protocoloEntradaFilter);
         tbProtocoloEntrada.itemsProperty().addListener(observable -> atualizar());
         txProtocoloPerfil.setText(""+list.size());
         txProtocoloTodos.setText(""+result.getKey().size());
@@ -598,16 +599,9 @@ public class MenuController implements Initializable {
 
     @FXML
     void tarefa(ActionEvent event) {
-    	try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_PESQUISA);
-            loader.setController(new TarefaPesquisaController(null,stage));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            onCloseRequest(stage);
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_PESQUISA,e,true);
-        }
+    	Stage stage = stageManager.switchScene(FxmlView.TAREFA_PESQUISA, true);
+    	tarefaPesquisaController.setPropriedades(null, stage);
+    	onCloseRequest(stage);
     }
 
     @FXML

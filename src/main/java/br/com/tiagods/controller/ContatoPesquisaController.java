@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
 import br.com.tiagods.repository.*;
-import br.com.tiagods.repository.helpers.*;
 import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.services.UsuarioLogService;
 import br.com.tiagods.util.*;
@@ -39,7 +38,6 @@ import br.com.tiagods.model.negocio.NegocioOrigem;
 import br.com.tiagods.model.negocio.NegocioServico;
 import br.com.tiagods.model.negocio.ServicoContratado;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -59,9 +57,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -69,7 +65,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class ContatoPesquisaController implements StageController,Initializable {
+public class ContatoPesquisaController implements StageController, Initializable {
 	@FXML
 	private HBox pnCheckBox;
 
@@ -335,7 +331,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 								listaImpressao.get(i).add(c.getCidade());
 								listaImpressao.get(i).add(c.getEstado());
 								listaImpressao.get(i).add(c.getCriadoEm()==null? "" :
-										DateUtil.parse(c.getCriadoEm().getTime(), DateUtil.SDFH));
+										DateUtil.format(c.getCriadoEm().getTime(), DateUtil.SDFH));
 								listaImpressao.get(i).add(c.getAtendente() == null ? "" : c.getAtendente().getNome());
 								listaImpressao.get(i).add(c.getCriadoPor() == null ? "" : c.getCriadoPor().getNome());
 
@@ -496,7 +492,7 @@ public class ContatoPesquisaController implements StageController,Initializable 
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(DateUtil.parse(item.getTime(), DateUtil.SDFH));
+					setText(DateUtil.format(item.getTime(), DateUtil.SDFH));
 				}
 			}
 		});
