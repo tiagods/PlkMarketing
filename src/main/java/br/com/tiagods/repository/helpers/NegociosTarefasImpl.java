@@ -1,12 +1,11 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.NegocioTarefa;
-import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import br.com.tiagods.repository.filters.NegocioTarefaFilter;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -26,8 +25,6 @@ public class NegociosTarefasImpl {
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
 
-	private NegociosTarefasImpl(){}
-
 	public long getQuantidade(NegocioTarefaFilter filter) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criteria criteria = filtrar(filter,criterios);
@@ -43,7 +40,9 @@ public class NegociosTarefasImpl {
 	}
 
 	public Criteria filtrar(NegocioTarefaFilter f, List<Criterion> criterios){
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(NegocioTarefa.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(NegocioTarefa.class);
 		if(f.getAtendente()!=null && f.getAtendente().getId()!=-1L) criterios.add(Restrictions.eq("atendente", f.getAtendente()));
 		if(f.getDataEventoInicial()!=null && f.getDataEventoFinal()!=null) criterios.add(Restrictions.between("dataEvento", f.getDataEventoInicial(), f.getDataEventoFinal()));
 		if(f.getFinalizado()!=-1) criterios.add(Restrictions.eq("finalizado", f.getFinalizado()));

@@ -22,7 +22,7 @@ import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.*;
-import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import br.com.tiagods.repository.filters.NegocioTarefaFilter;
 import br.com.tiagods.services.UsuarioLogService;
 import br.com.tiagods.util.*;
 import br.com.tiagods.util.storage.Storage;

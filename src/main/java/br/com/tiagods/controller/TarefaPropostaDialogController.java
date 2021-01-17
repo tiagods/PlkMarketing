@@ -5,7 +5,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.negocio.*;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.repository.*;
-import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
+import br.com.tiagods.repository.filters.NegocioPropostaFilter;
 import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXButton;

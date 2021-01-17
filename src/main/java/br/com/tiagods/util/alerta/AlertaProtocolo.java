@@ -2,7 +2,6 @@ package br.com.tiagods.util.alerta;
 
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.ProtocolosEntradas;
-import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.util.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -2,41 +2,32 @@ package br.com.tiagods;
 
 import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.util.Atualizador;
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DialogPane;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.exception.JDBCConnectionException;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import java.io.IOException;
-import java.util.Date;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Slf4j
 @SpringBootApplication
+@EnableTransactionManagement
 public class StartApp extends Application {
 
 	boolean habilitarVerificacaoAtualizaca = false;
 	private Atualizador atualizador = new Atualizador();
 
 	protected ConfigurableApplicationContext springContext;
+
 	protected StageManager stageManager;
 
 	public static void main(final String[] args) {
 		Application.launch(args);
 	}
+
+	Stage stage;
 
 	@Override
 	public void init() throws Exception {
@@ -45,7 +36,9 @@ public class StartApp extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		stageManager = springContext.getBean(StageManager.class, stage);
+		this.stage = stage;
+		stageManager = springContext.getBean(StageManager.class);
+
 		displayInitialScene();
 		if(habilitarVerificacaoAtualizaca){
 			if (atualizador.atualizacaoPendente()) {
@@ -66,6 +59,7 @@ public class StartApp extends Application {
 	}
 
 	protected void displayInitialScene() {
+		stageManager.setPrimaryStage(stage);
 		stageManager.switchScene(FxmlView.LOGIN, false);
 	}
 

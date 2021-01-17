@@ -2,14 +2,9 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.ImplantacaoPacoteEtapaController;
-import br.com.tiagods.controller.StageController;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
-import br.com.tiagods.model.implantacao.ImplantacaoPacoteEtapa;
 import br.com.tiagods.repository.ImplantacaoPacotes;
-import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
 import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -17,22 +12,18 @@ import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 

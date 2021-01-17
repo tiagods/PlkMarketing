@@ -1,12 +1,11 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
-import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.filters.ProtocoloEntradaFilter;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
@@ -31,13 +30,11 @@ public class ProtocolosEntradasImpl {
     @Autowired
     AbstractRepositoryImpl abstractRepository;
 
-    private ProtocolosEntradasImpl(){}
-
     public Optional<ProtocoloEntrada> findById(Long id) {
         Query query = manager.createQuery(
-                "SELECT a FROM ProtocoloEntrada as a "
-                + "LEFT JOIN FETCH a.items "
-                + "where a.id=:id");
+                "SELECT a FROM ProtocoloEntrada as a " +
+                        "LEFT JOIN FETCH a.items " +
+                        "where a.id=:id");
         query.setParameter("id", id);
         ProtocoloEntrada a = (ProtocoloEntrada)query.getSingleResult();
         return Optional.ofNullable(a);
@@ -45,7 +42,9 @@ public class ProtocolosEntradasImpl {
 
     public Pair<List<ProtocoloEntrada>,Paginacao> filtrar(Paginacao paginacao, ProtocoloEntradaFilter filter) {
         List<Criterion> criterios = new ArrayList<>();
-        Criteria criteria = manager.unwrap(Session.class).createCriteria(ProtocoloEntrada.class);
+        Criteria criteria = abstractRepository
+                .getSession()
+                .createCriteria(ProtocoloEntrada.class);
 
         if(filter.getRecebimento().equals(ProtocoloEntrada.StatusRecebimento.ABERTO) && filter.getDevolucao().equals(ProtocoloEntrada.StatusDevolucao.NAO)){
             Criterion c1 = Restrictions.eq("recebido",false);

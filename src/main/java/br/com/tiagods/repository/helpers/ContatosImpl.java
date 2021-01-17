@@ -4,11 +4,10 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.negocio.*;
 import br.com.tiagods.model.negocio.Contato.ContatoTipo;
 import br.com.tiagods.model.negocio.Contato.PessoaTipo;
-import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import br.com.tiagods.repository.interfaces.Paginacao;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -31,10 +30,9 @@ public class ContatosImpl {
 	
 	@PersistenceContext
 	EntityManager manager;
+
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
-
-	private ContatosImpl() {}
 
 	public Optional<Contato> findById(Long id) {
 		Query query = manager.createQuery("SELECT a FROM Contato as a "
@@ -47,7 +45,9 @@ public class ContatosImpl {
 	}
 
 	public List<Contato> filtrar(String nome, NegocioCategoria categoria, NegocioNivel nivel, NegocioOrigem origem,NegocioServico servico) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Contato.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Contato.class);
 		if(nome.length()>0) criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
 		if(categoria!=null && categoria.getId()!=-1L) criteria.add(Restrictions.eq("categoria", categoria));
 		if(nivel!=null && nivel.getId()!=-1L) criteria.add(Restrictions.eq("nivel", nivel));
@@ -60,7 +60,9 @@ public class ContatosImpl {
 	public Pair<List<Contato>,Paginacao> filtrar(Paginacao pagination, PessoaTipo pessoaTipo, ContatoTipo contatoTipo, NegocioLista lista, NegocioCategoria categoria,
 			NegocioNivel nivel, NegocioOrigem origem, NegocioServico servico, Usuario usuario, String malaDireta, LocalDate inicio, LocalDate fim, String nome) {
 		List<Criterion> criterios = new ArrayList<>();
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Contato.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Contato.class);
 		if(!pessoaTipo.equals(PessoaTipo.CONTATO)) criterios.add(Restrictions.eq("pessoaTipo", pessoaTipo));
 		if(!contatoTipo.equals(ContatoTipo.CONTATO)) criterios.add(Restrictions.eq("contatoTipo", contatoTipo));
 		//if(lista!=null && lista.getId()!=-1L) criteria.add(Restrictions.eq("lista", lista));

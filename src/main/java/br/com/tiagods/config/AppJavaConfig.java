@@ -5,7 +5,6 @@
  */
 package br.com.tiagods.config;
 
-import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,8 +17,8 @@ import java.util.ResourceBundle;
 
 @Configuration
 public class AppJavaConfig {
-	
-    @Autowired 
+
+    @Autowired
     SpringFXMLLoader springFXMLLoader;
 
     /**
@@ -36,10 +35,10 @@ public class AppJavaConfig {
     public ResourceBundle resourceBundle() {
         return ResourceBundle.getBundle("Bundle");
     }
-    
+
     @Bean
-    @Lazy //Stage only created after Spring context bootstap
-    public StageManager stageManager(Stage stage) throws IOException {
-        return new StageManager(springFXMLLoader, stage);
+    @Lazy(value = true) //Stage only created after Spring context bootstap
+    public StageManager stageManager() throws IOException {
+        return new StageManager(springFXMLLoader);
     }
 }

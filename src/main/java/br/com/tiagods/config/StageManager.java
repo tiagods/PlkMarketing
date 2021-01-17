@@ -21,14 +21,16 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Slf4j
 public class StageManager {
 
-    private final Stage primaryStage;
+    private Stage primaryStage;
     private SpringFXMLLoader springFXMLLoader;
 
-    public StageManager(SpringFXMLLoader springFXMLLoader, Stage stage) {
+    public StageManager(SpringFXMLLoader springFXMLLoader) {
         this.springFXMLLoader = springFXMLLoader;
-        this.primaryStage = stage;
     }
 
+    public void setPrimaryStage(Stage stage){
+        this.primaryStage = stage;
+    }
     /*
     createStage deve ser true quando for necessario abrir uma nova tela (ex: subtelas)
     quando for false vai eliminar a tela atual e a proxima sera a principal (ex: tela de login abrindo o menu)

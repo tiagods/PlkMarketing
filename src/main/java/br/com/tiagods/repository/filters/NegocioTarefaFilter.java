@@ -1,4 +1,4 @@
-package br.com.tiagods.repository.helpers.filters;
+package br.com.tiagods.repository.filters;
 
 import br.com.tiagods.model.NegocioTarefa;
 import br.com.tiagods.model.Usuario;

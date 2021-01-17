@@ -2,21 +2,15 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.controller.ProtocoloEntradaPesquisaController;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.controller.ProtocoloEntradaCadastroController;
 import br.com.tiagods.repository.ProtocolosEntradas;
 import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
-import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.filters.ProtocoloEntradaFilter;
 import br.com.tiagods.util.DateUtil;
-import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.alerta.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -24,21 +18,19 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -48,6 +40,7 @@ import static br.com.tiagods.util.JavaFxUtil.alert;
 import static br.com.tiagods.util.JavaFxUtil.buttonTable;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class TabelaProtocoloEntrada {
 
     private TableView<ProtocoloEntrada> tbPrincipal;
@@ -66,6 +59,7 @@ public class TabelaProtocoloEntrada {
     AlertaProtocolo alerta;
 
     private Paginacao paginacao;
+    boolean subTelaAberta = false;
 
     public void setPaginacao(Paginacao paginacao) {
         this.paginacao = paginacao;
@@ -80,7 +74,8 @@ public class TabelaProtocoloEntrada {
         this.usuarioAtivos = usuarioAtivos;
     }
 
-    public void setPropriedades(TableView tbPrincipal, JFXRadioButton rbAdministrativo, JFXRadioButton rbComum){
+    public void setPropriedades(boolean subTelaAberta, TableView tbPrincipal, JFXRadioButton rbAdministrativo, JFXRadioButton rbComum){
+        this.subTelaAberta = subTelaAberta;
         this.tbPrincipal = tbPrincipal;
         this.rbAdministrativo= rbAdministrativo;
         this.rbComum = rbComum;
@@ -125,7 +120,7 @@ public class TabelaProtocoloEntrada {
     }
     public List<ProtocoloEntrada> filtrar(Paginacao paginacao){
         List<ProtocoloEntrada> list;
-        if(controller!=null) {
+        if(controller!=null && subTelaAberta) {
             list = controller.filtrar(paginacao);
         }
         else{

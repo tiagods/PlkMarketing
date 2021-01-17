@@ -1,12 +1,10 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
 import br.com.tiagods.repository.ImplantacaoProcessosEtapas;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessosEtapasImpl;
 import br.com.tiagods.util.DateUtil;
 import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
@@ -20,7 +18,6 @@ import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;

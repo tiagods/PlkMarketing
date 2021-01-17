@@ -1,4 +1,4 @@
-package br.com.tiagods.repository.helpers.filters;
+package br.com.tiagods.repository.filters;
 
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;

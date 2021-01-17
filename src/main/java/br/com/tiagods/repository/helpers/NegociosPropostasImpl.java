@@ -3,12 +3,11 @@ package br.com.tiagods.repository.helpers;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
+import br.com.tiagods.repository.filters.NegocioPropostaFilter;
 import javafx.util.Pair;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,13 +29,13 @@ public class NegociosPropostasImpl {
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
 
-	private NegociosPropostasImpl(){}
-
 	public NegocioProposta findById(Long id) {
 		Query query = manager.createQuery(
-				"SELECT a FROM NegocioProposta as a "
-                + "LEFT JOIN FETCH a.tarefas LEFT JOIN FETCH a.servicosContratados LEFT JOIN FETCH a.documentos "
-                + "where a.id=:id");
+				"SELECT a FROM NegocioProposta as a " +
+						"LEFT JOIN FETCH a.tarefas " +
+						"LEFT JOIN FETCH a.servicosContratados " +
+						"LEFT JOIN FETCH a.documentos " +
+						"WHERE a.id=:id");
         query.setParameter("id", id);
         return (NegocioProposta)query.getSingleResult();
 	}
@@ -48,7 +47,7 @@ public class NegociosPropostasImpl {
 		return (long)criteria.uniqueResult();
 	}
 
-	public Pair<List<NegocioProposta>,Paginacao> filtrar(Paginacao paginacao, NegocioPropostaFilter filter) {
+	public Pair<List<NegocioProposta>, Paginacao> filtrar(Paginacao paginacao, NegocioPropostaFilter filter) {
 		List<Criterion> criterios = new ArrayList<>();
 		Criteria criteria = filtrar(filter, criterios);
 		Pair<List, Paginacao> pair = abstractRepository.filterWithPagination(NegocioProposta.class, paginacao, criteria, criterios);
@@ -56,7 +55,9 @@ public class NegociosPropostasImpl {
 	}
 
 	public Criteria filtrar(NegocioPropostaFilter f, List<Criterion> criterios){
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(NegocioProposta.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(NegocioProposta.class);
 		if(!f.getStatus().equals(TipoStatus.STATUS)) criterios.add(Restrictions.eq("tipoStatus",f.getStatus()));
 		if(!f.getEtapa().equals(TipoEtapa.ETAPA)) criterios.add(Restrictions.eq("tipoEtapa", f.getEtapa()));
 		if(f.getCategoria()!=null && f.getCategoria().getId()!=-1L) criterios.add(Restrictions.eq("categoria",f.getCategoria()));
@@ -79,7 +80,7 @@ public class NegociosPropostasImpl {
 				criterios.add(or1);
 			}
 		}
-		criterios.forEach(c->criteria.add(c));
+		criterios.forEach(c-> criteria.add(c));
 		if(f.getOrdenacao()!=null) criteria.addOrder(Order.desc(f.getOrdenacao()));
 		return criteria;
 	}

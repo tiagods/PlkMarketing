@@ -5,9 +5,10 @@ import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcesso;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -21,8 +22,8 @@ public class ImplantacaoProcessosEtapasImpl {
 
     @PersistenceContext
     EntityManager manager;
-
-    private ImplantacaoProcessosEtapasImpl(){}
+    @Autowired
+    AbstractRepositoryImpl abstractRepository;
 
     public Optional<ImplantacaoProcessoEtapa> findById(Long id) {
         Query query = manager.createQuery(
@@ -39,7 +40,9 @@ public class ImplantacaoProcessosEtapasImpl {
                                                   ImplantacaoEtapa.Etapa etapa,
                                                   ImplantacaoProcessoEtapa.Status status,
                                                   boolean exibirApenasProcessoAberto){
-        Criteria criteria = manager.unwrap(Session.class).createCriteria(ImplantacaoProcessoEtapa.class);
+        Criteria criteria = abstractRepository
+                .getSession()
+                .createCriteria(ImplantacaoProcessoEtapa.class);
         if(departamento!=null && departamento.getId()!=-1L){
             criteria.add(Restrictions.eq("etapa.departamento",departamento));
         }

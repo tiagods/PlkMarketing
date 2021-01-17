@@ -14,9 +14,9 @@ import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.*;
 import br.com.tiagods.repository.interfaces.Paginacao;
-import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
-import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
-import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.filters.NegocioPropostaFilter;
+import br.com.tiagods.repository.filters.NegocioTarefaFilter;
+import br.com.tiagods.repository.filters.ProtocoloEntradaFilter;
 import br.com.tiagods.services.AlertaImplantacao;
 import br.com.tiagods.util.*;
 import com.jfoenix.controls.JFXButton;
@@ -457,7 +457,7 @@ public class MenuController implements Initializable {
         listViewNegocios.getItems().clear();
         NegocioPropostaFilter propostaFilter = new NegocioPropostaFilter();
         propostaFilter.setStatus(NegocioProposta.TipoStatus.ANDAMENTO);
-        Pair<List<NegocioProposta>,Paginacao> propostaList = propostas.filtrar(null,propostaFilter);
+        Pair<List<NegocioProposta>,Paginacao> propostaList = propostas.filtrar(null, propostaFilter);
         long n1 = propostaList.getKey().size();
         txNegociosTodos.setText(String.valueOf(n1));
         txNegociosTodos.setOnMouseClicked(event -> abrirNegocio(propostaFilter));
@@ -548,7 +548,7 @@ public class MenuController implements Initializable {
         JFXRadioButton rbComum = new JFXRadioButton();
         rbComum.setSelected(true);
 
-        tabelaProtocoloEntrada.setPropriedades(tbProtocoloEntrada, new JFXRadioButton(),rbComum);
+        tabelaProtocoloEntrada.setPropriedades(false, tbProtocoloEntrada, new JFXRadioButton(),rbComum);
         tabelaProtocoloEntrada.tabela();
 
         tabelaProtocoloEntrada.setUsuarioAtivos(usuarios.findAllByAtivoOrderByNome(1));

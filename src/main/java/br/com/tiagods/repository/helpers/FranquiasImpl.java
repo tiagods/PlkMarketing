@@ -2,10 +2,11 @@ package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.negocio.Franquia;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -18,10 +19,13 @@ public class FranquiasImpl {
     @PersistenceContext
     EntityManager manager;
 
-    private FranquiasImpl(){}
+    @Autowired
+    AbstractRepositoryImpl abstractRepository;
 
     public List<Franquia> filtrar(String nome, Franquia.Tipo tipo, Usuario atendente) {
-        Criteria criteria = manager.unwrap(Session.class).createCriteria(Franquia.class);
+        Criteria criteria = abstractRepository
+                .getSession()
+                .createCriteria(Franquia.class);
         if(nome!=null && nome.trim().length()>0) {
             criteria.add(Restrictions.ilike("nome", nome, MatchMode.ANYWHERE));
         }

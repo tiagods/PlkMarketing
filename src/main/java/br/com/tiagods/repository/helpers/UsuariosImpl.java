@@ -3,9 +3,8 @@ package br.com.tiagods.repository.helpers;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.interfaces.AbstractRepositoryImpl;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -26,10 +25,10 @@ public class UsuariosImpl {
 	@Autowired
 	AbstractRepositoryImpl abstractRepository;
 
-	private UsuariosImpl() {}
-
 	public List<Usuario> filtrar(String nome, int ativo, String ordem) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Usuario.class);
 		if (!nome.trim().equals("")) {
 			Criterion criterion = Restrictions.ilike(ConstantesTemporarias.pessoa_nome, nome, MatchMode.ANYWHERE);
 			Criterion criterion2 = Restrictions.ilike(ConstantesTemporarias.pessoa_telefone, nome, MatchMode.ANYWHERE);
@@ -45,14 +44,18 @@ public class UsuariosImpl {
 	}
 
 	public List<Usuario> listarAtivos() {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Usuario.class);
 		criteria.add(Restrictions.eq("ativo", 1));
 		criteria.addOrder(Order.asc("nome"));
 		return criteria.list();
 	}
 
 	public List<Usuario> getUsuariosByDepartamento(Departamento departamento) {
-		Criteria criteria = manager.unwrap(Session.class).createCriteria(Usuario.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Usuario.class);
 		criteria.add(Restrictions.eq("ativo", 1));
 		criteria.add(Restrictions.eq("departamento", departamento));
 		criteria.addOrder(Order.asc("nome"));

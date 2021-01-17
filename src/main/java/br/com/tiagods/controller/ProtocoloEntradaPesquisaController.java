@@ -4,7 +4,7 @@ import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
 import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.filters.ProtocoloEntradaFilter;
 import br.com.tiagods.repository.interfaces.Paginacao;
 import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXComboBox;
@@ -190,7 +190,7 @@ public class ProtocoloEntradaPesquisaController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		auxProtocolo.setPropriedades(tbPrincipal, rbAdministrativo, rbComum);
+		auxProtocolo.setPropriedades(true, tbPrincipal, rbAdministrativo, rbComum);
 		combos();
 		auxProtocolo.tabela();
 		filtrar(auxProtocolo.getPaginacao());

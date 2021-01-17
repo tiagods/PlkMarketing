@@ -1,9 +1,10 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -17,19 +18,22 @@ public class ImplantacaoPacotesImpl {
     @PersistenceContext
     EntityManager manager;
 
-    private ImplantacaoPacotesImpl(){}
+    @Autowired
+    AbstractRepositoryImpl abstractRepository;
 
     public Optional<ImplantacaoPacote> findById(Long id) {
         Query query = manager.createQuery(
-                "SELECT a FROM ImplantacaoPacote as a "
-                + "LEFT JOIN FETCH a.etapas "
-                + "WHERE a.id=:id");
+                "SELECT a FROM ImplantacaoPacote as a " +
+                        "LEFT JOIN FETCH a.etapas " +
+                        "WHERE a.id=:id");
         query.setParameter("id", id);
         return Optional.ofNullable((ImplantacaoPacote)query.getSingleResult());
     }
 
     public Optional<ImplantacaoPacote> findByNome(String nome) {
-        Criteria criteria = manager.unwrap(Session.class).createCriteria(ImplantacaoPacote.class);
+        Criteria criteria = abstractRepository
+                .getSession()
+                .createCriteria(ImplantacaoPacote.class);
         criteria.add(Restrictions.ilike("nome", nome));
         return Optional.ofNullable((ImplantacaoPacote) criteria.uniqueResult());
     }
