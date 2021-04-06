@@ -344,6 +344,10 @@ public class MenuController extends UtilsController implements Initializable{
             abrirArquivo("checklist.jar");
         });
 
+        MenuItem miPlanilha = new MenuItem("Cadastro View");
+        iconMenuItem(miPlanilha,30,30,IconsEnum.BUTTON_VIEW);
+        miPlanilha.setOnAction(e-> abrirArquivo("clientes_prolink.jar"));
+
         MenuItem miSobre = new MenuItem("Sobre");
         iconMenuItem(miSobre,30,30,IconsEnum.BUTTON_VIEW);
         miSobre.setOnAction(this::sobre);
@@ -352,7 +356,7 @@ public class MenuController extends UtilsController implements Initializable{
         iconMenuItem(miManual,30,30, IconsEnum.BUTTON_VIEW);
         miManual.setOnAction(event -> abrirArquivo("manual.docx"));
 
-        cmExtras.getItems().addAll(miCheckList,miManual,miSobre);
+        cmExtras.getItems().addAll(miCheckList,miPlanilha, miManual,miSobre);
         btnExtras.setContextMenu(cmExtras);
         btnExtras.setOnAction(e->
                 cmExtras.show(btnExtras.getScene().getWindow(),
