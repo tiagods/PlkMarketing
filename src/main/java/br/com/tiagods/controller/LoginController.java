@@ -161,13 +161,21 @@ public class LoginController extends UtilsController implements Initializable{
                 usuarios = new UsuariosImpl(getManager());
                 Usuario usuario = usuarios.findByEmailAndSenha(
                         cbNome.getValue().getEmail(),
-                        new CriptografiaUtil().criptografar(txSenha.getText().trim())
-                );
+                        txSenha.getText().trim());
+
+                boolean isSenhaCrypto = false;
+
+                if(usuario == null) {
+                    isSenhaCrypto = true;
+
+                    usuario = usuarios.findByEmailAndSenha(
+                            cbNome.getValue().getEmail(),
+                            new CriptografiaUtil().criptografar(txSenha.getText().trim()));
+                }
                 if (usuario == null){
                     alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
                     txSenha.setText("");
-                }
-                else if(usuario.isSenhaResetada()){
+                } else if(usuario.isSenhaResetada()){
                     try {
                         Stage stage1 = new Stage();
                         FXMLLoader loader = loaderFxml(FXMLEnum.TROCA_SENHA);
@@ -176,9 +184,13 @@ public class LoginController extends UtilsController implements Initializable{
                     }catch (IOException ex) {
                         alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
                     }
-                }
-                else if (!usuario.isSenhaResetada()) {
+                } else if (!usuario.isSenhaResetada()) {
                 	try {
+                	    if(isSenhaCrypto) {
+                	        usuario.setSenha(txSenha.getText());
+                	        usuarios.save(usuario);
+                        }
+
 	                    UsuarioLogado.getInstance().setUsuario(usuario);
 	                    Stage stage1 = new Stage();
 	                    FXMLLoader loader = loaderFxml(FXMLEnum.MAIN);
@@ -189,7 +201,6 @@ public class LoginController extends UtilsController implements Initializable{
                 		alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
 					}
                 }
-
             }catch(Exception e) {
                 super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao buscar usuario",e,true);
                 e.printStackTrace();
@@ -205,7 +216,7 @@ public class LoginController extends UtilsController implements Initializable{
         try {
             Stage stage1 = new Stage();
             FXMLLoader loader = loaderFxml(FXMLEnum.RECUPERACAO_SENHA);
-            Usuario ultimoUsuario =ultimoLogadoEncontrado? cbNome.getValue():null;
+            Usuario ultimoUsuario = ultimoLogadoEncontrado? cbNome.getValue():null;
             loader.setController(new RecuperacaoController(stage1,contas, ultimoUsuario));
             initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
         }catch (IOException ex) {

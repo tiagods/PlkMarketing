@@ -1,24 +1,16 @@
 package br.com.tiagods.controller;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.model.Cidade;
 import br.com.tiagods.model.Departamento;
+import br.com.tiagods.model.PessoaFisica;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.repository.helpers.DepartamentosImpl;
-import org.fxutils.maskedtextfield.MaskedTextField;
-
+import br.com.tiagods.repository.helpers.UsuariosImpl;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
-
-import br.com.tiagods.model.Cidade;
-import br.com.tiagods.model.PessoaFisica;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.CriptografiaUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,6 +18,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.fxutils.maskedtextfield.MaskedTextField;
+
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class UsuarioCadastroController extends UtilsController implements Initializable {
     @FXML
@@ -193,8 +190,7 @@ public class UsuarioCadastroController extends UtilsController implements Initia
             System.out.println(validarLogin);
             if (validarLogin) {
                 if (!txSenha.getText().trim().equals("")) {
-                    CriptografiaUtil cripto = new CriptografiaUtil();
-                    usuario.setSenha(cripto.criptografar(txSenha.getText()));
+                    usuario.setSenha(txSenha.getText());
                 }
                 PessoaFisica pessoaFisica = new PessoaFisica();
                 pessoaFisica.setRg(txRG.getText().trim());

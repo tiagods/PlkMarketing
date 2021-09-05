@@ -67,25 +67,16 @@ public class TrocaSenhaController extends UtilsController implements Initializab
     }
     @FXML
     private void salvar(ActionEvent event){
+        //TODO aplicar validação com a senha, verificar se a senha digitada é a mesma que esta no banco
         CriptografiaUtil cripto = new CriptografiaUtil();
         if (!txRepetir.getText().equals(txNovaSenha.getText())) {
             alert(Alert.AlertType.ERROR,"Erro","Senhas não conferem","As senhas digitadas não conferem, tente novamente",null,false);
-        }
-        else if(usuario.getSenha().equals(cripto.criptografar(txNovaSenha.getText()))){
-            logger.debug("Senha é a mesma da anterior "+txRepetir.getText()+":"+txNovaSenha.getText());
-            alert(Alert.AlertType.ERROR,"Erro","Senhas não permitida",
-                    "A senha informada é igual a senha anterior, tente novamente",null,false);
-
-        }
-        else if(txRepetir.getText().equals(txNovaSenha.getText())){
-            logger.debug("Senha ok "+txRepetir.getText()+":"+txNovaSenha.getText());
-            cripto = new CriptografiaUtil();
-            String senhaCriptografada = cripto.criptografar(txNovaSenha.getText());
+        } else if(txRepetir.getText().equals(txNovaSenha.getText())){
             try{
                 loadFactory();
                 UsuariosImpl usuarios = new UsuariosImpl(getManager());
                 usuario = usuarios.findById(usuario.getId());
-                usuario.setSenha(senhaCriptografada);
+                usuario.setSenha(txNovaSenha.getText());
                 usuario.setSenhaResetada(false);
                 usuario = usuarios.save(usuario);
 
