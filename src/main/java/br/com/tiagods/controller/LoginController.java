@@ -2,6 +2,7 @@ package br.com.tiagods.controller;
 
 import br.com.tiagods.config.FxmlView;
 import br.com.tiagods.config.StageManager;
+import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.controller.acesso.RecuperacaoController;
 import br.com.tiagods.controller.acesso.TrocaSenhaController;
@@ -127,12 +128,14 @@ public class LoginController implements Initializable {
     private void logon() {
         Observable.just(cbNome.getValue())
                 .flatMap(u -> validar(u, txSenha.getText()))
-                .flatMap(c -> c.isPresent() ? Observable.just(c.get()) : Observable.error(new Exception("Usuario e senha invalidos")))
+                .flatMap(c -> c.isPresent() ?
+                        Observable.just(c.get()) : Observable.error(new Exception("Usuario e senha invalidos")))
                 .subscribe(on -> {
                     if(on.isSenhaResetada()) {
                         Stage stage = stageManager.switchScene(FxmlView.TROCASENHA, true);
                         trocaSenhaController.setPropriedades(stage, on);
                     } else
+                        UsuarioLogado.getInstance().setUsuario(on);
                         stageManager.switchScene(FxmlView.MENU, false);
                     }, tr ->
                         JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", tr.getMessage(), null, false)

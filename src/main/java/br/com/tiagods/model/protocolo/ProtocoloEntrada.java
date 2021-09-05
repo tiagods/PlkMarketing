@@ -81,10 +81,10 @@ public class ProtocoloEntrada implements Serializable {
     private String motivo;
 
     @ManyToOne
-    @JoinColumn(name = "para_id")
+    @JoinColumn(name = "para_id", nullable = false)
     private Usuario paraQuem;
     @ManyToOne
-    @JoinColumn(name = "recebido_id")
+    @JoinColumn(name = "recebido_id", nullable = false)
     private Usuario quemRecebeu;
 
     @OneToMany(mappedBy = "entrada",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
