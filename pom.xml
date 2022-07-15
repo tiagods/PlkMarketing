@@ -39,7 +39,7 @@
 		<jxl.version>2.6.12</jxl.version>
 
 		<!--Amazon S3 - File Storage-->
-		<aws-java-sdk-s3.version>1.11.289</aws-java-sdk-s3.version>
+		<aws-java-sdk-s3.version>1.12.261</aws-java-sdk-s3.version>
 
 		<!--Http Cliente for FTP-->
 		<httpclient.version>4.5.5</httpclient.version>
