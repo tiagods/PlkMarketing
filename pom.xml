@@ -42,7 +42,7 @@
 		<aws-java-sdk-s3.version>1.12.261</aws-java-sdk-s3.version>
 
 		<!--Http Cliente for FTP-->
-		<httpclient.version>4.5.5</httpclient.version>
+		<httpclient.version>4.5.13</httpclient.version>
 		<javassist.version>3.8.0.GA</javassist.version>
 		<!--JSON-->
 		<json.version>20151123</json.version>
