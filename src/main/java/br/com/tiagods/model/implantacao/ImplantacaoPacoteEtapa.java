@@ -1,7 +1,6 @@
 package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.AbstractEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,7 +8,7 @@ import java.util.Calendar;
 
 @Entity
 @Table(name = "imp_pac_etapa")
-public class ImplantacaoPacoteEtapa extends ImplantacaoEtapa implements AbstractEntity,Serializable{
+public class ImplantacaoPacoteEtapa extends ImplantacaoEtapa implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,7 +17,6 @@ public class ImplantacaoPacoteEtapa extends ImplantacaoEtapa implements Abstract
     @JoinColumn(name = "pacote_id")
     private ImplantacaoPacote pacote;
 
-    @Override
     public Long getId() {
         return id;
     }

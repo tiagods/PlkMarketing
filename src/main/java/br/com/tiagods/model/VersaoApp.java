@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 @Entity
 @Table(name = "versao_app")
-public class VersaoApp implements AbstractEntity, Serializable {
+public class VersaoApp implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,6 @@ public class VersaoApp implements AbstractEntity, Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar historico;
 
-    @Override
     public Long getId() {
         return id;
     }

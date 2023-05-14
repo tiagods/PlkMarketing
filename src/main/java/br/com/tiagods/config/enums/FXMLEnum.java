@@ -8,7 +8,7 @@ public enum FXMLEnum {
 	DEPARTAMENTO("Departamento"),
 	FRANQUIA_PESQUISA("FranquiaPesquisa"),
 	FRANQUIA_CADASTRO("FranquiaCadastro"),
-	IMPLATACAO_ETAPA("ImplantacaoEtapa"),
+	IMPLANTACAO_ETAPA("ImplantacaoEtapa"),
 	IMPLANTACAO_ETAPA_STATUS("ImplantacaoEtapaStatus"),
 	IMPLATACAO_PACOTE_CADASTRO("ImplantacaoPacoteCadastro"),
 	IMPLATACAO_PACOTE_PESQUISA("ImplantacaoPacotePesquisa"),
@@ -31,10 +31,13 @@ public enum FXMLEnum {
 	TAREFA_DIALOG_PROPOSTA("TarefaDialogProposta"),
 	TROCA_SENHA("TrocaSenha");
 	private String localizacao;
-	private FXMLEnum(String localizacao) {
+	FXMLEnum(String localizacao) {
 		this.localizacao=localizacao;
 	}
 	public URL getLocalizacao() {
 		return getClass().getResource("/fxml/"+localizacao+".fxml");
+	}
+	public String getFile() {
+		return "/fxml/"+localizacao+".fxml";
 	}
 }

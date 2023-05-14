@@ -69,6 +69,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 #Credentials
+application.properties
+application.yml
 aws.properties
 ftp.properties
 mail.properties

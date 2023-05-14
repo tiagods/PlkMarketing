@@ -1,30 +1,37 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.model.*;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.*;
-import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
-import com.jfoenix.controls.*;
+import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
+import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.repository.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.util.JavaFxUtil;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
 import java.net.URL;
-import java.util.*;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class ProtocoloEntradaPesquisaController extends UtilsController implements Initializable {
+@Controller
+public class ProtocoloEntradaPesquisaController implements Initializable {
 	@FXML
 	private HBox pnCheckBox;
 
@@ -71,9 +78,11 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 	private ProtocoloEntradaFilter filter;
 	private UsuariosImpl usuarios;
 	private ProtocolosEntradasImpl protocolos;
+
+	@Autowired
 	private TabelaProtocoloEntrada auxProtocolo;
 
-	public ProtocoloEntradaPesquisaController(Stage stage, ProtocoloEntradaFilter filter) {
+	public void setPropriedades(Stage stage, ProtocoloEntradaFilter filter) {
 		this.stage = stage;
 		this.filter = filter;
 	}
@@ -87,13 +96,12 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 			tbPrincipal.refresh();
 		};
 
-		usuarios = new UsuariosImpl(getManager());
 		auxProtocolo.setUsuarioAtivos(usuarios.listarAtivos());
 
 		Usuario usuarioTEMP = new Usuario(-1L,"Todos");
 		cbAtendente.getItems().add(usuarioTEMP);
 		cbAtendente.getItems().addAll(auxProtocolo.getUsuarioAtivos());
-		cbLimite.getItems().addAll(limiteTabela);
+		cbLimite.getItems().addAll(JavaFxUtil.getLimiteTabela());
 
 		cbAtendente.getSelectionModel().selectFirst();
 		cbRecebimento.getItems().addAll(ProtocoloEntrada.StatusRecebimento.values());
@@ -108,23 +116,16 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 		txPesquisa.setVisible(false);
 
 		ChangeListener change = (ChangeListener<Object>) (observable, oldValue, newValue) -> {
-            try {
-            	if(cbClassificar.getValue().equals(ProtocoloEntrada.Classificacao.USUARIO)){
-            		cbAtendente.setVisible(true);
-            		txPesquisa.setVisible(false);
-				}
-				else{
-					cbAtendente.setVisible(false);
-					txPesquisa.setVisible(true);
-				}
-                loadFactory();
-                auxProtocolo.setPaginacao(new Paginacao(cbLimite.getValue()));
-                filtrar(auxProtocolo.getPaginacao(),getManager());
-            } catch (Exception e) {
-                alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
-            } finally {
-                close();
-            }
+			if(cbClassificar.getValue().equals(ProtocoloEntrada.Classificacao.USUARIO)){
+				cbAtendente.setVisible(true);
+				txPesquisa.setVisible(false);
+			}
+			else{
+				cbAtendente.setVisible(false);
+				txPesquisa.setVisible(true);
+			}
+			auxProtocolo.setPaginacao(new Paginacao(cbLimite.getValue()));
+			filtrar(auxProtocolo.getPaginacao());
         };
 		if(filter!=null){
 			cbRecebimento.setValue(filter.getRecebimento());
@@ -155,26 +156,17 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 
 		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
 			auxProtocolo.getPaginacao().setPaginaAtual(newValue.intValue());
-			try {
-				loadFactory();
-				filtrar(auxProtocolo.getPaginacao(),getManager());
-			} catch (PersistenceException e) {
-				alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-			} finally {
-				close();
-			}
+			filtrar(auxProtocolo.getPaginacao());
 		});
 		auxProtocolo.setPaginacao(new Paginacao(cbLimite.getValue()));
 	}
 
 	@FXML
 	void exportar(ActionEvent event) {
-		alert(AlertType.INFORMATION,"Ajuda","Recurso em desenvolvimento","Este recurso ainda não foi liberado...aguarde...",null,false);
+		JavaFxUtil.alert(AlertType.INFORMATION,"Ajuda","Recurso em desenvolvimento","Este recurso ainda não foi liberado...aguarde...",null,false);
 	}
 
-	public List<ProtocoloEntrada> filtrar(Paginacao paginacao, EntityManager manager){
-		protocolos = new ProtocolosEntradasImpl(manager);
-
+	public List<ProtocoloEntrada> filtrar(Paginacao paginacao){
 		filter = new ProtocoloEntradaFilter();
 		filter.setRecebimento(cbRecebimento.getValue());
 		filter.setDevolucao(cbDevolucao.getValue());
@@ -198,17 +190,10 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			loadFactory();
-			auxProtocolo = new TabelaProtocoloEntrada(this,tbPrincipal,rbAdministrativo,rbComum);
-			combos();
-			auxProtocolo.tabela();
-			filtrar(auxProtocolo.getPaginacao(),getManager());
-		} catch (PersistenceException e) {
-			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-		} finally {
-			close();
-		}
+		auxProtocolo.setPropriedades(true, tbPrincipal, rbAdministrativo, rbComum);
+		combos();
+		auxProtocolo.tabela();
+		filtrar(auxProtocolo.getPaginacao());
 	}
 	@FXML
 	void novo(ActionEvent event) {
@@ -217,19 +202,11 @@ public class ProtocoloEntradaPesquisaController extends UtilsController implemen
 
 	@FXML
 	void pesquisar(KeyEvent event) {
-		try {
-			loadFactory();
-			filtrar(auxProtocolo.getPaginacao(),getManager());
-		} catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
-		} finally {
-			close();
-		}
+		filtrar(auxProtocolo.getPaginacao());
 	}
 	@FXML
 	void sair(ActionEvent event) {
 		this.stage.close();
 	}
-
 }
 

@@ -16,7 +16,10 @@
 <?import javafx.scene.text.Font?>
 <?import org.fxutils.maskedtextfield.MaskTextField?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="485.0" prefWidth="900.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="485.0" prefWidth="900.0" styleClass="menu-top--linear-background" stylesheets="@css/estilo.css"
+      xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="br.com.tiagods.controller.ProtocoloEntradaCadastroController">
    <children>
       <Label styleClass="label-title" text="Protocolo de Entrada">
          <VBox.margin>

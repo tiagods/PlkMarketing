@@ -1,43 +1,35 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import org.fxutils.maskedtextfield.MaskTextField;
-
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXRadioButton;
-import com.jfoenix.controls.JFXTextField;
-
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.model.negocio.Franquia;
 import br.com.tiagods.model.negocio.Franquia.Tipo;
 import br.com.tiagods.model.negocio.FranquiaPacote;
-import br.com.tiagods.repository.helpers.FranquiasImpl;
+import br.com.tiagods.repository.Franquias;
+import br.com.tiagods.util.JavaFxUtil;
+import br.com.tiagods.util.MoedaUtil;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.fxutils.maskedtextfield.MaskTextField;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-public class FranquiaCadastroController extends UtilsController implements Initializable{
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+@Controller
+public class FranquiaCadastroController implements Initializable {
 	@FXML
     private JFXRadioButton rbComercio;
 
@@ -72,18 +64,20 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 	private Label franquiaCodigo;
 	@FXML
 	private Label franquiaTb;
-	
-	private FranquiasImpl franquias;
+
+	@Autowired
+	private Franquias franquias;
     private Franquia franquia;
 	private Stage stage;
-	
-	NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt","BR"));
-	
-	public FranquiaCadastroController(Stage stage, Franquia franquia) {
+
+	public void setPropriedades(Stage stage, Franquia franquia) {
 		this.franquia=franquia;
 		this.stage=stage;
-
+		if(franquia!=null) {
+			preencherFormulario(franquia);
+		}
 	}
+
 	void combos() {
 		ToggleGroup group1 = new ToggleGroup();
 		group1.getToggles().addAll(rbAtivo,rbInativo);
@@ -96,23 +90,23 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 	@FXML
     void incluirPacote(ActionEvent event) {
 		if(franquia==null) {
-			alert(AlertType.ERROR,"Erro","","Salve antes de continuar",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Salve antes de continuar",null,false);
     		return;
 		}
 		if(txNomePacote.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
     		return;
     	}
 		if(txInvestimento.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Investimento obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Investimento obrigatório",null,false);
     		return;
     	}
 		if(txRetorno.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Retorno obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Retorno obrigatório",null,false);
     		return;
     	}
 		if(txFaturamento.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Fatumento obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Fatumento obrigatório",null,false);
     		return;
     	}
 		else {
@@ -148,16 +142,15 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				franquiaCodigo.setText("");
 				franquiaTb.setText("");				
 			}catch(Exception e) {
-				alert(AlertType.ERROR,"Erro","","Falha ao incluir registro",e,true);	
+				JavaFxUtil.alert(AlertType.ERROR,"Erro","","Falha ao incluir registro",e,true);
 			}
-			
 		}
     }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
     	combos();
     	tabela();
-		if(franquia!=null) preencherFormulario(franquia);
     }
     private void preencherFormulario(Franquia franquia) {
     	txNome.setText(franquia.getNome());
@@ -186,13 +179,13 @@ public class FranquiaCadastroController extends UtilsController implements Initi
     @FXML
     void salvar(ActionEvent event) {
     	if(txNome.getText().trim().length()==0) {
-    		alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
+			JavaFxUtil.alert(AlertType.ERROR,"Erro","","Nome obrigatório",null,false);
     		return;
     	}
     	else salvar();
 
     }
-    private boolean salvar() {
+    private void salvar() {
 		if(franquia==null) {
 			franquia = new Franquia();
 			franquia.setCriadoEm(Calendar.getInstance());
@@ -205,19 +198,10 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 		pacotes.addAll(tbPacote.getItems());
 		pacotes.forEach(c->c.setFranquia(franquia));
 		franquia.setPacotes(pacotes);
-		try {
-	        loadFactory();
-	        franquias = new FranquiasImpl(getManager());
-	        this.franquia = franquias.save(franquia);
-	        preencherFormulario(franquia);
-	        alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
-	        return true;
-	    } catch (PersistenceException e) {
-	        alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
-	        return false;
-	    }finally {
-			close();
-		}    	
+
+		this.franquia = franquias.save(franquia);
+		preencherFormulario(franquia);
+		JavaFxUtil.alert(Alert.AlertType.INFORMATION,"Sucesso",null,"Salvo com sucesso",null,false);
     }
     private void tabela() {
     	TableColumn<FranquiaPacote, Number> colunaid = new  TableColumn<>("*");
@@ -238,7 +222,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item.doubleValue()));
+					setText(MoedaUtil.format(item));
 				}
 			}
 		});
@@ -259,7 +243,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item.doubleValue()));
+					setText(MoedaUtil.format(item));
 				}
 			}
 		});
@@ -278,10 +262,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						FranquiaPacote pacote = tbPacote.getItems().get(getIndex());
 						txNomePacote.setText(pacote.getNome());
@@ -300,7 +281,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 		TableColumn<FranquiaPacote, String> colunaExcluir = new  TableColumn<>("");
 		colunaExcluir.setCellValueFactory(new PropertyValueFactory<>("nome"));
 		colunaExcluir.setCellFactory(param -> new TableCell<FranquiaPacote,String>(){
-			JFXButton button = new JFXButton();//Editar
+			JFXButton button = new JFXButton();
 			@Override
 			protected void updateItem(String item, boolean empty) {
 				super.updateItem(item, empty);
@@ -311,10 +292,7 @@ public class FranquiaCadastroController extends UtilsController implements Initi
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						tbPacote.getItems().remove(getIndex());
 					});

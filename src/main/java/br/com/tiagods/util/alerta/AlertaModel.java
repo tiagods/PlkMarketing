@@ -1,17 +1,8 @@
 package br.com.tiagods.util.alerta;
 
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.util.RandomicoUtil;
-
-import java.awt.*;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
-public abstract class AlertaModel extends UtilsController {
+public abstract class AlertaModel {
 
     protected String cabecalho(List<String> mensagens){
         StringBuilder builder = new StringBuilder();

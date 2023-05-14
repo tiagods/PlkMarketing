@@ -1,35 +1,40 @@
 package br.com.tiagods.repository.helpers;
 
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.interfaces.ImplantacaoPacoteDAO;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
+import java.util.Optional;
 
-public class ImplantacaoPacotesImpl extends AbstractRepository<ImplantacaoPacote,Long> implements ImplantacaoPacoteDAO {
+@Service
+public class ImplantacaoPacotesImpl {
 
-    public ImplantacaoPacotesImpl(EntityManager manager) {
-        super(manager);
-    }
+    @PersistenceContext
+    EntityManager manager;
 
-    @Override
-    public ImplantacaoPacote findById(Long id) {
-        Query query = getEntityManager().createQuery("from ImplantacaoPacote as a "
-                + "LEFT JOIN FETCH a.etapas "
-                + "where a.id=:id");
+    @Autowired
+    AbstractRepositoryImpl abstractRepository;
+
+    public Optional<ImplantacaoPacote> findById(Long id) {
+        Query query = manager.createQuery(
+                "SELECT a FROM ImplantacaoPacote as a " +
+                        "LEFT JOIN FETCH a.etapas " +
+                        "WHERE a.id=:id");
         query.setParameter("id", id);
-        return (ImplantacaoPacote)query.getSingleResult();
+        return Optional.ofNullable((ImplantacaoPacote)query.getSingleResult());
     }
-    @Override
-    public ImplantacaoPacote findByNome(String nome) {
-        Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(ImplantacaoPacote.class);
+
+    public Optional<ImplantacaoPacote> findByNome(String nome) {
+        Criteria criteria = abstractRepository
+                .getSession()
+                .createCriteria(ImplantacaoPacote.class);
         criteria.add(Restrictions.ilike("nome", nome));
-        return (ImplantacaoPacote) criteria.uniqueResult();
+        return Optional.ofNullable((ImplantacaoPacote) criteria.uniqueResult());
     }
 }

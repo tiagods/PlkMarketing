@@ -1,59 +1,34 @@
 package br.com.tiagods.repository.helpers;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-
 import br.com.tiagods.model.Departamento;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
+import br.com.tiagods.repository.AbstractRepositoryImpl;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.AbstractRepository;
-import br.com.tiagods.repository.interfaces.UsuarioDAO;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
-public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements UsuarioDAO{
-	public UsuariosImpl(EntityManager manager) {
-		super(manager);
-	}
+@Service
+public class UsuariosImpl {
 
-	@Override
-	public Usuario findByNome(String nome) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
-		criteria.add(Restrictions.ilike(ConstantesTemporarias.pessoa_nome, nome));
-		return (Usuario) criteria.uniqueResult();
-	}
-	@Override
-	public Usuario findByEmail(String email){
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
-		criteria.add(Restrictions.ilike(ConstantesTemporarias.pessoa_email, email));
-		return (Usuario) criteria.uniqueResult();
-	}
+	@PersistenceContext
+	EntityManager manager;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Usuario> getUsuariosByNome(String nome) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
-		criteria.addOrder(Order.asc(ConstantesTemporarias.pessoa_nome));
-		return (List<Usuario>) criteria.list();
-	}
+	@Autowired
+	AbstractRepositoryImpl abstractRepository;
 
-	@Override
-	public Usuario findByEmailAndSenha(String login, String senha) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
-		criteria.add(Restrictions.ilike("email", login));
-		criteria.add(Restrictions.ilike("senha", senha));
-		return (Usuario) criteria.uniqueResult();
-	}
-
-	@SuppressWarnings("unchecked")
 	public List<Usuario> filtrar(String nome, int ativo, String ordem) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Usuario.class);
 		if (!nome.trim().equals("")) {
 			Criterion criterion = Restrictions.ilike(ConstantesTemporarias.pessoa_nome, nome, MatchMode.ANYWHERE);
 			Criterion criterion2 = Restrictions.ilike(ConstantesTemporarias.pessoa_telefone, nome, MatchMode.ANYWHERE);
@@ -68,16 +43,19 @@ public class UsuariosImpl extends AbstractRepository<Usuario, Long> implements U
 		return (List<Usuario>) criteria.list();
 	}
 
-	@Override
-    public List<Usuario> listarAtivos() {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
+	public List<Usuario> listarAtivos() {
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Usuario.class);
 		criteria.add(Restrictions.eq("ativo", 1));
 		criteria.addOrder(Order.asc("nome"));
 		return criteria.list();
 	}
-	@Override
+
 	public List<Usuario> getUsuariosByDepartamento(Departamento departamento) {
-		Criteria criteria = getEntityManager().unwrap(Session.class).createCriteria(Usuario.class);
+		Criteria criteria = abstractRepository
+				.getSession()
+				.createCriteria(Usuario.class);
 		criteria.add(Restrictions.eq("ativo", 1));
 		criteria.add(Restrictions.eq("departamento", departamento));
 		criteria.addOrder(Order.asc("nome"));

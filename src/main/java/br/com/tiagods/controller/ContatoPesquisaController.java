@@ -15,10 +15,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.repository.helpers.*;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.services.UsuarioLogService;
+import br.com.tiagods.util.*;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
@@ -36,10 +38,7 @@ import br.com.tiagods.model.negocio.NegocioOrigem;
 import br.com.tiagods.model.negocio.NegocioServico;
 import br.com.tiagods.model.negocio.ServicoContratado;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.util.ExcelGenericoUtil;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
@@ -58,12 +57,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
 
-public class ContatoPesquisaController extends UtilsController implements Initializable {
+@Controller
+public class ContatoPesquisaController implements StageController, Initializable {
 	@FXML
 	private HBox pnCheckBox;
 
@@ -125,72 +127,55 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	private JFXComboBox<Integer> cbLimite;
 
 	private Stage stage;
-	private ContatosImpl contatos;
-	private NegocioNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private NegociosListasImpl listas;
-	private NegocioPropostaImpl propostas;
-	private UsuariosImpl usuarios;
+
+	@Autowired
+	private Contatos contatos;
+	@Autowired
+	private NegociosNiveis niveis;
+	@Autowired
+	private NegociosCategorias categorias;
+	@Autowired
+	private NegociosOrigens origens;
+	@Autowired
+	private NegociosServicos servicos;
+	@Autowired
+	private NegociosListas listas;
+	@Autowired
+	private NegociosPropostas propostas;
+	@Autowired
+	private Usuarios usuarios;
+
+	@Autowired
+	UsuarioLogService usuarioLogService;
+	@Lazy
+	@Autowired
+	StageManager stageManager;
+	@Autowired
+	ContatoCadastroController cadastroController;
+	@Autowired
+	NegocioCadastroController negocioCadastroController;
 
 	private Paginacao paginacao;
 
-	public ContatoPesquisaController(Stage stage) {
-		this.stage = stage;
+	@Override
+	public void setPropriedades(Stage stage) {
+		this.stage=stage;
 	}
 
 	private void abrirCadastro(Contato t) {
-		try {
-			loadFactory();
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
-			loader.setController(new ContatoCadastroController(stage, t));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-			stage.setOnHiding(event -> {
-				try {
-					loadFactory();
-					filtrar(this.paginacao);
-				} catch (Exception e) {
-					e.printStackTrace();
-				} finally {
-					close();
-				}
-			});
-		} catch (IOException e) {
-			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.CONTATO_CADASTRO, e, true);
-		} finally {
-			close();
-		}
+		Stage stage1 = stageManager.switchScene(FxmlView.CONTATO_CADASTRO, true);
+		cadastroController.setPropriedades(stage1,t);
+		stage1.setOnHiding(e -> filtrar(this.paginacao));
 	}
+
 	void abrirCadastroNegocio(NegocioProposta proposta,Contato contato) {
-		try {
-			loadFactory();
-			if (proposta != null) {
-				propostas = new NegocioPropostaImpl(getManager());
-				proposta = propostas.findById(proposta.getId());
-			}
-			Stage stage = new Stage();
-			FXMLLoader loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-			loader.setController(new NegocioCadastroController(stage, proposta,contato));
-			initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-			stage.setOnHiding(event -> {
-				try {
-					loadFactory();
-					filtrar(this.paginacao);
-				} catch (Exception e) {
-					alert(AlertType.ERROR, "Error", "", "Erro ao abrir cadastro", e, true);
-				} finally {
-					close();
-				}
-			});
-		} catch (IOException e) {
-			alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-					"Falha ao localizar o arquivo" + FXMLEnum.NEGOCIO_CADASTRO, e, true);
-		} finally {
-			close();
+		if (proposta != null) {
+			Optional<NegocioProposta> opt = propostas.findById(proposta.getId());
+			if(opt.isPresent()) proposta = opt.get();
 		}
+		Stage stage1 = stageManager.switchScene(FxmlView.NEGOCIO_CADASTRO, true);
+		negocioCadastroController.setPropriedades(stage1, proposta, contato);
+		stage1.setOnHiding(event -> filtrar(this.paginacao));
 	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	void combos() {
@@ -209,21 +194,13 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbAtendente.getItems().add(usuario);
 		cbLista.getItems().add(lista);
 
-		contatos = new ContatosImpl(getManager());
-		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		listas = new NegociosListasImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
-
-		cbLimite.getItems().addAll(limiteTabela);
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
-		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-		cbLista.getItems().addAll(listas.getAll());
+		cbLimite.getItems().addAll(JavaFxUtil.getLimiteTabela());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
+		cbAtendente.getItems().addAll(usuarios.findAllByAtivoOrderByNome(1));
+		cbLista.getItems().addAll(listas.findAll(Sort.by(Sort.Order.asc("nome"))));
 		cbMalaDireta.getItems().addAll(malaDireta);
 
 		cbTipo.getItems().addAll(PessoaTipo.values());
@@ -242,15 +219,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		cbContatoTipo.getSelectionModel().select(ContatoTipo.CONTATO);
 
 		ChangeListener change = (ChangeListener<Object>) (observable, oldValue, newValue) -> {
-            try {
-                loadFactory();
-                paginacao = new Paginacao(cbLimite.getValue());
-                filtrar(paginacao);
-            } catch (Exception e) {
-                alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
-            } finally {
-                close();
-            }
+			paginacao = new Paginacao(cbLimite.getValue());
+			filtrar(paginacao);
         };
 		cbTipo.valueProperty().addListener(change);
 		cbContatoTipo.valueProperty().addListener(change);
@@ -267,14 +237,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		
 		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
 			paginacao.setPaginaAtual(newValue.intValue());
-			try {
-				loadFactory();
-				filtrar(paginacao);
-			} catch (PersistenceException e) {
-				alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-			} finally {
-				close();
-			}
+			filtrar(paginacao);
 		});
 		paginacao = new Paginacao(cbLimite.getValue());
 	}
@@ -299,7 +262,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 				}
 				@Override
 				protected Void call() {
-						File export = salvarTemp("xls");
+						File export = MyFileUtil.salvarTemp("xls");
 						Platform.runLater(() -> sta.show());
 
 						ArrayList<ArrayList> listaImpressao = new ArrayList<>();
@@ -316,13 +279,12 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 							listaImpressao.get(0).add(c);
 						}
 						try {
-							loadFactory();
-							propostas = new NegocioPropostaImpl(getManager());
 							List<Contato> finalList = filtrar(null);
 							for (int i = 1; i <= finalList.size(); i++) {
 								listaImpressao.add(new ArrayList<String>());
 								Long newId = finalList.get(i - 1).getId();
-								Contato c = contatos.findById(newId);
+								Optional<Contato> result = contatos.findById(newId);
+								Contato c = result.get();
 								listaImpressao.get(i).add(c.getId());
 								listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getCriadoEm().getTime()));
 								listaImpressao.get(i).add(c.getPessoaTipo().getDescricao());
@@ -368,7 +330,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 								listaImpressao.get(i).add(c.getComplemento());
 								listaImpressao.get(i).add(c.getCidade());
 								listaImpressao.get(i).add(c.getEstado());
-								listaImpressao.get(i).add(c.getCriadoEm()==null?"" : sdfH.format(c.getCriadoEm().getTime()));
+								listaImpressao.get(i).add(c.getCriadoEm()==null? "" :
+										DateUtil.format(c.getCriadoEm().getTime(), DateUtil.SDFH));
 								listaImpressao.get(i).add(c.getAtendente() == null ? "" : c.getAtendente().getNome());
 								listaImpressao.get(i).add(c.getCriadoPor() == null ? "" : c.getCriadoPor().getNome());
 
@@ -398,7 +361,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 									valorHonorario.append(negocio.getId());
 									valorHonorario.append("-");
 									valorHonorario
-											.append(nf.format(negocio.getHonorario()));
+											.append(MoedaUtil.format(negocio.getHonorario()));
 									valorHonorario.append("\n ");
 									statusNegocio.append(negocio.getId());
 									statusNegocio.append("-");
@@ -412,7 +375,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 										statusServicosNegocios.append(sc.getServicosAgregados().getNome());
 										statusServicosNegocios.append(" - ");
 										statusServicosNegocios
-												.append(nf.format(sc.getValor()));
+												.append(MoedaUtil.format(sc.getValor()));
 										statusServicosNegocios.append("\n ");
 									}
 								}
@@ -422,13 +385,11 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 							}
 							ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
 							planilha.gerarExcel();
-							salvarLog(getManager(), "Contato", "Exportar", "Exportou relatorio xls");
-							Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
+							usuarioLogService.salvarLog("Contato", "Exportar", "Exportou relatorio xls");
+							Platform.runLater(() -> JavaFxUtil.alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
 							Desktop.getDesktop().open(export);
 						} catch (Exception e1) {
-							Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
-						} finally {
-							close();
+							Platform.runLater(() -> JavaFxUtil.alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha ", e1, true));
 						}
 					return null;
 				}
@@ -456,10 +417,10 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 					});
 				}
 			} else {
-				alert(AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato",null,false);
+				JavaFxUtil.alert(AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato",null,false);
 			}
 		}catch (IOException e){
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
+			JavaFxUtil.alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
 		}
 	}
 
@@ -470,26 +431,14 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 		alert.setAlertType(Alert.AlertType.CONFIRMATION);
 		alert.setContentText("Tem certeza disso?");
 		Optional<ButtonType> optional = alert.showAndWait();
-		if (optional.get() == ButtonType.OK) {
-			try {
-				loadFactory();
-				contatos = new ContatosImpl(getManager());
-				Contato t = contatos.findById(n.getId());
-				contatos.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
-				return true;
-			} catch (Exception e) {
-				super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao excluir o registro", e, true);
-				return false;
-			} finally {
-				super.close();
-			}
+		if (optional.get() == ButtonType.OK && n.getId()!=null) {
+			contatos.delete(n);
+			return true;
 		} else
 			return false;
 	}
 
 	private List<Contato> filtrar(Paginacao paginacao) {
-		contatos = new ContatosImpl(getManager());
 		Pair<List<Contato>, Paginacao> list = contatos.filtrar(paginacao, cbTipo.getValue(), cbContatoTipo.getValue(),
 				cbLista.getValue(), cbCategoria.getValue(), cbNivel.getValue(), cbOrigem.getValue(),
 				cbServico.getValue(), cbAtendente.getValue(), cbMalaDireta.getValue(), dataInicial.getValue(),
@@ -507,15 +456,8 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
-		try {
-			loadFactory();
-			combos();
-			filtrar(this.paginacao);
-		} catch (PersistenceException e) {
-			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-		} finally {
-			close();
-		}
+		combos();
+		filtrar(this.paginacao);
 	}
 
 	@FXML
@@ -530,14 +472,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 
 	@FXML
 	void pesquisar(KeyEvent event) {
-		try {
-			loadFactory();
-			filtrar(this.paginacao);
-		} catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "", "Erro ao realizar filtro", e, true);
-		} finally {
-			close();
-		}
+		filtrar(this.paginacao);
 	}
 
 	@FXML
@@ -557,7 +492,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 					setText("");
 					setGraphic(null);
 				} else {
-					setText(sdfH.format(item.getTime()));
+					setText(DateUtil.format(item.getTime(), DateUtil.SDFH));
 				}
 			}
 		});
@@ -602,7 +537,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 					button.getStyleClass().add("btDefaultText");
 					try {
 						button.setText(item);
-						buttonTable(button, IconsEnum.BUTTON_MAIL);
+						JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_MAIL);
 						final URI url = new URI("mailto", item, null);
 						button.setOnAction(event -> {
 							try {
@@ -610,7 +545,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 							} catch (IOException e) {}
 						});
 						setGraphic(button);
-					} catch (URISyntaxException | IOException e) {}
+					} catch (URISyntaxException e) {}
 				}
 			}
 		});
@@ -643,20 +578,17 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 			@Override
 			protected void updateItem(NegocioProposta item, boolean empty) {
 				super.updateItem(item, empty);
-				button.getStyleClass().add("btDefault");
-				try {
-					if (empty) {
-						setStyle("");
-						setText("");
-						setGraphic(null);
-					}
-					else {
-						IconsEnum en = item==null?IconsEnum.BUTTON_ADD:IconsEnum.BUTTON_PROPOSTA;
-						buttonTable(button, en);
-						setGraphic(button);
-					}
+				if (empty) {
+					setStyle("");
+					setText("");
+					setGraphic(null);
+				} else {
+					button.getStyleClass().add("btDefault");
+					IconsEnum en = (item == null) ? IconsEnum.BUTTON_ADD : IconsEnum.BUTTON_PROPOSTA;
+					JavaFxUtil.buttonTable(button, en);
 					button.setOnAction(event -> abrirCadastroNegocio(item, tbPrincipal.getItems().get(getIndex())));
-				}catch (IOException e){}
+					setGraphic(button);
+				}
 			}
 		});
 		TableColumn<Contato, Number> colunaEditar = new TableColumn<>("");
@@ -672,10 +604,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -697,10 +626,7 @@ public class ContatoPesquisaController extends UtilsController implements Initia
 					setGraphic(null);
 				} else {
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_REMOVE);
-					} catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
 						if (removed)

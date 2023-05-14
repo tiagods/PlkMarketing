@@ -1,8 +1,8 @@
 package br.com.tiagods.config.init;
 
-import java.io.IOException;
-
 import br.com.tiagods.model.Usuario;
+
+import java.io.IOException;
 
 public class UsuarioLogado {
     private static UsuarioLogado instance;

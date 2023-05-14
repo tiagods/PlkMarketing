@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="USUARIO_ACESSO")
-public class UsuarioAcesso implements AbstractEntity,Serializable{
+public class UsuarioAcesso implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

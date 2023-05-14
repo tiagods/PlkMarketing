@@ -1,6 +1,5 @@
 package br.com.tiagods.model.negocio;
 
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
 import java.io.Serializable;
@@ -18,7 +17,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="NEGOCIO_DOCUMENTO")
-public class NegocioDocumento implements AbstractEntity,Serializable{
+public class NegocioDocumento implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

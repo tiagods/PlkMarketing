@@ -13,7 +13,7 @@ import java.util.Date;
 import javax.swing.JOptionPane;
 
 import br.com.tiagods.config.FTPConfig;
-import br.com.tiagods.util.RandomicoUtil;
+import br.com.tiagods.util.MyStringUtil;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -23,7 +23,7 @@ public class FTPStorage extends Storage{
     
 	@Override
 	public String gerarNome(File arquivo, String nomeInicial) {
-		String nomeArquivo = RandomicoUtil.getInstance().gerarSerial(nomeInicial+"_");
+		String nomeArquivo = MyStringUtil.gerarSerial(nomeInicial+"_");
         nomeArquivo+=arquivo.getName().substring(arquivo.getName()
                         .lastIndexOf("."), arquivo.getName().length());//inserindo extensao no nome do arquivo
         return nomeArquivo;

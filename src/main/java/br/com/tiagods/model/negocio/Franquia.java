@@ -1,8 +1,6 @@
 package br.com.tiagods.model.negocio;
 
 
-import br.com.tiagods.model.AbstractEntity;
-
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -23,10 +21,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class Franquia implements AbstractEntity,Serializable{
-	/**
-	 * 
-	 */
+public class Franquia implements Serializable{
+
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

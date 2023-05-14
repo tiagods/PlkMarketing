@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="USUARIO_DEPARTAMENTO")
-public class Departamento implements AbstractEntity,Serializable{
+public class Departamento implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

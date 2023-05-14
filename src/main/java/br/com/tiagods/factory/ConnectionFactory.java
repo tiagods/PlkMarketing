@@ -1,10 +1,10 @@
 package br.com.tiagods.factory;
 
+import br.com.tiagods.config.init.DataBaseConfig;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import br.com.tiagods.config.init.DataBaseConfig;
 
 public class ConnectionFactory {
 	

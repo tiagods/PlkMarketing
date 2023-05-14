@@ -1,14 +1,17 @@
 package br.com.tiagods.controller;
 
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Departamento;
 import br.com.tiagods.model.implantacao.ImplantacaoAtividade;
 import br.com.tiagods.model.implantacao.ImplantacaoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoPacote;
 import br.com.tiagods.model.implantacao.ImplantacaoPacoteEtapa;
-import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
+import br.com.tiagods.controller.ImplantacaoEtapaController;
+import br.com.tiagods.repository.ImplantacaoPacotes;
+import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,13 +22,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ImplantacaoPacoteEtapaController extends UtilsController implements Initializable{
+@Controller
+public class ImplantacaoPacoteEtapaController implements Initializable {
     @FXML
     private JFXButton btnNovaEtapa;
 
@@ -34,33 +41,34 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
 
     private Stage stage;
 
-    private ImplantacaoPacotesImpl pacotes;
+    @Autowired
+    private ImplantacaoPacotes pacotes;
+    @Lazy
+    @Autowired
+    private StageManager stageManager;
+    @Autowired
+    ImplantacaoEtapaController implantacaoEtapaController;
 
     private ImplantacaoPacote pacote;
 
-    public ImplantacaoPacoteEtapaController(ImplantacaoPacote pck, Stage stage) {
-        this.pacote = pck;
+    public void setPropriedades(ImplantacaoPacote pacote, Stage stage) {
+        this.pacote = pacote;
         this.stage = stage;
     }
+
     void cadastrarEtapa(boolean editar, int tableLocation, ImplantacaoPacoteEtapa etapa){
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_ETAPA);
-            ImplantacaoEtapaController controller = new ImplantacaoEtapaController(editar,etapa,pacote,stage);
-            loader.setController(controller);
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-                ImplantacaoPacoteEtapa et = (ImplantacaoPacoteEtapa)controller.getEtapa();
-                if(et!=null && controller.isEtapaValida()) {
-                    if (tableLocation == -1) tbEtapa.getItems().add(et);
-                    else tbEtapa.getItems().set(tableLocation, et);
-                    pacote.setEtapas(tbEtapa.getItems().stream().collect(Collectors.toSet()));
-                    tbEtapa.refresh();
-                }
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
-        }
+        Stage stage = stageManager.switchScene(FxmlView.IMPLANTACAO_ETAPA, true);
+        implantacaoEtapaController.setPropriedades(editar, etapa, pacote, stage);
+        final ImplantacaoEtapaController controller = implantacaoEtapaController;
+        stage.setOnHiding(event -> {
+            ImplantacaoPacoteEtapa et = (ImplantacaoPacoteEtapa)controller.getEtapa();
+            if(et!=null && controller.isEtapaValida()) {
+                if (tableLocation == -1) tbEtapa.getItems().add(et);
+                else tbEtapa.getItems().set(tableLocation, et);
+                pacote.setEtapas(tbEtapa.getItems().stream().collect(Collectors.toSet()));
+                tbEtapa.refresh();
+            }
+        });
     }
     private void combos(){
         btnNovaEtapa.setOnAction(event -> {
@@ -113,10 +121,7 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {
-                    }
+                    JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
                     button.setOnAction(event -> cadastrarEtapa(true,getIndex(),tbEtapa.getItems().get(getIndex())));
                     setGraphic(button);
                 }
@@ -136,10 +141,7 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_REMOVE);
-                    }catch (IOException e) {
-                    }
+                    JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_REMOVE);
                     button.setOnAction(event -> tbEtapa.getItems().remove(getIndex()));
                     setGraphic(button);
                 }
@@ -155,18 +157,14 @@ public class ImplantacaoPacoteEtapaController extends UtilsController implements
 
     void salvar(){
         try{
-            loadFactory();
-            pacotes = new ImplantacaoPacotesImpl(getManager());
             Set<ImplantacaoPacoteEtapa> pacoteEtapas = tbEtapa.getItems().stream().collect(Collectors.toSet());
             pacote.setEtapas(pacoteEtapas);
             pacote = pacotes.save(pacote);
             tbEtapa.getItems().clear();
             tbEtapa.getItems().addAll(ordenar(pacote));
-            alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!",null,false);
+            JavaFxUtil.alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com sucesso!",null,false);
         }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
-        }finally {
-            close();
+            JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","","Falha ao tentar salvar os registros!",e,true);
         }
     }
     @FXML

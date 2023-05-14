@@ -10,12 +10,11 @@ import javax.persistence.*;
 
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Usuario;
 
 @Entity
 @Table(name="negocio")
-public class NegocioProposta implements AbstractEntity,Serializable{
+public class NegocioProposta implements Serializable{
 	public enum TipoEtapa{
 		ETAPA(-1,"Qualquer","btDefault", IconsEnum.BUTTON_NEGOCIO_CONTATO),
 		CONTATO(1,"Contato","btGreen",IconsEnum.BUTTON_NEGOCIO_CONTATO),

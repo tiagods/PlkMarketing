@@ -1,16 +1,15 @@
 package br.com.tiagods.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Calendar;
 
 import javax.persistence.*;
 
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.util.AbreviacaoNome;
+import br.com.tiagods.util.MyStringUtil;
 
 @Entity
-public class Usuario extends Pessoa implements AbstractEntity,Serializable {
+public class Usuario extends Pessoa implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,7 +46,7 @@ public class Usuario extends Pessoa implements AbstractEntity,Serializable {
 	void onLoad(){
 		String[] newName = getNome().split(" ");
 		String newName2 = newName.length>=2?newName[0]+" "+newName[1]:getNome();
-		if(newName.length>2 && AbreviacaoNome.onList(newName[1])) newName2+=" "+newName[2];
+		if(newName.length>2 && MyStringUtil.onList(newName[1])) newName2+=" "+newName[2];
 		this.nomeResumido=newName2;
 	}
 

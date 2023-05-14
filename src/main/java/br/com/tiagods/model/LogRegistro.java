@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 @Entity
 @Table(name = "log_registro")
-public class LogRegistro implements AbstractEntity, Serializable {
+public class LogRegistro implements Serializable {
     enum Tipo {
         INFO, ERROR, WARNING, DANGER
     }
@@ -21,7 +21,6 @@ public class LogRegistro implements AbstractEntity, Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar data = Calendar.getInstance();
 
-    @Override
     public Long getId() {
         return id;
     }

@@ -1,118 +1,73 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
-
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.repository.Usuarios;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-public class UsuarioPesquisaController extends UtilsController implements Initializable{
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
+@Controller
+public class UsuarioPesquisaController implements Initializable, StageController {
 	@FXML
 	private JFXTextField txPesquisa;
 	@FXML
 	private TableView<Usuario> tbPrincipal;
-	private UsuariosImpl usuarios;
 	private Stage stage;
 
-	public UsuarioPesquisaController(Stage stage) {
+	@Autowired
+	Usuarios usuarios;
+
+	@Autowired
+	UsuarioCadastroController usuarioCadastroController;
+
+	@Lazy
+	@Autowired
+	StageManager stageManager;
+
+	@Override
+	public void setPropriedades(Stage stage)	{
 		this.stage = stage;
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
-		try {
-			filtrar();
-		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao getAllFetchJoin clientes",e,true);
-		}
+		filtrar();
 	}
 	
 	private	void abrirCadastro(Usuario usuario){
-		try { 	
-			Stage stage = new Stage();
-		    final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/UsuarioCadastro.fxml"));
-	        loader.setController(new UsuarioCadastroController(usuario,stage));
-	        final Parent root = loader.load();
-	        final Scene scene = new Scene(root);
-	        stage.initModality(Modality.APPLICATION_MODAL);
-	        //stage.initStyle(StageStyle.UNDECORATED);
-	        stage.setScene(scene);
-	        stage.show();
-			stage.setOnHiding(event -> filtrar());
-		}catch(IOException e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao abrir cadastro do Usuario",e,true);
-		}
+		Stage stage1 = stageManager.switchScene(FxmlView.USUARIO_CADASTRO,  true);
+		usuarioCadastroController.setPropriedades(stage1,usuario);
+		stage.setOnHiding(event -> filtrar());
 	}
 	@FXML
 	private void cadastrar(ActionEvent event) {
 		abrirCadastro(null);
 	}
 
-	boolean excluir(Usuario usuario) {
-		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle("Exclusão...");
-		alert.setHeaderText(null);
-		alert.setAlertType(Alert.AlertType.CONFIRMATION);
-		alert.setContentText("Tem certeza disso?");
-		Optional<ButtonType> optional = alert.showAndWait();
-		if (optional.get() == ButtonType.OK) {
-			try {
-				super.loadFactory();
-				usuarios = new UsuariosImpl(super.getManager());
-				Usuario u = usuarios.findById(usuario.getId().longValue());
-				usuarios.remove(u);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
-				return true;
-			} catch (Exception e) {
-				super.alert(Alert.AlertType.ERROR,"Erro ao excluir",null,
-						"Falha ao tentar excluir o registro do Usuario",e,true);
-				return false;
-			} finally {
-				close();
-			}
-		}
-		else return false;
-
-	}
-
 	private void filtrar() {
-		try {
-			loadFactory();
-			usuarios = new UsuariosImpl(getManager());
-			tbPrincipal.getItems().clear();
-			List<Usuario> usuarioList = usuarios.filtrar(txPesquisa.getText().trim(),1,ConstantesTemporarias.pessoa_nome);
-			tbPrincipal.getItems().addAll(usuarioList);
-		}catch (Exception e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao lista clientes", "Falha ao getAllFetchJoin clientes",e,true);
-			e.printStackTrace();
-		}finally {
-			super.close();
-		}
+		tbPrincipal.getItems().clear();
+		List<Usuario> usuarioList = usuarios.findAllByNomeContainingIgnoreCaseOrderByNome(txPesquisa.getText().trim());
+		tbPrincipal.getItems().addAll(usuarioList);
 	}
 	@FXML
 	void pesquisar(KeyEvent event) {
@@ -178,10 +133,8 @@ public class UsuarioPesquisaController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btRed");
-					button.setOnAction(event -> {
-						boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
-						if(removed) tbPrincipal.getItems().remove(getIndex());
-					});
+					button.setDisable(true);
+					button.setTooltip(new Tooltip("Desabilitado"));
 					setGraphic(button);
 				}
 			}

@@ -27,7 +27,7 @@ import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.*;
 
 @Entity
-public class Contato extends Pessoa implements AbstractEntity,Serializable{
+public class Contato extends Pessoa implements Serializable{
 	/**
 	 * 
 	 */

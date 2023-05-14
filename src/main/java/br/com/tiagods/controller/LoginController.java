@@ -1,45 +1,42 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
-
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.config.init.UsuarioLogado;
+import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.controller.acesso.RecuperacaoController;
 import br.com.tiagods.controller.acesso.TrocaSenhaController;
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.factory.ConnectionFactory;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.util.JavaFxUtil;
+import br.com.tiagods.util.CriptografiaUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXPasswordField;
-
-import br.com.tiagods.config.enums.FXMLEnum;
-import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.CriptografiaUtil;
+import io.reactivex.rxjava3.core.Observable;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.MediaView;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-public class LoginController extends UtilsController implements Initializable{
+import java.net.URL;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
+
+@Controller
+public class LoginController implements Initializable {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -58,35 +55,37 @@ public class LoginController extends UtilsController implements Initializable{
     @FXML
     private JFXButton btnNovoAcesso;
 
-    private UsuariosImpl usuarios;
+    @Autowired
+    private Usuarios usuarios;
+
     private Stage stage;
+
     @FXML
     private MediaView mediaView;
 
+    @Lazy
+    @Autowired
+    private StageManager stageManager;
+
     private List<Usuario> contas;
+
+    @Autowired UsuarioCadastroController usuarioCadastroController;
+    @Autowired RecuperacaoController recuperacaoController;
+    @Autowired TrocaSenhaController trocaSenhaController;
+    VersaoSistema versaoSistema = VersaoSistema.getInstance();
 
     private boolean ultimoLogadoEncontrado = false;
 
-    public LoginController(Stage stage){
-        this.stage=stage;
-    }
-
     private void carregarUsuarios(Usuario usuario){
-        try {
-            loadFactory();
-            usuarios = new UsuariosImpl(getManager());
-            contas = usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome);
-            cbNome.getItems().clear();
-            cbNome.getItems().addAll(contas);
-            if(usuario!=null)
-                cbNome.setValue(usuario);
-            else
-                cbNome.getSelectionModel().selectFirst();
-        }catch(Exception e) {
-            alert(Alert.AlertType.ERROR,"Login",null,"Erro ao listar Usuarios",e,true);
-        }finally {
-            close();
-        }
+        Observable.fromArray(contas)
+                .flatMap(c1 -> {
+                    cbNome.getItems().clear();
+                    cbNome.getItems().addAll(c1);
+                    cbNome.getSelectionModel().selectFirst();
+                    return Observable.just(Optional.ofNullable(usuario));
+                }).subscribe(on->{
+                    if(on.isPresent()) cbNome.setValue(on.get());
+                });
     }
 
     @Override
@@ -101,43 +100,18 @@ public class LoginController extends UtilsController implements Initializable{
             mediaView.setMediaPlayer(player);
             player.play();
             */
+        contas = usuarios.findAllByAtivoOrderByNome(1);
         carregarUsuarios(null);
-        String ultimoLogin = UsuarioLogado.getInstance().lastLogin();
-        if(!ultimoLogin.equals("")){
-            String email = "";
 
-            if(ultimoLogin.contains("@")){
-                email = ultimoLogin;
-            }
-            else {
-                try {
-                    Connection con = new ConnectionFactory().getConnection();
-                    PreparedStatement ps = con.prepareStatement("select email from usuario where login ilike ?");
-                    ps.setString(1, ultimoLogin);
-                    ResultSet rs = ps.executeQuery();
-                    if (rs.next()) email = rs.getString("email");
-                }catch (SQLException e){
-                    alert(Alert.AlertType.ERROR,"Erro","","Falha ao listar login pelo jdbc",e,true);
-                }
-            }
-            final String mailFim = email;
-            Optional<Usuario> result = contas.stream().filter(c->c.getEmail().equals(mailFim)).findFirst();
-            if(result.isPresent()) {
-                this.ultimoLogadoEncontrado = true;
-                cbNome.setValue(result.get());
-            }
-        }
         txSenha.setFocusTraversable(true);
         txSenha.requestFocus();
 
-        String detalhes = "Versão do Sistema: "+sistemaVersao.getVersao()+" de "+sistemaVersao.getDate();
+        String detalhes = "Versão do Sistema: "+versaoSistema.getVersao()+" de "+versaoSistema.getDate();
         lbDetalhes.setText(detalhes);
-        lbBanco.setText("Versao do Banco:" +sistemaVersao.getVersaoBanco());
-
+        lbBanco.setText("Versao do Banco:" +versaoSistema.getVersaoBanco());
         cbNome.valueProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue!=null) ultimoLogadoEncontrado = true;
         });
-
         txSenha.requestFocus();
     }
 
@@ -152,83 +126,52 @@ public class LoginController extends UtilsController implements Initializable{
         logon();
     }
     private void logon() {
-        if (cbNome.getValue() == null || txSenha.getText().equals("")) {
-            alert(Alert.AlertType.ERROR,"Erro",null,"Usuario ou senha em branco!",null,false);
-            return;
-        } else {
-            try {
-                loadFactory();
-                usuarios = new UsuariosImpl(getManager());
-                Usuario usuario = usuarios.findByEmailAndSenha(
-                        cbNome.getValue().getEmail(),
-                        new CriptografiaUtil().criptografar(txSenha.getText().trim())
+        Observable.just(cbNome.getValue())
+                .flatMap(u -> validar(u, txSenha.getText()))
+                .flatMap(c -> c.isPresent() ?
+                        Observable.just(c.get()) : Observable.error(new Exception("Usuario e senha invalidos")))
+                .subscribe(on -> {
+                    if(on.isSenhaResetada()) {
+                        Stage stage = stageManager.switchScene(FxmlView.TROCASENHA, true);
+                        trocaSenhaController.setPropriedades(stage, on);
+                    } else
+                        UsuarioLogado.getInstance().setUsuario(on);
+                        stageManager.switchScene(FxmlView.MENU, false);
+                    }, tr ->
+                        JavaFxUtil.alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", tr.getMessage(), null, false)
                 );
-                if (usuario == null){
-                    alert(Alert.AlertType.ERROR, "Erro", null, "usuario ou senha inválidos", null, false);
-                    txSenha.setText("");
-                }
-                else if(usuario.isSenhaResetada()){
-                    try {
-                        Stage stage1 = new Stage();
-                        FXMLLoader loader = loaderFxml(FXMLEnum.TROCA_SENHA);
-                        loader.setController(new TrocaSenhaController(stage1,usuario));
-                        initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
-                    }catch (IOException ex) {
-                        alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
-                    }
-                }
-                else if (!usuario.isSenhaResetada()) {
-                	try {
-	                    UsuarioLogado.getInstance().setUsuario(usuario);
-	                    Stage stage1 = new Stage();
-	                    FXMLLoader loader = loaderFxml(FXMLEnum.MAIN);
-	                    loader.setController(new MenuController());
-	                    initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
-	                    stage.close();
-                	}catch (IOException ex) {
-                		alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
-					}
-                }
+    }
 
-            }catch(Exception e) {
-                super.alert(Alert.AlertType.ERROR,"Erro",null,"Falha ao buscar usuario",e,true);
-                e.printStackTrace();
-            }finally {
-                close();
-            }
+    Observable<Optional<Usuario>> validar(Usuario usuario, String senha) {
+        Usuario u = usuario;
+        if(u==null || senha==null || senha.trim().equals("")) {
+            return Observable.error(new Exception("Usuario ou senha não informada"));
+        }
+        else {
+            String novaSenha = new CriptografiaUtil().criptografar(senha);
+            Optional<Usuario> result = contas.stream()
+                    .filter(f -> f.getEmail().equals(u.getEmail()) && f.getSenha().equals(novaSenha))
+                    .findFirst();
+            return Observable.just(result);
         }
     }
 
     @FXML
     void esqueciASenha(ActionEvent event){
         logger.debug("Esqueci a senha acionado");
-        try {
-            Stage stage1 = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.RECUPERACAO_SENHA);
-            Usuario ultimoUsuario =ultimoLogadoEncontrado? cbNome.getValue():null;
-            loader.setController(new RecuperacaoController(stage1,contas, ultimoUsuario));
-            initPanel(loader, stage1, Modality.WINDOW_MODAL, StageStyle.DECORATED);
-        }catch (IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao abrir fxml", ex, false);
-        }
+        Usuario ultimoUsuario =ultimoLogadoEncontrado ? cbNome.getValue() : null;
+        Stage stage = stageManager.switchScene(FxmlView.RECUPERACAO_SENHA, true);
+        recuperacaoController.setPropriedades(stage, contas, ultimoUsuario);
     }
     @FXML
     void novoAcesso(ActionEvent event){
         logger.debug("Novo acesso acionado");
-        try {
-            Stage stage1 = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.USUARIO_CADASTRO);
-            UsuarioCadastroController controller = new UsuarioCadastroController(null,stage1);
-            loader.setController(controller);
-            initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage1.setOnHiding(e -> carregarUsuarios(controller.getUsuario()));
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.USUARIO_CADASTRO,e,true);
-        }
+        Stage stage = stageManager.switchScene(FxmlView.USUARIO_CADASTRO, true);
+        usuarioCadastroController.setPropriedades(stage, null);
+        stage.setOnHiding(e -> carregarUsuarios(usuarioCadastroController.getUsuario()));
     }
     @FXML
     void sair(ActionEvent event) {
-        System.exit(0);
+        Platform.exit();
     }
 }

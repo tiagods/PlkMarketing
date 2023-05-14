@@ -2,7 +2,6 @@ package br.com.tiagods.model.implantacao;
 
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.util.CalculoDePeriodo;
 
 import javax.persistence.*;
@@ -18,7 +17,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "imp_pro_etapa")
-public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
+public class ImplantacaoProcessoEtapa implements Serializable{
 
     public enum Status{
         STATUS("Todos",IconsEnum.BUTTON_SEARCH),
@@ -137,7 +136,7 @@ public class ImplantacaoProcessoEtapa implements AbstractEntity,Serializable{
             vencido = Vencido.NO_PRAZO;
         }
     }
-    @Override
+
     public Long getId() {
         return id;
     }

@@ -1,7 +1,5 @@
 package br.com.tiagods.model.negocio;
 
-import br.com.tiagods.model.AbstractEntity;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -22,7 +20,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name="franquia_pacote")
-public class FranquiaPacote implements AbstractEntity,Serializable{
+public class FranquiaPacote implements Serializable{
 	/**
 	 * 
 	 */

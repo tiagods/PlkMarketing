@@ -16,6 +16,7 @@ import br.com.tiagods.config.init.VersaoSistema;
 import br.com.tiagods.factory.ConnectionFactory;
 
 public class Atualizador {
+
 	private String versaoDisponivel = "";
 	private String detalhesVersao="";
 	private String dataVersao;

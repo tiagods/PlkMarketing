@@ -24,7 +24,7 @@ import javax.persistence.TemporalType;
 @Table(name="tarefa")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tarefa_type")
-public abstract class NegocioTarefa implements AbstractEntity,Serializable{
+public abstract class NegocioTarefa implements Serializable{
 	private static final long serialVersionUID = 1L;
 	public enum TipoTarefa{
 		REUNIAO("Reunião"), PROPOSTA("Proposta"), 

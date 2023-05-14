@@ -1,35 +1,40 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.controller.ImplantacaoEtapaController;
+import br.com.tiagods.controller.ImplantacaoEtapaStatusController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.implantacao.*;
-import br.com.tiagods.repository.helpers.ClientesImpl;
-import br.com.tiagods.repository.helpers.ImplantacaoPacotesImpl;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessosImpl;
+import br.com.tiagods.repository.Clientes;
+import br.com.tiagods.repository.ImplantacaoPacotes;
+import br.com.tiagods.repository.ImplantacaoProcessos;
+import br.com.tiagods.repository.ImplantacaoProcessosEtapas;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import org.fxutils.maskedtextfield.MaskTextField;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ImplantacaoProcessoCadastroController extends UtilsController implements Initializable {
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+
+@Controller
+public class ImplantacaoProcessoCadastroController implements Initializable {
     @FXML
     private MaskTextField txCliente;
 
@@ -51,22 +56,33 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
     @FXML
     private TableView<ImplantacaoProcessoEtapa> tbEtapa;
 
-    private Stage stage;
+    @Autowired
+    private Clientes clientes;
+    @Autowired
+    private ImplantacaoProcessos processos;
+    @Autowired
+    private ImplantacaoPacotes pacotes;
+    @Autowired
+    private ImplantacaoProcessosEtapas etapas;
+    @Autowired
+    ImplantacaoEtapaController implantacaoEtapaController;
+    @Autowired
+    ImplantacaoEtapaStatusController implantacaoEtapaStatusController;
+    @Lazy
+    @Autowired
+    StageManager stageManager;
 
-    private ClientesImpl clientes;
+    private Stage stage;
     private Cliente clienteSelecionado;
     private ImplantacaoProcesso processo;
-    private ImplantacaoProcessosImpl processos;
-    private ImplantacaoPacotesImpl pacotes;
-    private ImplantacaoProcessoEtapasImpl etapas;
 
-    public ImplantacaoProcessoCadastroController(Stage stage, ImplantacaoProcesso processo){
+    public void setPropriedades(Stage stage, ImplantacaoProcesso processo) {
         this.stage=stage;
         this.processo=processo;
     }
 
-    public enum BotaoPacote{
-        COPIAR("Copiar Pacote"),ALTERAR("Alterar Pacote");
+    public enum BotaoPacote {
+        COPIAR("Copiar Pacote"), ALTERAR("Alterar Pacote");
         private String descricao;
         BotaoPacote(String descricao){
             this.descricao=descricao;
@@ -76,44 +92,24 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             return this.descricao;
         }
     }
+
     void cadastrarEtapa(boolean editar, int tableLocation, ImplantacaoProcessoEtapa etapa){
-        try {
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLATACAO_ETAPA);
-            ImplantacaoEtapaController controller = new ImplantacaoEtapaController(editar,etapa.getEtapa(),processo,stage);
-            loader.setController(controller);
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-                ImplantacaoEtapa et = controller.getEtapa();
-                if(et!=null && controller.isEtapaValida()) {
-                    etapa.setEtapa(et);
-                    if (tableLocation == -1) tbEtapa.getItems().add(etapa);
-                    else tbEtapa.getItems().set(tableLocation, etapa);
-                    tbEtapa.refresh();
-                }
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro","Falha ao localizar o arquivo "+FXMLEnum.NEGOCIO_PESQUISA,e,true);
-        }
+        Stage stage = stageManager.switchScene(FxmlView.IMPLANTACAO_ETAPA, true);
+        implantacaoEtapaController.setPropriedades(editar, etapa.getEtapa(), processo, stage);
+        final ImplantacaoEtapaController controller = implantacaoEtapaController;
+        stage.setOnHiding(event -> {
+            ImplantacaoEtapa et = controller.getEtapa();
+            if(et!=null && controller.isEtapaValida()) {
+                etapa.setEtapa(et);
+                if (tableLocation == -1) tbEtapa.getItems().add(etapa);
+                else tbEtapa.getItems().set(tableLocation, etapa);
+                tbEtapa.refresh();
+            }
+        });
     }
-    private void consultarHistorico(ImplantacaoProcessoEtapa etapa, int index,boolean editar){
-        try {
-            loadFactory();
-            etapas = new ImplantacaoProcessoEtapasImpl(getManager());
-            etapa = etapas.findById(etapa.getId());
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.IMPLANTACAO_ETAPA_STATUS);
-            ImplantacaoEtapaStatusController controller = new ImplantacaoEtapaStatusController(etapa,stage,editar);
-            loader.setController(controller);
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-        } catch (IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro", "Falha ao localizar o arquivo " + FXMLEnum.IMPLANTACAO_ETAPA_STATUS, ex, true);
-        }catch (Exception e){
-            alert(Alert.AlertType.ERROR,"Erro","Erro ao carregar os registros","Ocorreu um erro ao carregar o registro",e,true);
-        }
-        finally {
-            close();
-        }
+    private void consultarHistorico(ImplantacaoProcessoEtapa etapa, int index, boolean editar){
+        Stage stage = stageManager.switchScene(FxmlView.IMPLANTACAO_ETAPA_STATUS, true);
+        implantacaoEtapaStatusController.setPropriedades(etapa, stage, editar);
     }
     private void combos(){
         txPacoteNome.setText("");
@@ -130,25 +126,19 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
             }
             else{
                 try {
-                    loadFactory();
-                    clientes = new ClientesImpl(getManager());
-                    clienteSelecionado = clientes.findById(Long.parseLong(txCliente.getText()));
+                    clienteSelecionado = clientes.getOne(Long.parseLong(txCliente.getText()));
                     if (clienteSelecionado!=null) txNomeCliente.setText(clienteSelecionado.getNome());
                     else txNomeCliente.setText("");
                 }catch (Exception e){
                     clienteSelecionado = null;
-                }finally {
-                    close();
                 }
             }
         });
         btnCopiarAlterarPacote.setText(BotaoPacote.COPIAR.toString());
         btnCopiarAlterarPacote.setOnAction(event -> {
             try {
-                loadFactory();
                 List<ImplantacaoPacote> choices = new ArrayList<>();
-                pacotes = new ImplantacaoPacotesImpl(getManager());
-                choices.addAll(pacotes.getAll());
+                choices.addAll(pacotes.findAll());
                 if(processo.getPacote()!=null){ choices.remove(processo.getPacote()); }
 
                 ChoiceDialog<ImplantacaoPacote> dialog = new ChoiceDialog<>();
@@ -179,8 +169,6 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
             }catch (Exception e){
                 alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","Ocorreu um erro ao getAllFetchJoin os registros",e,true);
-            }finally {
-                close();
             }
         });
     }
@@ -195,8 +183,6 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
     public void initialize(URL location, ResourceBundle resources) {
         try {
             tabelaEtapa();
-            loadFactory();
-            processos = new ImplantacaoProcessosImpl(getManager());
             combos();
             if (processo != null)
                 preencherFormulario(processo);
@@ -204,13 +190,11 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 processo = new ImplantacaoProcesso();
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","Erro ao getAllFetchJoin registros","Ocorreu um erro ao getAllFetchJoin os registros",e,true);
-        }finally {
-            close();
         }
     }
 
     private void mudarPacote(ImplantacaoPacote pack){
-        pack = pacotes.findById(pack.getId());
+        pack = pacotes.getOne(pack.getId());
         processo.setPacote(pack);
         tbEtapa.getItems().clear();
         for (ImplantacaoPacoteEtapa et : pack.getEtapas()) {
@@ -265,15 +249,11 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
         processo.setEtapas(etapas);
         processo.setCliente(clienteSelecionado);
         try{
-            loadFactory();
-            processos = new ImplantacaoProcessosImpl(getManager());
             processo = processos.save(processo);
             preencherFormulario(processo);
             alert(Alert.AlertType.INFORMATION,"Salvo","","Salvo com sucesso!",null,false);
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","Falha ao salvar","Ocorreu um erro ao tentar salvar",e,true);
-        }finally {
-            close();
         }
     }
     void tabelaEtapa(){
@@ -363,10 +343,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
                 else {
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, item.getIcon());
-                    }catch (IOException e) {
-                    }
+                    buttonTable(button, item.getIcon());
                     button.setFocusTraversable(false);
                     Tooltip tooltip = new Tooltip(item.toString());
                     button.setTooltip(tooltip);
@@ -390,11 +367,9 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                     ImplantacaoProcessoEtapa ip = tbEtapa.getItems().get(getIndex());
                     button.getStyleClass().add("btDefault");
                     setGraphic(button);
-                    try {
-                        if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO) || ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
-                            buttonTable(button, IconsEnum.BUTTON_VIEW);
-                        else setGraphic(null);
-                    }catch (IOException e) {}
+                    if(ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.ABERTO) || ip.getStatus().equals(ImplantacaoProcessoEtapa.Status.CONCLUIDO))
+                        buttonTable(button, IconsEnum.BUTTON_VIEW);
+                    else setGraphic(null);
                     final Tooltip tooltip = new Tooltip("Ver Historico!");
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> consultarHistorico(ip,getIndex(),false));
@@ -415,10 +390,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {
-                    }
+                    buttonTable(button, IconsEnum.BUTTON_EDIT);
                     button.setOnAction(event -> cadastrarEtapa(true,getIndex(),tbEtapa.getItems().get(getIndex())));
                     setGraphic(button);
                 }
@@ -438,10 +410,7 @@ public class ImplantacaoProcessoCadastroController extends UtilsController imple
                 }
                 else{
                     button.getStyleClass().add("btDefault");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_REMOVE);
-                    }catch (IOException e) {
-                    }
+                    buttonTable(button, IconsEnum.BUTTON_REMOVE);
                     button.setOnAction(event -> tbEtapa.getItems().remove(getIndex()));
                     setGraphic(button);
                 }

@@ -1,6 +1,5 @@
 package br.com.tiagods.model.protocolo;
 
-import br.com.tiagods.model.AbstractEntity;
 import br.com.tiagods.model.Cliente;
 
 import javax.persistence.*;
@@ -10,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name="protocolo_item")
-public class ProtocoloItem implements AbstractEntity,Serializable {
+public class ProtocoloItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +36,6 @@ public class ProtocoloItem implements AbstractEntity,Serializable {
     @Transient
     private ProtocoloSaida saida;
 
-    @Override
     public Long getId() {
         return id;
     }

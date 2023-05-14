@@ -1,34 +1,17 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Calendar;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.repository.helpers.filters.NegocioPropostaFilter;
+import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.negocio.*;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.repository.filters.NegocioPropostaFilter;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.util.DateUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-
-import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.negocio.NegocioCategoria;
-import br.com.tiagods.model.negocio.NegocioNivel;
-import br.com.tiagods.model.negocio.NegocioOrigem;
-import br.com.tiagods.model.negocio.NegocioServico;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,8 +24,18 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import java.net.URL;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ResourceBundle;
 
-public class TarefaPropostaDialogController extends UtilsController implements Initializable{
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+
+@Controller
+public class TarefaPropostaDialogController implements Initializable, StageController {
 	@FXML
     private JFXComboBox<NegocioCategoria> cbCategoria;
 
@@ -68,17 +61,22 @@ public class TarefaPropostaDialogController extends UtilsController implements I
     private TableView<NegocioProposta> tbPrincipal;
     
     private Stage stage;
+
 	private NegocioProposta proposta;
-	private NegocioPropostaImpl propostas;
-	private NegocioNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private UsuariosImpl usuarios;
-	
-	public TarefaPropostaDialogController(Stage stage) {
-		this.stage = stage;
-	}
+
+    @Autowired
+	private NegociosPropostas propostas;
+    @Autowired
+	private NegociosNiveis niveis;
+	@Autowired
+	private NegociosCategorias categorias;
+	@Autowired
+	private NegociosOrigens origens;
+	@Autowired
+	private NegociosServicos servicos;
+	@Autowired
+	private Usuarios usuarios;
+
 	private void combos() {
 		NegocioCategoria categoria = new NegocioCategoria(-1L,"Catetoria");
 		NegocioNivel nivel = new NegocioNivel(-1L,"Nivel");
@@ -89,19 +87,12 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		cbNivel.getItems().add(nivel);
 		cbOrigem.getItems().add(origem);
 		cbServico.getItems().add(servico);
-		cbAtendente.getItems().add(atendente);		
-		
-		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		propostas = new NegocioPropostaImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
+		cbAtendente.getItems().add(atendente);
 				
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
 		
 		cbCategoria.getSelectionModel().selectFirst();
@@ -110,17 +101,11 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		cbServico.getSelectionModel().selectFirst();
 		cbAtendente.getSelectionModel().selectFirst();
 		
-		ChangeListener<Object> change = new ChangeListener<Object>() {
-			@Override
-			public void changed(ObservableValue<? extends Object> observable, Object oldValue, Object newValue) {
-				try {
-					loadFactory();
-					filtrar();
-				}catch(Exception e) {
-					alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
-				}finally {
-					close();
-				}
+		ChangeListener<Object> change = (observable, oldValue, newValue) -> {
+			try {
+				filtrar();
+			}catch(Exception e) {
+				alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
 			}
 		};
 		cbCategoria.valueProperty().addListener(change);
@@ -130,7 +115,6 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		cbAtendente.valueProperty().addListener(change);
 	}
 	void filtrar() {
-		propostas = new NegocioPropostaImpl(getManager());
 
 		NegocioPropostaFilter filter = new NegocioPropostaFilter();
 		filter.setCategoria(cbCategoria.getValue());
@@ -140,7 +124,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 		filter.setAtendente(cbAtendente.getValue());
 		filter.setPesquisa(txPesquisa.getText());
 
-		Pair<List<NegocioProposta>,Paginacao> lista = propostas.filtrar(null,filter);
+		Pair<List<NegocioProposta>,Paginacao> lista = propostas.filtrar(null, filter);
 
 		tbPrincipal.getItems().clear();
 		tbPrincipal.getItems().addAll(lista.getKey());
@@ -149,24 +133,18 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
-			loadFactory();
 			combos();
 			filtrar();
 		}catch (Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
-		}finally {
-			close();
 		}
 	}
 	@FXML
 	void pesquisar(KeyEvent event) {
 		try {
-			loadFactory();
 			filtrar();
 		}catch(Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
 		}
 	}
 	
@@ -235,7 +213,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 					setGraphic(null);
 				}
 				else{
-					setText(sdf.format(item.getTime()));
+					setText(DateUtil.format(item.getTime(), DateUtil.SDF));
 				}
 			}
 		});
@@ -335,10 +313,7 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_OK);
-					}catch (IOException e) {
-					}
+					buttonTable(button, IconsEnum.BUTTON_OK);
 					button.setOnAction(event -> {
 						setProposta(tbPrincipal.getItems().get(getIndex()));
 						stage.close();
@@ -351,10 +326,16 @@ public class TarefaPropostaDialogController extends UtilsController implements I
 				colunaAtendente,colunaSelecionar);
 		tbPrincipal.setTableMenuButtonVisible(true);
 	}
+
 	private void setProposta(NegocioProposta proposta) {
 		this.proposta=proposta;
 	}
+
 	public NegocioProposta getProposta() {
 		return this.proposta;
+	}
+
+	public void setPropriedades(Stage stage) {
+		this.stage = stage;
 	}
 }

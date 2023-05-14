@@ -21,7 +21,11 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.util.DateUtil;
+import br.com.tiagods.util.MoedaUtil;
 import br.com.tiagods.util.storage.PathStorageEnum;
 import br.com.tiagods.util.storage.Storage;
 import br.com.tiagods.util.storage.StorageProducer;
@@ -38,7 +42,6 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.negocio.Contato;
@@ -57,18 +60,8 @@ import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoEtapa;
 import br.com.tiagods.model.negocio.NegocioProposta.TipoStatus;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegocioServicoAgregadoImpl;
-import br.com.tiagods.repository.helpers.NegocioServicoContratadoImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
@@ -78,8 +71,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-public class NegocioCadastroController extends UtilsController implements Initializable{
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+import static br.com.tiagods.util.MyFileUtil.visualizarDocumento;
+
+@Controller
+public class NegocioCadastroController implements Initializable {
 	@FXML
     private JFXRadioButton rbContato;
 
@@ -215,47 +216,57 @@ public class NegocioCadastroController extends UtilsController implements Initia
 	private Stage stage;
 	private Contato contato;
 
-	private NegocioPropostaImpl propostas;
-	private NegociosTarefasPropostasImpl tarefas;
-	private NegocioNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private UsuariosImpl usuarios;
-	private NegocioServicoContratadoImpl contratados;
-	private NegocioServicoAgregadoImpl agregados;
+	@Autowired
+	private NegociosPropostas propostas;
+	@Autowired
+	private NegociosTarefasPropostas tarefas;
+	@Autowired
+	private NegociosNiveis niveis;
+	@Autowired
+	private NegociosCategorias categorias;
+	@Autowired
+	private NegociosOrigens origens;
+	@Autowired
+	private NegociosServicos servicos;
+	@Autowired
+	private Usuarios usuarios;
+	@Autowired
+	private NegociosServicosContratados contratados;
+	@Autowired
+	private NegociosServicosAgregados agregados;
+
+	@Lazy @Autowired
+	private StageManager stageManager;
+
+	@Autowired
+	TarefaContatoDialogController tarefaContatoDialogController;
+	@Autowired
+	TarefaCadastroController tarefaCadastroController;
 
 	Storage storage = StorageProducer.newConfig();
 
-	public NegocioCadastroController(Stage stage, NegocioProposta proposta, Contato contato) {
-		this.stage = stage;
+	public void setPropriedades(Stage stage1, NegocioProposta proposta, Contato contato) {
+		this.stage = stage1;
 		this.proposta = proposta;
 		this.contato = contato;
 	}
+
 	private void abrirTarefa(NegocioTarefaProposta t) {
-		try {
-			Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
-            loader.setController(new TarefaCadastroController(stage,t,proposta));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-            	try {
-        			loadFactory();
-        			propostas = new NegocioPropostaImpl(getManager());
-        			proposta = propostas.findById(proposta.getId());
-        			tbTarefas.getItems().clear();
-        			tbTarefas.getItems().addAll(proposta.getTarefas());
-        			tbTarefas.refresh();
-        		}catch(Exception e) {
-        			e.printStackTrace();
-        		}finally {
-        			close();
-        		}
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_CADASTRO,e,true);
-        }
+		Stage stage = stageManager.switchScene(FxmlView.TAREFA_CADASTRO, true);
+		tarefaCadastroController.setPropriedades(stage, t, proposta);
+		stage.setOnHiding(event -> {
+			try {
+				Optional<NegocioProposta> result = propostas.findById(proposta.getId());
+				if(result.isPresent()) {
+					proposta = result.get();
+					tbTarefas.getItems().clear();
+					tbTarefas.getItems().addAll(proposta.getTarefas());
+					tbTarefas.refresh();
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
     @FXML
     void anexarDocumento(ActionEvent event) {
@@ -280,23 +291,15 @@ public class NegocioCadastroController extends UtilsController implements Initia
     
     @FXML
     void buscar(ActionEvent event) {
-    	try {
-    		Stage stage1 = new Stage();
-    		TarefaContatoDialogController controller = new TarefaContatoDialogController(stage1);
-    		FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_DIALOG_CONTATO);
-            loader.setController(controller);
-            initPanel(loader, stage1, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            final TarefaContatoDialogController controlador = controller;
-            stage1.setOnHiding(e -> {
-            		Contato contato = ((TarefaContatoDialogController)controlador).getContato();
-            		if(contato!=null) {
-            			preencherContato(contato,true);
-            		}
-            });
-        }catch(IOException ex) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_DIALOG_CONTATO,ex,true);
-        }
+		Stage stage = stageManager.switchScene(FxmlView.TAREFA_DIALOG_CONTATO, true);
+		tarefaContatoDialogController.setPropriedades(stage);
+		final TarefaContatoDialogController controlador = tarefaContatoDialogController;
+		stage.setOnHiding(e -> {
+			Contato contato = controlador.getContato();
+			if(contato!=null) {
+				preencherContato(contato,true);
+			}
+		});
     }
     @FXML
     void cadastrarServico(ActionEvent event) {
@@ -310,25 +313,18 @@ public class NegocioCadastroController extends UtilsController implements Initia
     	group1.getToggles().addAll(rbContato,rbEnvioProposta,rbFollowup,rbFechamento,rbIndefinida);
     	ToggleGroup group2 = new ToggleGroup();
     	group2.getToggles().addAll(rbAndamento,rbGanho,rbPerdido,rbSemMovimento);
-    	    	
-    	categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
-		agregados = new NegocioServicoAgregadoImpl(getManager());
 		
 		cbCategoria.getItems().add(null);
 		cbNivel.getItems().add(null);
 		cbOrigem.getItems().add(null);
 		cbServico.getItems().add(null);
 		
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-		cbServicoAgregado.getItems().addAll(agregados.getAll());
+		cbServicoAgregado.getItems().addAll(agregados.findAll());
 		
 		cbCategoria.getSelectionModel().selectFirst();
 		cbNivel.getSelectionModel().selectFirst();
@@ -347,17 +343,16 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
 			try{
-				loadFactory();
-				tarefas = new NegociosTarefasPropostasImpl(getManager());
-				NegocioTarefaProposta t = tarefas.findById(n.getId());
-				tarefas.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+				Optional<NegocioTarefaProposta> result = tarefas.findById(n.getId());
+				if(result.isPresent()) {
+					NegocioTarefaProposta t = result.get();
+					tarefas.delete(t);
+					alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
+				}
 				return true;
 			}catch(Exception e){
-				super.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
+				alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
 				return false;
-			}finally{
-				super.close();
 			}
 		}
 		else return false;
@@ -371,17 +366,16 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
 			try{
-				loadFactory();
-				contratados = new NegocioServicoContratadoImpl(getManager());
-				ServicoContratado t = contratados.findById(n.getId());
-				contratados.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+				Optional<ServicoContratado> result = contratados.findById(n.getId());
+				if(result.isPresent()) {
+					ServicoContratado t = result.get();
+					contratados.delete(t);
+					alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
+				}
 				return true;
 			}catch(Exception e){
-				super.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
+				alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
 				return false;
-			}finally{
-				super.close();
 			}
 		}
 		else return false;
@@ -392,7 +386,6 @@ public class NegocioCadastroController extends UtilsController implements Initia
 			tabelaTarefa();
 			tabelaServicos();
 			tabelaDocumentos();
-			loadFactory();
 			combos();
 			if(proposta!=null) preencherFormulario(this.proposta);
 			else if(proposta==null && contato!=null){
@@ -400,9 +393,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 			}
 		}catch(PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
-		}	
+		}
 	}
 	void limparDocumentos(){
 		txDocumentoId.setText("");
@@ -579,16 +570,12 @@ public class NegocioCadastroController extends UtilsController implements Initia
     	try {
     		Contato contato = new Contato(Long.parseLong(txIdPesquisa.getText()));
     		proposta.setNegocioContato(contato);
-    		loadFactory();
-    		propostas = new NegocioPropostaImpl(getManager());
     		this.proposta = propostas.save(proposta);
     		preencherFormulario(proposta);
     		alert(AlertType.INFORMATION,"Sucesso","", "Salvo com sucesso!",null,false);
     	}catch(Exception e) {
     		alert(AlertType.ERROR,"Erro","Falha ao tentar salvar o registro", "Não foi possivel salvar o registro",e,true);
-    	}finally {
-    		close();
-		}
+    	}
     }
 
     @FXML
@@ -672,17 +659,16 @@ public class NegocioCadastroController extends UtilsController implements Initia
     }
     private boolean salvarStatus(NegocioTarefaProposta tarefa,int status){
 		try{
-			loadFactory();
-			tarefas = new NegociosTarefasPropostasImpl(getManager());
-			NegocioTarefaProposta t = tarefas.findById(tarefa.getId());
-			t.setFinalizado(status);
-			tarefas.save(t);
+			Optional<NegocioTarefaProposta> result = tarefas.findById(tarefa.getId());
+			if(result.isPresent()) {
+				NegocioTarefaProposta t = result.get();
+				t.setFinalizado(status);
+				tarefas.save(t);
+			}
 			return true;
 		}catch (Exception e){
 			alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
 			return false;
-		}finally {
-			close();
 		}
 	}
     void tabelaDocumentos() {    	
@@ -704,7 +690,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
-					setText(sdf.format(item.getTime()));
+					setText(DateUtil.format(item.getTime(), DateUtil.SDF));
 				}
 			}
 		});
@@ -723,11 +709,8 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						IconsEnum ic = IconsEnum.BUTTON_CLIP;
-						buttonTable(button, ic);
-					}catch (IOException e) {
-					}
+					IconsEnum ic = IconsEnum.BUTTON_CLIP;
+					buttonTable(button, ic);
 					button.setOnAction(event -> {
 						visualizarDocumento(item, storage);
 					});
@@ -752,7 +735,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {buttonTable(button, IconsEnum.BUTTON_EDIT);}catch (IOException e) {}
+					buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						NegocioDocumento doc = tbDocumentos.getItems().get(getIndex());
 						txDocumentoDescricao.setText(doc.getDescricao());
@@ -778,10 +761,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						tbDocumentos.getItems().remove(getIndex());
 						limparDocumentos();
@@ -822,7 +802,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 					setGraphic(null);
 				}
 				else{
-					setText(nf.format(item.doubleValue()));
+					setText(MoedaUtil.format(item));
 				}
 			}
 		});
@@ -841,10 +821,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						ServicoContratado sc = tbServico.getItems().get(getIndex());
 						cbServicoAgregado.setValue(sc.getServicosAgregados());
@@ -870,10 +847,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						ServicoContratado sc = tbServico.getItems().get(getIndex());
 						boolean removed = sc.getId()==null?true:excluirServico(sc);
@@ -1074,10 +1048,8 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					buttonTable(button, IconsEnum.BUTTON_EDIT);
+
 					button.setOnAction(event ->
 						abrirTarefa(tbTarefas.getItems().get(getIndex()))
 					);
@@ -1099,10 +1071,7 @@ public class NegocioCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluirTarefa(tbTarefas.getItems().get(getIndex()));
 						if(removed) tbTarefas.getItems().remove(getIndex());
@@ -1116,5 +1085,4 @@ public class NegocioCadastroController extends UtilsController implements Initia
 		tbTarefas.setTableMenuButtonVisible(true);
 		tbTarefas.setFixedCellSize(50);
 	}
-
 }

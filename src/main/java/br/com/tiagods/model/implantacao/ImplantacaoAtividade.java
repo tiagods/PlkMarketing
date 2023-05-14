@@ -1,14 +1,12 @@
 package br.com.tiagods.model.implantacao;
 
-import br.com.tiagods.model.AbstractEntity;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "imp_atividade")
-public class ImplantacaoAtividade implements AbstractEntity,Serializable {
+public class ImplantacaoAtividade implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +21,6 @@ public class ImplantacaoAtividade implements AbstractEntity,Serializable {
         this.nome = nome;
     }
 
-    @Override
     public Long getId() {
         return id;
     }

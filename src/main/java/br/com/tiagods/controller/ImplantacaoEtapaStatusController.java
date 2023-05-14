@@ -1,11 +1,12 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapa;
 import br.com.tiagods.model.implantacao.ImplantacaoProcessoEtapaStatus;
-import br.com.tiagods.repository.helpers.ImplantacaoProcessoEtapasImpl;
+import br.com.tiagods.repository.ImplantacaoProcessosEtapas;
+import br.com.tiagods.util.DateUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.event.ActionEvent;
@@ -14,13 +15,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ImplantacaoEtapaStatusController extends UtilsController implements Initializable {
+@Controller
+public class ImplantacaoEtapaStatusController implements Initializable {
 
     @FXML
     private JFXButton btnCadastrar;
@@ -28,17 +31,20 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
     @FXML
     private TableView<ImplantacaoProcessoEtapaStatus> tbPrincipal;
 
-    private Stage stage;
+    @Autowired
+    private ImplantacaoProcessosEtapas etapas;
+
     private ImplantacaoProcessoEtapa etapa;
-    private ImplantacaoProcessoEtapasImpl etapas;
+    private Stage stage;
     private boolean editar;
 
-    public ImplantacaoEtapaStatusController(ImplantacaoProcessoEtapa etapa, Stage stage, boolean editar){
+    public void setPropriedades(ImplantacaoProcessoEtapa etapa, Stage stage, boolean editar){
         this.etapa=etapa;
         this.stage=stage;
         this.editar=editar;
     }
-    private void cadastrar(int localizacao,ImplantacaoProcessoEtapaStatus status){
+
+    private void cadastrar(int localizacao, ImplantacaoProcessoEtapaStatus status){
         TextInputDialog dialog = new TextInputDialog(status.getDescricao());
         dialog.setTitle("Cadastro de Observações");
         boolean novoRegistro = status.getId()==null;
@@ -48,8 +54,6 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
         if (result.isPresent()){
             try {
                 status.setDescricao(result.get());
-                loadFactory();
-                etapas = new ImplantacaoProcessoEtapasImpl(getManager());
                 if (localizacao==-1) {
                     etapa.setDataAtualizacao(Calendar.getInstance());
                     status.setProcessoEtapa(etapa);
@@ -62,11 +66,9 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
                 etapa.setHistorico(set);
                 etapa = etapas.save(etapa);
                 preencherFormulario(etapa);
-                alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com Sucesso!",null,false);
+                JavaFxUtil.alert(Alert.AlertType.INFORMATION,"Sucesso","","Salvo com Sucesso!",null,false);
             }catch (Exception e){
-                alert(Alert.AlertType.ERROR,"Erro","","Falha ao salvar os registros!",e,true);
-            }finally {
-                close();
+                JavaFxUtil.alert(Alert.AlertType.ERROR,"Erro","","Falha ao salvar os registros!",e,true);
             }
         }
     }
@@ -111,7 +113,7 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
                     setText("");
                     setStyle("");
                 } else {
-                    setText(sdf.format(item.getTime()));
+                    setText(DateUtil.format(item.getTime()));
                 }
             }
         });
@@ -153,9 +155,7 @@ public class ImplantacaoEtapaStatusController extends UtilsController implements
                 else{
                     ImplantacaoProcessoEtapaStatus ip = tbPrincipal.getItems().get(getIndex());
                     button.getStyleClass().add("");
-                    try {
-                        buttonTable(button, IconsEnum.BUTTON_EDIT);
-                    }catch (IOException e) {}
+                    JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
                     final Tooltip tooltip = new Tooltip("Clique para editar o registro");
                     button.setTooltip(tooltip);
                     button.setOnAction(event -> {

@@ -1,15 +1,16 @@
 package br.com.tiagods.controller;
 
-import br.com.tiagods.config.enums.FXMLEnum;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
-import br.com.tiagods.controller.utils.UtilsController;
 import br.com.tiagods.model.Cliente;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
-import br.com.tiagods.repository.helpers.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.repository.ProtocolosEntradas;
+import br.com.tiagods.repository.interfaces.Paginacao;
+import br.com.tiagods.repository.filters.ProtocoloEntradaFilter;
+import br.com.tiagods.util.DateUtil;
 import br.com.tiagods.util.alerta.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
@@ -17,32 +18,48 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class TabelaProtocoloEntrada extends UtilsController {
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+
+@Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class TabelaProtocoloEntrada {
+
     private TableView<ProtocoloEntrada> tbPrincipal;
     private JFXRadioButton rbAdministrativo, rbComum;
-    private ProtocolosEntradasImpl protocolos;
     private List<Usuario> usuarioAtivos;
+
+    @Autowired
+    private ProtocolosEntradas protocolos;
+    @Autowired
     private ProtocoloEntradaPesquisaController controller;
+    @Autowired
+    ProtocoloEntradaCadastroController protocoloEntradaCadastroController;
+    @Autowired
+    StageManager stageManager;
+    @Autowired
+    AlertaProtocolo alerta;
+
     private Paginacao paginacao;
+    boolean subTelaAberta = false;
 
     public void setPaginacao(Paginacao paginacao) {
         this.paginacao = paginacao;
@@ -57,40 +74,29 @@ public class TabelaProtocoloEntrada extends UtilsController {
         this.usuarioAtivos = usuarioAtivos;
     }
 
-    public TabelaProtocoloEntrada(ProtocoloEntradaPesquisaController controller, TableView tbPrincipal, JFXRadioButton rbAdministrativo, JFXRadioButton rbComum){
+    public void setPropriedades(boolean subTelaAberta, TableView tbPrincipal, JFXRadioButton rbAdministrativo, JFXRadioButton rbComum){
+        this.subTelaAberta = subTelaAberta;
         this.tbPrincipal = tbPrincipal;
         this.rbAdministrativo= rbAdministrativo;
         this.rbComum = rbComum;
-        this.controller = controller;
     }
+
     public void abrirCadastro(ProtocoloEntrada t) {
-        try {
-            loadFactory();
-            protocolos = new ProtocolosEntradasImpl(getManager());
-            if(t!=null){
-                t = protocolos.findById(t.getId());
+        if(t!=null){
+            Optional<ProtocoloEntrada> result = protocolos.findById(t.getId());
+            if(result.isPresent()) {
+                t = result.get();
             }
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.PROTOCOLO_ENTRADA_CADASTRO);
-            loader.setController(new ProtocoloEntradaCadastroController(stage, t));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-                try {
-                    loadFactory();
-                    protocolos = new ProtocolosEntradasImpl(getManager());
-                    filtrar(this.paginacao,getManager());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    close();
-                }
-            });
-        } catch (IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo" + FXMLEnum.CONTATO_CADASTRO, e, true);
-        } finally {
-            close();
         }
+        Stage stage = stageManager.switchScene(FxmlView.PROTOCOLO_ENTRADA_CADASTRO, true);
+        protocoloEntradaCadastroController.setPropriedades(stage, t);
+        stage.setOnHiding(event -> {
+            try {
+                filtrar(this.paginacao);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
     boolean excluir(ProtocoloEntrada n) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -101,28 +107,23 @@ public class TabelaProtocoloEntrada extends UtilsController {
         Optional<ButtonType> optional = alert.showAndWait();
         if (optional.get() == ButtonType.OK) {
             try {
-                loadFactory();
-                protocolos = new ProtocolosEntradasImpl(getManager());
-                ProtocoloEntrada t = protocolos.findById(n.getId());
-                protocolos.remove(t);
+                ProtocoloEntrada t = protocolos.getOne(n.getId());
+                protocolos.delete(t);
                 alert(Alert.AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
                 return true;
             } catch (Exception e) {
-                super.alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao excluir o registro", e, true);
+                alert(Alert.AlertType.ERROR, "Erro", null, "Falha ao excluir o registro", e, true);
                 return false;
-            } finally {
-                super.close();
             }
         } else
             return false;
     }
-    public List<ProtocoloEntrada> filtrar(Paginacao paginacao, EntityManager manager){
+    public List<ProtocoloEntrada> filtrar(Paginacao paginacao){
         List<ProtocoloEntrada> list;
-        if(controller!=null) {
-            list = controller.filtrar(paginacao,manager);
+        if(controller!=null && subTelaAberta) {
+            list = controller.filtrar(paginacao);
         }
         else{
-            protocolos = new ProtocolosEntradasImpl(manager);
             ProtocoloEntradaFilter filter = new ProtocoloEntradaFilter();
             Pair<List<ProtocoloEntrada>, Paginacao> listPair = protocolos.filtrar(paginacao, filter);
             list = listPair.getKey();
@@ -131,7 +132,7 @@ public class TabelaProtocoloEntrada extends UtilsController {
         }
         return list;
     }
-    void tabela(){
+    public void tabela(){
         tbPrincipal.getColumns().clear();
 
         TableColumn<ProtocoloEntrada, Number> colunaId = new TableColumn<>("*");
@@ -148,7 +149,7 @@ public class TabelaProtocoloEntrada extends UtilsController {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(sdfH.format(item.getTime()));
+                    setText(DateUtil.format(item.getTime()));
                 }
             }
         });
@@ -197,7 +198,7 @@ public class TabelaProtocoloEntrada extends UtilsController {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(sdf.format(item.getTime()));
+                    setText(DateUtil.format(item.getTime()));
                 }
             }
         });
@@ -246,7 +247,7 @@ public class TabelaProtocoloEntrada extends UtilsController {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(sdf.format(item.getTime()));
+                    setText(DateUtil.format(item.getTime()));
                 }
             }
         });
@@ -268,18 +269,13 @@ public class TabelaProtocoloEntrada extends UtilsController {
                     } else {
                         button.getStyleClass().add("btDefaultText");
                         if(rbAdministrativo.isSelected()){
-                            try {
-                                button.setText("Editar");
-                                buttonTable(button, IconsEnum.BUTTON_EDIT);
-                            } catch (IOException e) {
-                            }
+                            button.setText("Editar");
+                            buttonTable(button, IconsEnum.BUTTON_EDIT);
                             button.setOnAction(event ->abrirCadastro(tbPrincipal.getItems().get(getIndex())));
                         }
                         else {
-                            try {
-                                buttonTable(button, IconsEnum.BUTTON_RETUITAR);
-                                setGraphic(button);
-                            } catch (IOException e) {}
+                            buttonTable(button, IconsEnum.BUTTON_RETUITAR);
+                            setGraphic(button);
                             ProtocoloEntrada prot = tbPrincipal.getItems().get(getIndex());
                             if (prot.isRecebido()
                                     && prot.isDevolver()
@@ -287,10 +283,8 @@ public class TabelaProtocoloEntrada extends UtilsController {
                                     || prot.isRecebido()
                                     && !prot.isDevolver()) {
                                 button.setDisable(true);
-                                try {
-                                    buttonTable(button, IconsEnum.BUTTON_OK);
-                                    setGraphic(button);
-                                } catch (IOException e) {}
+                                buttonTable(button, IconsEnum.BUTTON_OK);
+                                setGraphic(button);
                                 button.setText("Baixado");
                             } else if (!prot.isRecebido()) {
                                 button.setDisable(false);
@@ -299,10 +293,8 @@ public class TabelaProtocoloEntrada extends UtilsController {
                                     && prot.isDevolver()
                                     && !prot.isDevolvido()) {
                                 button.setDisable(false);
-                                try {
-                                    buttonTable(button, IconsEnum.BUTTON_ADD);
-                                    setGraphic(button);
-                                } catch (IOException e) {}
+                                buttonTable(button, IconsEnum.BUTTON_ADD);
+                                setGraphic(button);
                                 button.setText("Novo Prazo");
                             }
                             button.setOnAction((ActionEvent event) -> {
@@ -321,17 +313,12 @@ public class TabelaProtocoloEntrada extends UtilsController {
                                         Usuario u = result.get();
                                         p.setParaQuem(u);
                                         try {
-                                            loadFactory();
-                                            protocolos = new ProtocolosEntradasImpl(getManager());
                                             p = protocolos.save(p);
                                             alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,false);
-                                            filtrar(paginacao,getManager());
-                                            AlertaProtocolo alerta = new AlertaProtocolo();
+                                            filtrar(paginacao);
                                             alerta.programarEnvioDocumentoRecebido(p,true);
                                         } catch (Exception e) {
                                             alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);
-                                        } finally {
-                                            close();
                                         }
                                     }
                                 } else if (button.getText().equals("Novo Prazo")) {
@@ -351,15 +338,11 @@ public class TabelaProtocoloEntrada extends UtilsController {
                                         }
                                         p.setMotivo(result2.get().getValue());
                                         try {
-                                            loadFactory();
-                                            protocolos = new ProtocolosEntradasImpl(getManager());
                                             protocolos.save(p);
                                             alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,false);
-                                            filtrar(paginacao,getManager());
+                                            filtrar(paginacao);
                                         } catch (Exception e) {
                                             alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);
-                                        } finally {
-                                            close();
                                         }
 
                                     }
@@ -395,11 +378,8 @@ public class TabelaProtocoloEntrada extends UtilsController {
                         setText(null);
                     } else {
                         if(rbAdministrativo.isSelected()){
-                            try {
-                                btn.setText("Excluir");
-                                buttonTable(btn, IconsEnum.BUTTON_REMOVE);
-                            } catch (IOException e) {
-                            }
+                            btn.setText("Excluir");
+                            buttonTable(btn, IconsEnum.BUTTON_REMOVE);
                             btn.setOnAction(event -> {
                                 boolean removed = excluir(tbPrincipal.getItems().get(getIndex()));
                                 if (removed) tbPrincipal.getItems().remove(getIndex());
@@ -410,29 +390,20 @@ public class TabelaProtocoloEntrada extends UtilsController {
                             if (!prot.isRecebido()) {
                                 btn.setDisable(false);
                                 btn.setText("Baixar");
-                                try {
-                                    buttonTable(btn, IconsEnum.BUTTON_DOWNLOAD);
-                                    setGraphic(btn);
-                                } catch (IOException e) {
-                                }
+                                buttonTable(btn, IconsEnum.BUTTON_DOWNLOAD);
+                                setGraphic(btn);
                             } else if (prot.isRecebido()
                                     && prot.isDevolver()
                                     && !prot.isDevolvido()) {
                                 btn.setText("Devolver");
                                 btn.setDisable(false);
-                                try {
-                                    buttonTable(btn, IconsEnum.BUTTON_DEVOLVER);
-                                    setGraphic(btn);
-                                } catch (IOException e) {
-                                }
+                                buttonTable(btn, IconsEnum.BUTTON_DEVOLVER);
+                                setGraphic(btn);
                             } else {
                                 btn.setText("Concluido");
                                 btn.setDisable(true);
-                                try {
-                                    buttonTable(btn, IconsEnum.BUTTON_OK);
-                                    setGraphic(btn);
-                                } catch (IOException e) {
-                                }
+                                buttonTable(btn, IconsEnum.BUTTON_OK);
+                                setGraphic(btn);
                             }
                             btn.setOnAction((ActionEvent event) -> {
                                 if (btn.getText().equals("Baixar")) {
@@ -457,15 +428,11 @@ public class TabelaProtocoloEntrada extends UtilsController {
                                             p.setRecebido(true);
                                             p.setDataRecebimento(Calendar.getInstance());
                                             try {
-                                                loadFactory();
-                                                protocolos = new ProtocolosEntradasImpl(getManager());
                                                 protocolos.save(p);
                                                 alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,true);
-                                                filtrar(paginacao,getManager());
+                                                filtrar(paginacao);
                                             } catch (Exception e) {
                                                 alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);
-                                            } finally {
-                                                close();
                                             }
                                         }
                                     }
@@ -482,15 +449,11 @@ public class TabelaProtocoloEntrada extends UtilsController {
                                     if (result.get() != ButtonType.CANCEL) {
                                         p.setDevolvido(true);
                                         try {
-                                            loadFactory();
-                                            protocolos = new ProtocolosEntradasImpl(getManager());
                                             protocolos.save(p);
                                             alert(Alert.AlertType.INFORMATION, "Sucesso", "", "Atualizado com sucesso",null,false);
-                                            filtrar(paginacao,getManager());
+                                            filtrar(paginacao);
                                         } catch (Exception e) {
                                             alert(Alert.AlertType.ERROR, "Erro", "Erro ao Salvar", "Não foi possivel salvar", e, true);
-                                        } finally {
-                                            close();
                                         }
                                     }
                                 }

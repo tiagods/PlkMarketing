@@ -16,9 +16,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.util.CepUtil;
+import br.com.tiagods.util.JavaFxUtil;
 import org.controlsfx.control.Rating;
 import org.fxutils.maskedtextfield.MaskedTextField;
 
@@ -29,7 +31,6 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 
-import br.com.tiagods.config.enums.FXMLEnum;
 import br.com.tiagods.config.enums.IconsEnum;
 import br.com.tiagods.config.init.UsuarioLogado;
 import br.com.tiagods.model.Cidade;
@@ -48,21 +49,9 @@ import br.com.tiagods.model.negocio.NegocioTarefaContato;
 import br.com.tiagods.model.PessoaFisica;
 import br.com.tiagods.model.PessoaJuridica;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.NegociosListasImpl;
-import br.com.tiagods.repository.helpers.NegociosMalaDiretaImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -81,8 +70,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-public class ContatoCadastroController extends UtilsController implements Initializable{
+import static br.com.tiagods.util.JavaFxUtil.alert;
+import static br.com.tiagods.util.JavaFxUtil.buttonTable;
+
+@Controller
+public class ContatoCadastroController implements Initializable {
+
 	@FXML
 	private Label lbrating;
 	
@@ -214,68 +211,51 @@ public class ContatoCadastroController extends UtilsController implements Initia
     
     @FXML
     private TableView<NegocioLista> tbListas;
-    
-    private Stage stage;
+
+	@Autowired Contatos contatos;
+	@Autowired NegociosNiveis niveis;
+	@Autowired NegociosCategorias categorias;
+	@Autowired NegociosOrigens origens;
+	@Autowired NegociosServicos servicos;
+	@Autowired NegociosListas listas;
+	@Autowired Usuarios usuarios;
+	@Autowired NegociosMalaDiretas malasDiretas;
+	@Autowired NegociosTarefasContatos tarefas;
+	@Autowired CepUtil cepUtil;
+	@Lazy @Autowired StageManager stageManager;
+	@Autowired TarefaCadastroController tarefaCadastroController;
+
+	private Stage stage;
 	private Contato contato;
-	private ContatosImpl contatos;
-	private NegocioNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private NegociosListasImpl listas;
-	private UsuariosImpl usuarios;
-	private NegociosMalaDiretaImpl malasDiretas;
-	private NegociosTarefasContatosImpl tarefas;
-	
-    public ContatoCadastroController(Stage stage, Contato contato) {
-		this.stage=stage;;
-		this.contato=contato;
-	}
-    private void abrirTarefa(NegocioTarefaContato t) {
-		try {
-			Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
-            loader.setController(new TarefaCadastroController(stage,t,contato));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-            	try {
-        			loadFactory();
-        			contatos = new ContatosImpl(getManager());
-        			contato = contatos.findById(contato.getId());
-        			tbTarefas.getItems().clear();
-        			tbTarefas.getItems().addAll(contato.getTarefas());
-        			tbTarefas.refresh();
-        		}catch(Exception e) {
-        			e.printStackTrace();
-        		}finally {
-        			close();
-        		}
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.TAREFA_CADASTRO,e,true);
-        }
+
+	private void abrirTarefa(NegocioTarefaContato t) {
+		Stage stage1 = stageManager.switchScene(FxmlView.TAREFA_CADASTRO, true);
+		tarefaCadastroController.setPropriedades(stage1, t, contato);
+		stage1.setOnHiding(event -> {
+			contatos.findById(contato.getId()).ifPresent(contato1 -> {
+				tbTarefas.getItems().clear();
+				tbTarefas.getItems().addAll(contato1.getTarefas());
+				tbTarefas.refresh();
+			});
+		});
 	}
     @FXML
     void buscarCep(ActionEvent event) {
-    	bucarCep(txCEP, txLogradouro, txNumero, txComplemento, txBairro, cbCidade, cbEstado);
+    	cepUtil.bucarCep(txCEP, txLogradouro, txNumero, txComplemento, txBairro, cbCidade, cbEstado);
     }
     
     void combos() {
     	ToggleGroup group1 = new ToggleGroup();
     	group1.getToggles().addAll(rbEmpresa,rbPessoa);
     	
-    	ChangeListener<Boolean> change = new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(rbEmpresa.isSelected()) {
-					pnPessoaJuridica.setVisible(true);
-					pnPessoaFisica.setVisible(false);
-				}
-				else if(rbPessoa.isSelected()) {
-					pnPessoaFisica.setVisible(true);
-					pnPessoaJuridica.setVisible(false);
-				}
+    	ChangeListener<Boolean> change = (observable, oldValue, newValue) -> {
+			if(rbEmpresa.isSelected()) {
+				pnPessoaJuridica.setVisible(true);
+				pnPessoaFisica.setVisible(false);
+			}
+			else if(rbPessoa.isSelected()) {
+				pnPessoaFisica.setVisible(true);
+				pnPessoaJuridica.setVisible(false);
 			}
 		};
 		rbEmpresa.selectedProperty().addListener(change);
@@ -292,22 +272,13 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		cbOrigem.getItems().add(null);
 		cbServico.getItems().add(null);
 		
-		contatos = new ContatosImpl(getManager());
-		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		listas = new NegociosListasImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
-		malasDiretas = new NegociosMalaDiretaImpl(getManager());
-		
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
-		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
-		cbLista.getItems().addAll(listas.getAll());
-		cbMalaDireta.getItems().addAll(malasDiretas.getAll());
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
+		cbAtendente.getItems().addAll(usuarios.findAllByAtivoOrderByNome(1));
+		cbLista.getItems().addAll(listas.findAll());
+		cbMalaDireta.getItems().addAll(malasDiretas.findAll());
 		
 		cbCategoria.getSelectionModel().selectFirst();
 		cbNivel.getSelectionModel().selectFirst();
@@ -320,14 +291,8 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		rating.setPartialRating(true);
 		rating.setUpdateOnHover(true);
 		rating.setRating(0);
-		rating.hoverProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				lbrating.setText(String.format("%.2f",rating.getRating()));
-				
-			}
-		});
-		comboRegiao(cbCidade,cbEstado,getManager());
+		rating.hoverProperty().addListener((observable, oldValue, newValue) -> lbrating.setText(String.format("%.2f",rating.getRating())));
+		cepUtil.comboRegiao(cbCidade,cbEstado);
     }
     boolean excluirTarefa(NegocioTarefaContato n) {
 		Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -337,19 +302,13 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		alert.setContentText("Tem certeza disso?");
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
-			try{
-				loadFactory();
-				tarefas = new NegociosTarefasContatosImpl(getManager());
-				NegocioTarefaContato t = tarefas.findById(n.getId());
-				tarefas.remove(t);
-				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
+			Optional<NegocioTarefaContato> t = tarefas.findById(n.getId());
+			if(t.isPresent()) {
+				tarefas.delete(t.get());
+				JavaFxUtil.alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!", null, false);
 				return true;
-			}catch(Exception e){
-				super.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
-				return false;
-			}finally{
-				super.close();
 			}
+			return false;
 		}
 		else return false;
 	}
@@ -367,22 +326,11 @@ public class ContatoCadastroController extends UtilsController implements Initia
 	}
     @Override
 	public void initialize(URL location, ResourceBundle resources) {
-		try {
-			tabelaListas();
-			tabelaTarefa();
-			loadFactory();
-			combos();
-			if(contato!=null) {
-				contatos = new ContatosImpl(getManager());
-				this.contato = contatos.findById(this.contato.getId());
-				preencherFormulario(this.contato);
-			}
-		}catch(PersistenceException e) {
-			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
-		}	
+		tabelaListas();
+		tabelaTarefa();
+		combos();
 	}
+
     @FXML
     private void incluirLista(ActionEvent event) {
     	if(cbLista.getValue()!=null && !tbListas.getItems().contains(cbLista.getValue())) {
@@ -409,9 +357,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
     void novaTarefa(ActionEvent event) {
     	if(contato==null) {
     		this.contato = new Contato();
-    		if(salvar()) 
-    			abrirTarefa(null);
-    		
+    		if(salvar()) abrirTarefa(null);
     	}
     	else
     		abrirTarefa(null);
@@ -593,36 +539,17 @@ public class ContatoCadastroController extends UtilsController implements Initia
     	contato.setComplemento(txComplemento.getText());
     	contato.setEstado(cbEstado.getValue());
     	contato.setCidade(cbCidade.getValue());
-    	try {
-	        loadFactory();
-	        contatos = new ContatosImpl(getManager());
-	        this.contato = contatos.save(contato);
-	        preencherFormulario(contato);
-	        alert(Alert.AlertType.INFORMATION,"Sucesso",null,
-	                "Salvo com sucesso",null,false);
-	        return true;
-	    } catch (PersistenceException e) {
-	        alert(Alert.AlertType.ERROR,"Erro",null,"Erro ao salvar o registro",e,true);
-	        return false;
-	    }finally {
-			close();
-		}
+
+		this.contato = contatos.save(contato);
+		preencherFormulario(contato);
+		return contato != null;
     }
     
     private boolean salvarStatus(NegocioTarefaContato tarefa,int status){
-		try{
-			loadFactory();
-			tarefas = new NegociosTarefasContatosImpl(getManager());
-			NegocioTarefaContato t = tarefas.findById(tarefa.getId());
-			t.setFinalizado(status);
-			tarefas.save(t);
-			return true;
-		}catch (Exception e){
-			alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
-			return false;
-		}finally {
-			close();
-		}
+		NegocioTarefaContato t = tarefas.getOne(tarefa.getId());
+		t.setFinalizado(status);
+		tarefas.save(t);
+		return true;
 	}
 	@SuppressWarnings("unchecked")
 	void tabelaListas() {
@@ -643,10 +570,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluirLista(tbListas.getItems().get(getIndex()));
 						if(removed) tbListas.getItems().remove(getIndex());
@@ -847,10 +771,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						abrirTarefa(tbTarefas.getItems().get(getIndex()));
 					});
@@ -872,10 +793,7 @@ public class ContatoCadastroController extends UtilsController implements Initia
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					button.setOnAction(event -> {
 						boolean removed = excluirTarefa(tbTarefas.getItems().get(getIndex()));
 						if(removed) tbTarefas.getItems().remove(getIndex());
@@ -889,8 +807,12 @@ public class ContatoCadastroController extends UtilsController implements Initia
 		tbTarefas.setTableMenuButtonVisible(true);
 		tbTarefas.setFixedCellSize(50);
 	}
-	
-	
-	
-	
+
+	public void setPropriedades(Stage stage, Contato contato) {
+		this.stage = stage;
+		this.contato = contato;
+		if(this.contato!=null) {
+			contatos.findById(this.contato.getId()).ifPresent(cons->preencherFormulario(this.contato));
+		}
+	}
 }

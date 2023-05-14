@@ -4,7 +4,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -19,10 +18,13 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.repository.helpers.filters.NegocioTarefaFilter;
+import br.com.tiagods.config.FxmlView;
+import br.com.tiagods.config.StageManager;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.repository.filters.NegocioTarefaFilter;
+import br.com.tiagods.services.UsuarioLogService;
+import br.com.tiagods.util.*;
 import br.com.tiagods.util.storage.Storage;
 import br.com.tiagods.util.storage.StorageProducer;
 import com.jfoenix.controls.JFXButton;
@@ -42,16 +44,8 @@ import br.com.tiagods.model.NegocioTarefa.TipoTarefa;
 import br.com.tiagods.model.negocio.NegocioTarefaContato;
 import br.com.tiagods.model.negocio.NegocioTarefaProposta;
 import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
 import br.com.tiagods.model.negocio.NegocioProposta;
-import br.com.tiagods.repository.Paginacao;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioPropostaImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasContatosImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasImpl;
-import br.com.tiagods.repository.helpers.NegociosTarefasPropostasImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
-import br.com.tiagods.util.ExcelGenericoUtil;
+import br.com.tiagods.repository.interfaces.Paginacao;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Task;
@@ -71,8 +65,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Controller;
 
-public class TarefaPesquisaController extends UtilsController implements Initializable{
+import static br.com.tiagods.util.JavaFxUtil.alert;
+
+@Controller
+public class TarefaPesquisaController implements Initializable {
 
     @FXML
     private JFXCheckBox ckEmail;
@@ -131,91 +131,89 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	@FXML
 	private JFXComboBox<Integer> cbLimite;
 
+	@Autowired
+	UsuarioLogService usuarioLogService;
+
 	private Paginacao paginacao;
-    
+
     private Stage stage;
-	private UsuariosImpl usuarios;
-	private NegociosTarefasImpl tarefas;
-	private NegociosTarefasContatosImpl tarefasContatos;
-	private NegociosTarefasPropostasImpl tarefasPropostas;
-	private NegocioPropostaImpl propostas;
-	private ContatosImpl contatos;
+    @Autowired
+	private Usuarios usuarios;
+	@Autowired
+	private NegociosTarefas tarefas;
+	@Autowired
+	private NegociosTarefasContatos tarefasContatos;
+	@Autowired
+	private NegociosTarefasPropostas tarefasPropostas;
+	@Autowired
+	private NegociosPropostas propostas;
+	@Autowired
+	private Contatos contatos;
+
+	@Lazy
+	@Autowired
+	private StageManager stageManager;
+
+	@Autowired
+	TarefaCadastroController tarefaCadastroController;
+	@Autowired
+	ContatoCadastroController contatoCadastroController;
+	@Autowired
+	NegocioCadastroController negocioCadastroController;
+
+
 	private Storage storage = StorageProducer.newConfig();
 	private NegocioTarefaFilter filter;
 
-	public TarefaPesquisaController (NegocioTarefaFilter filter, Stage stage) {
+	public void setPropriedades(NegocioTarefaFilter filter, Stage stage) {
 		this.filter = filter;
 		this.stage=stage;
 	}
+
 	private void abrirCadastro(NegocioTarefa t) {
-		try {
-			loadFactory();
-			if(t!=null) {
-				tarefas = new NegociosTarefasImpl(getManager());
-				t = tarefas.findById(t.getId());//refresh
+		if(t!=null) {
+			Optional<NegocioTarefa> result = tarefas.findById(t.getId());
+			if(result.isPresent()){
+				t = result.get();
+
 			}
-            Stage stage = new Stage();
-            FXMLLoader loader = loaderFxml(FXMLEnum.TAREFA_CADASTRO);
-            loader.setController(new TarefaCadastroController(stage,t,null));
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-            	try {
-        			loadFactory();
-        			filtrar(this.paginacao);
-        		}catch(Exception e) {
-        			e.printStackTrace();
-        		}finally {
-        			close();
-        		}
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo"+FXMLEnum.TAREFA_CADASTRO,e,true);
-        }finally {
-        	close();
-        }
+		}
+		Stage stage = stageManager.switchScene(FxmlView.TAREFA_CADASTRO, true);
+		tarefaCadastroController.setPropriedades(stage, t, null);
+		stage.setOnHiding(event -> {
+			filtrar(this.paginacao);
+		});
 	}
 	void abrirCadastroContatoOrProposta(NegocioTarefa t) {
-		try {
-			loadFactory();
-            Stage stage = new Stage();
-            FXMLLoader loader = null;
-            if(t instanceof NegocioTarefaContato) {
-            	Contato c = ((NegocioTarefaContato)t).getContato();
-            	contatos = new ContatosImpl(getManager());
-            	c = contatos.findById(c.getId());
-            	loader = loaderFxml(FXMLEnum.CONTATO_CADASTRO);
-            	loader.setController(new ContatoCadastroController(stage,c));	
-            }
-            else if(t instanceof NegocioTarefaProposta) {
-            	NegocioProposta p = ((NegocioTarefaProposta)t).getProposta();
-            	propostas = new NegocioPropostaImpl(getManager());
-            	p = propostas.findById(p.getId());
-            	loader = loaderFxml(FXMLEnum.NEGOCIO_CADASTRO);
-            	loader.setController(new NegocioCadastroController(stage,p,null));
-            }
-            initPanel(loader, stage, Modality.APPLICATION_MODAL, StageStyle.DECORATED);
-            stage.setOnHiding(event -> {
-            	try {
-        			loadFactory();
-        			filtrar(this.paginacao);
-        		}catch(Exception e) {
-        			e.printStackTrace();
-        		}finally {
-        			close();
-        		}
-            });
-        }catch(IOException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir o cadastro",
-                    "Falha ao localizar o arquivo "+FXMLEnum.CONTATO_CADASTRO+" ou "+FXMLEnum.NEGOCIO_CADASTRO,e,true);
-        }finally {
-			close();
+		Stage stage = new Stage();
+		FXMLLoader loader = null;
+		if(t instanceof NegocioTarefaContato) {
+			Contato c = ((NegocioTarefaContato)t).getContato();
+
+			Optional<Contato> result = contatos.findById(c.getId());
+			if(result.isPresent()) {
+				c = result.get();
+			}
+			stage = stageManager.switchScene(FxmlView.CONTATO_CADASTRO, true);
+			contatoCadastroController.setPropriedades(stage, c);
 		}
+		else if(t instanceof NegocioTarefaProposta) {
+			NegocioProposta p = ((NegocioTarefaProposta)t).getProposta();
+			Optional<NegocioProposta> result = propostas.findById(p.getId());
+			if(result.isPresent()){
+				p = result.get();
+			}
+			stage = stageManager.switchScene(FxmlView.NEGOCIO_CADASTRO, true);
+			negocioCadastroController.setPropriedades(stage, p, null);
+		}
+		stage.setOnHiding(event -> {
+			filtrar(this.paginacao);
+		});
 	}
-	
+
 	void combos() {
 		
-		cbLimite.getItems().addAll(limiteTabela);
+		cbLimite.getItems().addAll(PaginacaoUtils.limiteTabela);
 		cbLimite.getSelectionModel().selectFirst();
 		
 		rbHoje.setSelected(true);
@@ -223,7 +221,6 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		
 		ToggleGroup group = new ToggleGroup();
 		group.getToggles().addAll(rbDefinir,rbHoje,rbSemana,rbTudo);
-		usuarios = new UsuariosImpl(getManager());
 		Usuario usuario = new Usuario(-1L,"Todos");
 		cbAtendente.getItems().add(usuario);
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
@@ -231,16 +228,9 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		cbAtendente.getSelectionModel().select(UsuarioLogado.getInstance().getUsuario());
 		
 		ChangeListener<Object> changeListener = (observable, oldValue, newValue) -> {
-            try {
-                pnDatas.setVisible(rbDefinir.isSelected());
-                loadFactory();
-                paginacao = new Paginacao(cbLimite.getValue());
-                filtrar(paginacao);
-            }catch (PersistenceException e) {
-                alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
-            }finally {
-                close();
-            }
+			pnDatas.setVisible(rbDefinir.isSelected());
+			paginacao = new Paginacao(cbLimite.getValue());
+			filtrar(paginacao);
         };
 		cbLimite.valueProperty().addListener(changeListener);
 		
@@ -264,14 +254,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		
 		pagination.currentPageIndexProperty().addListener((observable, oldValue, newValue) -> {
             paginacao.setPaginaAtual(newValue.intValue());
-            try {
-                loadFactory();
-                filtrar(paginacao);
-            } catch (PersistenceException e) {
-                alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-            } finally {
-                close();
-            }
+			filtrar(paginacao);
         });
 		paginacao = new Paginacao(cbLimite.getValue());
 	}
@@ -284,24 +267,22 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		Optional<ButtonType> optional = alert.showAndWait();
 		if (optional.get() == ButtonType.OK) {
 			try{
-				loadFactory();
-				tarefas = new NegociosTarefasImpl(getManager());
-				NegocioTarefa t = tarefas.findById(n.getId());
-				tarefas.remove(t);
+				Optional<NegocioTarefa> t = tarefas.findById(n.getId());
+				if(t.isPresent()){
+					tarefas.delete(t.get());
+				}
 				alert(AlertType.INFORMATION, "Sucesso", null, "Removido com sucesso!",null, false);
 				return true;
 			}catch(Exception e){
-				super.alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
+				alert(Alert.AlertType.ERROR, "Erro", null,"Falha ao excluir o registro", e,true);
 				return false;
-			}finally{
-				super.close();
 			}
 		}
 		else return false;
 	}
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	@FXML
-    void exportar(ActionEvent event) {
+	void exportar(ActionEvent event) {
 		try {
 			FXMLLoader loader = new FXMLLoader(FXMLEnum.PROGRESS_SAMPLE.getLocalizacao());
 			Alert progress = new Alert(Alert.AlertType.INFORMATION);
@@ -313,58 +294,55 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 
 			Task<Void> run = new Task<Void>() {
 				{
-					setOnFailed(a ->sta.close());
-					setOnSucceeded(a ->sta.close());
-					setOnCancelled(a ->sta.close());
+					setOnFailed(a -> sta.close());
+					setOnSucceeded(a -> sta.close());
+					setOnCancelled(a -> sta.close());
 				}
+
 				@Override
 				protected Void call() {
 
-					File export = salvarTemp("xls");
+					File export = MyFileUtil.salvarTemp("xls");
 					Platform.runLater(() -> sta.show());
 					ArrayList<ArrayList> listaImpressao = new ArrayList<>();
-					Integer[] colunasLenght = new Integer[] { 10, 18, 18, 14, 10, 30, 10, 10, 10, 10,20, 15, 15 };
-					String[] cabecalho = new String[] { "Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
-							"Registro", "Nome", "Ultimo Negocio","Status Negocio / Ultimo Negocio", "Atendente", "Criado_Por" };
+					Integer[] colunasLenght = new Integer[]{10, 18, 18, 14, 10, 30, 10, 10, 10, 10, 20, 15, 15};
+					String[] cabecalho = new String[]{"Tarefa", "Mês", "Prazo", "Andamento", "Status", "Detalhes", "Tipo",
+							"Registro", "Nome", "Ultimo Negocio", "Status Negocio / Ultimo Negocio", "Atendente", "Criado_Por"};
 					listaImpressao.add(new ArrayList<>());
 					for (String c : cabecalho) {
 						listaImpressao.get(0).add(c);
 					}
 					try {
-
-						loadFactory();
 						List<NegocioTarefa> finalList = filtrar(null);
-
 						for (int i = 1; i <= finalList.size(); i++) {
 							listaImpressao.add(new ArrayList<String>());
-							NegocioTarefa c = finalList.get(i-1);
+							NegocioTarefa c = finalList.get(i - 1);
 							listaImpressao.get(i).add(c.getId());
-							listaImpressao.get(i).add(new SimpleDateFormat("MM/yyyy").format(c.getDataEvento().getTime()));
-							listaImpressao.get(i).add(sdfH.format(c.getDataEvento().getTime()));
+							listaImpressao.get(i).add(DateUtil.format(c.getDataEvento().getTime(), DateUtil.SDFM));
+							listaImpressao.get(i).add(DateUtil.format(c.getDataEvento().getTime(), DateUtil.SDFH));
 							listaImpressao.get(i).add(c.getTipoTarefa().getDescricao());
-							listaImpressao.get(i).add(c.getFinalizado()==0?"Pendente":"Finalizado");
-							
+							listaImpressao.get(i).add(c.getFinalizado() == 0 ? "Pendente" : "Finalizado");
+
 							listaImpressao.get(i).add(c.getDescricao());
 							String classe = "Contato";
 							long id = 0;
-							String nome="";
+							String nome = "";
 							String ultimoNegocio = "";
-							String statusUltimoNegocio= "";
-							
-							if(c instanceof NegocioTarefaProposta) {
+							String statusUltimoNegocio = "";
+
+							if (c instanceof NegocioTarefaProposta) {
 								classe = "Proposta";
-								id = ((NegocioTarefaProposta)c).getProposta().getId();
-								nome = ((NegocioTarefaProposta)c).getProposta().getNome();
-								statusUltimoNegocio = ((NegocioTarefaProposta)c).getProposta().getTipoStatus().toString();
-							}
-							else if(c instanceof NegocioTarefaContato) {
+								id = ((NegocioTarefaProposta) c).getProposta().getId();
+								nome = ((NegocioTarefaProposta) c).getProposta().getNome();
+								statusUltimoNegocio = ((NegocioTarefaProposta) c).getProposta().getTipoStatus().toString();
+							} else if (c instanceof NegocioTarefaContato) {
 								classe = "Contato";
-								id = ((NegocioTarefaContato)c).getContato().getId();
-								nome = ((NegocioTarefaContato)c).getContato().getNome();
-								NegocioProposta p = ((NegocioTarefaContato)c).getContato().getUltimoNegocio();
-								if(p!=null) {
+								id = ((NegocioTarefaContato) c).getContato().getId();
+								nome = ((NegocioTarefaContato) c).getContato().getNome();
+								NegocioProposta p = ((NegocioTarefaContato) c).getContato().getUltimoNegocio();
+								if (p != null) {
 									statusUltimoNegocio = p.getTipoStatus().getDescricao();
-									ultimoNegocio = ""+p.getId();
+									ultimoNegocio = "" + p.getId();
 								}
 							}
 							listaImpressao.get(i).add(classe);
@@ -373,52 +351,49 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 							listaImpressao.get(i).add(ultimoNegocio);
 							listaImpressao.get(i).add(statusUltimoNegocio);
 							listaImpressao.get(i).add(c.getAtendente().getNome());
-							listaImpressao.get(i).add(c.getCriadoPor()!=null?c.getCriadoPor().getNome():"");
+							listaImpressao.get(i).add(c.getCriadoPor() != null ? c.getCriadoPor().getNome() : "");
 						}
 						ExcelGenericoUtil planilha = new ExcelGenericoUtil(export.getAbsolutePath(), listaImpressao, colunasLenght);
 						planilha.gerarExcel();
-						salvarLog(getManager(), "Negocio","Exportar","Exportou relatorio xls");
-						Platform.runLater(() ->alert(AlertType.INFORMATION,"Sucesso", "Relatorio gerado com sucesso","",null,false));
+						usuarioLogService.salvarLog("Negocio", "Exportar", "Exportou relatorio xls");
+						Platform.runLater(() -> alert(AlertType.INFORMATION, "Sucesso", "Relatorio gerado com sucesso", "", null, false));
 						Desktop.getDesktop().open(export);
 					} catch (Exception e1) {
-						Platform.runLater(() ->alert(AlertType.ERROR,"Erro","","Erro ao criar a planilha",e1,true));
-					} finally {
-						close();
+						Platform.runLater(() -> alert(AlertType.ERROR, "Erro", "", "Erro ao criar a planilha", e1, true));
 					}
 					return null;
+				}
+
+			};
+			if (tbPrincipal.getItems().size() >= 1) {
+				Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+				alert.setTitle("Exportação");
+				alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
+				ButtonType ok = new ButtonType("Exportar e Abrir");
+				ButtonType cancelar = new ButtonType("Cancelar");
+				alert.getButtonTypes().clear();
+				alert.getButtonTypes().addAll(ok, cancelar);
+				Optional<ButtonType> result = alert.showAndWait();
+				if (result.get() == ok) {
+					Thread thread = new Thread(run);
+					thread.start();
+					sta.setOnCloseRequest(ae -> {
+						try {
+							thread.interrupt();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					});
+				}
+			} else {
+				alert(AlertType.ERROR, "Erro", "Parâmetros vazios", "Nenhum registro foi encontrato", null, false);
 			}
-    		
-    	};
-    	if (tbPrincipal.getItems().size() >= 1) {
-			Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-			alert.setTitle("Exportação");
-			alert.setContentText("Para exportar, realize um filtro antes!\nVocê ja filtrou os dados?");
-			ButtonType ok = new ButtonType("Exportar e Abrir");
-			ButtonType cancelar = new ButtonType("Cancelar");
-			alert.getButtonTypes().clear();
-			alert.getButtonTypes().addAll(ok, cancelar);
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ok) {
-				Thread thread = new Thread(run);
-				thread.start();
-				sta.setOnCloseRequest(ae -> {
-					try {
-						thread.interrupt();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				});
-			}
-		} else {
-			alert(AlertType.ERROR,"Erro","Parâmetros vazios","Nenhum registro foi encontrato",null,false);
+		} catch (IOException e) {
+			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado", null, false);
 		}
-		}catch (IOException e){
-			alert(AlertType.ERROR, "Erro", "Erro ao abrir o progresso", "O arquivo nao foi localizado",null,false);
-		}
-    }
+	}
     private List<NegocioTarefa> filtrar(Paginacao paginacao) {
-    	tarefas = new NegociosTarefasImpl(getManager());
-		Calendar dataEventoInicial = Calendar.getInstance();
+    	Calendar dataEventoInicial = Calendar.getInstance();
     	Calendar dataEventoFinal = Calendar.getInstance();
     	
     	Set<TipoTarefa> tipoTarefas = new HashSet<>();
@@ -470,7 +445,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 		else if(item.equals(TipoTarefa.REUNIAO)) icon= IconsEnum.BUTTON_TAREFA_REUNIAO;
 		else if(item.equals(TipoTarefa.TELEFONE)) icon= IconsEnum.BUTTON_TAREFA_FONE;
 		else if(item.equals(TipoTarefa.WHATSAPP)) icon= IconsEnum.BUTTON_TAREFA_WHATSAPP;
-		ImageView image =  createImage(30,30,icon);
+		ImageView image = JavaFxUtil.createImage(30,30,icon);
 		Label label = new Label();
 		label.setGraphic(image);
 		label.setTooltip(new Tooltip(item.getDescricao()));
@@ -481,13 +456,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
-			loadFactory();
 			combos();
 			filtrar(paginacao);
 		}catch(Exception e) {
 			alert(AlertType.ERROR, "Erro", "Erro ao carregar formulario","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
 		}
 	}
 	@FXML
@@ -530,29 +502,30 @@ public class TarefaPesquisaController extends UtilsController implements Initial
     void sair(ActionEvent event) {
     	stage.close();
     }	
-    private boolean salvarStatus(NegocioTarefa tarefa,int status){
+    private boolean salvarStatus(NegocioTarefa tarefa, int status){
 		try{
-			loadFactory();
 			if(tarefa instanceof NegocioTarefaContato) {
-				tarefasContatos = new NegociosTarefasContatosImpl(getManager());
-				NegocioTarefaContato t = tarefasContatos.findById(tarefa.getId());
-				t.setFinalizado(status);
-				tarefasContatos.save(t);
+				Optional<NegocioTarefaContato> result = tarefasContatos.findById(tarefa.getId());
+				if(result.isPresent()){
+					NegocioTarefaContato t = result.get();
+					t.setFinalizado(status);
+					tarefasContatos.save(t);
+				}
 				return true;
 			}
 			else if(tarefa instanceof NegocioTarefaProposta) {
-				tarefasPropostas = new NegociosTarefasPropostasImpl(getManager());
-				NegocioTarefaProposta t = tarefasPropostas.findById(tarefa.getId());
-				t.setFinalizado(status);
-				tarefasPropostas.save(t);
+				Optional<NegocioTarefaProposta> result = tarefasPropostas.findById(tarefa.getId());
+				if(result.isPresent()) {
+					NegocioTarefaProposta t = result.get();
+					t.setFinalizado(status);
+					tarefasPropostas.save(t);
+				}
 				return true;
 			}
 			return false;
 		}catch (Exception e){
 			alert(AlertType.ERROR,"Erro",null,"Erro ao salvar",e,true);
 			return false;
-		}finally {
-			close();
 		}
 	}
     @SuppressWarnings("unchecked")
@@ -573,7 +546,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 					setGraphic(null);
 				}
 				else{
-					setText(sdfH.format(item.getTime()));
+					setText(DateUtil.format(item.getTime(), DateUtil.SDFH));
 				}
 			}
 		});
@@ -734,13 +707,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						IconsEnum ic = IconsEnum.BUTTON_CLIP;
-						buttonTable(button, ic);
-					}catch (IOException e) {
-					}
+					IconsEnum ic = IconsEnum.BUTTON_CLIP;
+					JavaFxUtil.buttonTable(button, ic);
 					button.setOnAction(event -> {
-						visualizarDocumento(item, storage);
+						MyFileUtil.visualizarDocumento(item, storage);
 					});
 					setGraphic(button);
 				}
@@ -762,13 +732,10 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						IconsEnum ic = IconsEnum.BUTTON_PROPOSTA;
-						if(tbPrincipal.getItems().get(getIndex()) instanceof NegocioTarefaContato) 
-							ic = IconsEnum.BUTTON_CONTATO;
-						buttonTable(button, ic);
-					}catch (IOException e) {
-					}
+					IconsEnum ic = IconsEnum.BUTTON_PROPOSTA;
+					if(tbPrincipal.getItems().get(getIndex()) instanceof NegocioTarefaContato)
+						ic = IconsEnum.BUTTON_CONTATO;
+					JavaFxUtil.buttonTable(button, ic);
 					button.setOnAction(event -> {
 						abrirCadastroContatoOrProposta(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -792,10 +759,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_EDIT);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_EDIT);
 					button.setOnAction(event -> {
 						abrirCadastro(tbPrincipal.getItems().get(getIndex()));
 					});
@@ -818,10 +782,7 @@ public class TarefaPesquisaController extends UtilsController implements Initial
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button,IconsEnum.BUTTON_REMOVE);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button,IconsEnum.BUTTON_REMOVE);
 					final Tooltip tooltip = new Tooltip("Clique para remover o registro!");
 					button.setTooltip(tooltip);
 					button.setOnAction(event -> {

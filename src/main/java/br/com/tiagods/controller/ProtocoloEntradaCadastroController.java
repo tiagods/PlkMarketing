@@ -1,14 +1,16 @@
 package br.com.tiagods.controller;
 
 import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.controller.utils.UtilsController;
-import br.com.tiagods.model.*;
+import br.com.tiagods.model.Cliente;
+import br.com.tiagods.model.Departamento;
+import br.com.tiagods.model.Usuario;
 import br.com.tiagods.model.protocolo.ProtocoloEntrada;
 import br.com.tiagods.model.protocolo.ProtocoloItem;
-import br.com.tiagods.repository.helpers.ClientesImpl;
-import br.com.tiagods.repository.helpers.ProtocolosEntradasImpl;
-import br.com.tiagods.repository.helpers.DepartamentosImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
+import br.com.tiagods.repository.Clientes;
+import br.com.tiagods.repository.ProtocolosEntradas;
+import br.com.tiagods.repository.Usuarios;
+import br.com.tiagods.repository.UsuariosDepartamentos;
+import br.com.tiagods.util.JavaFxUtil;
 import br.com.tiagods.util.alerta.AlertaProtocolo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
@@ -25,13 +27,18 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.fxutils.maskedtextfield.MaskTextField;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import javax.persistence.PersistenceException;
-import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class ProtocoloEntradaCadastroController extends UtilsController implements Initializable {
+import static br.com.tiagods.util.JavaFxUtil.alert;
+
+@Controller
+public class ProtocoloEntradaCadastroController implements Initializable {
+
     @FXML
     private JFXTextField txCodigo;
 
@@ -69,31 +76,32 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
     private TableView<ProtocoloItem> tbItem;
 
     private Stage stage;
-    private ProtocoloEntrada protocolo;
-    private ProtocolosEntradasImpl entradas;
-    private DepartamentosImpl departamentos;
-    private UsuariosImpl usuarios;
-    private ClientesImpl clientes;
     private Cliente cliente;
+    private ProtocoloEntrada protocolo;
 
-    public ProtocoloEntradaCadastroController(Stage stage, ProtocoloEntrada protocolo) {
+    @Autowired
+    private ProtocolosEntradas entradas;
+    @Autowired
+    private UsuariosDepartamentos departamentos;
+    @Autowired
+    private Usuarios usuarios;
+    @Autowired
+    private Clientes clientes;
+    @Autowired
+    AlertaProtocolo alerta;
+
+
+    public void setPropriedades(Stage stage, ProtocoloEntrada protocolo) {
         this.stage = stage;
         this.protocolo = protocolo;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            tabela();
-            loadFactory();
-            combos();
-            if(protocolo!=null){
-                preencherFormulario(protocolo);
-            }
-        } catch (PersistenceException e) {
-            alert(Alert.AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-        } finally {
-            close();
+        tabela();
+        combos();
+        if(protocolo!=null){
+            preencherFormulario(protocolo);
         }
     }
 
@@ -102,21 +110,16 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
 
         for(int i = 1; i<=100;i++) cbItemQuantidade.getItems().add(i);
 
-        departamentos = new DepartamentosImpl(getManager());
-        cbDepartamento.getItems().addAll(departamentos.getAll());
+        cbDepartamento.getItems().addAll(departamentos.findAll());
 
         cbDepartamento.valueProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue!=null) {
                 try {
-                    loadFactory();
-                    usuarios = new UsuariosImpl(getManager());
                     cbFuncionario.getItems().clear();
                     cbFuncionario.getItems().addAll(usuarios.getUsuariosByDepartamento(newValue));
                     cbFuncionario.getSelectionModel().selectFirst();
                 } catch (PersistenceException e) {
                     alert(Alert.AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-                } finally {
-                    close();
                 }
             }
         });
@@ -222,11 +225,8 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
         }
         protocolo.setItems(obs);
         try{
-            loadFactory();
-            entradas = new ProtocolosEntradasImpl(getManager());
             protocolo = entradas.save(protocolo);
             preencherFormulario(protocolo);
-            AlertaProtocolo alerta = new AlertaProtocolo();
             if(novo){
                 alerta.programarEnvioDocumentoRecebido(protocolo,true);
             }
@@ -245,10 +245,7 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
             stage.close();
         }catch (Exception e){
             alert(Alert.AlertType.ERROR,"Erro","Erro ao salvar","",e,true);
-        }finally {
-            close();
         }
-
     }
     public void tabela() {
         TableColumn<ProtocoloItem, Number> colunaId = new TableColumn<>("*");
@@ -277,9 +274,7 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
                         setText(null);
                     } else {
                         button.getStyleClass().add("btDefault");
-                        try {
-                            buttonTable(button, IconsEnum.BUTTON_REMOVE);
-                        } catch (IOException e) {}
+                        JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_REMOVE);
                         button.setOnAction(event ->tbItem.getItems().remove(getIndex()));
                         setGraphic(button);
                         setText(null);
@@ -299,19 +294,19 @@ public class ProtocoloEntradaCadastroController extends UtilsController implemen
         }
         else{
             try {
-                loadFactory();
                 Long valor = Long.parseLong(txCliente.getText().trim());
-                clientes = new ClientesImpl(getManager());
-                cliente = clientes.findById(valor);
-                if (cliente != null) {
-                    txClienteNome.setText(cliente.getNome());
-                } else {
-                    txClienteNome.setText("");
+                Optional<Cliente> result = clientes.findById(valor);
+                if(result.isPresent()) {
+                    cliente = result.get();
+                    if (cliente != null) {
+                        txClienteNome.setText(cliente.getNome());
+                    } else {
+                        txClienteNome.setText("");
+                    }
                 }
-            } catch (PersistenceException e) {
+
+            } catch (Exception e) {
                 alert(Alert.AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao realizar consulta", e, true);
-            } finally {
-                close();
             }
         }
     }

@@ -1,32 +1,15 @@
 package br.com.tiagods.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.persistence.PersistenceException;
-
-import br.com.tiagods.controller.utils.UtilsController;
+import br.com.tiagods.config.enums.IconsEnum;
+import br.com.tiagods.model.PessoaJuridica;
+import br.com.tiagods.model.Usuario;
+import br.com.tiagods.model.negocio.*;
+import br.com.tiagods.modelcollections.ConstantesTemporarias;
+import br.com.tiagods.repository.*;
+import br.com.tiagods.util.JavaFxUtil;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
-
-import br.com.tiagods.config.enums.IconsEnum;
-import br.com.tiagods.model.negocio.Contato;
-import br.com.tiagods.model.negocio.NegocioCategoria;
-import br.com.tiagods.model.negocio.NegocioNivel;
-import br.com.tiagods.model.negocio.NegocioOrigem;
-import br.com.tiagods.model.negocio.NegocioServico;
-import br.com.tiagods.model.PessoaJuridica;
-import br.com.tiagods.model.Usuario;
-import br.com.tiagods.modelcollections.ConstantesTemporarias;
-import br.com.tiagods.repository.helpers.ContatosImpl;
-import br.com.tiagods.repository.helpers.NegocioCategoriasImpl;
-import br.com.tiagods.repository.helpers.NegocioNiveisImpl;
-import br.com.tiagods.repository.helpers.NegocioOrigensImpl;
-import br.com.tiagods.repository.helpers.NegocioServicosImpl;
-import br.com.tiagods.repository.helpers.UsuariosImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -40,8 +23,18 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-public class TarefaContatoDialogController extends UtilsController implements Initializable{
+import javax.persistence.PersistenceException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import static br.com.tiagods.util.JavaFxUtil.alert;
+
+@Controller
+public class TarefaContatoDialogController implements Initializable {
 	@FXML
     private JFXComboBox<NegocioCategoria> cbCategoria;
 
@@ -68,17 +61,19 @@ public class TarefaContatoDialogController extends UtilsController implements In
     
 	private Stage stage;
 	private Contato contato;
-	
-	private ContatosImpl contatos;
-	private NegocioNiveisImpl niveis;
-	private NegocioCategoriasImpl categorias;
-	private NegocioOrigensImpl origens;
-	private NegocioServicosImpl servicos;
-	private UsuariosImpl usuarios;
-	
-	public TarefaContatoDialogController(Stage stage) {
-		this.stage = stage;
-	}
+
+	@Autowired
+	private Contatos contatos;
+	@Autowired
+	private NegociosNiveis niveis;
+	@Autowired
+	private NegociosCategorias categorias;
+	@Autowired
+	private NegociosOrigens origens;
+	@Autowired
+	private NegociosServicos servicos;
+	@Autowired
+	private Usuarios usuarios;
 	
 	private void combos() {
 		NegocioCategoria categoria = new NegocioCategoria(-1L,"Catetoria");
@@ -91,19 +86,11 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbOrigem.getItems().add(origem);
 		cbServico.getItems().add(servico);
 		cbAtendente.getItems().add(atendente);
-		
-		
-		categorias = new NegocioCategoriasImpl(getManager());
-		niveis = new NegocioNiveisImpl(getManager());
-		origens = new NegocioOrigensImpl(getManager());
-		servicos = new NegocioServicosImpl(getManager());
-		contatos = new ContatosImpl(getManager());
-		usuarios = new UsuariosImpl(getManager());
-				
-		cbCategoria.getItems().addAll(categorias.getAll());
-		cbNivel.getItems().addAll(niveis.getAll());
-		cbOrigem.getItems().addAll(origens.getAll());
-		cbServico.getItems().addAll(servicos.getAll());
+
+		cbCategoria.getItems().addAll(categorias.findAll());
+		cbNivel.getItems().addAll(niveis.findAll());
+		cbOrigem.getItems().addAll(origens.findAll());
+		cbServico.getItems().addAll(servicos.findAll());
 		cbAtendente.getItems().addAll(usuarios.filtrar("", 1, ConstantesTemporarias.pessoa_nome));
 		
 		cbCategoria.getSelectionModel().selectFirst();
@@ -116,12 +103,9 @@ public class TarefaContatoDialogController extends UtilsController implements In
 			@Override
 			public void changed(ObservableValue observable, Object oldValue, Object newValue) {
 				try {
-					loadFactory();
 					filtrar();
 				}catch(Exception e) {
 					alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
-				}finally {
-					close();
 				}
 			}
 			
@@ -133,7 +117,6 @@ public class TarefaContatoDialogController extends UtilsController implements In
 		cbAtendente.valueProperty().addListener(change);
 	}
 	void filtrar() {
-		contatos = new ContatosImpl(getManager());
 		List<Contato> lista = contatos.filtrar(txPesquisa.getText().trim(),cbCategoria.getValue(),
 				cbNivel.getValue(),cbOrigem.getValue(),cbServico.getValue());
 		tbPrincipal.getItems().clear();
@@ -143,24 +126,18 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	public void initialize(URL location, ResourceBundle resources) {
 		tabela();
 		try {
-			loadFactory();
 			combos();
 			filtrar();
 		}catch (PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta", "Erro ao executar a consulta", e, true);
-		}finally {
-			close();
 		}
 	}
 	@FXML
 	void pesquisar(KeyEvent event) {
 		try {
-			loadFactory();
 			filtrar();
 		}catch(PersistenceException e) {
 			alert(AlertType.ERROR, "Erro", "Erro na consulta","Erro ao realizar consulta", e, true);
-		}finally {
-			close();
 		}
 	}
 	@FXML
@@ -340,10 +317,7 @@ public class TarefaContatoDialogController extends UtilsController implements In
 				}
 				else{
 					button.getStyleClass().add("btDefault");
-					try {
-						buttonTable(button, IconsEnum.BUTTON_OK);
-					}catch (IOException e) {
-					}
+					JavaFxUtil.buttonTable(button, IconsEnum.BUTTON_OK);
 					button.setOnAction(event -> {
 						setContato(tbPrincipal.getItems().get(getIndex()));
 						stage.close();
@@ -359,7 +333,13 @@ public class TarefaContatoDialogController extends UtilsController implements In
 	private void setContato(Contato contato) {
 		this.contato=contato;
 	}
+
 	public Contato getContato() {
 		return this.contato;
 	}
+
+	public void setPropriedades(Stage stage) {
+		this.stage = stage;
+	}
+
 }
