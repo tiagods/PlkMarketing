@@ -45,7 +45,7 @@
 		<httpclient.version>4.5.13</httpclient.version>
 		<javassist.version>3.8.0.GA</javassist.version>
 		<!--JSON-->
-		<json.version>20230227</json.version>
+		<json.version>20231013</json.version>
 
 		<junit.version>4.13.1</junit.version>
 	</properties>
